@@ -1,0 +1,217 @@
+\documentclass[a4paper, 12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math-related things
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+% Italian spelling
+\usepackage[italian]{babel}
+% Accenti e caratteri speciali
+\usepackage[utf8]{inputenc}
+% Margini e grafica della pagina
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{fancyhdr}
+% Tabelle
+\usepackage{tabularx}
+% Graphs and Images handling
+\usepackage{graphicx}
+\usepackage{svg}
+% VHDL language support
+\usepackage{minted}
+% Hypertext references
+\usepackage{hyperref}
+
+% Title Page
+\title{Eriantys - Prova Finale di Ingegneria del Software}
+\author{
+	Paolo Pertino [10729600]
+	\href{mailto:paolo.pertino@mail.polimi.it}{paolo.pertino@mail.polimi.it} \\
+	Leonardo Pesce [10659489]
+	\href{mailto:leonardo.pesce@mail.polimi.it}{leonardo.pesce@mail.polimi.it} \\
+	Alberto Paddeu [10729194]
+	\href{mailto:alberto.paddeu@mail.polimi.it}{alberto.paddeu@mail.polimi.it} \\
+} 
+
+% Contents page settings
+\renewcommand*\contentsname{Indice}
+\setcounter{tocdepth}{3}
+
+\newcommand{\quantities}[1]{%
+	\begin{tabular}{@{}c@{}}\strut#1\strut\end{tabular}%
+}
+
+% General page settings
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\leftmark}
+\lhead{Eriantys - Prova Finale di Ingegneria del Software}
+\cfoot{\thepage}
+
+% Hyperrefs setup
+\hypersetup{
+	colorlinks=true,
+	linkcolor=[rgb]{0.996,0.396,0.090196}, %254 101 23
+	filecolor=magenta,      
+	urlcolor=[rgb]{0.72156862745,0.0078431372549,0.00392156862745},
+	citecolor=[rgb]{0.517647,0.0156862745,0.0117647},
+	pdftitle={Reti Logiche - Dispense},
+	pdfpagemode=FullScreen,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% USEFUL STRUCTURES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Immages svg
+%	\begin{figure}[h]
+%		\centering
+%		\def\svgwidth{\columnwidth}
+%		\resizebox{.8\linewidth}{!}{\input{moduleModel.pdf_tex}}
+%		\caption{Schema generale del modulo di codifica}
+%	\end{figure} 
+
+% Images png/jpg
+%\begin{figure}[h!]
+%	\centering
+%	\includegraphics[scale=0.65]{WNS.png}
+%	\caption{Timing report}
+%\end{figure}
+
+% Formulae
+%	\begin{gather*}
+	%		P_{1}(t) = U(t) \oplus U(t-2)\\
+	%		P_{2}(t) = U(t) \oplus U(t-1) \oplus U(t-2)\\
+	%		Y(t) = concatenazione \; alternata,\; a \; partire \; dall'MSB,\; rispettivamente \; dei \; P_{1k} \; e \; P_{2k}
+	%	\end{gather*}
+
+% Code
+%	\begin{minted}{vhdl}
+%		entity project_reti_logiche is
+%		port (
+%		i_clk : in std_logic;
+%		i_rst : in std_logic;
+%		i_start : in std_logic;
+%		i_data : in std_logic_vector(7 downto 0);
+%		o_address : out std_logic_vector(15 downto 0);
+%		o_done : out std_logic;
+%		o_en : out std_logic;
+%		o_we : out std_logic;
+%		o_data : out std_logic_vector (7 downto 0)
+%		);
+%		end project_reti_logiche;
+%	\end{minted}
+
+% Dotted lists
+%	\begin{itemize}
+%		\setlength{\itemsep}{-4pt}
+%		\setlength{\parskip}{0pt}
+%		\setlength{\parsep}{0pt}
+%		\item[\textbf{i\_clk}]\emph{: segnale di clock generato dal testbench;}\\
+%		\item[\textbf{i\_rst}]\emph{: segnale di reset che inizializza la FSM in modo tale che essa sia pronta a ricevere il primo segnale di start;}\\
+%		\item[\textbf{i\_start}]\emph{: segnale di start generato dal testbench per dare inizio alla computazione effettiva;}\\
+%		\item[\textbf{i\_data}]\emph{: segnale sopraggiunto dalla memoria a valle di una richiesta di lettura. É un vettore di 8 bit;}\\
+%		\item[\textbf{o\_address}]\emph{: segnale in uscita contenente l'indirizzo della cella di memoria sulla quale si vuole eseguire un'operazione di lettura o scrittura. É un vettore di 16 bit;}\\
+%		\item[\textbf{o\_done}]\emph{: segnale in uscita che indica il termine dell'elaborazione corrente, compresa la fase di scrittura dei risultati in memoria;}\\
+%		\item[\textbf{o\_en}]\emph{: segnale in uscita da inviare alla memoria quando si intende effettuare un'operazione, che essa sia di lettura o scrittura, su di essa;}\\
+%		\item[\textbf{o\_we}]\emph{: segnale in uscita che se assume valore alto, indica alla memoria che deve essere eseguita un'operazione di scrittura. Per eseguire una lettura, questo segnale deve assumere valore basso (0);}\\
+%		\item[\textbf{o\_data}]\emph{: segnale in uscita che identifica i dati da inviare alla memoria. É un vettore di 8 bit.}\\
+%	\end{itemize}
+
+% Tables
+%\begin{table}[h!]
+%	\centering
+%	\begin{tabular}{| c | c | c |}
+%		\hline
+%		Registro & Contenuto & Valore di default \\
+%		\hline\hline
+%		currentState & stato corrente della FSM & N.D. \\
+%		\hline\hline
+%		numWords & \quantities{numero di parole presenti in memoria\\ che devono ancora essere elaborate} & 0 \\
+%		\hline\hline
+%		currentWord & parola attualmente in elaborazione & 00000000 \\
+%		\hline
+%		oldWord & ultima parola elaborata prima di quella attuale & 00000000 \\
+%		\hline\hline
+%		inputOffset & \quantities{offset utilizzato per il calcolo\\dell'indirizzo di accesso alla cella\\di memoria per operazione di lettura} & 0x0000 \\
+%		\hline
+%		outputOffset & \quantities{offset utilizzato per il calcolo\\dell'indirizzo di accesso alla cella\\di memoria su cui scrivere} & 0x0000 \\
+%		\hline\hline
+%		numWordsReceived & \quantities{valore booleano che indica se\\ è già stato letto dalla memoria il numero\\di parole da elaborare} & FALSE\\
+%		\hline\hline
+%		$P_{1k}$ & codice descritto da specifica & 00000000 \\
+%		\hline
+%		$P_{2k}$ & codice descritto da specifica & 00000000 \\
+%		\hline	
+%	\end{tabular}
+%\end{table}
+
+\begin{document}
+	\pagenumbering{gobble}
+	\date{\today}
+	\maketitle
+	\newpage
+	\pagenumbering{arabic}
+	
+	\tableofcontents
+	
+	\newpage
+	\section{Introduzione}
+	\paragraph{}
+	La \textbf{Prova Finale di Ingegneria del Software} dell'anno scolastico 2021-2022 prevede lo sviluppo di una versione software del gioco da tavolo \emph{Eriantys}, un prodotto \emph{Cranio Creations}\cite{eriantys} che si ispira e tenta di rinnovare il già affermato \emph{Carolus Magnus}\cite{carolusMagnus}.
+	
+	\paragraph{}
+	Il prodotto finale dovrà soddisfare i requisiti \emph{Game-Specific} e \emph{Game-Agnostic} indicati nel documento \emph{requirements.pdf}. In particolare è richiesto l'utilizzo del design pattern \emph{Model-View-Controller} di cui a breve forniremo una concisa descrizione.\\
+	Per incrementare il punteggio ottenuto, il team si concentrerà nell'implementazione delle regole complete del gioco, nel fornire la possibilità ai giocatori di connettersi al server e giocare tramite un'interfaccia a linea di comando (CLI) oppure mediante l'interazione con un'interfaccia grafica (GUI). Infine si darà spazio all'implementazione di quante più possibili delle seguente funzionalità aggiuntive: \emph{12 carte personaggio, partite a 4 giocatori, partite multiple e persistenza}.
+	
+	\textbf{to be continued...}
+	\newpage
+	\section{Devlog}
+	\paragraph{}
+	Nella seguente sezione riportiamo settimana per settimana i progressi effettuati dal team, evidenziando, ove necessario, eventuali diagrammi e gli snodi del ragionamento.
+	\subsection{Settimana 1: Un primo sguardo al class diagram del Modello}
+	\paragraph{}
+	Durante la prima settimana di corso abbiamo analizzato i componenti fisici del gioco e le sue regole, cercando di riprodurre uno schema logico di tali elementi attraverso un \emph{Class Diagram UML}. Esso contiene una prima bozza della struttura del Model:\\
+	\begin{figure}[h]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\resizebox{\linewidth}{!}{\input{umlFirstWeek.pdf_tex}}
+		\caption{Class Diagram del Model - Bozza}
+	\end{figure}\\
+	Come indicato, lo schema sopra riportato è una bozza primitiva e di seguito riportiamo i principali ragionamenti effettuati:\\
+	\begin{itemize}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+		
+		\item Tutti i componenti fisici, in futuro, avranno una loro grafica che dovrà essere mostrata. Pertanto implementano l'interfaccia GameObject che prevede l'implementazione di un metodo specifico per conseguire tale obiettivo.
+		\item Il sacchetto e madre natura sono stati pensati come Singleton. Essi verranno infatti istanziati ad inizio partita e, per costruzione, saranno le uniche presenti nella JVM ed accessibili ovunque invocando il metodo \emph{getInstance()}.
+		\item Il cerchio di isole che costituisce la board di gioco è stato pensato come \emph{Doubly Circular Linked List}\cite{circularDoublyLinkedList}. Con tale rappresentazione sarà più agevole lo spostamento di madre natura e l'operazione di merge di 2 isole consecutive a valle della loro conquista da parte di un giocatore.
+		\item Volendo implementare le regole complete, quindi prevedendo la possibilità di giocare una partita seguendo la modalità per esperti, ci siamo interrogati su come far impattare tale scelta sui diversi metodi delle varie classi. Una prima idea è stata quella di raggruppare le informazioni critiche in un Singleton, in modo tale da poterlo richiamare ove richiesto per poter richiedere le informazioni relative alle regole ed eseguire i dovuti controlli.
+	\end{itemize}
+	
+	% Strumenti usati
+	\newpage
+	\section{Strumenti utilizzati}
+	Nella seguente sezione verranno indicati i principali strumenti di sviluppo utilizzati:\\
+	\begin{itemize}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+		
+		\item \emph{IntelliJ IDEA Ultimate 2021.3.2} - Principale IDE utilizzato.
+		\item \emph{Maven} - Gestione dello sviluppo del progetto software e di tutte le sue fasi.
+		\item \emph{JUnit} - Framework principale di unit testing.
+		\item \emph{AstahUML} - Creazione di diagrammi UML.
+		\item \emph{GitKraken} - Git GUI per visualizzare il workflow di sviluppo ed utilizzare efficientemente Git.
+		\item \emph{TEXStudio} - Gestione e aggiornamento del report.
+	\end{itemize}
+	% Bibliografia
+	\newpage
+	\begin{thebibliography}{99}
+		\bibitem{eriantys}
+		\href{https://www.craniocreations.it/prodotto/eriantys/}{Eriantys, Cranio Creations}
+		
+		\bibitem{carolusMagnus}
+		\href{https://www.goblins.net/giochi/carolus-magnus-5071}{Carolvs Magnvs, Winning Moves}
+		
+		\bibitem{circularDoublyLinkedList}
+		\href{https://www.softwaretestinghelp.com/doubly-linked-list-in-java/#Circular_Doubly_Linked_List_In_Java}{Circular Doubly Linked List}
+		
+	\end{thebibliography} 
+\end{document}         

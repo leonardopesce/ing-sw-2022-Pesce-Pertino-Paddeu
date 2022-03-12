@@ -31,3 +31,9 @@ hs_err_pid*
 # Maven
 log/
 target/
+
+# TEXStudio
+*.aux
+*.out
+*.synctex.gz
+*.toc
