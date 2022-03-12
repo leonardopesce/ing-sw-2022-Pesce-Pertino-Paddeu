@@ -1,5 +1,5 @@
 package game_model.character;
 
-public class Character {
+public  abstract class Character {
 
 }

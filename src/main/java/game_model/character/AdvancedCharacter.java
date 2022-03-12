@@ -2,6 +2,8 @@ package game_model.character;
 
 public class AdvancedCharacter extends Character{
     private AdvancedCharacter instance;
+    //come implemento multiSingleton? Interfaccia o sottoclasse?
+
 
     public AdvancedCharacter(){
         super();
