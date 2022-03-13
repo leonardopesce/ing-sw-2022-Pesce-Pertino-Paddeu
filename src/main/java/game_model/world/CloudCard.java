@@ -1,4 +1,4 @@
-package game_model;
+package game_model.world;
 
 import game_model.character.basic.Student;
 

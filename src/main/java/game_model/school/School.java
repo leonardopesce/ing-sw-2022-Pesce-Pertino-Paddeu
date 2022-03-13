@@ -21,5 +21,7 @@ public class School {
         return entrance;
     }
 
-
+    public DiningHall getDiningHall() {
+        return diningHall;
+    }
 }

@@ -2,7 +2,10 @@ package game_model;
 
 import game_model.character.Assistant;
 import game_model.character.DeckAssistants;
+import game_model.school.DiningTable;
 import game_model.school.School;
+import game_model.world.Island;
+import game_model.world.Terrain;
 
 import java.util.List;
 
@@ -30,6 +33,10 @@ public class Player {
         return id;
     }
 
+    public void playAssistant() {
+
+    }
+
     public School getSchool() {
         return school;
     }
@@ -45,4 +52,27 @@ public class Player {
     public int getMoney() {
         return money;
     }
+
+    public void playAdvancedActionPhase(Terrain t, List<School> schools){
+
+    }
+
+    public void playActionPhase(Terrain t, List<School> schools){
+        moveStudents(t.getIslands());
+        updateProfessorsOwnership(schools);
+
+    }
+
+    private void updateProfessorsOwnership(List<School> schools){
+        //for(DiningTable table: school.getDiningHall().getTables()){
+        //    for()
+        //    if(table.getNumberOfStudents() > )
+        //}
+    }
+
+    public void moveStudents(List<Island> islands){
+
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package game_model;
+package game_model.world;
 
 import game_model.character.AdvancedCharacter;
 
@@ -15,5 +15,9 @@ public class Terrain {
 
     public int getNumberOfIsland(){
         return islandsRing.size();
+    }
+
+    public List<Island> getIslands(){
+        return islandsRing;
     }
 }
