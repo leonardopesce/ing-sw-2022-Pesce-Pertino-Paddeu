@@ -59,60 +59,6 @@
 	pdfpagemode=FullScreen,
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% USEFUL STRUCTURES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Immages svg
-%	\begin{figure}[h]
-	%		\centering
-	%		\def\svgwidth{\columnwidth}
-	%		\resizebox{.8\linewidth}{!}{\input{moduleModel.pdf_tex}}
-	%		\caption{Schema generale del modulo di codifica}
-	%	\end{figure} 
-
-% Images png/jpg
-%\begin{figure}[h!]
-%	\centering
-%	\includegraphics[scale=0.65]{WNS.png}
-%	\caption{Timing report}
-%\end{figure}
-
-% Formulae
-%	\begin{gather*}
-	%	\end{gather*}
-
-% Code
-%	\begin{minted}{vhdl}
-	%		entity project_reti_logiche is
-	%		port (
-	%		i_clk : in std_logic;
-	%		i_rst : in std_logic;
-	%		i_start : in std_logic;
-	%		i_data : in std_logic_vector(7 downto 0);
-	%		o_address : out std_logic_vector(15 downto 0);
-	%		o_done : out std_logic;
-	%		o_en : out std_logic;
-	%		o_we : out std_logic;
-	%		o_data : out std_logic_vector (7 downto 0)
-	%		);
-	%		end project_reti_logiche;
-	%	\end{minted}
-
-% Dotted lists
-%	\begin{itemize}
-	%		\setlength{\itemsep}{-4pt}
-	%		\setlength{\parskip}{0pt}
-	%		\setlength{\parsep}{0pt}
-	%	\end{itemize}
-
-% Tables
-%\begin{table}[h!]
-%	\centering
-%	\begin{tabular}{| c | c | c |}
-	%		\hline
-	%		Registro & Contenuto & Valore di default \\
-	%		\hline\hline
-	%	\end{tabular}
-%\end{table}
-
 \begin{document}
 	\pagenumbering{gobble}
 	\date{\today}
@@ -168,7 +114,7 @@
 		
 		\item Tutti i componenti fisici, in futuro, avranno una loro grafica che dovrà essere mostrata. Pertanto implementano l'interfaccia GameObject che prevede l'implementazione di un metodo specifico per conseguire tale obiettivo.
 		\item Il cerchio di isole che costituisce la board di gioco è stato pensato come \emph{Doubly Circular Linked List}\cite{circularDoublyLinkedList}. Con tale rappresentazione sarà più agevole lo spostamento di madre natura e l'operazione di merge di 2 isole consecutive a valle della loro conquista da parte di un giocatore.
-		\item Volendo implementare le regole complete, quindi prevedendo la possibilità di giocare una partita seguendo la modalità per esperti, ci siamo interrogati su come far impattare tale scelta sui diversi metodi delle varie classi. Una prima idea è stata quella di raggruppare le informazioni critiche in un Singleton, in modo tale da poterlo richiamare ove richiesto per poter richiedere le informazioni relative alle regole ed eseguire i dovuti controlli.
+		\item Volendo implementare le regole complete, quindi prevedendo la possibilità di giocare una partita seguendo la modalità per esperti, e tenendo conto della possibilità di implementare partite multiple sullo stesso server, ci siamo interrogati su come far impattare tale scelta sui diversi metodi delle varie classi. L'idea è quindi quella di utilizzare un Template Pattern creando una classe astratta di gioco dalla quale saranno derivate le 3 versioni di gioco (per 2, 3 e 4 giocatori). Dalle quali saranno successivamente derivate le corrispettive versioni a 2, 3 e 4 giocatori in modalità per esperti.
 		\item In vista dell'implementazione della funzionalità di persistenza della partita, è stato brevemente analizzato il pattern \emph{Memento} ed il suo funzionamento per capire se esso possa essere utile in futuro.
 	\end{itemize}
 	
