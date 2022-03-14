@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game_model.character;
 
 import it.polimi.ingsw.game_model.character.basic.Student;
-import it.polimi.ingsw.game_model.character.character_utils.PieceColor;
+import it.polimi.ingsw.game_model.utils.Color;
 
 import java.util.List;
 
@@ -22,6 +22,6 @@ public class BagOfStudents{
 
     public Student drawStudentFromBag(){
         //@TODO: pick the student randomly
-        return new Student(PieceColor.RED);
+        return new Student(Color.RED);
     }
 }

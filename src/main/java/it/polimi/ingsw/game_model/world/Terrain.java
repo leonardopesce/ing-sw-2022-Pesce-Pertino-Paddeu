@@ -1,6 +1,6 @@
 package it.polimi.ingsw.game_model.world;
 
-import it.polimi.ingsw.game_model.character.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 
 import java.util.LinkedList;
 import java.util.List;

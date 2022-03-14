@@ -1,12 +1,12 @@
-package it.polimi.ingsw.game_model.character.advanced;
+package it.polimi.ingsw.game_model.character;
 
-import it.polimi.ingsw.game_model.character.AdvancedCharacter;
-
-public class MotherNature extends AdvancedCharacter {
+public class MotherNature extends Character {
     private int position;
 
     public MotherNature() {
+
     }
+
 
     public int getPosition() {
         return position;

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.game_model.game_type;
 
+
 public class Game2Player extends Game {
+
 
     @Override
     void actionPhase() {

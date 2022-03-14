@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class Game {
     public List<Player> players;
-    public int[] planningOrder, actionOrder;
+    public int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
     public BagOfStudents bag;
     public Terrain terrain;
 
@@ -31,6 +31,7 @@ public abstract class Game {
     }
 
     public int winner(){
+        //TODO
         //implements a function that returns the player which won -1 otherwise
         return -1;
     }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_model.school;
 
 import it.polimi.ingsw.game_model.character.Assistant;
+import it.polimi.ingsw.game_model.character.basic.Tower;
 
 import java.util.List;
 

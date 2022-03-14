@@ -3,7 +3,7 @@ package it.polimi.ingsw.game_model;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
 import it.polimi.ingsw.game_model.school.School;
-import it.polimi.ingsw.game_model.utils.PlayerColor;
+import it.polimi.ingsw.game_model.utils.Color;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Player {
     private final int id;
-    private PlayerColor color;
+    private Color color;
     private School school = new School();
     private DeckAssistants deckAssistants;
     private Assistant discardedCard;
@@ -25,7 +25,7 @@ public class Player {
 
     }
 
-    public PlayerColor getColor() {
+    public Color getColor() {
         return color;
     }
 
