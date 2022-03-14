@@ -1,11 +1,13 @@
 package it.polimi.ingsw.game_model.school;
 
+import it.polimi.ingsw.game_model.utils.Color;
+
 public class DiningTable {
-    private int color;
+    private Color color;
     private int numberOfStudents = 0;
     private final int MAX_POSITIONS = 10;
 
-    public DiningTable(int color) {
+    public DiningTable(Color color) {
         this.color = color;
     }
 
@@ -13,7 +15,7 @@ public class DiningTable {
         numberOfStudents++;
     }
 
-    public int getColor() {
+    public Color getColor() {
         return color;
     }
 
