@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.game_type.Game2Player;
@@ -10,9 +11,6 @@ import it.polimi.ingsw.game_model.school.School;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import it.polimi.ingsw.game_model.world.Island;
-import it.polimi.ingsw.game_model.world.Terrain;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
@@ -22,12 +20,29 @@ public class Player {
     private DeckAssistants deckAssistants;
     private Assistant discardedCard;
     private int money = 0;
+    private boolean playedSpecialCard = false;
 
     public Player(String nickName) {
         this.nickName = nickName;
     }
 
     public void discardAssistant(){
+
+    }
+
+    public void playedSpecialCard(AdvancedCharacter card){
+        if(!playedSpecialCard && money >= card.getAdvanceCharacterType().getCardCost()){
+            money -= card.getAdvanceCharacterType().getCardCost();
+            playedSpecialCard = true;
+        }
+
+    }
+
+    public boolean hasPlayedSpecialCard() {
+        return playedSpecialCard;
+    }
+
+    public void resetPlayedSpecialCard(){
 
     }
 
@@ -94,9 +109,8 @@ public class Player {
         }
     }
 
-
-
     public List<Teacher> getTeachers(){
         return school.getDiningHall().getTeacherList();
     }
+
 }

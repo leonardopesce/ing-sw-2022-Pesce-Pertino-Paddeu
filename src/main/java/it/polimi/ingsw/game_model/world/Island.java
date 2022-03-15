@@ -17,24 +17,6 @@ public class Island {
         this.id = id;
     }
 
-    public void evaluateIsland(List<Player> players){
-        Player mostInfluencer = players.stream().max((pl1, pl2) -> Math.max(playerInfluence(pl1), playerInfluence(pl2))).get();
-        //adds back tower to owner player
-        if(!towers.isEmpty()){
-            for(Player pl: players){
-                if(pl.getColor() == towers.get(0).getColor()){
-                    pl.addNTowers(towers.size());
-                    towers.clear();
-                }
-            }
-        }
-        //removes towers from most influencer player
-        mostInfluencer.removeNTowers(size);
-        for(int i = 0; i < size; i++){
-            towers.add(new Tower(mostInfluencer.getColor()));
-        }
-    }
-
     public void incrementSize() { this.size++; }
 
     public void addStudent(Student studentToAdd) {
@@ -53,8 +35,8 @@ public class Island {
         return towers;
     }
 
-    private int playerInfluence(Player pl){
-        return playerTowerInfluence(pl) + playerStudentInfluence(pl);
+    public int getSize() {
+        return size;
     }
 
     public int getId() {
@@ -63,26 +45,5 @@ public class Island {
 
     public List<Student> getStudents() {
         return students;
-    }
-
-    // influences given to player by towers
-    private int playerTowerInfluence(Player pl){
-        if(!towers.isEmpty() && towers.get(0).getColor() == pl.getColor()){
-            return towers.size();
-        }
-        return 0;
-    }
-
-    // influences given to player by students on the island
-    private int playerStudentInfluence(Player pl){
-        int influence = 0;
-        for(Teacher t: pl.getTeachers()){
-            for(Student s: students){
-                if(t.getColor() == s.getColor()){
-                    influence++;
-                }
-            }
-        }
-        return influence;
     }
 }

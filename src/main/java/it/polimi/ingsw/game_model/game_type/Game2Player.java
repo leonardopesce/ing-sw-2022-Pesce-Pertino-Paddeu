@@ -1,12 +1,9 @@
 package it.polimi.ingsw.game_model.game_type;
 
-
-import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
 import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_model.character.MotherNature;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.school.DiningTable;
-import it.polimi.ingsw.game_model.world.Terrain;
+import it.polimi.ingsw.game_model.world.Island;
 
 public class Game2Player extends Game {
     public final int NUMBER_OF_STUDENTS_ON_CLOUD = 3;
@@ -19,13 +16,8 @@ public class Game2Player extends Game {
     }
 
     @Override
-    public void evaluateInfluences(Terrain terrain, MotherNature motherNature) {
-        try{
-            terrain.getIslandWithId(motherNature.getPosition()).evaluateIsland(players);
-        }
-        catch(IslandNotPresentException e){
-            e.printStackTrace();
-        }
+    public int playerInfluence(Player pl, Island island) {
+        return playerTowerInfluence(pl, island) + playerStudentInfluence(pl, island);
     }
 
     @Override

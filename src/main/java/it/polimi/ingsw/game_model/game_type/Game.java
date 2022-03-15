@@ -1,9 +1,12 @@
 package it.polimi.ingsw.game_model.game_type;
 
+import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.MotherNature;
+import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
+import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class Game {
+    private final String NO_NICKNAME = "";
     protected List<Player> players;
     protected int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
     protected BagOfStudents bag;
@@ -58,12 +62,12 @@ public abstract class Game {
     public final void start(){
         createPlanningOrder();
         setupBoard();
-        while(winner() != -1){
+        while(!winner().equals(NO_NICKNAME)){
             refillClouds();
             // every "turn" is divided in planning phase and action phase
             planningPhase();
             createActionPhaseOrder();
-            for(int i = 0; i < players.size() && winner() == -1; i++){
+            for(int i = 0; i < players.size() && winner().equals(NO_NICKNAME); i++){
                 actionPhaseStudents(players.get(i));
             }
             createNextPlanningOrder();
@@ -74,10 +78,60 @@ public abstract class Game {
         pl.moveStudents(terrain.getIslands());
         updateProfessorsOwnership(pl);
         moveMotherNature(pl.getDiscardedCard().getPossibleSteps());
-        evaluateInfluences(terrain, motherNature);
+        evaluateInfluences();
+        pl.resetPlayedSpecialCard();
     }
 
+    public void setUpIslandTower(Island island, Player owner){
+        //adds back tower to owner player
+        if(!island.getTowers().isEmpty()){
+            for(Player pl: players){
+                if(pl.getColor() == island.getTowers().get(0).getColor()){
+                    pl.addNTowers(island.getTowers().size());
+                    island.getTowers().clear();
+                }
+            }
+        }
+        //removes towers from most influencer player
+        owner.removeNTowers(island.getSize());
+        for(int i = 0; i < island.getSize(); i++){
+            island.getTowers().add(new Tower(owner.getColor()));
+        }
+    }
 
+    public void evaluateInfluences(){
+        try{
+            Island island = terrain.getIslandWithId(motherNature.getPosition());
+            Player mostInfluencing = players.stream().max((pl1, pl2) ->
+                    Math.max(playerInfluence(pl1, island), playerInfluence(pl2, island))).get();
+
+            setUpIslandTower(island, mostInfluencing);
+        }
+        catch(IslandNotPresentException e){
+            e.printStackTrace();
+        }
+    }
+
+    // influences given to player by towers
+    public int playerTowerInfluence(Player pl, Island island){
+        if(!island.getTowers().isEmpty() && island.getTowers().get(0).getColor() == pl.getColor()){
+            return island.getTowers().size();
+        }
+        return 0;
+    }
+
+    // influences given to player by students on the island
+    public int playerStudentInfluence(Player pl, Island island){
+        int influence = 0;
+        for(Teacher t: pl.getTeachers()){
+            for(Student s: island.getStudents()){
+                if(t.getColor() == s.getColor()){
+                    influence++;
+                }
+            }
+        }
+        return influence;
+    }
 
     public void updateProfessorsOwnership(Player pl1) {
         // for the dining table of pl1
@@ -148,10 +202,17 @@ public abstract class Game {
         }
     }
 
-    public int winner(){
+    public String winner(){
         //TODO
         //implements a function that returns the player which won -1 otherwise
-        return -1;
+        for(Player pl: players){
+            if(pl.getTowersAvailable() == 0){
+                return pl.getNickName();
+            }
+        }
+
+
+        return NO_NICKNAME;
     }
 
     /**
@@ -188,7 +249,7 @@ public abstract class Game {
         List<Pair<Integer, Integer>> playerAndValue = new ArrayList<>();
         //cycle to create all position
         for(int i = 0; i < players.size(); i++){
-            playerAndValue.add(new Pair<Integer, Integer>(i, players.get(i).getDiscardedCard().getValue()));
+            playerAndValue.add(new Pair<>(i, players.get(i).getDiscardedCard().getValue()));
         }
 
         playerAndValue.sort((a,b) -> Math.max(a.getValue(), b.getValue()));
@@ -199,7 +260,7 @@ public abstract class Game {
     }
 
     public abstract void updateProfessorOwnershipCondition(Teacher t, DiningTable table, Player pl1, Player pl2);
-    public abstract void evaluateInfluences(Terrain terrain, MotherNature motherNature);
+    public abstract int playerInfluence(Player pl, Island island);
     public abstract void refillClouds();
 
 

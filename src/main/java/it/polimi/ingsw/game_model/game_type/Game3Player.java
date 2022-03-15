@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.MotherNature;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.school.DiningTable;
+import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
 
 public class Game3Player extends Game{
@@ -15,8 +16,8 @@ public class Game3Player extends Game{
     }
 
     @Override
-    public void evaluateInfluences(Terrain terrain, MotherNature motherNature) {
-
+    public int playerInfluence(Player pl, Island island) {
+        return playerTowerInfluence(pl, island) + playerStudentInfluence(pl, island);
     }
 
     @Override
