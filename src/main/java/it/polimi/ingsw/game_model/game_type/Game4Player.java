@@ -1,8 +1,10 @@
 package it.polimi.ingsw.game_model.game_type;
 
 import it.polimi.ingsw.game_model.Player;
+import it.polimi.ingsw.game_model.character.MotherNature;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.school.DiningTable;
+import it.polimi.ingsw.game_model.world.Terrain;
 
 public class Game4Player extends Game{
     
@@ -12,7 +14,12 @@ public class Game4Player extends Game{
     }
 
     @Override
-    void refillClouds() {
+    public void evaluateInfluences(Terrain terrain, MotherNature motherNature) {
+
+    }
+
+    @Override
+    public void refillClouds() {
 
     }
 }

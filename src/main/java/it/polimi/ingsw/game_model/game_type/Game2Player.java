@@ -29,7 +29,7 @@ public class Game2Player extends Game {
     }
 
     @Override
-    void refillClouds() {
+    public void refillClouds() {
 
     }
 

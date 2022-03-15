@@ -8,10 +8,8 @@ import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
-import java.util.Random;
-
 import javafx.util.Pair;
-
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
