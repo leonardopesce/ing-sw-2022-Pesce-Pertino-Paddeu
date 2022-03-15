@@ -11,12 +11,13 @@ public enum AssistantType {
     DOG("Cane", 8, 4),
     ELEPHANT("Elefante", 9, 5),
     TURTLE("Tartaruga", 10, 5);
+    
 
     private String name;
     private int cardTurnValue;
     private int possibleSteps;
 
-    private AssistantType(String cardName, int cardTurnValue, int cardPossibleSteps) {
+    AssistantType(String cardName, int cardTurnValue, int cardPossibleSteps) {
         this.name = cardName;
         this.cardTurnValue = cardTurnValue;
         this.possibleSteps = cardPossibleSteps;
