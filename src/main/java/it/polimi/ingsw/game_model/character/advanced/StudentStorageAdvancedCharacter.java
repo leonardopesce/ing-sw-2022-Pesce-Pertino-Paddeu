@@ -6,7 +6,7 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import java.util.List;
 
 /**
- * A class to represent a particular type of Character Card: Monk, Jester, Princess, since they share a similar effect.
+ * A class to represent a specific type of Character Card: Monk, Jester, Princess, since they share a similar effect.
  * They all contain a specific number of students and let the player perform a specific action with them.
  *
  * @see AdvancedCharacter

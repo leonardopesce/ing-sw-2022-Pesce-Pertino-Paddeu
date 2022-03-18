@@ -46,15 +46,15 @@ public abstract class Game {
      *     <li>
      *         Before the game starts:
      *         <ol>
-     *             <li>Gameboard setup</li>
-     *             <li>First turn planning phase setup<li/>
+     *             <li>Gameboard setup
+     *             <li>First turn planning phase setup
      *         </ol>
      *     </li>
      *     <li>
      *         Once the game is started and not finshed yet:
      *         <ol>
-     *             <li>Planning Phase foreach player</li>
-     *             <li>Action Phase foreach player</li>
+     *             <li>Planning Phase foreach player
+     *             <li>Action Phase foreach player
      *         </ol>
      *     </li>
      * </ol>
@@ -112,7 +112,22 @@ public abstract class Game {
         }
     }
 
-    // influences given to player by towers
+    /**
+     * Given a player and an island of the board, returns the influence given by the control of any tower on that island.
+     * <p>
+     *     For example, if <code>pl</code> equals the white player, and the <code>island</code> has size equals to 1 with
+     *     a White Tower built on it, then the method returns 1. <br>
+     *     Otherwise, if the island is bigger (aggregation of 2 or
+     *     more islands), it means that there are more than one tower to be counted (according to our implementation choices,
+     *     exactly the size of the island).
+     *
+     * @param pl       the player whose influence brought by towers we want to calculate
+     * @param island   the island on which we want to calculate the influence brought by towers
+     * @return the additional influence brought by towers on a specific island for a specific player.
+     *
+     * @see Player
+     * @see Island
+     */
     public int playerTowerInfluence(Player pl, Island island){
         if(!island.getTowers().isEmpty() && island.getTowers().get(0).getColor() == pl.getColor()){
             return island.getTowers().size();
@@ -120,7 +135,24 @@ public abstract class Game {
         return 0;
     }
 
-    // influences given to player by students on the island
+    /**
+     * Given a player and an island of the board, calculate the influence brought by the students on the island itself.
+     *
+     * <p>
+     *     A student of a specific color, counts as 1 during the influence calculation for the player who owns the
+     *     corresponding professor. <br>
+     *     This method returns the influence the specified player has by counting, according to the rule mentioned before,
+     *     the sum of all the students whose corresponding professors are owned by that player.
+     *
+     * @param pl      the player whose influence brought by the students of the colors he controls we want to calculate
+     * @param island  the island on which we want to calculate the influence brought by students
+     * @return the total influence brought by the students whose professors are controlled by the specified player
+     *
+     * @see Player
+     * @see Island
+     * @see Teacher
+     * @see Student
+     */
     public int playerStudentInfluence(Player pl, Island island){
         int influence = 0;
         for(Teacher t: pl.getTeachers()){
