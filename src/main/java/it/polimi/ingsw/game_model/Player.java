@@ -4,32 +4,30 @@ import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
-import it.polimi.ingsw.game_model.character.basic.Tower;
-import it.polimi.ingsw.game_model.game_type.Game2Player;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.School;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
-import it.polimi.ingsw.game_model.world.Island;
+
 import java.util.List;
 
 public class Player {
     //TODO sistemare questione torri in 4 giocatori
-    private final String nickName;
+    private final String nickname;
     private ColorTower color;
-    private School school = new School();
+    private School school;
     private DeckAssistants deckAssistants;
     private Assistant discardedCard;
     private int money = 0;
     private boolean playedSpecialCard = false;
 
-    public Player(String nickName) {
-        this.nickName = nickName;
-        //TODO creare school
+    public Player(String nickname) {
+        this.nickname = nickname;
+        this.school = new School();
     }
 
-    public Player(String nickName, Player mate){
-        this.nickName = nickName;
+    public Player(String nickname, Player mate){
+        this.nickname = nickname;
         // le torri del player saranno le stesse del mate
     }
 
@@ -57,8 +55,8 @@ public class Player {
         return color;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
     public void playAssistant() {

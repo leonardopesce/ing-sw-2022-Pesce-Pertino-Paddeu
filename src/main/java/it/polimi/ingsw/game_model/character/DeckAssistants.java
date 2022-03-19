@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeckAssistants {
-    private List<Assistant> assistants;
-    private DeckType type;
+    private final List<Assistant> assistants;
+    private final DeckType type;
 
     public DeckAssistants(DeckType deckType) {
         this.assistants = new ArrayList<Assistant>();

@@ -13,9 +13,9 @@ public enum AssistantType {
     TURTLE("Tartaruga", 10, 5);
     
 
-    private String name;
-    private int cardTurnValue;
-    private int possibleSteps;
+    private final String name;
+    private final int cardTurnValue;
+    private final int possibleSteps;
 
     AssistantType(String cardName, int cardTurnValue, int cardPossibleSteps) {
         this.name = cardName;

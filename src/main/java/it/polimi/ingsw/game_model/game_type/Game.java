@@ -185,7 +185,7 @@ public abstract class Game {
         // for the dining table of pl1
         for (DiningTable table : pl1.getSchool().getDiningHall().getTables()) {
             // search in all players except pl1
-            for (Player pl2 : players.stream().filter(player -> !player.getNickName().equals(pl1.getNickName())).toList()) {
+            for (Player pl2 : players.stream().filter(player -> !player.getNickname().equals(pl1.getNickname())).toList()) {
                 //Search in all the teacher of players pl2
                 updateProfessorOwnershipCondition(table, pl2.getDiningTableWithColor(table.getColor()), pl1);
             }
@@ -266,7 +266,7 @@ public abstract class Game {
         //implements a function that returns the player which won -1 otherwise
         for(Player pl: players){
             if(pl.getTowersAvailable() == 0){
-                return pl.getNickName();
+                return pl.getNickname();
             }
         }
 

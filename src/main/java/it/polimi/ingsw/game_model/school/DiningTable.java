@@ -5,7 +5,7 @@ import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 public class DiningTable {
-    private ColorCharacter color;
+    private final ColorCharacter color;
     private int numberOfStudents = 0;
     private final int MAX_POSITIONS = 10;
 

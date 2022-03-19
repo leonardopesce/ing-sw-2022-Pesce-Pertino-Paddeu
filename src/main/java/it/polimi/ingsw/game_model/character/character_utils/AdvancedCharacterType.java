@@ -105,13 +105,14 @@ public enum AdvancedCharacterType {
     public int getCardCost(){ return cardCost; }
 
     public AdvancedCharacter getRandomCard(){
-        switch (new Random().nextInt(values().length - 1)){
+        //TODO beh si cioè...
+        switch (new Random().nextInt(AdvancedCharacterType.values().length)){
             case 0:
                 return new ColorPickerAdvancedCharacter(LANDLORD);
-                break;
             case 1:
-                return new ColorPickerAdvancedCharacter()
-
+                return new ColorPickerAdvancedCharacter(MERCHANT);
+            default:
+                return null;
         }
     }
 }

@@ -9,7 +9,7 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
  * @see AdvancedCharacterType
  */
 public abstract class AdvancedCharacter extends Character {
-    private AdvancedCharacterType type;
+    private final AdvancedCharacterType type;
 
     public AdvancedCharacter(AdvancedCharacterType type){
         super();
