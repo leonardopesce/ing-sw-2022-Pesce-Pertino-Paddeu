@@ -1,6 +1,9 @@
 package it.polimi.ingsw.game_model.character.character_utils;
 
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.ColorPickerAdvancedCharacter;
+
+import java.util.Random;
 
 /**
  * An enumeration which represent the type of character card.
@@ -100,4 +103,15 @@ public enum AdvancedCharacterType {
     public String getCardName() { return this.name; }
 
     public int getCardCost(){ return cardCost; }
+
+    public AdvancedCharacter getRandomCard(){
+        switch (new Random().nextInt(values().length - 1)){
+            case 0:
+                return new ColorPickerAdvancedCharacter(LANDLORD);
+                break;
+            case 1:
+                return new ColorPickerAdvancedCharacter()
+
+        }
+    }
 }

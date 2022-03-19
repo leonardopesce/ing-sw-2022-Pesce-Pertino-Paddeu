@@ -13,18 +13,17 @@ public class Game3PlayerAdvanced extends Game3Player implements ExpertMode{
     AdvancedCharacter playerCard; //TODO this card will be assigned if a card is played
 
     @Override
-    public void updateProfessorOwnershipCondition(Teacher t, DiningTable table, Player pl1, Player pl2) {
+    public void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
         switch(playerCard.getAdvanceCharacterType()){
             case BARTENDER:
-                if (pl1.hasPlayedSpecialCard() && t.getColor() == table.getColor() &&
-                        table.getNumberOfStudents() >= pl2.getDiningTableWithColor(table.getColor()).getNumberOfStudents()) {
-                    pl1.getSchool().addTeacher(t);
-                    pl2.getTeachers().remove(t);
+                if (pl1.hasPlayedSpecialCard() && table1.getColor() == table2.getColor() &&
+                        table1.getNumberOfStudents() >= table2.getNumberOfStudents()) {
+                    pl1.getSchool().addTeacher(getTeacherOfColorFromAllPlayers(table1.getColor()));
                 }
                 break;
 
             default:
-                normalUpdateProfessorOwnership(t, table, pl1, pl2);
+                normalUpdateProfessorOwnership(table1, table2, pl1);
                 break;
         }
     }

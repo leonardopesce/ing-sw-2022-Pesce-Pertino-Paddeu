@@ -1,6 +1,8 @@
 package it.polimi.ingsw.game_model.game_type;
 
 import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
+import it.polimi.ingsw.custom_exceptions.NotEnoughPlayerException;
+import it.polimi.ingsw.custom_exceptions.TooManyPlayerException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.MotherNature;
@@ -8,14 +10,13 @@ import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.school.DiningTable;
-import it.polimi.ingsw.game_model.world.CloudCard;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
 import javafx.util.Pair;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class Game {
     private final String NO_NICKNAME = "";
@@ -24,20 +25,26 @@ public abstract class Game {
     protected BagOfStudents bag;
     protected Terrain terrain;
     protected MotherNature motherNature;
+    protected boolean isStartable;
+    protected static final int NUMBER_OF_ADVANCED_CARD = 3;
 
 
     public Game() {
-        players = new ArrayList<Player>();
+        players = new ArrayList<>();
         terrain = new Terrain();
         bag = new BagOfStudents();
 
         /*
-         * Placing mother nature in a random island between 0 and 11.
+         * Placing mother nature on a random island between 0 and 11.
          * Each island is recognized by an id. Mother nature position is equal to
          * the id of the island she is currently on.
          */
         motherNature = new MotherNature(new Random().nextInt(12));
+        isStartable = false;
     }
+
+
+
 
     /**
      * Handle the game status.
@@ -59,23 +66,25 @@ public abstract class Game {
      *     </li>
      * </ol>
      */
-    public final void start(){
-        createPlanningOrder();
-        setupBoard();
-        while(!winner().equals(NO_NICKNAME)){
-            refillClouds();
-            // every "turn" is divided in planning phase and action phase
-            planningPhase();
-            createActionPhaseOrder();
-            for(int i = 0; i < players.size() && winner().equals(NO_NICKNAME); i++){
-                actionPhaseStudents(players.get(i));
+    public final void start() throws NotEnoughPlayerException {
+        if(this.isStartable) {
+            createPlanningOrder();
+            setupBoard();
+            while (!winner().equals(NO_NICKNAME)) {
+                refillClouds();
+                // every "turn" is divided in planning phase and action phase
+                planningPhase();
+                createActionPhaseOrder();
+                for (int i = 0; i < players.size() && winner().equals(NO_NICKNAME); i++) {
+                    actionPhaseStudents(players.get(i));
+                }
+                createNextPlanningOrder();
             }
-            createNextPlanningOrder();
-        }
+        } else throw new NotEnoughPlayerException("The game is not ready yet. Some players are missing.");
     }
 
     public final void actionPhaseStudents(Player pl){
-        pl.moveStudents(terrain.getIslands());
+        playerMoveStudents(pl);
         updateProfessorsOwnership(pl);
         moveMotherNature(pl.getDiscardedCard().getPossibleSteps());
         evaluateInfluences();
@@ -86,6 +95,7 @@ public abstract class Game {
         //adds back tower to owner player
         if(!island.getTowers().isEmpty()){
             for(Player pl: players){
+                //remove tower from old owner
                 if(pl.getColor() == island.getTowers().get(0).getColor()){
                     pl.addNTowers(island.getTowers().size());
                     island.getTowers().clear();
@@ -102,6 +112,7 @@ public abstract class Game {
     public void evaluateInfluences(){
         try{
             Island island = terrain.getIslandWithId(motherNature.getPosition());
+            //TODO trasformare la funzione in base al colore del giocatore
             Player mostInfluencing = players.stream().max((pl1, pl2) ->
                     Math.max(playerInfluence(pl1, island), playerInfluence(pl2, island))).get();
 
@@ -111,6 +122,7 @@ public abstract class Game {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Given a player and an island of the board, returns the influence given by the control of any tower on that island.
@@ -165,25 +177,35 @@ public abstract class Game {
         return influence;
     }
 
+    /**
+     *
+     * @param pl1
+     */
     public void updateProfessorsOwnership(Player pl1) {
         // for the dining table of pl1
         for (DiningTable table : pl1.getSchool().getDiningHall().getTables()) {
             // search in all players except pl1
-            for (Player pl2 : players.stream().filter(player -> !player.getNickName().equals(pl1.getNickName())).collect(Collectors.toList())) {
+            for (Player pl2 : players.stream().filter(player -> !player.getNickName().equals(pl1.getNickName())).toList()) {
                 //Search in all the teacher of players pl2
-                for (Teacher t : pl2.getTeachers()) {
-                    updateProfessorOwnershipCondition(t, table, pl1, pl2);
-                }
+                updateProfessorOwnershipCondition(table, pl2.getDiningTableWithColor(table.getColor()), pl1);
             }
         }
     }
 
-    public final void normalUpdateProfessorOwnership(Teacher t, DiningTable table, Player pl1, Player pl2){
-        if (t.getColor() == table.getColor() &&
-                table.getNumberOfStudents() > pl2.getDiningTableWithColor(table.getColor()).getNumberOfStudents()) {
-            pl1.getSchool().addTeacher(t);
-            pl2.getTeachers().remove(t);
+    public final void normalUpdateProfessorOwnership(DiningTable table1, DiningTable table2, Player pl1){
+        if (table1.getNumberOfStudents() > table2.getNumberOfStudents()) {
+            pl1.getSchool().addTeacher(getTeacherOfColorFromAllPlayers(table1.getColor()));
         }
+    }
+
+    public Teacher getTeacherOfColorFromAllPlayers(ColorCharacter color){
+        for(Player player: players){
+            if(player.hasTeacherOfColor(color)){
+                return player.getTeacherOfColor(color);
+            }
+        }
+        // if no player has the teacher you are the first one to get it
+        return new Teacher(color);
     }
 
 
@@ -208,31 +230,36 @@ public abstract class Game {
      */
     private void setupBoard() {
         /*
-        * Filling the bag with 10 students to setup the board. (2 students foreach color).
-        * */
+         * Filling the bag with 10 students to setup the board. (2 students foreach color).
+         * */
         bag.addStudentsFirstPhase();
 
         /*
-        * Setting up the students foreach island (the one with mother nature and its opposite are not considered).
-        * */
-        for(Island island : terrain.getIslands()) {
-            if(island.getId() != motherNature.getPosition() && island.getId() != ((motherNature.getPosition() + 6) % terrain.getIslands().size())) {
+         * Setting up the students foreach island (the one with mother nature and its opposite are not considered).
+         * */
+        for (Island island : terrain.getIslands()) {
+            if (island.getId() != motherNature.getPosition() && island.getId() != ((motherNature.getPosition() + 6) % terrain.getIslands().size())) {
                 island.addStudent(bag.drawStudentFromBag());
             }
         }
 
         /*
-        * Filling the bag with the remaining 120 students.
-        * */
+         * Filling the bag with the remaining 120 students.
+         * */
         bag.addStudentsSecondPhase();
 
         /*
-        * Creating cloud cards (one foreach player).
-        * */
-        for(int i=0; i<players.size(); i++) {
-            this.terrain.addCloudCard(new CloudCard());
+         * Creating cloud cards (one foreach player).
+         * */
+        for (int i = 0; i < players.size(); i++) {
+            createCloudCard();
         }
+
+        // pick 3 advanced Character if it's a Expert mode game
+        pickAdvancedCards();
     }
+
+
 
     public String winner(){
         //TODO
@@ -257,7 +284,7 @@ public abstract class Game {
     }
 
     /**
-     * Creates the planning order of the first round by randomly choosing a player from the list.
+     * Creates the planning order of the first round by randomly choosing a player from the list and going clock-wise.
      */
     private void createPlanningOrder(){
         planningOrder[0] = (int) Math.round(Math.random() * players.size());
@@ -284,6 +311,8 @@ public abstract class Game {
             playerAndValue.add(new Pair<>(i, players.get(i).getDiscardedCard().getValue()));
         }
 
+        //TODO controllare come si comporta in caso due giocatori giochino la stessa carta,
+        // (in tal caso chi prima arriva, meglio alloggia)
         playerAndValue.sort((a,b) -> Math.max(a.getValue(), b.getValue()));
 
         for(int i = 0; i < players.size(); i++){
@@ -291,9 +320,12 @@ public abstract class Game {
         }
     }
 
-    public abstract void updateProfessorOwnershipCondition(Teacher t, DiningTable table, Player pl1, Player pl2);
+
+    public abstract void playerMoveStudents(Player player);
+    public abstract void createCloudCard();
+    public abstract void pickAdvancedCards();
+    public abstract void addPlayer(Player player) throws TooManyPlayerException;
+    public abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
     public abstract int playerInfluence(Player pl, Island island);
     public abstract void refillClouds();
-
-
 }

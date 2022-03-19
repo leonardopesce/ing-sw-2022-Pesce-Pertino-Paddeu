@@ -14,6 +14,7 @@ import it.polimi.ingsw.game_model.world.Island;
 import java.util.List;
 
 public class Player {
+    //TODO sistemare questione torri in 4 giocatori
     private final String nickName;
     private ColorTower color;
     private School school = new School();
@@ -24,6 +25,12 @@ public class Player {
 
     public Player(String nickName) {
         this.nickName = nickName;
+        //TODO creare school
+    }
+
+    public Player(String nickName, Player mate){
+        this.nickName = nickName;
+        // le torri del player saranno le stesse del mate
     }
 
     public void discardAssistant(){
@@ -43,7 +50,7 @@ public class Player {
     }
 
     public void resetPlayedSpecialCard(){
-
+        playedSpecialCard = false;
     }
 
     public ColorTower getColor() {
@@ -55,7 +62,9 @@ public class Player {
     }
 
     public void playAssistant() {
-
+        //TODO control based event, una volta ricevuto dal controller quale carta ha scelto il giocatore
+        // la togliamo dal suo deck e la impostiamo come quella appena giocata (in un turno due giocatori
+        // non possono giocare la stessa carta)
     }
 
     public School getSchool() {
@@ -101,12 +110,24 @@ public class Player {
         return t;
     }
 
-    public void moveStudents(List<Island> islands){
-        int movedStudent = 0;
-        while(movedStudent < Game2Player.TOTAL_MOVABLE_STUDENT){
-            //TODO aggiungere la parte di spostamento degli studenti (event based)
-            movedStudent++;
+    public boolean hasTeacherOfColor(ColorCharacter color){
+        for(Teacher t: getTeachers()){
+            if(t.getColor() == color){
+                return true;
+            }
         }
+        return false;
+    }
+
+    public Teacher getTeacherOfColor(ColorCharacter color){
+        for(Teacher t: getTeachers()){
+            if(t.getColor() == color){
+                getTeachers().remove(t);
+                return t;
+            }
+        }
+        // condition is never verified if you
+        return null;
     }
 
     public List<Teacher> getTeachers(){

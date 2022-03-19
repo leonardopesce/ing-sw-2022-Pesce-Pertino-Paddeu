@@ -9,6 +9,6 @@ import it.polimi.ingsw.game_model.world.Island;
 public interface ExpertMode {
     Assistant playedCard = null;
 
-    void updateProfessorOwnershipCondition(Teacher t, DiningTable table, Player pl1, Player pl2);
+    void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
     int playerInfluence(Player pl, Island island);
 }

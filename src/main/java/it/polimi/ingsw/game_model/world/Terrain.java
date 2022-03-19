@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model.world;
 
 import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class Terrain {
     public List<CloudCard> getCloudCards() {
         return this.cloudCards;
     }
-    
+
+
     public void addCloudCard(CloudCard cloudToAdd) {
         this.cloudCards.add(cloudToAdd);
     }
@@ -62,5 +64,10 @@ public class Terrain {
             }
         }
         throw new IslandNotPresentException("The island requested is not available, island ID: " + id);
+    }
+
+    public void pickAdvancedCard(){
+//        AdvancedCharacter tempCharacter =
+//        if()
     }
 }

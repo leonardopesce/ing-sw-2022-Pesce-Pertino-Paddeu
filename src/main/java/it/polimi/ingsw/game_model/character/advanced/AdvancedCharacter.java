@@ -19,5 +19,4 @@ public abstract class AdvancedCharacter extends Character {
     public AdvancedCharacterType getAdvanceCharacterType(){
         return type;
     }
-
 }

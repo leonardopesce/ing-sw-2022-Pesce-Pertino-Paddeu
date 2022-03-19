@@ -10,9 +10,13 @@ public class School {
     private DiningHall diningHall = new DiningHall();
     private List<Assistant> assistants;
     private Entrance entrance = new Entrance();
-    private int towersAvailable;
+    private Integer towersAvailable;
 
     public School() {
+    }
+
+    private School(Integer towersAvailable){
+        this.towersAvailable = towersAvailable;
     }
 
     public int getTowersAvailable(){

@@ -1,15 +1,18 @@
 package it.polimi.ingsw.game_model.character;
 
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeckAssistants {
     private List<Assistant> assistants;
+    private DeckType type;
 
-    public DeckAssistants() {
+    public DeckAssistants(DeckType deckType) {
         this.assistants = new ArrayList<Assistant>();
+        this.type = deckType;
         
         for(AssistantType cardType : AssistantType.values()) {
             this.assistants.add(new Assistant(cardType));
@@ -19,5 +22,9 @@ public class DeckAssistants {
     public Assistant getAssistant(int i) throws IndexOutOfBoundsException{
         if(i >= 0 && i < assistants.size()) return this.assistants.get(i);
         else throw new IndexOutOfBoundsException("Index out of bound.");
+    }
+
+    public DeckType getType() {
+        return type;
     }
 }
