@@ -26,7 +26,7 @@ public abstract class Game {
     protected Terrain terrain;
     protected MotherNature motherNature;
     protected boolean isStartable;
-    protected static final int NUMBER_OF_ADVANCED_CARD = 3;
+    public static final int NUMBER_OF_ADVANCED_CARD = 3;
 
 
     public Game() {
@@ -320,10 +320,10 @@ public abstract class Game {
         }
     }
 
+    public void pickAdvancedCards(){}
 
     public abstract void playerMoveStudents(Player player);
     public abstract void createCloudCard();
-    public abstract void pickAdvancedCards();
     public abstract void addPlayer(Player player) throws TooManyPlayerException;
     public abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
     public abstract int playerInfluence(Player pl, Island island);

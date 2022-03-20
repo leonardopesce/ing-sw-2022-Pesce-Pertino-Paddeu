@@ -2,6 +2,8 @@ package it.polimi.ingsw.game_model.character.character_utils;
 
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.advanced.ColorPickerAdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.NormalAdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.StudentStorageAdvancedCharacter;
 
 import java.util.Random;
 
@@ -103,16 +105,4 @@ public enum AdvancedCharacterType {
     public String getCardName() { return this.name; }
 
     public int getCardCost(){ return cardCost; }
-
-    public AdvancedCharacter getRandomCard(){
-        //TODO beh si cioè...
-        switch (new Random().nextInt(AdvancedCharacterType.values().length)){
-            case 0:
-                return new ColorPickerAdvancedCharacter(LANDLORD);
-            case 1:
-                return new ColorPickerAdvancedCharacter(MERCHANT);
-            default:
-                return null;
-        }
-    }
 }

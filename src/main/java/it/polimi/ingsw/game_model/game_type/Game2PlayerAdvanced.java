@@ -9,8 +9,6 @@ import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
-import java.util.Random;
-
 public class Game2PlayerAdvanced extends Game2Player implements ExpertMode{
     AdvancedCharacter playerCard; //TODO this card will be assigned if a card is played
 
@@ -59,9 +57,7 @@ public class Game2PlayerAdvanced extends Game2Player implements ExpertMode{
 
     @Override
     public void pickAdvancedCards(){
-        for(int i = 0; i < NUMBER_OF_ADVANCED_CARD; i++){
-            terrain.pickAdvancedCard();
-        }
+        terrain.pickAdvancedCard();
     }
 
 

@@ -19,5 +19,7 @@ public class StudentStorageAdvancedCharacter extends AdvancedCharacter{
         super(type);
     }
 
-
+    public List<Student> getStudents() {
+        return students;
+    }
 }

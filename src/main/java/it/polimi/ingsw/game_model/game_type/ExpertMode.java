@@ -11,4 +11,5 @@ public interface ExpertMode {
 
     void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
     int playerInfluence(Player pl, Island island);
+    void pickAdvancedCards();
 }

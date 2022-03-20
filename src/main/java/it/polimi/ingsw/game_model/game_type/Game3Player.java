@@ -2,12 +2,9 @@ package it.polimi.ingsw.game_model.game_type;
 
 import it.polimi.ingsw.custom_exceptions.TooManyPlayerException;
 import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_model.character.MotherNature;
-import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
-import it.polimi.ingsw.game_model.world.Terrain;
 
 public class Game3Player extends Game{
     private final static int MAX_PLAYERS = 3;
@@ -33,9 +30,6 @@ public class Game3Player extends Game{
     public int playerInfluence(Player pl, Island island) {
         return playerTowerInfluence(pl, island) + playerStudentInfluence(pl, island);
     }
-
-    @Override
-    public void pickAdvancedCards(){}
 
     @Override
     public void refillClouds() {

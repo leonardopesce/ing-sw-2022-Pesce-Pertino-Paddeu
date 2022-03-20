@@ -3,17 +3,20 @@ package it.polimi.ingsw.game_model.world;
 import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.game_type.Game;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Terrain {
     private List<CloudCard> cloudCards;
     private List<AdvancedCharacter> advancedCharacters;
     private List<Island> islandsRing;
     private final int MAX_ISLAND_NUMBER = 12;
+    private final int DRAW_ADVANCED_CHARACTER = 3;
 
     public Terrain() {
         cloudCards = new ArrayList<>();
@@ -67,7 +70,11 @@ public class Terrain {
     }
 
     public void pickAdvancedCard(){
-//        AdvancedCharacter tempCharacter =
-//        if()
+        while(advancedCharacters.size() < Game.NUMBER_OF_ADVANCED_CARD){
+            AdvancedCharacter character = AdvancedCharacter.getRandomCard();
+            if(advancedCharacters.stream().noneMatch(x -> x.getName().equals(character.getName()))){
+                advancedCharacters.add(character);
+            }
+        }
     }
 }

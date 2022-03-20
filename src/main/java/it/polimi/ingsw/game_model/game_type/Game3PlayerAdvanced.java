@@ -67,4 +67,9 @@ public class Game3PlayerAdvanced extends Game3Player implements ExpertMode{
         return influence;
     }
 
+    @Override
+    public void pickAdvancedCards(){
+        terrain.pickAdvancedCard();
+    }
+
 }

@@ -4,7 +4,7 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 /**
- * Landloard and thief need a color to be picked in order to produce an effect
+ * A class to represent Landlord and merchant, since they need a color to be picked in order to produce an effect
  */
 
 public class ColorPickerAdvancedCharacter extends AdvancedCharacter{

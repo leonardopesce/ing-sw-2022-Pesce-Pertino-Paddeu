@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game_model.game_type;
 
 import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_model.character.MotherNature;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.advanced.ColorPickerAdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
@@ -9,7 +8,6 @@ import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
-import it.polimi.ingsw.game_model.world.Terrain;
 
 public class Game4PlayerAdvanced extends Game4Player implements ExpertMode{
     AdvancedCharacter playerCard; //TODO this card will be assigned if a card is played
@@ -67,5 +65,10 @@ public class Game4PlayerAdvanced extends Game4Player implements ExpertMode{
             }
         }
         return influence;
+    }
+
+    @Override
+    public void pickAdvancedCards(){
+        terrain.pickAdvancedCard();
     }
 }

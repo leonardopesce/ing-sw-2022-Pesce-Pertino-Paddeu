@@ -33,9 +33,6 @@ public class Game4Player extends Game{
     }
 
     @Override
-    public void pickAdvancedCards(){}
-
-    @Override
     public void refillClouds() {
         for(CloudCard cloudCard: terrain.getCloudCards()){
             while(cloudCard.getStudentsOnCloud().size() < NUMBER_OF_STUDENTS_ON_CLOUD){
