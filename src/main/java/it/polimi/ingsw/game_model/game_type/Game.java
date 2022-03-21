@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Game {
-    private final String NO_NICKNAME = "";
+    public static final String NO_NICKNAME = "";
+    public static final int MOVE_TO_ISLAND = 0;
+    public static final int MOVE_TO_DINING_HALL = 1;
     private final int numberOfPlayers;
     private List<Player> players;
     private int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
@@ -75,17 +77,8 @@ public abstract class Game {
         if(this.isStartable) {
             createPlanningOrder();
             setupBoard();
-            while (!winner().equals(NO_NICKNAME)) {
-                refillClouds();
-                // every "turn" is divided in planning phase and action phase
-                planningPhase();
-                createActionPhaseOrder();
-                for (int i = 0; i < players.size() && winner().equals(NO_NICKNAME); i++) {
-                    actionPhaseStudents(players.get(i));
-                }
-                createNextPlanningOrder();
-            }
-        } else throw new NotEnoughPlayerException("The game is not ready yet. Some players are missing.");
+        }
+        else throw new NotEnoughPlayerException("The game is not ready yet. Some players are missing.");
     }
 
     /**
@@ -114,25 +107,6 @@ public abstract class Game {
         }
     }
 
-    /**
-     * Handle the action phase of the specified player.
-     *
-     * <p>
-     *     An action phase consists in making the player move his students from his entrance to his students' tables or to
-     *     islands. At this point any professor ownership change will be handled, Mother Nature will move and finally the
-     *     evaluation will be calculated with consequent possible construction of towers.
-     *
-     * @param pl  the player of which the action phase is handled
-     *
-     * @see Player
-     */
-    private void actionPhaseStudents(Player pl){
-        playerMoveStudents(pl);
-        updateProfessorsOwnership(pl);
-        moveMotherNature(pl.getDiscardedCard().getPossibleSteps());
-        evaluateInfluences();
-        pl.resetPlayedSpecialCard();
-    }
 
     private void setUpIslandTower(Island island, Player owner){
         //adds back tower to owner player
@@ -152,7 +126,7 @@ public abstract class Game {
         }
     }
 
-    private void evaluateInfluences(){
+    public void evaluateInfluences(){
         try{
             Island island = terrain.getIslandWithId(motherNature.getPosition());
             //TODO trasformare la funzione in base al colore del giocatore
@@ -224,7 +198,7 @@ public abstract class Game {
      *
      * @param pl1
      */
-    private void updateProfessorsOwnership(Player pl1) {
+    public void updateProfessorsOwnership(Player pl1) {
         // for the dining table of pl1
         for (DiningTable table : pl1.getSchool().getDiningHall().getTables()) {
             // search in all players except pl1
@@ -256,19 +230,16 @@ public abstract class Game {
      * Given the max possible steps, it lets the user choose how many steps mother nature
      * has to do and then it moves her.
      *
-     * @param maxSteps: max possible steps that mother nature can actually perform
+     * @param selectedSteps: selected steps that mother nature has to perform
      *                (based on the value of the assistant card played).
      */
-    private void moveMotherNature(int maxSteps){
-        //TODO with the number of step selected (event base) calculate the value of the new position
+    public void moveMotherNature(int selectedSteps){
         //TODO keep in mind the possibility of a advanced card
-        int selectedStep = new Random().nextInt(maxSteps);
-
-        motherNature.moveOfIslands(terrain, selectedStep);
+        motherNature.moveOfIslands(terrain, selectedSteps);
     }
 
     /**
-     * Setup the game board by randomly adding the students to the islands and istantiating
+     * Set up the game board by randomly adding the students to the islands and instantiating
      * the cloud cards.
      */
     private void setupBoard() {
@@ -308,7 +279,7 @@ public abstract class Game {
      * <p>
      *     A
      */
-    private String winner(){
+    public String winner(){
         //TODO
         //implements a function that returns the player which won -1 otherwise
         for(Player pl: players){
@@ -319,15 +290,6 @@ public abstract class Game {
 
 
         return NO_NICKNAME;
-    }
-
-    /**
-     * Following the planning order, it makes the players play their assistant card.
-     */
-    private void planningPhase(){
-        for(int pl: planningOrder){
-            players.get(pl).playAssistant();
-        }
     }
 
     /**
@@ -344,14 +306,14 @@ public abstract class Game {
      * Creates the planning order of the next turn.
      * The player which played the assistant card with the lowest value will start the Planning Phase of the next turn.
      */
-    private void createNextPlanningOrder(){
+    public void createNextPlanningOrder(){
         planningOrder[0] = actionOrder[0];
         for(int i = 1; i < players.size(); i++){
             planningOrder[i] = (planningOrder[i-1] + 1) % players.size();
         }
     }
 
-    private void createActionPhaseOrder(){
+    public void createActionPhaseOrder(){
         List<Pair<Integer, Integer>> playerAndValue = new ArrayList<>();
         //cycle to create all position
         for(int i = 0; i < players.size(); i++){
@@ -367,11 +329,41 @@ public abstract class Game {
         }
     }
 
+    public void resetPlayerNumberOfMOvedStudents(){
+        for(Player pl: players){
+            pl.resetNumberOfMovedStudents();
+        }
+    }
+
+    public void playerMoveStudentToIsland(Player player, int student, int island){
+        terrain.addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), island);
+    }
+
+    public void playerMoveStudentToDiningHall(Player player, int student){
+        player.moveStudentToDiningHall(player.getSchool().getEntrance().moveStudent(student).getColor());
+    }
+
+    public Player getPlayerNumber(int x){
+        return players.get(x);
+    }
+
+    public int[] getPlanningOrder(){
+        return planningOrder;
+    }
+
+    public int[] getActionOrder() {
+        return actionOrder;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
     protected void pickAdvancedCards(){}
 
-    protected abstract void playerMoveStudents(Player player);
+    public abstract int studentsLeftToMove(Player player);
     protected abstract void createCloudCard();
     protected abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
     protected abstract int playerInfluence(Player pl, Island island);
-    protected abstract void refillClouds();
+    public abstract void refillClouds();
 }

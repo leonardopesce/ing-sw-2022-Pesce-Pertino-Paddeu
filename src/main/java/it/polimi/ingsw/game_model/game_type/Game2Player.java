@@ -27,7 +27,7 @@ public class Game2Player extends Game {
     protected void pickAdvancedCards(){}
 
     @Override
-    protected void refillClouds() {
+    public void refillClouds() {
         for(CloudCard cloudCard: terrain.getCloudCards()){
             while(cloudCard.getStudentsOnCloud().size() < NUMBER_OF_STUDENTS_ON_CLOUD){
                 cloudCard.getStudentsOnCloud().add(bag.drawStudentFromBag());
@@ -36,17 +36,12 @@ public class Game2Player extends Game {
     }
 
     @Override
-    protected void playerMoveStudents(Player player){
-        int movedStudent = 0;
-        while(movedStudent < NUMBER_OF_STUDENTS_ON_CLOUD){
-            //TODO aggiungere la parte di spostamento degli studenti (event based)
-            movedStudent++;
-        }
-    }
-
-    @Override
     protected void createCloudCard(){
         terrain.addCloudCard(new CloudCard(NUMBER_OF_STUDENTS_ON_CLOUD));
     }
 
+    @Override
+    public int studentsLeftToMove(Player player){
+        return NUMBER_OF_STUDENTS_ON_CLOUD - player.getNumberOfMovedStudents();
+    }
 }

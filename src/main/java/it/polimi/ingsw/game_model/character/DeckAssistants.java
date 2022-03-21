@@ -21,7 +21,13 @@ public class DeckAssistants {
 
     public Assistant getAssistant(int i) throws IndexOutOfBoundsException{
         if(i >= 0 && i < assistants.size()) return this.assistants.get(i);
-        else throw new IndexOutOfBoundsException("Index out of bound.");
+        else throw new IndexOutOfBoundsException("Index out of bound, inside Deck of Assistants.");
+    }
+
+    public Assistant playAssistant(int x){
+        Assistant temp = getAssistant(x);
+        assistants.remove(x);
+        return temp;
     }
 
     public DeckType getType() {

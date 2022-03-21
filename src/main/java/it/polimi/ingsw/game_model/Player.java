@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_model;
 
+import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
@@ -20,6 +21,7 @@ public class Player {
     private Assistant discardedCard;
     private int money = 0;
     private boolean playedSpecialCard = false;
+    private int movedStudents = 0;
 
     public Player(String nickname) {
         this.nickname = nickname;
@@ -47,6 +49,7 @@ public class Player {
         return playedSpecialCard;
     }
 
+    //TODO to use when GameControllerAdvanced
     public void resetPlayedSpecialCard(){
         playedSpecialCard = false;
     }
@@ -59,10 +62,8 @@ public class Player {
         return nickname;
     }
 
-    public void playAssistant() {
-        //TODO control based event, una volta ricevuto dal controller quale carta ha scelto il giocatore
-        // la togliamo dal suo deck e la impostiamo come quella appena giocata (in un turno due giocatori
-        // non possono giocare la stessa carta)
+    public void playAssistant(int x) {
+        discardedCard = deckAssistants.playAssistant(x);
     }
 
     public School getSchool() {
@@ -128,8 +129,27 @@ public class Player {
         return null;
     }
 
+    public DeckAssistants getDeckAssistants() {
+        return deckAssistants;
+    }
+
     public List<Teacher> getTeachers(){
         return school.getDiningHall().getTeacherList();
     }
 
+    public int getNumberOfMovedStudents() {
+        return movedStudents;
+    }
+
+    public void resetNumberOfMovedStudents() {
+        this.movedStudents = 0;
+    }
+
+    public void moveStudentToDiningHall(ColorCharacter color) {
+        try {
+            school.getDiningHall().getTableOfColor(color).addStudent();
+        } catch (TooManyStudentsException e) {
+            e.printStackTrace();
+        }
+    }
 }

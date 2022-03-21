@@ -14,4 +14,10 @@ public class Entrance {
     public List<Student> getStudents() {
         return students;
     }
+
+    public Student moveStudent(int student) {
+        Student tmpStudent = students.get(student);
+        students.remove(student);
+        return tmpStudent;
+    }
 }

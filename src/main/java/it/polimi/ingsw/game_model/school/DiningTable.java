@@ -14,11 +14,9 @@ public class DiningTable {
     }
 
     public void addStudent() throws TooManyStudentsException{
+        //TODO in view block the possibility to add students when table is full
         if(numberOfStudents + 1 <= MAX_POSITIONS) {
-                numberOfStudents++;
-                //@TODO: handle professor logic.
-
-
+            numberOfStudents++;
         }
         else throw new TooManyStudentsException("There are no available seats at this table.");
     }

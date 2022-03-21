@@ -12,6 +12,9 @@ public class DiningHall {
     public DiningHall() {
     }
 
+    public DiningTable getTableOfColor(ColorCharacter color){
+        return tables[color.ordinal()];
+    }
     public DiningTable[] getTables() {
         return tables;
     }

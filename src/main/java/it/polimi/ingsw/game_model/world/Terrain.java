@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model.world;
 
 import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
 
@@ -76,5 +77,9 @@ public class Terrain {
                 advancedCharacters.add(character);
             }
         }
+    }
+
+    public void addStudentToIsland(Student student, int island) {
+        islandsRing.get(island).addStudent(student);
     }
 }
