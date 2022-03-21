@@ -3,7 +3,7 @@ package it.polimi.ingsw.game_model.character;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 
 public class Assistant extends Character{
-    private AssistantType cardType;
+    private final AssistantType cardType;
 
     public Assistant(AssistantType cardType) {
         this.cardType = cardType;

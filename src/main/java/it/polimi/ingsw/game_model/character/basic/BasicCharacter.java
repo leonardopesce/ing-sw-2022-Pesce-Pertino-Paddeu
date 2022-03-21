@@ -1,15 +1,15 @@
 package it.polimi.ingsw.game_model.character.basic;
 
 import it.polimi.ingsw.game_model.character.Character;
-import it.polimi.ingsw.game_model.utils.Color;
 
-public abstract class BasicCharacter extends Character {
-    public Color color;
+public abstract class BasicCharacter<T> extends Character {
+    private final T color;
 
-    public BasicCharacter(Color color) {
+    public BasicCharacter(T color) {
+        this.color = color;
     }
 
-    public Color getColor() {
+    public T getColor() {
         return color;
     }
 }

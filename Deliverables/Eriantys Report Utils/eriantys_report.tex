@@ -117,7 +117,24 @@
 		\item Volendo implementare le regole complete, quindi prevedendo la possibilità di giocare una partita seguendo la modalità per esperti, e tenendo conto della possibilità di implementare partite multiple sullo stesso server, ci siamo interrogati su come far impattare tale scelta sui diversi metodi delle varie classi. L'idea è quindi quella di utilizzare un Template Pattern creando una classe astratta di gioco dalla quale saranno derivate le 3 versioni di gioco (per 2, 3 e 4 giocatori). Da esse discenderanno successivamente le corrispettive versioni a 2, 3 e 4 giocatori in modalità per esperti.
 		\item In vista dell'implementazione della funzionalità di persistenza della partita, è stato brevemente analizzato il pattern \emph{Memento} ed il suo funzionamento per capire se esso possa essere utile in futuro.
 	\end{itemize}
-	
+	\subsection{Settimana 2: Eriantys Model}
+	\paragraph{}
+	Nella seconda settimana è stato scritto parte del codice del model, identificando i punti critici in cui è richiesta un'interazione con l'utente. Inoltre è stata rifinita la struttura del model che riportiamo di seguito aggiornata:\\
+	\begin{figure}[h]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\resizebox{\linewidth}{!}{\input{umlSecondWeek.pdf_tex}}
+		\caption{Class Diagram del Model - Seconda settimana}
+	\end{figure}\\
+	É stata prestata attenzione a:
+		\begin{itemize}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+		
+		\item individuare un flow di operazioni che contraddistinguono la partita (una volta connessi i giocatori, finchè non è presente un vincitore vengono eseguite Planning Phase, Action Phase rispettivamente per tutti i giocatori continuamente)
+		\item studiare il meccanismo delle carte personaggio per l'implementazione della modalità per esperti più approfonditamente
+		\item restyle del diagramma UML per renderlo coerente con il codice scritto
+	\end{itemize}
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}
