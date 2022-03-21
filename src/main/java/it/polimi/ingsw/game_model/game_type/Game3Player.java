@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_model.game_type;
 
-import it.polimi.ingsw.custom_exceptions.TooManyPlayerException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.world.CloudCard;
@@ -10,15 +9,8 @@ public class Game3Player extends Game{
     private final static int MAX_PLAYERS = 3;
     public final int NUMBER_OF_STUDENTS_ON_CLOUD = 4;
 
-    @Override
-    public void addPlayer(Player player) throws TooManyPlayerException {
-        if(players.size() < MAX_PLAYERS){
-            players.add(player);
-            isStartable = players.size() == MAX_PLAYERS;
-        }
-        else {
-            throw new TooManyPlayerException("The game as already reached the limit of " + MAX_PLAYERS + " players");
-        }
+    public Game3Player() {
+        super(MAX_PLAYERS);
     }
 
     @Override

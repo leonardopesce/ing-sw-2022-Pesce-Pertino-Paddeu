@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeckAssistants {
-    private final List<Assistant> assistants;
+    private List<Assistant> assistants;
     private final DeckType type;
 
     public DeckAssistants(DeckType deckType) {

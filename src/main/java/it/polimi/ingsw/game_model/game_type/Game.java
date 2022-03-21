@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_model.game_type;
 
 import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
+import it.polimi.ingsw.custom_exceptions.NicknameAlreadyChosenException;
 import it.polimi.ingsw.custom_exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.custom_exceptions.TooManyPlayerException;
 import it.polimi.ingsw.game_model.Player;
@@ -20,6 +21,7 @@ import java.util.List;
 
 public abstract class Game {
     private final String NO_NICKNAME = "";
+    private final int numberOfPlayers;
     protected List<Player> players;
     protected int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
     protected BagOfStudents bag;
@@ -29,7 +31,8 @@ public abstract class Game {
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
 
 
-    public Game() {
+    public Game(int playerNums) {
+        numberOfPlayers = playerNums;
         players = new ArrayList<>();
         terrain = new Terrain();
         bag = new BagOfStudents();
@@ -48,25 +51,27 @@ public abstract class Game {
 
     /**
      * Handle the game status.
-     * Each game has a defined structure:
-     * <ol>
-     *     <li>
-     *         Before the game starts:
-     *         <ol>
-     *             <li>Gameboard setup
-     *             <li>First turn planning phase setup
-     *         </ol>
-     *     </li>
-     *     <li>
-     *         Once the game is started and not finshed yet:
-     *         <ol>
-     *             <li>Planning Phase foreach player
-     *             <li>Action Phase foreach player
-     *         </ol>
-     *     </li>
-     * </ol>
+     * <p>
+     *     Each game has a defined structure:
+     *     <ol>
+     *         <li>
+     *             Before the game starts:
+     *             <ol>
+     *                 <li>Gameboard setup
+     *                 <li>First turn planning phase setup
+     *             </ol>
+     *         </li>
+     *         <li>
+     *             Once the game is started and not finshed yet:
+     *             <ol>
+     *                 <li>Planning Phase foreach player
+     *                 <li>Action Phase foreach player
+     *             </ol>
+     *         </li>
+     *     </ol>
      */
     public final void start() throws NotEnoughPlayerException {
+        // TODO valutare la possibilità di aggiungere un oggetto turno che gestisca il turno.
         if(this.isStartable) {
             createPlanningOrder();
             setupBoard();
@@ -83,6 +88,44 @@ public abstract class Game {
         } else throw new NotEnoughPlayerException("The game is not ready yet. Some players are missing.");
     }
 
+    /**
+     * Adds a player to the list of players if the game is not full and if the player's nickname has not been chosen yet.
+     *
+     * @param player  the player to be added to the game's player list
+     * @throws TooManyPlayerException  if the game is already full
+     * @throws NicknameAlreadyChosenException  if the player nickname has already been chosen by another player already added to the game (note that letter cases will be ignored, so "paolo" equals "PaOLo")
+     *
+     * @see Player
+     */
+    public void addPlayer(Player player) throws TooManyPlayerException, NicknameAlreadyChosenException {
+        // Checking whether the game is full or not.
+        if(players.size() < numberOfPlayers){
+            // Checking if the player nickname has already been chosen. In that case an exception will be raised.
+            for(Player pl : players) {
+                if(player.getNickname().equalsIgnoreCase(pl.getNickname())) throw new NicknameAlreadyChosenException("The nickname " + pl.getNickname() +  " has already been chosen by another player.");
+            }
+
+            // Effectively adding the player to the list.
+            players.add(player);
+            isStartable = players.size() == numberOfPlayers;
+        }
+        else {
+            throw new TooManyPlayerException("The game as already reached the limit of " + numberOfPlayers + " players");
+        }
+    }
+
+    /**
+     * Handle the action phase of the specified player.
+     *
+     * <p>
+     *     An action phase consists in making the player move his students from his entrance to his students' tables or to
+     *     islands. At this point any professor ownership change will be handled, Mother Nature will move and finally the
+     *     evaluation will be calculated with consequent possible construction of towers.
+     *
+     * @param pl  the player of which the action phase is handled
+     *
+     * @see Player
+     */
     public final void actionPhaseStudents(Player pl){
         playerMoveStudents(pl);
         updateProfessorsOwnership(pl);
@@ -259,8 +302,12 @@ public abstract class Game {
         pickAdvancedCards();
     }
 
-
-
+    /**
+     * Handles the win conditions logic.
+     *
+     * <p>
+     *     A
+     */
     public String winner(){
         //TODO
         //implements a function that returns the player which won -1 otherwise
@@ -324,7 +371,6 @@ public abstract class Game {
 
     public abstract void playerMoveStudents(Player player);
     public abstract void createCloudCard();
-    public abstract void addPlayer(Player player) throws TooManyPlayerException;
     public abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
     public abstract int playerInfluence(Player pl, Island island);
     public abstract void refillClouds();
