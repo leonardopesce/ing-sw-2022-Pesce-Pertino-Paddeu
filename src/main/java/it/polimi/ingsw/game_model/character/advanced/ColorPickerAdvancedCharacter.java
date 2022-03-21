@@ -8,7 +8,7 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
  */
 
 public class ColorPickerAdvancedCharacter extends AdvancedCharacter{
-    ColorCharacter color;
+    private ColorCharacter color;
 
     public ColorPickerAdvancedCharacter(AdvancedCharacterType type) {
         super(type);

@@ -22,12 +22,12 @@ import java.util.List;
 public abstract class Game {
     private final String NO_NICKNAME = "";
     private final int numberOfPlayers;
-    protected List<Player> players;
-    protected int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
+    private List<Player> players;
+    private int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
     protected BagOfStudents bag;
     protected Terrain terrain;
-    protected MotherNature motherNature;
-    protected boolean isStartable;
+    private MotherNature motherNature;
+    private boolean isStartable;
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
 
 
@@ -126,7 +126,7 @@ public abstract class Game {
      *
      * @see Player
      */
-    public final void actionPhaseStudents(Player pl){
+    private void actionPhaseStudents(Player pl){
         playerMoveStudents(pl);
         updateProfessorsOwnership(pl);
         moveMotherNature(pl.getDiscardedCard().getPossibleSteps());
@@ -134,7 +134,7 @@ public abstract class Game {
         pl.resetPlayedSpecialCard();
     }
 
-    public void setUpIslandTower(Island island, Player owner){
+    private void setUpIslandTower(Island island, Player owner){
         //adds back tower to owner player
         if(!island.getTowers().isEmpty()){
             for(Player pl: players){
@@ -152,7 +152,7 @@ public abstract class Game {
         }
     }
 
-    public void evaluateInfluences(){
+    private void evaluateInfluences(){
         try{
             Island island = terrain.getIslandWithId(motherNature.getPosition());
             //TODO trasformare la funzione in base al colore del giocatore
@@ -183,7 +183,7 @@ public abstract class Game {
      * @see Player
      * @see Island
      */
-    public int playerTowerInfluence(Player pl, Island island){
+    protected int playerTowerInfluence(Player pl, Island island){
         if(!island.getTowers().isEmpty() && island.getTowers().get(0).getColor() == pl.getColor()){
             return island.getTowers().size();
         }
@@ -208,7 +208,7 @@ public abstract class Game {
      * @see Teacher
      * @see Student
      */
-    public int playerStudentInfluence(Player pl, Island island){
+    protected int playerStudentInfluence(Player pl, Island island){
         int influence = 0;
         for(Teacher t: pl.getTeachers()){
             for(Student s: island.getStudents()){
@@ -224,7 +224,7 @@ public abstract class Game {
      *
      * @param pl1
      */
-    public void updateProfessorsOwnership(Player pl1) {
+    private void updateProfessorsOwnership(Player pl1) {
         // for the dining table of pl1
         for (DiningTable table : pl1.getSchool().getDiningHall().getTables()) {
             // search in all players except pl1
@@ -235,13 +235,13 @@ public abstract class Game {
         }
     }
 
-    public final void normalUpdateProfessorOwnership(DiningTable table1, DiningTable table2, Player pl1){
+    protected final void normalUpdateProfessorOwnership(DiningTable table1, DiningTable table2, Player pl1){
         if (table1.getNumberOfStudents() > table2.getNumberOfStudents()) {
             pl1.getSchool().addTeacher(getTeacherOfColorFromAllPlayers(table1.getColor()));
         }
     }
 
-    public Teacher getTeacherOfColorFromAllPlayers(ColorCharacter color){
+    protected Teacher getTeacherOfColorFromAllPlayers(ColorCharacter color){
         for(Player player: players){
             if(player.hasTeacherOfColor(color)){
                 return player.getTeacherOfColor(color);
@@ -259,7 +259,7 @@ public abstract class Game {
      * @param maxSteps: max possible steps that mother nature can actually perform
      *                (based on the value of the assistant card played).
      */
-    public void moveMotherNature(int maxSteps){
+    private void moveMotherNature(int maxSteps){
         //TODO with the number of step selected (event base) calculate the value of the new position
         //TODO keep in mind the possibility of a advanced card
         int selectedStep = new Random().nextInt(maxSteps);
@@ -308,7 +308,7 @@ public abstract class Game {
      * <p>
      *     A
      */
-    public String winner(){
+    private String winner(){
         //TODO
         //implements a function that returns the player which won -1 otherwise
         for(Player pl: players){
@@ -367,11 +367,11 @@ public abstract class Game {
         }
     }
 
-    public void pickAdvancedCards(){}
+    protected void pickAdvancedCards(){}
 
-    public abstract void playerMoveStudents(Player player);
-    public abstract void createCloudCard();
-    public abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
-    public abstract int playerInfluence(Player pl, Island island);
-    public abstract void refillClouds();
+    protected abstract void playerMoveStudents(Player player);
+    protected abstract void createCloudCard();
+    protected abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
+    protected abstract int playerInfluence(Player pl, Island island);
+    protected abstract void refillClouds();
 }

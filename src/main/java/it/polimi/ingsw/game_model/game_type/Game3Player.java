@@ -7,24 +7,24 @@ import it.polimi.ingsw.game_model.world.Island;
 
 public class Game3Player extends Game{
     private final static int MAX_PLAYERS = 3;
-    public final int NUMBER_OF_STUDENTS_ON_CLOUD = 4;
+    private final int NUMBER_OF_STUDENTS_ON_CLOUD = 4;
 
     public Game3Player() {
         super(MAX_PLAYERS);
     }
 
     @Override
-    public void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
+    protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
         normalUpdateProfessorOwnership(table1, table2, pl1);
     }
 
     @Override
-    public int playerInfluence(Player pl, Island island) {
+    protected int playerInfluence(Player pl, Island island) {
         return playerTowerInfluence(pl, island) + playerStudentInfluence(pl, island);
     }
 
     @Override
-    public void refillClouds() {
+    protected void refillClouds() {
         for(CloudCard cloudCard: terrain.getCloudCards()){
             while(cloudCard.getStudentsOnCloud().size() < NUMBER_OF_STUDENTS_ON_CLOUD){
                 cloudCard.getStudentsOnCloud().add(bag.drawStudentFromBag());
@@ -33,7 +33,7 @@ public class Game3Player extends Game{
     }
 
     @Override
-    public void playerMoveStudents(Player player){
+    protected void playerMoveStudents(Player player){
         int movedStudent = 0;
         while(movedStudent < NUMBER_OF_STUDENTS_ON_CLOUD){
             //TODO aggiungere la parte di spostamento degli studenti (event based)
@@ -42,7 +42,7 @@ public class Game3Player extends Game{
     }
 
     @Override
-    public void createCloudCard(){
+    protected void createCloudCard(){
         terrain.addCloudCard(new CloudCard(NUMBER_OF_STUDENTS_ON_CLOUD));
     }
 

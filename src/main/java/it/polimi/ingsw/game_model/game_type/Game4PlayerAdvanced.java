@@ -55,7 +55,7 @@ public class Game4PlayerAdvanced extends Game4Player implements ExpertMode{
     }
 
 
-    public int playerStudentInfluenceWithoutColor(Player pl, Island island, ColorCharacter color){
+    private int playerStudentInfluenceWithoutColor(Player pl, Island island, ColorCharacter color){
         int influence = 0;
         for(Teacher t: pl.getTeachers()){
             for(Student s: island.getStudents()){
