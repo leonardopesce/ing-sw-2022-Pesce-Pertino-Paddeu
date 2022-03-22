@@ -24,11 +24,11 @@ public abstract class Game {
     public static final int MOVE_TO_ISLAND = 0;
     public static final int MOVE_TO_DINING_HALL = 1;
     private final int numberOfPlayers;
-    private List<Player> players;
-    private int[] planningOrder, actionOrder; // [1,2,3,0], [3,1,0,2]
+    private final List<Player> players;
+    private final int[] planningOrder, actionOrder;
     protected BagOfStudents bag;
     protected Terrain terrain;
-    private MotherNature motherNature;
+    private final MotherNature motherNature;
     private boolean isStartable;
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
 
@@ -38,7 +38,8 @@ public abstract class Game {
         players = new ArrayList<>();
         terrain = new Terrain();
         bag = new BagOfStudents();
-
+        planningOrder = new int[numberOfPlayers];
+        actionOrder = new int[numberOfPlayers];
         /*
          * Placing mother nature on a random island between 0 and 11.
          * Each island is recognized by an id. Mother nature position is equal to

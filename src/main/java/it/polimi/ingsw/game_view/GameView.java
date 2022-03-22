@@ -9,5 +9,4 @@ public abstract class GameView {
     public abstract void showNewProfessorsOwnership();
     public abstract void showMotherNaturePossibleStep(int possibleSteps);
     public abstract void showNewInfluence();
-
 }
