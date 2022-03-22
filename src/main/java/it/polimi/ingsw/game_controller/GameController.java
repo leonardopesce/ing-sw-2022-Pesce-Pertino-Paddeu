@@ -45,8 +45,8 @@ public class GameController {
     private void nextPlanningPhase(){
         if(turn < game.getNumberOfPlayers()){
             Player pl = game.getPlayerNumber(game.getPlanningOrder()[turn]);
+            //TODO creare controller del deck che gestisce le sue funzioni
             view.showPlayerDeck(pl, pl.getDeckAssistants());
-            turn++;
         }
         else{
             turn = 0;
@@ -63,6 +63,7 @@ public class GameController {
      */
     public void selectedAssistantCard(int x){
         game.getPlayerNumber(game.getPlanningOrder()[turn]).playAssistant(x);
+        turn++;
         nextPlanningPhase();
     }
 

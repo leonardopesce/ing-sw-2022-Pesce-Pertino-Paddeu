@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_model.game_type;
 
+import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.world.CloudCard;
@@ -30,7 +31,11 @@ public class Game2Player extends Game {
     public void refillClouds() {
         for(CloudCard cloudCard: terrain.getCloudCards()){
             while(cloudCard.getStudentsOnCloud().size() < NUMBER_OF_STUDENTS_ON_CLOUD){
-                cloudCard.getStudentsOnCloud().add(bag.drawStudentFromBag());
+                try {
+                    cloudCard.getStudentsOnCloud().add(bag.drawStudentFromBag());
+                } catch (BagEmptyException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

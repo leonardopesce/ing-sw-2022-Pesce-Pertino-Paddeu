@@ -79,19 +79,20 @@ import java.util.Random;
  * @see AdvancedCharacter
  */
 public enum AdvancedCharacterType {
-    MONK("monk", 1),
-    BARTENDER("bartender", 2),
-    FLAGMAN("flagman", 3),
-    POSTMAN("postman", 1),
-    HEALER("healer", 2),
-    CENTAURUS("centaurus", 3),
-    JESTER("jester", 1),
+
     BARD("bard", 1),
+    BARTENDER("bartender", 2),
+    CENTAURUS("centaurus", 3),
+    FLAGMAN("flagman", 3),
+    HEALER("healer", 2),
+    JESTER("jester", 1),
     KNIGHT("knight", 2),
-    PRINCESS("princess", 2),
     LANDLORD("landlord", 3),
     MERCHANT("merchant", 3),
-    NULL("null", 0);
+    MONK("monk", 1),
+    NULL("null", 0),
+    POSTMAN("postman", 1),
+    PRINCESS("princess", 2);
 
 
     private final String name;
@@ -102,7 +103,11 @@ public enum AdvancedCharacterType {
         this.cardCost = cardCost;
     }
 
-    public String getCardName() { return this.name; }
+    public String getCardName() {
+        return this.name;
+    }
 
-    public int getCardCost(){ return cardCost; }
+    public int getCardCost() {
+        return cardCost;
+    }
 }

@@ -1,9 +1,6 @@
 package it.polimi.ingsw.game_model.game_type;
 
-import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
-import it.polimi.ingsw.custom_exceptions.NicknameAlreadyChosenException;
-import it.polimi.ingsw.custom_exceptions.NotEnoughPlayerException;
-import it.polimi.ingsw.custom_exceptions.TooManyPlayerException;
+import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.MotherNature;
@@ -57,20 +54,11 @@ public abstract class Game {
      * <p>
      *     Each game has a defined structure:
      *     <ol>
-     *         <li>
-     *             Before the game starts:
-     *             <ol>
-     *                 <li>Gameboard setup
-     *                 <li>First turn planning phase setup
-     *             </ol>
-     *         </li>
-     *         <li>
-     *             Once the game is started and not finshed yet:
-     *             <ol>
-     *                 <li>Planning Phase foreach player
-     *                 <li>Action Phase foreach player
-     *             </ol>
-     *         </li>
+     *         Before the game starts:
+     *         <ol>
+     *             <li>Gameboard setup
+     *             <li>createPlanning
+     *         </ol>
      *     </ol>
      */
     public final void start() throws NotEnoughPlayerException {
@@ -196,8 +184,11 @@ public abstract class Game {
     }
 
     /**
+     * Given the player who as just moved is students moves the controls that the professors are in the right schools
      *
-     * @param pl1
+     * @param pl1 the player that has just moved his students
+     *
+     * @see Player
      */
     public void updateProfessorsOwnership(Player pl1) {
         // for the dining table of pl1
@@ -254,7 +245,11 @@ public abstract class Game {
          * */
         for (Island island : terrain.getIslands()) {
             if (island.getId() != motherNature.getPosition() && island.getId() != ((motherNature.getPosition() + 6) % terrain.getIslands().size())) {
-                island.addStudent(bag.drawStudentFromBag());
+                try {
+                    island.addStudent(bag.drawStudentFromBag());
+                } catch (BagEmptyException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_model.character;
 
+import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
@@ -64,10 +65,23 @@ public class BagOfStudents extends Character{
      * @return a randomly picked student from the bag.
      * @see Student
      */
-    public Student drawStudentFromBag(){
+    public Student drawStudentFromBag() throws BagEmptyException {
         Random randomPicker = new Random();
-        Student pickedStudent = this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
+        if(!unpickedStudents.isEmpty()) {
+            return this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
+        }
+        else throw new BagEmptyException("The bag is empty");
+    }
 
-        return pickedStudent;
+    public List<Student> drawNStudentFromBag(int n){
+        List<Student> temp = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            try {
+                temp.add(drawStudentFromBag());
+            } catch (BagEmptyException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
     }
 }

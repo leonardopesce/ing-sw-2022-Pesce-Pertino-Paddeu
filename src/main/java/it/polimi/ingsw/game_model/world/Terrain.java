@@ -1,9 +1,11 @@
 package it.polimi.ingsw.game_model.world;
 
 import it.polimi.ingsw.custom_exceptions.IslandNotPresentException;
+import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.StudentStorageAdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
-import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 import it.polimi.ingsw.game_model.game_type.Game;
 
 import java.lang.reflect.Array;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
 public class Terrain {
     private List<CloudCard> cloudCards;
@@ -70,11 +74,26 @@ public class Terrain {
         throw new IslandNotPresentException("The island requested is not available, island ID: " + id);
     }
 
-    public void pickAdvancedCard(){
+    public void pickAdvancedCard(BagOfStudents bag){
         while(advancedCharacters.size() < Game.NUMBER_OF_ADVANCED_CARD){
             AdvancedCharacter character = AdvancedCharacter.getRandomCard();
             if(advancedCharacters.stream().noneMatch(x -> x.getName().equals(character.getName()))){
                 advancedCharacters.add(character);
+            }
+        }
+        setUpPickedAdvancedCard(bag);
+    }
+
+    private void setUpPickedAdvancedCard(BagOfStudents bag){
+        for(AdvancedCharacter character: advancedCharacters){
+            if(character.getType().equals(LANDLORD) || character.getType().equals(MERCHANT) ){
+                //TODO player chooses a color to assign
+            }
+            else if(character.getType().equals(MONK) || character.getType().equals(PRINCESS)){
+                ((StudentStorageAdvancedCharacter)character).setStudents(bag.drawNStudentFromBag(4));
+            }
+            else if(character.getType().equals(JESTER)){
+                ((StudentStorageAdvancedCharacter)character).setStudents(bag.drawNStudentFromBag(6));
             }
         }
     }

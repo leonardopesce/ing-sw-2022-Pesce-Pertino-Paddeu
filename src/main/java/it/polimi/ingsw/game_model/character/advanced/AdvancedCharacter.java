@@ -28,8 +28,13 @@ public abstract class AdvancedCharacter extends Character {
         return type.getCardName();
     }
 
+    public AdvancedCharacterType getType() {
+        return type;
+    }
+
     public static AdvancedCharacter getRandomCard(){
-        return switch (new Random().nextInt(AdvancedCharacterType.values().length)) {
+        int value = new Random().nextInt(AdvancedCharacterType.values().length);
+        return switch (value) {
             case 0 -> new ColorPickerAdvancedCharacter(LANDLORD);
             case 1 -> new ColorPickerAdvancedCharacter(MERCHANT);
             case 2 -> new StudentStorageAdvancedCharacter(MONK);
@@ -42,7 +47,7 @@ public abstract class AdvancedCharacter extends Character {
             case 9 -> new NormalAdvancedCharacter(CENTAURUS);
             case 10 -> new NormalAdvancedCharacter(BARD);
             case 11 -> new NormalAdvancedCharacter(KNIGHT);
-            default -> throw new IllegalStateException("Unexpected value: " + new Random().nextInt(AdvancedCharacterType.values().length));
+            default -> throw new IllegalStateException("Unexpected value for random Expert mode card getter: " + value);
         };
     }
 }

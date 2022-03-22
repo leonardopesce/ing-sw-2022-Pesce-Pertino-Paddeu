@@ -9,12 +9,12 @@ import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
-public class Game2PlayerAdvanced extends Game2Player implements ExpertMode{
+public class Game2PlayerAdvanced extends Game2Player {
     AdvancedCharacter playerCard; //TODO this card will be assigned if a card is played
 
 
     @Override
-    public void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
+    protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
         switch(playerCard.getAdvanceCharacterType()){
             case BARTENDER:
                 if (pl1.hasPlayedSpecialCard() && table1.getColor() == table2.getColor() &&
@@ -30,7 +30,7 @@ public class Game2PlayerAdvanced extends Game2Player implements ExpertMode{
     }
 
     @Override
-    public int playerInfluence(Player pl, Island island){
+    protected int playerInfluence(Player pl, Island island){
         int influence = playerStudentInfluence(pl, island) + playerTowerInfluence(pl, island);
         if(pl.hasPlayedSpecialCard()) {
             switch (playerCard.getAdvanceCharacterType()) {
@@ -56,8 +56,8 @@ public class Game2PlayerAdvanced extends Game2Player implements ExpertMode{
     }
 
     @Override
-    public void pickAdvancedCards(){
-        terrain.pickAdvancedCard();
+    protected void pickAdvancedCards(){
+        terrain.pickAdvancedCard(bag);
     }
 
 
