@@ -1,7 +1,10 @@
 package it.polimi.ingsw.game_model.character.advanced;
 
+import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Character;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.world.Island;
 
 import java.util.Random;
 
@@ -31,7 +34,7 @@ public abstract class AdvancedCharacter extends Character {
     public AdvancedCharacterType getType() {
         return type;
     }
-
+    
     public static AdvancedCharacter getRandomCard(){
         int value = new Random().nextInt(AdvancedCharacterType.values().length);
         return switch (value) {
@@ -49,5 +52,10 @@ public abstract class AdvancedCharacter extends Character {
             case 11 -> new NormalAdvancedCharacter(KNIGHT);
             default -> throw new IllegalStateException("Unexpected value for random Expert mode card getter: " + value);
         };
+    }
+
+
+    public int getCardInfluence(int influence, Player player, Island island){
+        return influence;
     }
 }

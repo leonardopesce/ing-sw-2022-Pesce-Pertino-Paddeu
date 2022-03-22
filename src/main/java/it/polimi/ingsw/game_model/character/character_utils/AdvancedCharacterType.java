@@ -13,7 +13,8 @@ import java.util.Random;
  *     <dt><b>Monk</b> - Cost: <b>1</b></dt>
  *     <dd>
  *         At the beginning of the match, draw 4 students and place them on this card.<br>
- *         <b>EFFECT</b>: Take 1 student from the card and place it on an island of your choice. Then, draw a student from the game bag and place it on this card.
+ *         <b>EFFECT</b>: Take 1 student from the card and place it on an island of your choice. Then
+ *         , draw a student from the game bag and place it on this card.
  *     </dd>
  *
  *     <dt><b>Bartender</b> - Cost: <b>2</b></dt>

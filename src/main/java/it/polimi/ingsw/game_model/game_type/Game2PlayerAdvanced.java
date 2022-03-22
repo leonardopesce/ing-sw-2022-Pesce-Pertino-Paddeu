@@ -32,26 +32,8 @@ public class Game2PlayerAdvanced extends Game2Player {
     @Override
     protected int playerInfluence(Player pl, Island island){
         int influence = playerStudentInfluence(pl, island) + playerTowerInfluence(pl, island);
-        if(pl.hasPlayedSpecialCard()) {
-            switch (playerCard.getAdvanceCharacterType()) {
-                case CENTAURUS:
-                    influence = playerStudentInfluence(pl, island);
-                    break;
+        influence = playerCard.getCardInfluence(influence, pl, island);
 
-                case KNIGHT:
-                    influence = playerStudentInfluence(pl, island) + playerTowerInfluence(pl, island) + 2;
-                    break;
-
-                case LANDLORD:
-                    influence = playerStudentInfluenceWithoutColor(pl, island, ((ColorPickerAdvancedCharacter)playerCard).getColor())
-                            + playerTowerInfluence(pl, island);
-                    break;
-
-                default:
-                    influence = playerStudentInfluence(pl, island) + playerTowerInfluence(pl, island);
-                    break;
-            }
-        }
         return influence;
     }
 
