@@ -1,7 +1,9 @@
 package it.polimi.ingsw.game_model.game_type;
 
+import it.polimi.ingsw.game_model.CalculatorInfluence;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacterInfluenceType;
 import it.polimi.ingsw.game_model.character.advanced.ColorPickerAdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
@@ -31,10 +33,10 @@ public class Game2PlayerAdvanced extends Game2Player {
 
     @Override
     protected int playerInfluence(Player pl, Island island){
-        int influence = playerStudentInfluence(pl, island) + playerTowerInfluence(pl, island);
-        influence = playerCard.getCardInfluence(influence, pl, island);
-
-        return influence;
+        if(playerCard.getCategory() == AdvancedCharacterInfluenceType.INFLUENCE_CATEGORY){
+            return ((AdvancedCharacterInfluenceType)playerCard).getPlayerInfluence(pl, island);
+        }
+        return new CalculatorInfluence(pl, island).evaluate();
     }
 
     @Override

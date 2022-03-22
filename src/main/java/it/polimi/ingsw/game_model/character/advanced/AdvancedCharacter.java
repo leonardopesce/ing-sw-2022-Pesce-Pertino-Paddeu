@@ -3,7 +3,6 @@ package it.polimi.ingsw.game_model.character.advanced;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Character;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
-import it.polimi.ingsw.game_model.game_type.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
 import java.util.Random;
@@ -17,10 +16,12 @@ import static it.polimi.ingsw.game_model.character.character_utils.AdvancedChara
  */
 public abstract class AdvancedCharacter extends Character {
     private final AdvancedCharacterType type;
+    private final int category;
 
-    protected AdvancedCharacter(AdvancedCharacterType type){
+    protected AdvancedCharacter(AdvancedCharacterType type, int category){
         super();
         this.type = type;
+        this.category = category;
     }
 
     public AdvancedCharacterType getAdvanceCharacterType(){
@@ -34,7 +35,11 @@ public abstract class AdvancedCharacter extends Character {
     public AdvancedCharacterType getType() {
         return type;
     }
-    
+
+    public int getCategory(){
+        return category;
+    }
+
     public static AdvancedCharacter getRandomCard(){
         int value = new Random().nextInt(AdvancedCharacterType.values().length);
         return switch (value) {
