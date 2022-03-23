@@ -6,6 +6,7 @@ import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.advanced.StudentStorageAdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
+import it.polimi.ingsw.game_model.game_type.AdvancedGame;
 import it.polimi.ingsw.game_model.game_type.Game;
 
 import java.lang.reflect.Array;
@@ -75,7 +76,7 @@ public class Terrain {
     }
 
     public void pickAdvancedCard(BagOfStudents bag){
-        while(advancedCharacters.size() < Game.NUMBER_OF_ADVANCED_CARD){
+        while(advancedCharacters.size() < AdvancedGame.NUMBER_OF_ADVANCED_CARD){
             AdvancedCharacter character = AdvancedCharacter.getRandomCard();
             if(advancedCharacters.stream().noneMatch(x -> x.getName().equals(character.getName()))){
                 advancedCharacters.add(character);

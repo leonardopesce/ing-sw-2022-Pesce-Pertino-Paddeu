@@ -16,27 +16,32 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Game {
+public class Game {
+    //TODO scompattare questo macro oggetto game con:
+    //  (1) la facciata effettiva del model
+    //  (2) il game controller
+
+    //TODO assegnare al gioco delle fasi: GAME_PENDING, GAME_STARTED, GAME_ENDED
+    //TODO utilizzare una logica a turni per facilitare la gestione dei permessi.
     public static final String NO_NICKNAME = "";
     public static final int MOVE_TO_ISLAND = 0;
     public static final int MOVE_TO_DINING_HALL = 1;
-    private final int numberOfPlayers;
+    private final int NUMBER_OF_STUDENTS_ON_CLOUD;
+    private final int MAX_PLAYERS;
     private final List<Player> players;
     private final int[] planningOrder, actionOrder;
     protected BagOfStudents bag;
     protected Terrain terrain;
     private final MotherNature motherNature;
     private boolean isStartable;
-    public static final int NUMBER_OF_ADVANCED_CARD = 3;
 
 
     public Game(int playerNums) {
-        numberOfPlayers = playerNums;
         players = new ArrayList<>();
         terrain = new Terrain();
         bag = new BagOfStudents();
-        planningOrder = new int[numberOfPlayers];
-        actionOrder = new int[numberOfPlayers];
+        planningOrder = new int[playerNums];
+        actionOrder = new int[playerNums];
         /*
          * Placing mother nature on a random island between 0 and 11.
          * Each island is recognized by an id. Mother nature position is equal to
@@ -44,9 +49,21 @@ public abstract class Game {
          */
         motherNature = new MotherNature(new Random().nextInt(12));
         isStartable = false;
+
+        switch (playerNums) {
+            case 2, 4 -> {
+                NUMBER_OF_STUDENTS_ON_CLOUD = 3;
+                MAX_PLAYERS = playerNums;
+            }
+            case 3 -> {
+                NUMBER_OF_STUDENTS_ON_CLOUD = 4;
+                MAX_PLAYERS = playerNums;
+            }
+            default -> {
+                throw new IllegalStateException("Failed to create a game. Exit...");
+            }
+        }
     }
-
-
 
     /**
      * Handle the game status.
@@ -60,8 +77,8 @@ public abstract class Game {
      *         </ol>
      *     </ol>
      */
+    // controller
     public final void start() throws NotEnoughPlayerException {
-        // TODO valutare la possibilità di aggiungere un oggetto turno che gestisca il turno.
         if(this.isStartable) {
             createPlanningOrder();
             setupBoard();
@@ -78,9 +95,10 @@ public abstract class Game {
      *
      * @see Player
      */
+    //controller
     public void addPlayer(Player player) throws TooManyPlayerException, NicknameAlreadyChosenException {
         // Checking whether the game is full or not.
-        if(players.size() < numberOfPlayers){
+        if(players.size() < MAX_PLAYERS){
             // Checking if the player nickname has already been chosen. In that case an exception will be raised.
             for(Player pl : players) {
                 if(player.getNickname().equalsIgnoreCase(pl.getNickname())) throw new NicknameAlreadyChosenException("The nickname " + pl.getNickname() +  " has already been chosen by another player.");
@@ -88,15 +106,15 @@ public abstract class Game {
 
             // Effectively adding the player to the list.
             players.add(player);
-            isStartable = players.size() == numberOfPlayers;
+            isStartable = players.size() == MAX_PLAYERS;
         }
         else {
-            throw new TooManyPlayerException("The game as already reached the limit of " + numberOfPlayers + " players");
+            throw new TooManyPlayerException("The game as already reached the limit of " + MAX_PLAYERS + " players");
         }
     }
 
-
-    private void setUpIslandTower(Island island, Player owner){
+    //controller
+    protected void setUpIslandTower(Island island, Player owner){
         //adds back tower to owner player
         if(!island.getTowers().isEmpty()){
             for(Player pl: players){
@@ -128,11 +146,6 @@ public abstract class Game {
         }
     }
 
-
-
-
-
-
     /**
      * Given the player who as just moved is students moves the controls that the professors are in the right schools
      *
@@ -140,6 +153,7 @@ public abstract class Game {
      *
      * @see Player
      */
+    //controller
     public void updateProfessorsOwnership(Player pl1) {
         // for the dining table of pl1
         for (DiningTable table : pl1.getSchool().getDiningHall().getTables()) {
@@ -151,12 +165,14 @@ public abstract class Game {
         }
     }
 
+    //controller
     protected final void normalUpdateProfessorOwnership(DiningTable table1, DiningTable table2, Player pl1){
         if (table1.getNumberOfStudents() > table2.getNumberOfStudents()) {
             pl1.getSchool().addTeacher(getTeacherOfColorFromAllPlayers(table1.getColor()));
         }
     }
 
+    //controller
     protected Teacher getTeacherOfColorFromAllPlayers(ColorCharacter color){
         for(Player player: players){
             if(player.hasTeacherOfColor(color)){
@@ -175,6 +191,7 @@ public abstract class Game {
      * @param selectedSteps: selected steps that mother nature has to perform
      *                (based on the value of the assistant card played).
      */
+    //controller
     public void moveMotherNature(int selectedSteps){
         //TODO keep in mind the possibility of a advanced card
         motherNature.moveOfIslands(terrain, selectedSteps);
@@ -184,7 +201,7 @@ public abstract class Game {
      * Set up the game board by randomly adding the students to the islands and instantiating
      * the cloud cards.
      */
-    private void setupBoard() {
+    protected void setupBoard() {
         /*
          * Filling the bag with 10 students to setup the board. (2 students foreach color).
          * */
@@ -214,9 +231,6 @@ public abstract class Game {
         for (int i = 0; i < players.size(); i++) {
             createCloudCard();
         }
-
-        // pick 3 advanced Character if it's a Expert mode game
-        pickAdvancedCards();
     }
 
     /**
@@ -225,14 +239,16 @@ public abstract class Game {
      * <p>
      *     A
      */
+    //controller
     public String winner(){
-        //TODO
-        //implements a function that returns the player which won -1 otherwise
+        // First condition: a player has built all his towers.
         for(Player pl: players){
             if(pl.getTowersAvailable() == 0){
                 return pl.getNickname();
             }
         }
+
+        // Second condition: there are only 3 island left
 
 
         return NO_NICKNAME;
@@ -241,7 +257,8 @@ public abstract class Game {
     /**
      * Creates the planning order of the first round by randomly choosing a player from the list and going clock-wise.
      */
-    private void createPlanningOrder(){
+    //controller
+    protected void createPlanningOrder(){
         planningOrder[0] = (int) Math.round(Math.random() * players.size());
         for(int i = 1; i < players.size(); i++){
             planningOrder[i] = (planningOrder[i-1] + 1) % players.size();
@@ -252,6 +269,7 @@ public abstract class Game {
      * Creates the planning order of the next turn.
      * The player which played the assistant card with the lowest value will start the Planning Phase of the next turn.
      */
+    //controller
     public void createNextPlanningOrder(){
         planningOrder[0] = actionOrder[0];
         for(int i = 1; i < players.size(); i++){
@@ -259,6 +277,7 @@ public abstract class Game {
         }
     }
 
+    //controller
     public void createActionPhaseOrder(){
         List<Pair<Integer, Integer>> playerAndValue = new ArrayList<>();
         //cycle to create all position
@@ -275,16 +294,19 @@ public abstract class Game {
         }
     }
 
+    //controller
     public void resetPlayerNumberOfMOvedStudents(){
         for(Player pl: players){
             pl.resetNumberOfMovedStudents();
         }
     }
 
+    //controller
     public void playerMoveStudentToIsland(Player player, int student, int island){
         terrain.addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), island);
     }
 
+    //controller
     public void playerMoveStudentToDiningHall(Player player, int student){
         player.moveStudentToDiningHall(player.getSchool().getEntrance().moveStudent(student).getColor());
     }
@@ -293,23 +315,29 @@ public abstract class Game {
         return players.get(x);
     }
 
+    //controller
     public int[] getPlanningOrder(){
         return planningOrder;
     }
 
+    //controller
     public int[] getActionOrder() {
         return actionOrder;
     }
 
     public int getNumberOfPlayers() {
-        return numberOfPlayers;
+        return players.size();
     }
 
+    //da rivedere gli advanced character
     protected void pickAdvancedCards(){}
 
-    public abstract int studentsLeftToMove(Player player);
-    protected abstract void createCloudCard();
-    protected abstract void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1);
-    protected abstract int playerInfluence(Player pl, Island island);
-    public abstract void refillClouds();
+    //da rivedere con logica a turni
+    public int studentsLeftToMove(Player player) {}
+    //controller
+    protected void createCloudCard() {}
+    //controller
+    protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {}
+    //controller
+    public void refillClouds() {}
 }
