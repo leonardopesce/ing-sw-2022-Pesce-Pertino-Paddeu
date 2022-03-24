@@ -10,6 +10,7 @@ import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
+import it.polimi.ingsw.game_model.utils.ColorTower;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
@@ -29,8 +30,11 @@ public class Game {
     public static final int MOVE_TO_ISLAND = 0;
     public static final int MOVE_TO_DINING_HALL = 1;
     private final int NUMBER_OF_STUDENTS_ON_CLOUD;
+    private final int INITIAL_NUMBER_OF_TOWER;
+    private final int INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
+    private final int NUMBER_OF_CLOUDS;
     private final int MAX_PLAYERS;
-    private final List<Player> players;
+    protected final List<Player> players;
     private final int[] planningOrder, actionOrder;
     protected BagOfStudents bag;
     protected Terrain terrain;
@@ -44,6 +48,8 @@ public class Game {
         bag = new BagOfStudents();
         planningOrder = new int[playerNums];
         actionOrder = new int[playerNums];
+        MAX_PLAYERS = playerNums;
+        NUMBER_OF_CLOUDS = playerNums;
         /*
          * Placing mother nature on a random island between 0 and 11.
          * Each island is recognized by an id. Mother nature position is equal to
@@ -55,11 +61,13 @@ public class Game {
         switch (playerNums) {
             case 2, 4 -> {
                 NUMBER_OF_STUDENTS_ON_CLOUD = 3;
-                MAX_PLAYERS = playerNums;
+                INITIAL_NUMBER_OF_TOWER = 8;
+                INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = 7;
             }
             case 3 -> {
                 NUMBER_OF_STUDENTS_ON_CLOUD = 4;
-                MAX_PLAYERS = playerNums;
+                INITIAL_NUMBER_OF_TOWER = 6;
+                INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = 9;
             }
             default -> {
                 throw new IllegalStateException("Failed to create a game. Exit...");
@@ -105,10 +113,21 @@ public class Game {
             for(Player pl : players) {
                 if(player.getNickname().equalsIgnoreCase(pl.getNickname())) throw new NicknameAlreadyChosenException("The nickname " + pl.getNickname() +  " has already been chosen by another player.");
             }
-
+            if(MAX_PLAYERS < 4){
+                player.initialSetup(bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW), INITIAL_NUMBER_OF_TOWER, ColorTower.values()[players.size()]);
+            }
+            else{
+                if(players.size() >= 2){ //towers already assigned to other teammate
+                    player.initialSetup(bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW), 0, ColorTower.values()[players.size() - 2]);
+                }
+                else {
+                    player.initialSetup(bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW), INITIAL_NUMBER_OF_TOWER, ColorTower.values()[players.size()]);
+                }
+            }
             // Effectively adding the player to the list.
             players.add(player);
             isStartable = players.size() == MAX_PLAYERS;
+
         }
         else {
             throw new TooManyPlayerException("The game as already reached the limit of " + MAX_PLAYERS + " players");

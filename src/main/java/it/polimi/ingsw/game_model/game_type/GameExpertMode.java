@@ -13,11 +13,18 @@ import it.polimi.ingsw.game_model.world.Island;
 public class GameExpertMode extends Game {
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
     AdvancedCharacter playerCard;
+    private Integer treasury = 20;
 
     public GameExpertMode(int playerNums) {
         super(playerNums);
+        setUpMoneyToPlayer();
     }
 
+    private void setUpMoneyToPlayer(){
+        for(Player player: players){
+            player.addMoney(treasury);
+        }
+    }
 
     @Override
     protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {

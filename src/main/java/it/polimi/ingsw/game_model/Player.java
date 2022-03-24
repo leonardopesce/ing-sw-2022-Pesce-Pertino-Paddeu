@@ -4,6 +4,7 @@ import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.School;
@@ -25,13 +26,14 @@ public class Player {
 
     public Player(String nickname) {
         this.nickname = nickname;
-        this.school = new School();
     }
 
-    public Player(String nickname, Player mate){
-        this.nickname = nickname;
-        // le torri del player saranno le stesse del mate
+    public void initialSetup(List<Student> students, int numTower, ColorTower color){
+        school = new School(students, numTower);
+        this.color = color;
     }
+
+
 
     public void discardAssistant(){
 
@@ -151,5 +153,14 @@ public class Player {
         } catch (TooManyStudentsException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean addMoney(Integer availableMoney){
+        if(availableMoney > 0){
+            availableMoney--;
+            money++;
+            return true;
+        }
+        return false;
     }
 }
