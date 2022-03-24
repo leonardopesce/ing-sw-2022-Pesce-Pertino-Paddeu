@@ -11,7 +11,7 @@ public class ColorPickerAdvancedCharacter extends AdvancedCharacter{
     private ColorCharacter color;
 
     public ColorPickerAdvancedCharacter(AdvancedCharacterType type) {
-        super(type);
+        super(type, 1);
     }
 
     public void setColor(ColorCharacter color) {

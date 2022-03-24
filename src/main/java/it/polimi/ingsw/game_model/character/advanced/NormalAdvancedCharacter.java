@@ -12,6 +12,6 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 public class NormalAdvancedCharacter extends AdvancedCharacter{
 
     public NormalAdvancedCharacter(AdvancedCharacterType type){
-        super(type);
+        super(type, 2);
     }
 }

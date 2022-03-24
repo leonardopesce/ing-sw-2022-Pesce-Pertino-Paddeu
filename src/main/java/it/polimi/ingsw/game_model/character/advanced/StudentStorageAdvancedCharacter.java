@@ -16,7 +16,7 @@ public class StudentStorageAdvancedCharacter extends AdvancedCharacter{
     private List<Student> students;
 
     public StudentStorageAdvancedCharacter(AdvancedCharacterType type) {
-        super(type);
+        super(type, 3);
     }
 
     public List<Student> getStudents() {

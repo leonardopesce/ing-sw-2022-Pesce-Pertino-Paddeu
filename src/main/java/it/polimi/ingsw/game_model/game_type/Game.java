@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_model.game_type;
 
 import it.polimi.ingsw.custom_exceptions.*;
+import it.polimi.ingsw.game_model.CalculatorInfluence;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.MotherNature;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
+import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
 import javafx.util.Pair;
@@ -333,11 +335,32 @@ public class Game {
     protected void pickAdvancedCards(){}
 
     //da rivedere con logica a turni
-    public int studentsLeftToMove(Player player) {}
+    public int studentsLeftToMove(Player player) {
+        return NUMBER_OF_STUDENTS_ON_CLOUD - player.getNumberOfMovedStudents();
+    }
     //controller
-    protected void createCloudCard() {}
+    protected void createCloudCard() {
+        terrain.addCloudCard(new CloudCard(NUMBER_OF_STUDENTS_ON_CLOUD));
+    }
     //controller
-    protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {}
+    protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
+        normalUpdateProfessorOwnership(table1, table2, pl1);
+    }
     //controller
-    public void refillClouds() {}
+    public void refillClouds() {
+        for(CloudCard cloudCard: terrain.getCloudCards()){
+            while(cloudCard.getStudentsOnCloud().size() < NUMBER_OF_STUDENTS_ON_CLOUD){
+                try {
+                    cloudCard.getStudentsOnCloud().add(bag.drawStudentFromBag());
+                } catch (BagEmptyException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    protected int playerInfluence(Player pl, Island island) {
+        return new CalculatorInfluence(pl, island).evaluate();
+    }
+
 }
