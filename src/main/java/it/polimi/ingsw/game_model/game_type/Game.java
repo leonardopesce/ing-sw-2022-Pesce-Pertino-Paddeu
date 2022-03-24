@@ -149,16 +149,14 @@ public class Game {
     public void evaluateInfluences(){
         try{
             Island island = terrain.getIslandWithId(motherNature.getPosition());
-            Player mostInfluencing;
+            // from the list of the player with the same color get the first player of the list with most influencing color
+            Player mostInfluencing = getListsOfPlayersWithSameColor().stream().reduce(
+                    (list1, list2) ->
+                            list1.stream().mapToInt(pl -> playerInfluence(pl, island)).sum() >
+                                    list2.stream().mapToInt(pl -> playerInfluence(pl, island)).sum() ? list1 : list2
+            ).get().get(0);
 
-            // evaluating the influence of each player
-            List<Integer> influences = players.stream().map(pl1 -> playerInfluence(pl1, island)).toList();
 
-            //if there are 4 players the influence is the influence of the team
-            if(players.size() == 4){
-                influences = Arrays.asList(influences.get(0) + influences.get(2), influences.get(1), influences.get(3));
-            }
-            mostInfluencing = players.get(influences.indexOf(Collections.max(influences)));
 
             setUpIslandTower(island, mostInfluencing);
         }
@@ -382,4 +380,21 @@ public class Game {
         return new CalculatorInfluence(pl, island).evaluate();
     }
 
+    private List<List<Player>> getListsOfPlayersWithSameColor(){
+        List<List<Player>> tmp = new ArrayList<>();
+        for(Player player: players){
+            boolean notAddedFlag = true;
+            for(int i = 0; i < tmp.size(); i++){
+                if(tmp.get(i).get(0).getColor() == player.getColor()){
+                    tmp.get(i).add(player);
+                    notAddedFlag = false;
+                }
+            }
+            if(notAddedFlag){
+                tmp.add(new ArrayList<>());
+                tmp.get(tmp.size() - 1).add(player);
+            }
+        }
+        return tmp;
+    }
 }
