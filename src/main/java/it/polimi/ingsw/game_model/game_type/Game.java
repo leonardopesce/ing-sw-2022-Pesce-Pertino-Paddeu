@@ -34,11 +34,24 @@ public class Game {
     private final int MAX_PLAYERS;
     protected final List<Player> players;
     private final int[] planningOrder, actionOrder;
-    protected BagOfStudents bag;
-    protected Terrain terrain;
+    protected final BagOfStudents bag;
+    protected final Terrain terrain;
     private final MotherNature motherNature;
     private boolean isStartable;
 
+    public Game(Game game){
+        NUMBER_OF_STUDENTS_ON_CLOUD = game.NUMBER_OF_STUDENTS_ON_CLOUD;
+        INITIAL_NUMBER_OF_TOWER = game.INITIAL_NUMBER_OF_TOWER;
+        INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = game.INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
+        NUMBER_OF_CLOUDS = game.NUMBER_OF_CLOUDS;
+        MAX_PLAYERS = game.MAX_PLAYERS;
+        players = game.players;
+        planningOrder = game.planningOrder;
+        actionOrder = game.actionOrder;
+        bag = game.bag;
+        terrain = game.terrain;
+        motherNature = game.motherNature;
+    }
 
     public Game(int playerNums) {
         players = new ArrayList<>();
@@ -77,6 +90,8 @@ public class Game {
             }
         }
     }
+
+
 
     /**
      * Handle the game status.
@@ -344,13 +359,9 @@ public class Game {
     }
 
     //controller
-    public int[] getActionOrder() {
-        return actionOrder;
-    }
+    public int[] getActionOrder() { return actionOrder; }
 
-    public int getNumberOfPlayers() {
-        return players.size();
-    }
+    public int getNumberOfPlayers() { return players.size(); }
 
     //da rivedere gli advanced character
     protected void pickAdvancedCards(){}

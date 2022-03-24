@@ -13,7 +13,12 @@ import it.polimi.ingsw.game_model.world.Island;
 public class GameExpertMode extends Game {
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
     AdvancedCharacter playerCard;
-    private final Integer treasury = 20;
+    private Integer treasury = 20;
+
+    public GameExpertMode(Game game){
+        super(game);
+        treasury = ((GameExpertMode)game).treasury;
+    }
 
     public GameExpertMode(int playerNums) {
         super(playerNums);
@@ -54,7 +59,6 @@ public class GameExpertMode extends Game {
     protected void pickAdvancedCards(){
         terrain.pickAdvancedCard(bag);
     }
-
 
     private int playerStudentInfluenceWithoutColor(Player pl, Island island, ColorCharacter color){
         int influence = 0;

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_model.world;
 
-import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.basic.Student;
 
 import java.util.ArrayList;
