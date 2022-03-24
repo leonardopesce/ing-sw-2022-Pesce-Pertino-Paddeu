@@ -5,7 +5,6 @@ import it.polimi.ingsw.game_model.CalculatorInfluence;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.MotherNature;
-import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.school.DiningTable;
@@ -15,9 +14,8 @@ import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
 import javafx.util.Pair;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 public class Game {
     //TODO scompattare questo macro oggetto game con:
@@ -30,7 +28,7 @@ public class Game {
     public static final int MOVE_TO_ISLAND = 0;
     public static final int MOVE_TO_DINING_HALL = 1;
     private final int NUMBER_OF_STUDENTS_ON_CLOUD;
-    private final int INITIAL_NUMBER_OF_TOWER;
+    private final int[] INITIAL_NUMBER_OF_TOWER;
     private final int INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
     private final int NUMBER_OF_CLOUDS;
     private final int MAX_PLAYERS;
@@ -59,15 +57,20 @@ public class Game {
         isStartable = false;
 
         switch (playerNums) {
-            case 2, 4 -> {
+            case 2 -> {
                 NUMBER_OF_STUDENTS_ON_CLOUD = 3;
-                INITIAL_NUMBER_OF_TOWER = 8;
+                INITIAL_NUMBER_OF_TOWER = new int[]{8,8};
                 INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = 7;
             }
             case 3 -> {
                 NUMBER_OF_STUDENTS_ON_CLOUD = 4;
-                INITIAL_NUMBER_OF_TOWER = 6;
+                INITIAL_NUMBER_OF_TOWER = new int[]{6,6,6};
                 INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = 9;
+            }
+            case 4 -> {
+                NUMBER_OF_STUDENTS_ON_CLOUD = 3;
+                INITIAL_NUMBER_OF_TOWER = new int[]{8,8,0,0};
+                INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = 7;
             }
             default -> {
                 throw new IllegalStateException("Failed to create a game. Exit...");
@@ -113,17 +116,7 @@ public class Game {
             for(Player pl : players) {
                 if(player.getNickname().equalsIgnoreCase(pl.getNickname())) throw new NicknameAlreadyChosenException("The nickname " + pl.getNickname() +  " has already been chosen by another player.");
             }
-            if(MAX_PLAYERS < 4){
-                player.initialSetup(bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW), INITIAL_NUMBER_OF_TOWER, ColorTower.values()[players.size()]);
-            }
-            else{
-                if(players.size() >= 2){ //towers already assigned to other teammate
-                    player.initialSetup(bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW), 0, ColorTower.values()[players.size() - 2]);
-                }
-                else {
-                    player.initialSetup(bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW), INITIAL_NUMBER_OF_TOWER, ColorTower.values()[players.size()]);
-                }
-            }
+
             // Effectively adding the player to the list.
             players.add(player);
             isStartable = players.size() == MAX_PLAYERS;
@@ -156,9 +149,16 @@ public class Game {
     public void evaluateInfluences(){
         try{
             Island island = terrain.getIslandWithId(motherNature.getPosition());
-            //TODO trasformare la funzione in base al colore del giocatore
-            Player mostInfluencing = players.stream().max((pl1, pl2) ->
-                    Math.max(playerInfluence(pl1, island), playerInfluence(pl2, island))).get();
+            Player mostInfluencing;
+
+            // evaluating the influence of each player
+            List<Integer> influences = players.stream().map(pl1 -> playerInfluence(pl1, island)).toList();
+
+            //if there are 4 players the influence is the influence of the team
+            if(players.size() == 4){
+                influences = Arrays.asList(influences.get(0) + influences.get(2), influences.get(1), influences.get(3));
+            }
+            mostInfluencing = players.get(influences.indexOf(Collections.max(influences)));
 
             setUpIslandTower(island, mostInfluencing);
         }
@@ -223,9 +223,7 @@ public class Game {
      * the cloud cards.
      */
     protected void setupBoard() {
-        /*
-         * Filling the bag with 10 students to setup the board. (2 students foreach color).
-         * */
+        /* Filling the bag with 10 students to set up the board. (2 students foreach color). */
         bag.addStudentsFirstPhase();
 
         /*
@@ -241,17 +239,14 @@ public class Game {
             }
         }
 
-        /*
-         * Filling the bag with the remaining 120 students.
-         * */
+        /* Creating the school and adding students and tower */
+        setUpPlayersBoard();
+
+        /* Filling the bag with the remaining 120 students. */
         bag.addStudentsSecondPhase();
 
-        /*
-         * Creating cloud cards (one foreach player).
-         * */
-        for (int i = 0; i < players.size(); i++) {
-            createCloudCard();
-        }
+        /* Creating cloud cards (one foreach player). */
+        createCloudCards();
     }
 
     /**
@@ -295,6 +290,15 @@ public class Game {
         planningOrder[0] = actionOrder[0];
         for(int i = 1; i < players.size(); i++){
             planningOrder[i] = (planningOrder[i-1] + 1) % players.size();
+        }
+    }
+
+    private void setUpPlayersBoard(){
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).initialSetup(
+                    bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW),
+                    INITIAL_NUMBER_OF_TOWER[players.size()],
+                    ColorTower.values()[players.size() % (players.size() == 4 ? 2 : 3)]);
         }
     }
 
@@ -358,8 +362,10 @@ public class Game {
         return NUMBER_OF_STUDENTS_ON_CLOUD - player.getNumberOfMovedStudents();
     }
     //controller
-    protected void createCloudCard() {
-        terrain.addCloudCard(new CloudCard(NUMBER_OF_STUDENTS_ON_CLOUD));
+    private void createCloudCards() {
+        for(int i = 0; i < NUMBER_OF_CLOUDS; i++){
+            terrain.addCloudCard(new CloudCard(NUMBER_OF_STUDENTS_ON_CLOUD));
+        }
     }
     //controller
     protected void updateProfessorOwnershipCondition(DiningTable table1, DiningTable table2, Player pl1) {
@@ -368,13 +374,7 @@ public class Game {
     //controller
     public void refillClouds() {
         for(CloudCard cloudCard: terrain.getCloudCards()){
-            while(cloudCard.getStudentsOnCloud().size() < NUMBER_OF_STUDENTS_ON_CLOUD){
-                try {
-                    cloudCard.getStudentsOnCloud().add(bag.drawStudentFromBag());
-                } catch (BagEmptyException e) {
-                    e.printStackTrace();
-                }
-            }
+            cloudCard.refill(bag.drawNStudentFromBag(NUMBER_OF_STUDENTS_ON_CLOUD));
         }
     }
 

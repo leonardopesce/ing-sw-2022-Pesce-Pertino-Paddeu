@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_model.world;
 
+import it.polimi.ingsw.game_model.character.BagOfStudents;
 import it.polimi.ingsw.game_model.character.basic.Student;
 
 import java.util.ArrayList;
@@ -11,12 +12,14 @@ public class CloudCard {
 
     public CloudCard(int maxSize) {
         this.maxSize = maxSize;
-        this.studentsOnCloud = new ArrayList<Student>();
+        this.studentsOnCloud = new ArrayList<>();
     }
 
     public List<Student> getStudentsOnCloud() {
         return studentsOnCloud;
     }
 
-
+    public void refill(List<Student> students){
+        studentsOnCloud.addAll(students);
+    }
 }

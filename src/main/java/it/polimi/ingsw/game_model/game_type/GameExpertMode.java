@@ -13,7 +13,7 @@ import it.polimi.ingsw.game_model.world.Island;
 public class GameExpertMode extends Game {
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
     AdvancedCharacter playerCard;
-    private Integer treasury = 20;
+    private final Integer treasury = 20;
 
     public GameExpertMode(int playerNums) {
         super(playerNums);
