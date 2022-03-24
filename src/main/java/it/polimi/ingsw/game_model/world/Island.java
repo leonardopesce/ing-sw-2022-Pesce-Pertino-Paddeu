@@ -5,16 +5,23 @@ import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Island {
     private final int id;
-    private int size = 1;
+    private int size;
     private List<Student> students;
     private List<Tower> towers;
+    private boolean isBlocked;
 
     public Island(int id) {
         this.id = id;
+        this.size = 1;
+        this.isBlocked = false;
+        this.students = new ArrayList<>();
+        this.towers = new ArrayList<>();
+
     }
 
     public void incrementSize() { this.size++; }
@@ -41,6 +48,16 @@ public class Island {
 
     public int getId() {
         return id;
+    }
+
+    public boolean getIsBlocked() { return isBlocked; }
+
+    public void denyIsland() {
+        this.isBlocked = true;
+    }
+
+    public void freeIsland() {
+        this.isBlocked = false;
     }
 
     public List<Student> getStudents() {

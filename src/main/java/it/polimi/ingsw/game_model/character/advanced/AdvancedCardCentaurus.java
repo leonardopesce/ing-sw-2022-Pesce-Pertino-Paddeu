@@ -12,11 +12,11 @@ public class AdvancedCardCentaurus extends AdvancedCharacterInfluenceType{
 
     @Override
     public int getPlayerInfluence(Player player, Island island){
-        return new CalculatorInfluence(player, island){
+        return new CalculatorInfluence(){
             @Override
-            public int evaluate(){
-                return playerStudentInfluence();
+            public int evaluate(Player player, Island island){
+                return playerStudentInfluence(player, island);
             }
-        }.evaluate();
+        }.evaluate(player, island);
     }
 }

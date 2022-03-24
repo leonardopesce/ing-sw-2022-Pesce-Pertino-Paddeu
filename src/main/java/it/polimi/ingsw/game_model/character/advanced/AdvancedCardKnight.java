@@ -18,7 +18,7 @@ public class AdvancedCardKnight extends AdvancedCharacter{
         return new GameExpertMode(game){
             @Override
             protected int playerInfluence(Player player, Island island){
-                int influence = new CalculatorInfluence(player, island).evaluate();
+                int influence = new CalculatorInfluence().evaluate(player, island);
                 if(player.hasPlayedSpecialCard()){
                     influence += 2;
                 }

@@ -5,16 +5,12 @@ import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.world.Island;
 
 public class CalculatorInfluence {
-    Player player;
-    Island island;
 
-    public CalculatorInfluence(Player player, Island island){
-        this.player = player;
-        this.island = island;
+    public CalculatorInfluence(){
     }
 
-    public int evaluate(){
-        return playerTowerInfluence() + playerStudentInfluence();
+    public int evaluate(Player player, Island island){
+        return playerTowerInfluence(player, island) + playerStudentInfluence(player, island);
     }
 
     /**
@@ -26,9 +22,9 @@ public class CalculatorInfluence {
      *     more islands), it means that there are more than one tower to be counted (according to our implementation choices,
      *     exactly the size of the island).
      *
-     * @return the additional influence brought by towers on a specific island for a specific playe
+     * @return the additional influence brought by towers on a specific island for a specific player
      */
-    protected int playerTowerInfluence(){
+    protected int playerTowerInfluence(Player player, Island island){
         if(!island.getTowers().isEmpty() && island.getTowers().get(0).getColor() == player.getColor()){
             return island.getTowers().size();
         }
@@ -46,7 +42,7 @@ public class CalculatorInfluence {
      *
      * @return the total influence brought by the students whose professors are controlled by the specified player
      */
-    protected int playerStudentInfluence(){
+    protected int playerStudentInfluence(Player player, Island island){
         int influence = 0;
         for(Teacher t: player.getTeachers()){
             for(Student s: island.getStudents()){

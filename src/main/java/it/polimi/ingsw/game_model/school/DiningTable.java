@@ -26,6 +26,13 @@ public class DiningTable {
         else throw new EmptyDiningTableException("The table is empty. You cannot remove any student.");
     }
 
+    public void removeStudent(int numberToRemove) {
+        for(int i=0; i<numberToRemove; i++) {
+            if(numberOfStudents > 0) numberOfStudents--;
+            else break;
+        }
+    }
+
     public ColorCharacter getColor() {
         return color;
     }

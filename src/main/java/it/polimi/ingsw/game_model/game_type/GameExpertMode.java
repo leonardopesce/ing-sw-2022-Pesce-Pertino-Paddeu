@@ -52,7 +52,7 @@ public class GameExpertMode extends Game {
         if(playerCard.getCategory() == AdvancedCharacterInfluenceType.INFLUENCE_CATEGORY){
             return ((AdvancedCharacterInfluenceType)playerCard).getPlayerInfluence(pl, island);
         }
-        return new CalculatorInfluence(pl, island).evaluate();
+        return new CalculatorInfluence().evaluate(pl, island);
     }
 
     @Override

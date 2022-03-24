@@ -37,6 +37,7 @@ public class Game {
     protected final BagOfStudents bag;
     protected final Terrain terrain;
     private final MotherNature motherNature;
+    private CalculatorInfluence influenceCalculator;
     private boolean isStartable;
 
     public Game(Game game){
@@ -51,6 +52,8 @@ public class Game {
         bag = game.bag;
         terrain = game.terrain;
         motherNature = game.motherNature;
+        isStartable = game.isStartable;
+        influenceCalculator = game.influenceCalculator;
     }
 
     public Game(int playerNums) {
@@ -140,6 +143,14 @@ public class Game {
         else {
             throw new TooManyPlayerException("The game as already reached the limit of " + MAX_PLAYERS + " players");
         }
+    }
+
+    public CalculatorInfluence getInfluenceCalculator() {
+        return influenceCalculator;
+    }
+
+    public void setInfluenceCalculator(CalculatorInfluence calculator) {
+        this.influenceCalculator = calculator;
     }
 
     //controller
@@ -353,6 +364,14 @@ public class Game {
         return players.get(x);
     }
 
+    public BagOfStudents getBag() {
+        return bag;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     //controller
     public int[] getPlanningOrder(){
         return planningOrder;
@@ -388,7 +407,7 @@ public class Game {
     }
 
     protected int playerInfluence(Player pl, Island island) {
-        return new CalculatorInfluence(pl, island).evaluate();
+        return new CalculatorInfluence().evaluate(pl, island);
     }
 
     private List<List<Player>> getListsOfPlayersWithSameColor(){
