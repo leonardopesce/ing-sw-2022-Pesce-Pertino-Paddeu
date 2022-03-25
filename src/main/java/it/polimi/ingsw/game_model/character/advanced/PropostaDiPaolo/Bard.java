@@ -17,13 +17,7 @@ public class Bard {
         this.studentsOnCard = new ArrayList<>();
 
         // Setting up 4 students on the card
-        for(int i=0;i<4;i++) {
-            try {
-                studentsOnCard.add(game.getBag().drawStudentFromBag());
-            } catch (BagEmptyException e) {
-                // impossible to get here since the bag cannot be empty at the beginning of the game
-            }
-        }
+        studentsOnCard.addAll(game.getBag().drawNStudentFromBag(4));
     }
 
     public void playEffect(Island islandToPlaceStudentOn, int studentToPick) {
