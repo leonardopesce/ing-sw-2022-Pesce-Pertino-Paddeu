@@ -22,4 +22,8 @@ public class Knight {
                 }
         );
     }
+
+    public void resetEffect(){
+        game.setInfluenceCalculator(new CalculatorInfluence());
+    }
 }
