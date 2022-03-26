@@ -11,17 +11,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class rappresenting the bag of the game.
+ * A class representing the bag of the game.
  * A bag contains:
  * <ul>
  *     <li>unpickedStudents - A list of all the students which are not already been played.</li>
  * </ul>
  */
 public class BagOfStudents extends Character{
-    private List<Student> unpickedStudents;
+    private final List<Student> unpickedStudents;
 
     public BagOfStudents(){
-        unpickedStudents = new ArrayList<Student>();
+        unpickedStudents = new ArrayList<>();
     }
 
     /**
@@ -67,7 +67,7 @@ public class BagOfStudents extends Character{
      */
     public Student drawStudentFromBag() throws BagEmptyException {
         Random randomPicker = new Random();
-        if(!unpickedStudents.isEmpty()) {
+        if(isEmpty()) {
             return this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
         }
         else throw new BagEmptyException("The bag is empty");

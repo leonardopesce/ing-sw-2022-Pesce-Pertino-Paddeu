@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CloudCard {
-    private List<Student> studentsOnCloud;
+    private final List<Student> studentsOnCloud;
 
     public CloudCard() {
         this.studentsOnCloud = new ArrayList<>();

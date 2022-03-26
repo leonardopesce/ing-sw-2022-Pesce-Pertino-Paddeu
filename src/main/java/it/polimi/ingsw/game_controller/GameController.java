@@ -1,10 +1,14 @@
 package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
+import it.polimi.ingsw.game_model.CalculatorInfluence;
+import it.polimi.ingsw.game_model.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Assistant;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_view.GameView;
@@ -18,10 +22,13 @@ public class GameController {
     private final Game game;
     private final GameView view;
     private int turn = 0;
+    private final int[] planningOrder, actionOrder;
 
     public GameController(Game game, GameView view) {
         this.game = game;
         this.view = view;
+        planningOrder = new int[game.MAX_PLAYERS];
+        actionOrder = new int[game.MAX_PLAYERS];
     }
 
     /**
@@ -65,16 +72,8 @@ public class GameController {
     }
 
     /**
-     * Handle the game status.
-     * <p>
-     *     Each game has a defined structure:
-     *     <ol>
-     *         Before the game starts:
-     *         <ol>
-     *             <li>Gameboard setup
-     *             <li>createPlanning
-     *         </ol>
-     *     </ol>
+     * Handle the game initial status. Before the game starts:
+     * <ol><li>create next Planning phase order <li> Gameboard setup <li> play a Turn </ol>
      */
     public final void start() {
         game.setUpGamePhase(GamePhase.GAME_PENDING);
@@ -88,6 +87,9 @@ public class GameController {
         }
     }
 
+    /**
+     *  This function states the beginning of a new turn consisted in up to 4 planning phase and action phase
+     */
     private void playTurn(){
         if (game.winner().equals(Game.NO_NICKNAME)) {
             game.setUpGamePhase(GamePhase.PLANNING_PHASE);
@@ -97,9 +99,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Plays the planning phase for the next player following the game planning order, in which every player plays an
+     * assistant card. <p> If all player have already played an assistant card, moves to nextActionPhase() </p>
+     */
     private void nextPlanningPhase(){
         if(turn < game.getNumberOfPlayers()){
-            Player pl = game.getPlayerNumber(game.getPlanningOrder()[turn]);
+            Player pl = game.getPlayerNumber(planningOrder[turn]);
             //TODO vedere come implementare model observer per view
         }
         else{
@@ -112,13 +118,14 @@ public class GameController {
 
     /**
      * This function will be called when a player as chosen which Assistant card to play.
-     * It notifies the game model which card as been chosen and then tries to play the next planning phase
-     * @param
+     * It notifies the game model which card as been chosen and then tries to play the next planning phase.
+     * @param player the player who request the action.
+     * @param assistant the played assistant card.
      */
     public void selectAssistantCard(Player player, Assistant assistant){
-        if(game.getPlayers().get(game.getPlanningOrder()[turn]).equals(player)){
+        if(game.getPlayers().get(planningOrder[turn]).equals(player)){
             if(isAssistantCardPlayable(player, assistant)) {
-                game.getPlayerNumber(game.getPlanningOrder()[turn]).playAssistant(assistant);
+                game.getPlayerNumber(planningOrder[turn]).playAssistant(assistant);
 
                 turn++;
                 nextPlanningPhase();
@@ -132,15 +139,26 @@ public class GameController {
         }
     }
 
+    /**
+     *  Check if the assistant card is playable, the assistant card cannot be played if it was already played by another
+     *  player, unless the player has no other card available to play.
+     *
+     * @param player the player who request the action
+     * @param assistant the played assistant card
+     * @return <strong>true</strong> if the assistant is playable, <strong>false</strong> otherwise.
+     */
     private boolean isAssistantCardPlayable(Player player, Assistant assistant){
         List<Assistant> playedAssistant = new ArrayList<>();
         for(int i = 0; i < turn; i++){
-            playedAssistant.add(game.getPlayers().get(game.getPlanningOrder()[i]).getDiscardedCard());
+            playedAssistant.add(game.getPlayers().get(planningOrder[i]).getDiscardedCard());
         }
 
         return !playedAssistant.contains(assistant) || playedAssistant.containsAll(player.getDeckAssistants().getAssistants());
     }
 
+    /**
+     * Creates the order for the action phase, based on the value of the assistant card played.
+     */
     public void createActionPhaseOrder(){
         List<Pair<Integer, Integer>> playerAndValue = new ArrayList<>();
         //cycle to create all position
@@ -149,45 +167,51 @@ public class GameController {
         }
 
         playerAndValue.sort(Comparator.comparing(Pair::getValue));
-
         for(int i = 0; i < game.getNumberOfPlayers(); i++){
-            game.getActionOrder()[i] = playerAndValue.get(i).getKey();
+            actionOrder[i] = playerAndValue.get(i).getKey();
         }
     }
 
-    public void resetPlayerNumberOfMovedStudents(){
+    /**
+     * For every player reset his count of NumberOfMovedStudents
+     */
+    private void resetPlayerNumberOfMovedStudents(){
         for(Player pl: game.getPlayers()){
             pl.resetNumberOfMovedStudents();
         }
     }
 
+    /**
+     * Plays the action phase for the next player following the game action order, that starts with the movement of the
+     * students. <p> If all player have already played, moves to a new turn with playTurn() </p>
+     */
     private void nextActionPhase(){
         if(turn < game.getNumberOfPlayers() && game.winner().equals(Game.NO_NICKNAME)){
             game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_STUDENTS);
-            moveStudentPhase(game.getPlayerNumber(game.getActionOrder()[turn]));
+            moveStudentPhase(game.getPlayerNumber(actionOrder[turn]));
         }
         else{
             turn = 0;
-            createNextPlanningOrder(game.getActionOrder()[0]);
+            createNextPlanningOrder(actionOrder[0]);
+
             playTurn();
         }
     }
 
+    /**
+     * Check if the player hasn't moved all his student
+     * @param player the player who request the action
+     */
     private void moveStudentPhase(Player player){
-        if(game.studentsLeftToMove(player) > 0){
-            //TODO creare observer per la view per mostrare la nuova fase
-
-        }
-        else {
-            game.updateProfessorsOwnership(player);
-            view.showNewProfessorsOwnership();
-            moveMotherNature(player);
+        //TODO creare observer per la view per mostrare la nuova fase{
+        if(game.studentsLeftToMove(player) == 0){
+            game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE);
         }
     }
 
     // view callback for moving students
     public void playerMoveStudentToIsland(Player player, int student, int islandNumber){
-        Player pl = game.getPlayerNumber(game.getActionOrder()[turn]);
+        Player pl = game.getPlayerNumber(actionOrder[turn]);
         if(pl.equals(player)) {
             //TODO display movement of student directly in view
             game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
@@ -201,32 +225,89 @@ public class GameController {
     }
 
     public void playerMoveStudentToDiningHall(Player player, int student){
-        Player pl = game.getPlayerNumber(game.getActionOrder()[turn]);
+        Player pl = game.getPlayerNumber(actionOrder[turn]);
         if(pl.equals(player)) {
             try {
-                player.moveStudentToDiningHall(player.getSchool().getEntrance().moveStudent(student).getColor());
+                ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
+                game.moveStudentToDiningHall(player, diningHallColor);
+                player.incrementNumberOfMovedStudents();
+                game.updateTeacherOwnership(player, diningHallColor);
             } catch (TooManyStudentsException e) {
                 //TODO non puoi più aggiungere studenti a quel tavolo visto che è pieno
                 e.printStackTrace();
             }
-            player.incrementNumberOfMovedStudents();
-            moveStudentPhase(pl);
+            moveStudentPhase(player);
         }
-            else{
+        else{
             //TODO non è il tuo turno
         }
     }
 
-    private void moveMotherNature(Player player){
-        view.showMotherNaturePossibleStep(player.getDiscardedCard().getPossibleSteps());
+    /**
+     * Given the max possible steps, it lets the user choose how many steps mother nature
+     * has to do, and then it moves her.
+     *
+     * @param player: the player who called the action
+     * @param x: selected steps that mother nature has to perform
+     *                (based on the value of the assistant card played and possible usage of advanced card).
+     */
+    public void moveMotherNatureOfSteps(Player player, int x){
+        if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
+            if(1 <= x && x <= player.getDiscardedCard().getPossibleSteps()){
+                game.getMotherNature().moveOfIslands(game.getTerrain(), x);
+
+                game.evaluateInfluences();
+
+                if(game.winner().equals(Game.NO_NICKNAME)) {
+                    game.setUpGamePhase(GamePhase.ACTION_PHASE_CHOOSING_CLOUD);
+                }
+                else {
+                    game.setUpGamePhase(GamePhase.GAME_ENDED);
+                    endGame();
+                }
+            }
+            else{
+                //TODO non sei nel range di step valido
+            }
+        } else {
+            //TODO non è il tuo turno
+        }
     }
 
-    public void moveMotherNatureOfSteps(int x){
-        game.moveMotherNature(x);
-        game.evaluateInfluences();
-        view.showNewInfluence();
-        nextActionPhase();
+    private void endGame(){
+        //TODO the game is ended
     }
+
+    public void choseCloud(Player player, CloudCard cloudCard){
+        if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
+            player.getSchool().getEntrance().addAllStudents(cloudCard.getStudentsOnCloud());
+            turn++;
+            //TODO reset
+            player.resetPlayedSpecialCard();
+            game.setInfluenceCalculator(new CalculatorInfluence());
+            game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
+
+            nextActionPhase();
+        } else {
+            //TODO non è il tuo turno
+        }
+    }
+
+    public void playAdvancedCard(Player player, AdvancedCharacter card, Object... args){
+        if(player.equals(game.getPlayerNumber(actionOrder[turn])) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
+            if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
+                if(AdvancedCardController.checkArgument(card, args)){
+                    player.setPlayedSpecialCard();
+                    card.getType().incrementCardCost();
+                    AdvancedCardController.playEffectOfCard(card, args);
+                }
+            }
+        }
+        else {
+            //TODO fa il bravo non è il tuo turno
+        }
+    }
+
 
     public void refillClouds() {
         for(CloudCard cloudCard: game.getTerrain().getCloudCards()){
@@ -243,9 +324,9 @@ public class GameController {
      * The player which played the assistant card with the lowest value will start the Planning Phase of the next turn.
      */
     public void createNextPlanningOrder(int firstPlayerPlanningOrder){
-        game.getPlanningOrder()[0] = firstPlayerPlanningOrder;
+        planningOrder[0] = firstPlayerPlanningOrder;
         for(int i = 1; i < game.getNumberOfPlayers(); i++){
-            game.getPlanningOrder()[i] = (game.getPlanningOrder()[i-1] + 1) % game.getNumberOfPlayers();
+            planningOrder[i] = (planningOrder[i-1] + 1) % game.getNumberOfPlayers();
         }
     }
 }

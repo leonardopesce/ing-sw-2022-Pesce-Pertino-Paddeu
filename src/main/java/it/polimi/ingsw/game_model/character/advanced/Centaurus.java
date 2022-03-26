@@ -15,8 +15,12 @@ public class Centaurus extends AdvancedCharacter{
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){
                     @Override
-                    public int evaluate(Player player, Island island){
-                        return playerStudentInfluence(player,island);
+                    public int evaluateForPlayer(Player player, Island island){
+                        if(player.hasPlayedSpecialCard()) {
+                            return playerStudentInfluence(player, island);
+                        } else {
+                            return playerTowerInfluence(player, island) + playerStudentInfluence(player,island);
+                        }
                     }
                 }
         );

@@ -4,7 +4,10 @@ import it.polimi.ingsw.game_model.character.Character;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
 
+import java.util.List;
 import java.util.Random;
+
+import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
 /**
  * An abstract class to represent all the 12 character cards.
@@ -29,21 +32,29 @@ public abstract class AdvancedCharacter extends Character {
         return type;
     }
 
-    public static AdvancedCharacter getRandomCard(Game game){
-        int value = new Random().nextInt(AdvancedCharacterType.values().length);
-        return switch (value) {
-            case 0 -> new Monk(game);
-            case 1 -> new Bartender(game);
-            case 2 -> new Flagman(game);
-            case 3 -> new Postman(game);
-            case 4 -> new Healer(game);
-            case 5 -> new Centaurus(game);
-            case 6 -> new Jester(game);
-            case 7 -> new Knight(game);
-            case 8 -> new Merchant(game);
-            case 9 -> new Bard(game);
-            case 10 -> new Princess(game);
-            case 11 -> new Landlord(game);
+    public static AdvancedCharacter getRandomCard(Game game, List<AdvancedCharacter> alreadyPresent){
+        int value = new Random().nextInt(AdvancedCharacterType.values().length - 1);
+
+        while(alreadyPresent.stream().map(character -> character.getType().ordinal()).toList().contains(value)){
+            value = new Random().nextInt(AdvancedCharacterType.values().length - 1);
+        }
+
+        /*
+         *  DO NOT CHANGE ORDER, just in case
+         */
+        return switch (AdvancedCharacterType.values()[value]) {
+            case MONK -> new Monk(game);
+            case BARTENDER -> new Bartender(game);
+            case FLAGMAN -> new Flagman(game);
+            case POSTMAN -> new Postman(game);
+            case HEALER -> new Healer(game);
+            case CENTAURUS -> new Centaurus(game);
+            case JESTER -> new Jester(game);
+            case KNIGHT -> new Knight(game);
+            case MERCHANT -> new Merchant(game);
+            case BARD -> new Bard(game);
+            case PRINCESS -> new Princess(game);
+            case LANDLORD -> new Landlord(game);
             default -> throw new IllegalStateException("Unexpected value for random Expert mode card getter: " + value);
         };
     }

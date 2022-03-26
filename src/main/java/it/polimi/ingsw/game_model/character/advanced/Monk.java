@@ -17,7 +17,11 @@ public class Monk extends AdvancedCharacter{
         this.studentsOnCard = new ArrayList<>();
 
         // Setting up 4 students on the card
-        studentsOnCard.addAll(game.getBag().drawNStudentFromBag(4));
+        try {
+            studentsOnCard.addAll(game.getBag().drawNStudentFromBag(4));
+        } catch (BagEmptyException e) {
+            e.printStackTrace();
+        }
     }
 
 

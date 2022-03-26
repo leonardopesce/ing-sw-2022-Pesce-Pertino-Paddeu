@@ -16,7 +16,7 @@ public class GameViewCLI extends GameView{
     }
 
     @Override
-    public void showNewProfessorsOwnership() {
+    public void showNewTeachersOwnership() {
         //TODO
     }
 

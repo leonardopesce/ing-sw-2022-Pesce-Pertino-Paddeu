@@ -17,7 +17,7 @@ import java.util.Random;
  *
  *     <dt><b>Bartender</b> - Cost: <b>2</b></dt>
  *     <dd>
- *         <b>EFFECT</b>: During this turn, you take the control of the other players' professors even if you have the same amount of students in your room as the player currently controlling them.
+ *         <b>EFFECT</b>: During this turn, you take the control of the other players' teachers even if you have the same amount of students in your room as the player currently controlling them.
  *     </dd>
  *
  *     <dt><b>Flagman</b> - Cost: <b>3</b></dt>
@@ -95,7 +95,7 @@ public enum AdvancedCharacterType {
 
 
     private final String name;
-    private final int cardCost;
+    private int cardCost;
 
     AdvancedCharacterType(String name, int cardCost) {
         this.name = name;
@@ -108,5 +108,9 @@ public enum AdvancedCharacterType {
 
     public int getCardCost() {
         return cardCost;
+    }
+
+    public void incrementCardCost(){
+        cardCost++;
     }
 }

@@ -3,7 +3,6 @@ package it.polimi.ingsw.game_model;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
-import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
@@ -20,7 +19,7 @@ public class Player {
     private final String nickname;
     private ColorTower color;
     private School school;
-    private DeckAssistants deckAssistants;
+    private final DeckAssistants deckAssistants;
     private Assistant discardedCard;
     private int money = 0;
     private boolean playedSpecialCard = false;
@@ -32,24 +31,14 @@ public class Player {
         this.deckAssistants = new DeckAssistants(deckType);
     }
 
-    public void initialSetup(List<Student> students, int numTower, ColorTower color) throws TooManyStudentsException{
+    public void initialSetup(List<Student> students, int numTower, ColorTower color){
         school = new School(students, numTower);
         this.color = color;
 
     }
 
-
-
-    public void discardAssistant(){
-
-    }
-
-    public void playedSpecialCard(AdvancedCharacter card){
-        if(!playedSpecialCard && money >= card.getAdvanceCharacterType().getCardCost()){
-            money -= card.getAdvanceCharacterType().getCardCost();
-            playedSpecialCard = true;
-        }
-
+    public void setPlayedSpecialCard(){
+        playedSpecialCard = true;
     }
 
     public boolean hasPlayedSpecialCard() {
@@ -69,8 +58,8 @@ public class Player {
         return nickname;
     }
 
-    public void playAssistant(Assistant x) {
-         discardedCard = deckAssistants.playAssistant(x);
+    public void playAssistant(Assistant discardedCard) {
+         this.discardedCard = deckAssistants.playAssistant(discardedCard);
     }
 
     public School getSchool() {
@@ -97,10 +86,6 @@ public class Player {
         school.setTowersAvailable(getTowersAvailable() + x);
     }
 
-    public void setDiscardedCard(Assistant discardedCard) {
-        this.discardedCard = discardedCard;
-    }
-
     public int getMoney() {
         return money;
     }
@@ -125,7 +110,11 @@ public class Player {
         return false;
     }
 
-    public Teacher getTeacherOfColor(ColorCharacter color){
+    public int getNumberOfStudentAtTableOfColor(ColorCharacter color){
+        return getDiningTableWithColor(color).getNumberOfStudents();
+    }
+
+    public Teacher moveTeacherOfColor(ColorCharacter color){
         for(Teacher t: getTeachers()){
             if(t.getColor() == color){
                 getTeachers().remove(t);
@@ -160,13 +149,12 @@ public class Player {
         school.getDiningHall().getTableOfColor(color).addStudent();
     }
 
-    public boolean addMoney(Integer availableMoney){
+    public int addMoney(int availableMoney){
         if(availableMoney > 0){
             availableMoney--;
             money++;
-            return true;
         }
-        return false;
+        return availableMoney;
     }
 
     @Override
@@ -174,11 +162,6 @@ public class Player {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return money == player.money && playedSpecialCard == player.playedSpecialCard && movedStudents == player.movedStudents && Objects.equals(nickname, player.nickname) && color == player.color && Objects.equals(school, player.school) && Objects.equals(deckAssistants, player.deckAssistants) && Objects.equals(discardedCard, player.discardedCard);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nickname, color, school, deckAssistants, discardedCard, money, playedSpecialCard, movedStudents);
+        return Objects.equals(nickname, player.nickname);
     }
 }

@@ -16,4 +16,8 @@ public class Assistant extends Character{
     public int getPossibleSteps() {
         return cardType.getPossibleSteps();
     }
+
+    public void incrementPossibleSteps(int n) {
+        this.cardType.setPossibleSteps(this.getPossibleSteps()+n);
+    }
 }

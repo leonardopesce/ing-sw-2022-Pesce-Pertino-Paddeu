@@ -17,8 +17,13 @@ public class Knight extends AdvancedCharacter{
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){
                     @Override
-                    public int evaluate(Player player, Island island){
-                        return playerTowerInfluence(player, island) + playerStudentInfluence(player,island) + 2;
+                    public int evaluateForPlayer(Player player, Island island){
+                        if(player.hasPlayedSpecialCard()){
+                            return playerTowerInfluence(player, island) + playerStudentInfluence(player,island) + 2;
+                        }
+                        else {
+                            return playerTowerInfluence(player, island) + playerStudentInfluence(player,island);
+                        }
                     }
                 }
         );
