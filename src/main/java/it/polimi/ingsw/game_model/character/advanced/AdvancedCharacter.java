@@ -3,11 +3,8 @@ package it.polimi.ingsw.game_model.character.advanced;
 import it.polimi.ingsw.game_model.character.Character;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
-import it.polimi.ingsw.game_model.game_type.GameExpertMode;
 
 import java.util.Random;
-
-import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
 /**
  * An abstract class to represent all the 12 character cards.
@@ -16,22 +13,12 @@ import static it.polimi.ingsw.game_model.character.character_utils.AdvancedChara
  */
 public abstract class AdvancedCharacter extends Character {
     private final AdvancedCharacterType type;
-    private final int category;
+    protected final Game game;
 
-    protected AdvancedCharacter(AdvancedCharacterType type, int category){
+    protected AdvancedCharacter(AdvancedCharacterType type, Game game){
         super();
         this.type = type;
-        this.category = category;
-    }
-
-    public abstract Game playEffect(Game game);
-
-    public Game resetEffect(Game game){
-        return new GameExpertMode(game);
-    }
-
-    public AdvancedCharacterType getAdvanceCharacterType(){
-        return type;
+        this.game = game;
     }
 
     public String getName(){
@@ -42,25 +29,21 @@ public abstract class AdvancedCharacter extends Character {
         return type;
     }
 
-    public int getCategory(){
-        return category;
-    }
-
-    public static AdvancedCharacter getRandomCard(){
+    public static AdvancedCharacter getRandomCard(Game game){
         int value = new Random().nextInt(AdvancedCharacterType.values().length);
         return switch (value) {
-            case 0 -> new ColorPickerAdvancedCharacter(LANDLORD);
-            case 1 -> new ColorPickerAdvancedCharacter(MERCHANT);
-            case 2 -> new StudentStorageAdvancedCharacter(MONK);
-            case 3 -> new StudentStorageAdvancedCharacter(JESTER);
-            case 4 -> new StudentStorageAdvancedCharacter(PRINCESS);
-            case 5 -> new NormalAdvancedCharacter(BARTENDER);
-            case 6 -> new NormalAdvancedCharacter(FLAGMAN);
-            case 7 -> new NormalAdvancedCharacter(POSTMAN);
-            case 8 -> new NormalAdvancedCharacter(HEALER);
-            case 9 -> new NormalAdvancedCharacter(CENTAURUS);
-            case 10 -> new NormalAdvancedCharacter(BARD);
-            case 11 -> new NormalAdvancedCharacter(KNIGHT);
+            case 0 -> new Monk(game);
+            case 1 -> new Bartender(game);
+            case 2 -> new Flagman(game);
+            case 3 -> new Postman(game);
+            case 4 -> new Healer(game);
+            case 5 -> new Centaurus(game);
+            case 6 -> new Jester(game);
+            case 7 -> new Knight(game);
+            case 8 -> new Merchant(game);
+            case 9 -> new Bard(game);
+            case 10 -> new Princess(game);
+            case 11 -> new Landlord(game);
             default -> throw new IllegalStateException("Unexpected value for random Expert mode card getter: " + value);
         };
     }

@@ -7,5 +7,6 @@ public enum DeckType {
 
     DeckType(String name) {this.name=name;}
 
+
     public String getName() { return name; }
 }

@@ -18,13 +18,11 @@ public class Entrance {
     }
 
     public Student moveStudent(int student) {
-        Student tmpStudent = students.get(student);
-        students.remove(student);
-        return tmpStudent;
+        return students.remove(student);
     }
 
     public void addAllStudents(List<Student> students) throws TooManyStudentsException {
-        if(students.size() + this.students.size() < MAX_NUMBER_OF_STUDENT){
+        if(students.size() + this.students.size() <= MAX_NUMBER_OF_STUDENT){
             this.students.addAll(students);
         }
         else throw new TooManyStudentsException("Trying to add too many students to an entrance");

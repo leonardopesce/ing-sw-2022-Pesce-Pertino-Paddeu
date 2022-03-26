@@ -1,15 +1,15 @@
-package it.polimi.ingsw.game_model.character.advanced.PropostaDiPaolo;
+package it.polimi.ingsw.game_model.character.advanced;
 
 import it.polimi.ingsw.game_model.CalculatorInfluence;
 import it.polimi.ingsw.game_model.Player;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
-public class Centaurus {
-    private final Game game;
+public class Centaurus extends AdvancedCharacter{
 
     public Centaurus(Game game) {
-        this.game = game;
+        super(AdvancedCharacterType.CENTAURUS, game);
     }
     public void playEffect() {
         game.setInfluenceCalculator(

@@ -6,12 +6,14 @@ import it.polimi.ingsw.game_model.character.DeckAssistants;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.School;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Player {
     //TODO sistemare questione torri in 4 giocatori
@@ -24,13 +26,16 @@ public class Player {
     private boolean playedSpecialCard = false;
     private int movedStudents = 0;
 
-    public Player(String nickname) {
+    public Player(String nickname, DeckType deckType) {
         this.nickname = nickname;
+        //TODO controllare prima che nessun altro abbia scelto lo stesso deckType
+        this.deckAssistants = new DeckAssistants(deckType);
     }
 
-    public void initialSetup(List<Student> students, int numTower, ColorTower color){
+    public void initialSetup(List<Student> students, int numTower, ColorTower color) throws TooManyStudentsException{
         school = new School(students, numTower);
         this.color = color;
+
     }
 
 
@@ -64,8 +69,8 @@ public class Player {
         return nickname;
     }
 
-    public void playAssistant(int x) {
-        discardedCard = deckAssistants.playAssistant(x);
+    public void playAssistant(Assistant x) {
+         discardedCard = deckAssistants.playAssistant(x);
     }
 
     public School getSchool() {
@@ -143,16 +148,16 @@ public class Player {
         return movedStudents;
     }
 
+    public void incrementNumberOfMovedStudents(){
+        movedStudents++;
+    }
+
     public void resetNumberOfMovedStudents() {
         this.movedStudents = 0;
     }
 
-    public void moveStudentToDiningHall(ColorCharacter color) {
-        try {
-            school.getDiningHall().getTableOfColor(color).addStudent();
-        } catch (TooManyStudentsException e) {
-            e.printStackTrace();
-        }
+    public void moveStudentToDiningHall(ColorCharacter color) throws TooManyStudentsException{
+        school.getDiningHall().getTableOfColor(color).addStudent();
     }
 
     public boolean addMoney(Integer availableMoney){
@@ -162,5 +167,18 @@ public class Player {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return money == player.money && playedSpecialCard == player.playedSpecialCard && movedStudents == player.movedStudents && Objects.equals(nickname, player.nickname) && color == player.color && Objects.equals(school, player.school) && Objects.equals(deckAssistants, player.deckAssistants) && Objects.equals(discardedCard, player.discardedCard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickname, color, school, deckAssistants, discardedCard, money, playedSpecialCard, movedStudents);
     }
 }

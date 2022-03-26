@@ -73,14 +73,10 @@ public class BagOfStudents extends Character{
         else throw new BagEmptyException("The bag is empty");
     }
 
-    public List<Student> drawNStudentFromBag(int n){
+    public List<Student> drawNStudentFromBag(int n) throws BagEmptyException{
         List<Student> temp = new ArrayList<>();
         for(int i = 0; i < n; i++){
-            try {
-                temp.add(drawStudentFromBag());
-            } catch (BagEmptyException e) {
-                e.printStackTrace();
-            }
+            temp.add(drawStudentFromBag());
         }
         return temp;
     }

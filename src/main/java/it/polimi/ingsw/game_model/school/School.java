@@ -13,12 +13,8 @@ public class School {
     private Entrance entrance = new Entrance();
     private Integer towersAvailable;
 
-    public School(List<Student> students, int towersAvailable){
-        try {
-            entrance.addAllStudents(students);
-        } catch (TooManyStudentsException e) {
-            e.printStackTrace();
-        }
+    public School(List<Student> students, int towersAvailable) throws TooManyStudentsException{
+        entrance.addAllStudents(students);
         this.towersAvailable = towersAvailable;
     }
 

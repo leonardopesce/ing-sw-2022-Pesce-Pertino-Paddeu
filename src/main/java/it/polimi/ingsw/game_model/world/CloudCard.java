@@ -7,10 +7,8 @@ import java.util.List;
 
 public class CloudCard {
     private List<Student> studentsOnCloud;
-    private int maxSize;
 
-    public CloudCard(int maxSize) {
-        this.maxSize = maxSize;
+    public CloudCard() {
         this.studentsOnCloud = new ArrayList<>();
     }
 

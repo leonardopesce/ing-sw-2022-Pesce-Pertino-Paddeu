@@ -1,15 +1,16 @@
-package it.polimi.ingsw.game_model.character.advanced.PropostaDiPaolo;
+package it.polimi.ingsw.game_model.character.advanced;
 
 import it.polimi.ingsw.game_model.CalculatorInfluence;
 import it.polimi.ingsw.game_model.Player;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
-public class Knight {
-    private final Game game;
+public class Knight extends AdvancedCharacter{
 
-    public Knight(Game game) {
-        this.game = game;
+
+    public Knight(Game game){
+        super(AdvancedCharacterType.KNIGHT, game);
     }
 
     public void playEffect() {
@@ -21,9 +22,5 @@ public class Knight {
                     }
                 }
         );
-    }
-
-    public void resetEffect(){
-        game.setInfluenceCalculator(new CalculatorInfluence());
     }
 }

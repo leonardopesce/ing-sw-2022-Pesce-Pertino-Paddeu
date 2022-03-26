@@ -9,11 +9,11 @@ import it.polimi.ingsw.game_model.world.Island;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bard extends AdvancedCharacter{
+public class Monk extends AdvancedCharacter{
     private final List<Student> studentsOnCard;
 
-    public Bard(Game game) {
-        super(AdvancedCharacterType.BARD, game);
+    public Monk(Game game) {
+        super(AdvancedCharacterType.MONK, game);
         this.studentsOnCard = new ArrayList<>();
 
         // Setting up 4 students on the card

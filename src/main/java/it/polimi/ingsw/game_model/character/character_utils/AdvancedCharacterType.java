@@ -1,9 +1,7 @@
 package it.polimi.ingsw.game_model.character.character_utils;
 
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
-import it.polimi.ingsw.game_model.character.advanced.ColorPickerAdvancedCharacter;
-import it.polimi.ingsw.game_model.character.advanced.NormalAdvancedCharacter;
-import it.polimi.ingsw.game_model.character.advanced.StudentStorageAdvancedCharacter;
+
 
 import java.util.Random;
 
@@ -50,14 +48,19 @@ import java.util.Random;
  *         <b>EFFECT</b>: You may take up to 3 students from this card and replace them with the same number of students from your Entrance.
  *     </dd>
  *
- *     <dt><b>Bard</b> - Cost: <b>1</b></dt>
- *     <dd>
- *         <b>EFFECT</b>: You may exchange up to 2 students between your entrance and your dining room.
- *     </dd>
- *
  *     <dt><b>Knight</b> - Cost: <b>2</b></dt>
  *     <dd>
  *         <b>EFFECT</b>: During the influence calculation this turn, you count as having 2 more influence.
+ *     </dd>
+ *
+ *     <dt><b>Merchant</b> - Cost: <b>3</b></dt>
+ *     <dd>
+ *         <b>EFFECT</b>: Choose a type of student: every player (including yourself) must return 3 students of that type from their dining room to the bag. If any player has fewer than 3 students of that type, return as many students as they have.
+ *     </dd>
+ *
+ *     <dt><b>Bard</b> - Cost: <b>1</b></dt>
+ *     <dd>
+ *         <b>EFFECT</b>: You may exchange up to 2 students between your entrance and your dining room.
  *     </dd>
  *
  *     <dt><b>Princess</b> - Cost: <b>2</b></dt>
@@ -71,29 +74,24 @@ import java.util.Random;
  *         <b>EFFECT</b>: Chose a color of student: during the calculation of influence this turn, that color adds no influence.
  *     </dd>
  *
- *     <dt><b>Merchant</b> - Cost: <b>3</b></dt>
- *     <dd>
- *         <b>EFFECT</b>: Choose a type of student: every player (including yourself) must return 3 students of that type from their dining room to the bag. If any player has fewer than 3 students of that type, return as many students as they have.
- *     </dd>
  * </dl>
  *
  * @see AdvancedCharacter
  */
 public enum AdvancedCharacterType {
-
-    BARD("bard", 1),
+    MONK("monk", 1),
     BARTENDER("bartender", 2),
-    CENTAURUS("centaurus", 3),
     FLAGMAN("flagman", 3),
+    POSTMAN("postman", 1),
     HEALER("healer", 2),
+    CENTAURUS("centaurus", 3),
     JESTER("jester", 1),
     KNIGHT("knight", 2),
-    LANDLORD("landlord", 3),
     MERCHANT("merchant", 3),
-    MONK("monk", 1),
-    NULL("null", 0),
-    POSTMAN("postman", 1),
-    PRINCESS("princess", 2);
+    BARD("bard", 1),
+    PRINCESS("princess", 2),
+    LANDLORD("landlord", 3),
+    NULL("null", 0);
 
 
     private final String name;

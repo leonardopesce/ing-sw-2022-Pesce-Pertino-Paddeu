@@ -1,14 +1,14 @@
-package it.polimi.ingsw.game_model.character.advanced.PropostaDiPaolo;
+package it.polimi.ingsw.game_model.character.advanced;
 
 import it.polimi.ingsw.game_model.Player;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
-public class Merchant {
-    private final Game game;
+public class Merchant extends AdvancedCharacter{
 
     public Merchant(Game game) {
-        this.game = game;
+        super(AdvancedCharacterType.MERCHANT, game);
     }
 
     public void playEffect(ColorCharacter color) {
