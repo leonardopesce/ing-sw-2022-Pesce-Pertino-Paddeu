@@ -159,7 +159,7 @@ public class GameController {
     /**
      * Creates the order for the action phase, based on the value of the assistant card played.
      */
-    public void createActionPhaseOrder(){
+    private void createActionPhaseOrder(){
         List<Pair<Integer, Integer>> playerAndValue = new ArrayList<>();
         //cycle to create all position
         for(int i = 0; i < game.getNumberOfPlayers(); i++){
@@ -248,13 +248,13 @@ public class GameController {
      * has to do, and then it moves her.
      *
      * @param player: the player who called the action
-     * @param x: selected steps that mother nature has to perform
+     * @param numberOfSteps: selected steps that mother nature has to perform
      *                (based on the value of the assistant card played and possible usage of advanced card).
      */
-    public void moveMotherNatureOfSteps(Player player, int x){
+    public void moveMotherNatureOfSteps(Player player, int numberOfSteps){
         if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
-            if(1 <= x && x <= player.getDiscardedCard().getPossibleSteps()){
-                game.getMotherNature().moveOfIslands(game.getTerrain(), x);
+            if(1 <= numberOfSteps && numberOfSteps <= player.getDiscardedCard().getPossibleSteps()){
+                game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
 
                 game.evaluateInfluences();
 
@@ -309,7 +309,7 @@ public class GameController {
     }
 
 
-    public void refillClouds() {
+    private void refillClouds() {
         for(CloudCard cloudCard: game.getTerrain().getCloudCards()){
             try {
                 cloudCard.refill(game.getBag().drawNStudentFromBag(game.NUMBER_OF_STUDENTS_ON_CLOUD));
@@ -323,7 +323,7 @@ public class GameController {
      * Creates the planning order of the next turn.
      * The player which played the assistant card with the lowest value will start the Planning Phase of the next turn.
      */
-    public void createNextPlanningOrder(int firstPlayerPlanningOrder){
+    private void createNextPlanningOrder(int firstPlayerPlanningOrder){
         planningOrder[0] = firstPlayerPlanningOrder;
         for(int i = 1; i < game.getNumberOfPlayers(); i++){
             planningOrder[i] = (planningOrder[i-1] + 1) % game.getNumberOfPlayers();

@@ -19,8 +19,8 @@ import java.util.*;
 public class Game {
     public static final String NO_NICKNAME = "";
     public final int NUMBER_OF_STUDENTS_ON_CLOUD;
-    private final int[] INITIAL_NUMBER_OF_TOWER;
-    private final int INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
+    protected final int[] INITIAL_NUMBER_OF_TOWER;
+    protected final int INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
     public final int NUMBER_OF_CLOUDS;
     public final int MAX_PLAYERS;
     protected final List<Player> players = new ArrayList<>();
@@ -31,10 +31,10 @@ public class Game {
      * Each island is recognized by an id. Mother nature position is equal to
      * the id of the island she is currently on.
      */
-    private final MotherNature motherNature = new MotherNature(new Random().nextInt(12));
-    private CalculatorInfluence influenceCalculator = new CalculatorInfluence();
-    private CalculatorTeacherOwnership teacherOwnershipCalculator = new CalculatorTeacherOwnership();
-    private GamePhase gamePhase;
+    protected final MotherNature motherNature = new MotherNature(new Random().nextInt(12));
+    protected CalculatorInfluence influenceCalculator = new CalculatorInfluence();
+    protected CalculatorTeacherOwnership teacherOwnershipCalculator = new CalculatorTeacherOwnership();
+    protected GamePhase gamePhase;
 
     public Game(int playerNums) {
         MAX_PLAYERS = playerNums;
@@ -85,7 +85,7 @@ public class Game {
         createCloudCards();
     }
 
-    private void setUpPlayersBoard() throws BagEmptyException{
+    protected void setUpPlayersBoard() throws BagEmptyException{
         for (int i = 0; i < players.size(); i++) {
             players.get(i).initialSetup(
                     bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW),
@@ -94,7 +94,7 @@ public class Game {
         }
     }
 
-    private void createCloudCards() {
+    protected void createCloudCards() {
         for(int i = 0; i < NUMBER_OF_CLOUDS; i++){
             terrain.addCloudCard(new CloudCard());
         }
@@ -139,7 +139,7 @@ public class Game {
         checkMergeIsland(island, terrain.getPreviousIsland(island));
     }
 
-    private void checkMergeIsland(Island island1, Island island2){
+    protected void checkMergeIsland(Island island1, Island island2){
         if(!island2.getTowers().isEmpty() && island2.getTowers().get(0).getColor() == island1.getTowers().get(0).getColor()) {
             terrain.mergeIsland(island1, island2);
         }

@@ -27,7 +27,6 @@ public class Player {
 
     public Player(String nickname, DeckType deckType) {
         this.nickname = nickname;
-        //TODO controllare prima che nessun altro abbia scelto lo stesso deckType
         this.deckAssistants = new DeckAssistants(deckType);
     }
 
