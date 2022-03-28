@@ -141,20 +141,69 @@
 	\begin{figure}[h]
 		\centering
 		\def\svgwidth{\columnwidth}
-	%TODO	\resizebox{\linewidth}{!}{\input{{umlSecondWeek.pdf_tex}}}
-		\caption{Class Diagram del Model - Seconda settimana}
+		\resizebox{\linewidth}{!}{\input{{umlThirdWeek.pdf_tex}}}
+		\caption{Class Diagram - Terza settimana}
 	\end{figure}\\
 	Seguendo l'ordine sopra elencato delle modifiche:
 	\begin{itemize}
 		\setlength{\parskip}{0pt}
 		\setlength{\parsep}{0pt}
 		
-		\item \textbf{Modifica struttura del game:} Visto che dalle precedenti implementazioni le modifiche effettive nelle istanze di gioco a 2, 3 e 4 giocatori erano poche, è stato ripensato un modo per unirle trasformando la classe game in una generica che varia gli effetti dei suoi metodi in base al numero di giocatori assignati inizialmente. Ciò non ha implicato alcun uso di "if" o "switch" aggiuntivi in quanto con opportuni accorgimenti e con l'uso della funzione modulo "\%" si potevano trasformare le funzioni da specifiche a generiche rispetto il numero di giocatori. 
-		Questa unione ha comportato anche l'unione delle tre precedenti classi avanzate che a livello pratico implementavano lo stesso codice.
-		Tutto ciò a portato ad avere un codice più snello e pulito senza inutili ripetizioni di codice.
-		\item \textbf{Nuove carte avanzate:} Per implementare più carte possibili cercando di non dover scrivere gli effetti delle carte all'interno del codice, ma di tenerli solo all'interno della classe della carta, è stato ripensato come venivano implementate. Queste adesso, in caso di una loro attivazione positiva, vanno a fare override di parametri o classi che poi al momento corretto (in modo da poter giocare la carta in qualsiasi momento) vengono eseguiti. 
-		\item \textbf{Ribilanciamento tra Model e Controller:} abbiamo notato che molti metodi che appartenevano alla classe controller erano stati implementati inizialmente nel model, questi sono stati spostati e verificati in modo da ribilanciare il peso tra i due componenti.
+		\item \textbf{Modifica struttura del game:} Visto che dalle precedenti implementazioni le modifiche effettive nelle istanze di gioco a 2, 3 e 4 giocatori erano poche, è stato ripensato un modo per unirle trasformando la classe game in una generica che varia gli effetti dei suoi metodi in base al numero di giocatori assegnati inizialmente. Ciò non ha implicato alcun uso di \emph{if} o \emph{switch} aggiuntivi in quanto con opportuni accorgimenti e con l'uso della funzione modulo $\%$ si sono potute trasformare le funzioni da specifiche a generiche in modo trasparente rispetto il numero di giocatori. 
+		Questa unione ha comportato anche il collasso delle tre precedenti classi avanzate, che a livello pratico implementavano lo stesso codice, in una unica.
+		Tutto ciò a portato ad avere un codice più snello e pulito senza eccessive ripetizioni.
+		\item \textbf{Nuove carte avanzate:} Per implementare più carte personaggio possibili cercando di rendere trasparente l'aggiunta delle stesse alle meccaniche di base del gioco, è stato ripensato come esse vengono implementate. Adesso l'attivazione del loro effetto è circoscritta nel metodo \emph{playEffect} della classe rappresentante la carta stessa. A seguito dell'attivazione con successo di una delle suddette carte, la funzione playEffect provvederà a manipolare l'istanza della classe \emph{game} settando temporaneamente dei calcolatori particolari (vedi calcolatore di influenza e update dell'ownership del professore) oppure modificando di fatto lo stato di alcuni componenti del game stesso. Tali modifiche saranno opportunamente gestite, se necessario, alla fine del turno del giocatore che ha attivato la carta. 
+		\item \textbf{Ribilanciamento tra Model e Controller:} abbiamo notato che molti metodi appartenenti alla classe controller erano stati implementati inizialmente nel model, questi sono stati spostati e verificati in modo da ribilanciare il peso tra i due componenti.
 	\end{itemize}
+	
+	% Peer Review subsubsection to describe briefly our model
+	\subsubsection{Peer Review - UML}
+	\paragraph{}
+	In vista dell'attività di \textbf{peer review} prevista per la \emph{quarta} settimana di lavoro, forniamo una breve descrizione di alcuni componenti della nostra struttura del modello che riteniamo importanti:\\
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.50]{game class.png}
+		\caption{Game Class}
+	\end{figure}\\
+	\paragraph{}
+	La classe Game è il fulcro della nostra struttura. Riassumiamo infatti in tale oggetto tutti i componenti del gioco, quali gli oggetti che compongono il terreno (isole, carte nuvola), i giocatori (players), madre natura, il sacchetto di studenti e i calcolatori di influenza e condizioni di possesso dei professori. Il controller si interfaccerà inizialmente con questa classe per accedere agli oggetti del modello da modificare.\\
+	Dalla Game class, si dirama GameExpertMode ovvero il gioco in modalità per esperti. Quest'ultima non modifica in modo netto le funzionalità di base del gioco, ma in certi casi le arricchisce. Pertanto, è stato fatto l'override dei metodi che modificano, seppur parzialmente, il comportamento da assumere in talune situazioni.
+	\newpage
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{player class.png}
+		\caption{Player Class}
+	\end{figure}
+	\paragraph{}
+	La classe player riassume tutte le proprietà di un giocatore, dal suo nickname, al suo mazzo di carte assistente, alla sua plancia di gioco...\\
+	Ogni giocatore avrà quindi una corrispettiva rappresentazione all'interno del modello che ne conterrà lo stato per tutto il corso della partita.\\
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{advanced class.png}
+		\caption{AdvancedCharacter Class \& Implementazione Personaggi}
+	\end{figure}
+	\paragraph{}
+	La sezione \emph{advanced} contiene le carte personaggio. Come detto in precedenza, per rendere trasparente ed estendibile l'implementazione delle suddette carte, abbiamo deciso di utilizzare una classe per ciascun personaggio. Comune a tutti è la presenza di un riferimento al game in modo tale che il metodo playEffect possa decorare, a seconda della carta, la funzionalità di interesse seguendo la specifica.
+	
+	\newpage
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{controller.png}
+		\caption{Controller}
+	\end{figure}
+	\paragraph{}
+	Riportiamo infine per completezza una breve descrizione dell'idea che ci siamo fatti del controller. Di seguito forniamo una breve descrizione dei metodi principali che \emph{dovrebbero} riassumere i possibili comandi che un giocatore deve poter eseguire:
+	\begin{itemize}
+		\item \emph{createPlayer \& addPlayer} rispondono alla volontà del giocatore di iscriversi alla partita in fase di creazione con i parametri indicati;
+		\item \emph{start} fa iniziare il match;
+		\item \emph{selectAssistantCard} fa giocare al giocatore la carta assistente da lui selezionata;
+		\item \emph{playerMoveStudentToIsland} permette al giocatore di muovere lo studente selezionato dal suo ingresso all'isola selezionata;
+		\item \emph{playerMoveStudentToDiningHall} permette al giocatore di muovere lo studente selezionato dal suo ingresso alla sua sala;
+		\item \emph{moveMotherNatureOfSteps} permette al giocatore di muovere madre natura della quantità di passi indicata (valutazione dell'influenza delle isole, eventuale costruzione di torri e merge di isolotti adiacenti sono operazioni interne triggerate a fine del movimento di madre natura);
+		\item \emph{choseCloud} permette al giocatore di prelevare gli studenti dalla cloud card selezionata;
+		\item \emph{playAdvancedCard} permette al giocatore di giocare l'effetto della carta personaggio selezionata.
+	\end{itemize}
+	
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}

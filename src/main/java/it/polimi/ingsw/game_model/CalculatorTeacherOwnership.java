@@ -40,7 +40,7 @@ public class CalculatorTeacherOwnership {
                 b.getDiningTableWithColor(t.getColor()).getNumberOfStudents() ? a : b).get();
     }
 
-    private Teacher getTeacherOfColorFromPlayerOwner(ColorCharacter color){
+    protected Teacher getTeacherOfColorFromPlayerOwner(ColorCharacter color){
         for(Player player: players){
             if(player.hasTeacherOfColor(color)){
                 return player.moveTeacherOfColor(color);
@@ -50,7 +50,7 @@ public class CalculatorTeacherOwnership {
         return new Teacher(color);
     }
 
-    private Player getPlayerWithTeacherOfColor(ColorCharacter color){
+    protected Player getPlayerWithTeacherOfColor(ColorCharacter color){
         for(Player player: players){
             if(player.hasTeacherOfColor(color)){
                 return player;
