@@ -135,6 +135,26 @@
 		\item studiare il meccanismo delle carte personaggio per l'implementazione della modalità per esperti più approfonditamente
 		\item restyle del diagramma UML per renderlo coerente con il codice scritto
 	\end{itemize}
+	\subsection{Settimana 3: Eriantys Model update e Controller}
+	\paragraph{}
+	Nella terza settimana è stato rivisitato e riscritto parte del codice del model e implementato la parte di controller. Tra le varie modifiche le più importanti risultano essere la nuova implementazione della classe Game che adesso risulta essere accorpata nelle varie versioni da 2, 3 e 4 giocatori, la nuova versione per l'implementazione delle carte avanzate e il ribilanciamento del carico tra controller e la classe game. \\
+	\begin{figure}[h]
+		\centering
+		\def\svgwidth{\columnwidth}
+	%TODO	\resizebox{\linewidth}{!}{\input{{umlSecondWeek.pdf_tex}}}
+		\caption{Class Diagram del Model - Seconda settimana}
+	\end{figure}\\
+	Seguendo l'ordine sopra elencato delle modifiche:
+	\begin{itemize}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+		
+		\item \textbf{Modifica struttura del game:} Visto che dalle precedenti implementazioni le modifiche effettive nelle istanze di gioco a 2, 3 e 4 giocatori erano poche, è stato ripensato un modo per unirle trasformando la classe game in una generica che varia gli effetti dei suoi metodi in base al numero di giocatori assignati inizialmente. Ciò non ha implicato alcun uso di "if" o "switch" aggiuntivi in quanto con opportuni accorgimenti e con l'uso della funzione modulo "\%" si potevano trasformare le funzioni da specifiche a generiche rispetto il numero di giocatori. 
+		Questa unione ha comportato anche l'unione delle tre precedenti classi avanzate che a livello pratico implementavano lo stesso codice.
+		Tutto ciò a portato ad avere un codice più snello e pulito senza inutili ripetizioni di codice.
+		\item \textbf{Nuove carte avanzate:} Per implementare più carte possibili cercando di non dover scrivere gli effetti delle carte all'interno del codice, ma di tenerli solo all'interno della classe della carta, è stato ripensato come venivano implementate. Queste adesso, in caso di una loro attivazione positiva, vanno a fare override di parametri o classi che poi al momento corretto (in modo da poter giocare la carta in qualsiasi momento) vengono eseguiti. 
+		\item \textbf{Ribilanciamento tra Model e Controller:} abbiamo notato che molti metodi che appartenevano alla classe controller erano stati implementati inizialmente nel model, questi sono stati spostati e verificati in modo da ribilanciare il peso tra i due componenti.
+	\end{itemize}
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}
