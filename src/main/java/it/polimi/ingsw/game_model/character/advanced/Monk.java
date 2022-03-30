@@ -20,6 +20,7 @@ public class Monk extends AdvancedCharacter{
         try {
             studentsOnCard.addAll(game.getBag().drawNStudentFromBag(4));
         } catch (BagEmptyException e) {
+            // Impossible to reach since the cards are eventually setup at the beginning of the match
             e.printStackTrace();
         }
     }

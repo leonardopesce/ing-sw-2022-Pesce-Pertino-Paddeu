@@ -17,16 +17,17 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class GameController {
     private final Game game;
-    private final GameView view;
+    // private final GameView view;
     private int turn = 0;
     private final int[] planningOrder, actionOrder;
 
-    public GameController(Game game, GameView view) {
+    public GameController(Game game) {
         this.game = game;
-        this.view = view;
+        // this.view = view;
         planningOrder = new int[game.MAX_PLAYERS];
         actionOrder = new int[game.MAX_PLAYERS];
     }
@@ -45,6 +46,8 @@ public class GameController {
                 }
             }
             //TODO else mazzo già scelto
+        } else {
+            throw new NicknameAlreadyChosenException("Already existing");
         }
         //TODO else nome già scelto
     }
@@ -78,7 +81,7 @@ public class GameController {
     public final void start() {
         game.setUpGamePhase(GamePhase.GAME_PENDING);
         // at the beginning a random player is chosen
-        createNextPlanningOrder((int) Math.round(Math.random() * game.getNumberOfPlayers()));
+        createNextPlanningOrder(new Random().nextInt(game.getNumberOfPlayers()));
         try {
             game.setupBoard();
             playTurn();
@@ -256,7 +259,7 @@ public class GameController {
             if(1 <= numberOfSteps && numberOfSteps <= player.getDiscardedCard().getPossibleSteps()){
                 game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
 
-                game.evaluateInfluences();
+                game.evaluateInfluences(game.getMotherNature().getPosition());
 
                 if(game.winner().equals(Game.NO_NICKNAME)) {
                     game.setUpGamePhase(GamePhase.ACTION_PHASE_CHOOSING_CLOUD);

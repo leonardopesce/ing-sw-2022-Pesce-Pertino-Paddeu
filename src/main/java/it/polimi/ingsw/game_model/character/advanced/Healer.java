@@ -18,5 +18,7 @@ public class Healer extends AdvancedCharacter{
             islandToDeny.denyIsland();
             numberOfDeniableIslands--;
         }
+
+        //TODO: se un'isola viene liberata la carta divieto torna disponibile?
     }
 }

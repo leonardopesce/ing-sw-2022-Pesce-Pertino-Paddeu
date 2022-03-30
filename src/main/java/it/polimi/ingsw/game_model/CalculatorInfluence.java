@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class CalculatorInfluence {
         return influence;
     }
 
-    /*private int playerStudentInfluenceWithoutColor(Player pl, Island island, ColorCharacter color){
+    protected int playerStudentInfluenceWithoutColor(Player pl, Island island, ColorCharacter color){
         int influence = 0;
         for(Teacher t: pl.getTeachers()){
             for(Student s: island.getStudents()){
@@ -93,7 +94,7 @@ public class CalculatorInfluence {
             }
         }
         return influence;
-    }*/
+    }
 
     private List<List<Player>> getListsOfPlayersWithSameColor(List<Player> players){
         List<List<Player>> tmp = new ArrayList<>();

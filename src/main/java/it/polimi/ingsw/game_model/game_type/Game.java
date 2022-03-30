@@ -75,11 +75,11 @@ public class Game {
             }
         }
 
-        /* Creating the school and adding students and tower */
-        setUpPlayersBoard();
-
         /* Filling the bag with the remaining 120 students. */
         bag.addStudentsSecondPhase();
+
+        /* Creating the school and adding students and tower */
+        setUpPlayersBoard();
 
         /* Creating cloud cards (one foreach player). */
         createCloudCards();
@@ -114,9 +114,9 @@ public class Game {
         return motherNature;
     }
 
-    public void evaluateInfluences() {
-        Optional<Player> mostInfluencePlayer = influenceCalculator.evaluate(players, terrain.getIslandWithId(motherNature.getPosition()));
-        mostInfluencePlayer.ifPresent(player -> setUpIslandTower(terrain.getIslandWithId(motherNature.getPosition()), player));
+    public void evaluateInfluences(int islandID) {
+        Optional<Player> mostInfluencePlayer = influenceCalculator.evaluate(players, terrain.getIslandWithId(islandID));
+        mostInfluencePlayer.ifPresent(player -> setUpIslandTower(terrain.getIslandWithId(islandID), player));
     }
 
     protected void setUpIslandTower(Island island, Player owner){

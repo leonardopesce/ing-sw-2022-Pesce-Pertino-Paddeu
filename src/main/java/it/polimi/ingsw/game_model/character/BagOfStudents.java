@@ -67,7 +67,7 @@ public class BagOfStudents extends Character{
      */
     public Student drawStudentFromBag() throws BagEmptyException {
         Random randomPicker = new Random();
-        if(isEmpty()) {
+        if(!isEmpty()) {
             return this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
         }
         else throw new BagEmptyException("The bag is empty");

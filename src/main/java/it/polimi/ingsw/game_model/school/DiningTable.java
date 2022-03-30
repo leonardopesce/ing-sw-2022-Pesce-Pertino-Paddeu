@@ -12,12 +12,11 @@ public class DiningTable {
         this.color = color;
     }
 
-    public void addStudent() throws TooManyStudentsException{
+    public void addStudent() {
         //TODO in view block the possibility to add students when table is full
         if(numberOfStudents + 1 <= MAX_POSITIONS) {
             numberOfStudents++;
         }
-        else throw new TooManyStudentsException("There are no available seats at this table.");
     }
 
     public void removeStudent(int numberToRemove) {
