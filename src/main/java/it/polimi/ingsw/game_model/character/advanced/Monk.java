@@ -26,9 +26,13 @@ public class Monk extends AdvancedCharacter{
     }
 
 
-
+    /**
+     * Take 1 student from this card and place it on an island of your choice. Then
+     * draw a student from the game bag and place it on this card.
+     * @param islandToPlaceStudentOn island chosen
+     * @param studentToPick student chose from card
+     */
     public void playEffect(Island islandToPlaceStudentOn, Integer studentToPick) {
-        //game.playerMoveStudentToIsland();
         // Adding the selected student to the selected island
         islandToPlaceStudentOn.addStudent(studentsOnCard.remove(studentToPick.intValue()));
 

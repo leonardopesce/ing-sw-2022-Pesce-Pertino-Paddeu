@@ -80,4 +80,9 @@ public class BagOfStudents extends Character{
         }
         return temp;
     }
+
+    public void insertBack(List<Student> students) {
+        unpickedStudents.addAll(students);
+        Collections.shuffle(unpickedStudents);
+    }
 }

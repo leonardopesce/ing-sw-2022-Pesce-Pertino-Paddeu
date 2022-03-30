@@ -13,6 +13,9 @@ public class Knight extends AdvancedCharacter{
         super(AdvancedCharacterType.KNIGHT, game);
     }
 
+    /**
+     * During the influence calculation this turn, you count as having 2 more influence.
+     */
     public void playEffect() {
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){

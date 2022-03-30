@@ -1,10 +1,11 @@
 package it.polimi.ingsw.game_model.character.advanced;
 
-import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.school.DiningHall;
+import it.polimi.ingsw.game_model.school.Entrance;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 import java.util.ArrayList;
@@ -16,20 +17,28 @@ public class Bard extends AdvancedCharacter{
         super(AdvancedCharacterType.BARD, game);
     }
 
-
+    /**
+     * You may exchange up to 2 students between your entrance and your dining room.
+     * @param player Who has played the
+     * @param studentsFromEntrance Student selected from entrance
+     * @param studentsFromDiningHall Student selected from dining hall
+     */
     public void playEffect(Player player, List<Integer> studentsFromEntrance, List<ColorCharacter> studentsFromDiningHall) {
-        var playerEntrance = player.getSchool().getEntrance();
-        var playerDiningHall = player.getSchool().getDiningHall();
-        List<Student> fromEntranceToDiningHall = new ArrayList<>();
+        Entrance playerEntrance = player.getSchool().getEntrance();
+        DiningHall playerDiningHall = player.getSchool().getDiningHall();
 
-        // Removing selected students from entrance and from dining hall and effectively switching them.
-        for(Integer i : studentsFromEntrance) fromEntranceToDiningHall.add(playerEntrance.moveStudent(i));
+        //TODO è necessario controllare che la dimensione dei due array sia uguale?
+
+        // Adding the students to the Dining table (no need to store them they are saved with a counter)
+        for(Integer i : studentsFromEntrance) {
+            playerDiningHall.getTableOfColor(playerEntrance.moveStudent(i).getColor()).addStudent();
+        }
+        // Adding the student to the Entrance
         for(ColorCharacter color : studentsFromDiningHall) {
-            playerDiningHall.getTableOfColor(color).removeStudent(1);
-            playerEntrance.addStudent(new Student(color));
+            playerEntrance.addAllStudents(
+                    playerDiningHall.getTableOfColor(color).removeStudent(1)
+            );
         }
-        for(Student student : fromEntranceToDiningHall) {
-            playerDiningHall.getTableOfColor(student.getColor()).addStudent();
-        }
+
     }
 }

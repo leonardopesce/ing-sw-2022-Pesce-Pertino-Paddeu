@@ -11,6 +11,10 @@ public class Bartender extends AdvancedCharacter{
         super(AdvancedCharacterType.BARTENDER, game);
     }
 
+    /**
+     * During this turn, you take the control of the other players' teachers even if you have the same
+     * amount of students in your room as the player currently controlling them.
+     */
     public void playEffect(){
         game.setTeacherOwnershipCalculator(
                 new CalculatorTeacherOwnership(){

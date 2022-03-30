@@ -1,7 +1,11 @@
 package it.polimi.ingsw.game_model.school;
 
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
+import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiningTable {
     private final ColorCharacter color;
@@ -19,11 +23,16 @@ public class DiningTable {
         }
     }
 
-    public void removeStudent(int numberToRemove) {
+    public List<Student> removeStudent(int numberToRemove) {
+        List<Student> students = new ArrayList<>();
         for(int i=0; i<numberToRemove; i++) {
-            if(numberOfStudents > 0) numberOfStudents--;
+            if(numberOfStudents > 0){
+                numberOfStudents--;
+                students.add(new Student(color));
+            }
             else break;
         }
+        return students;
     }
 
     public ColorCharacter getColor() {

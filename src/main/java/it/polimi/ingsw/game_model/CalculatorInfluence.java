@@ -84,18 +84,6 @@ public class CalculatorInfluence {
         return influence;
     }
 
-    protected int playerStudentInfluenceWithoutColor(Player pl, Island island, ColorCharacter color){
-        int influence = 0;
-        for(Teacher t: pl.getTeachers()){
-            for(Student s: island.getStudents()){
-                if(t.getColor() == s.getColor() && s.getColor() != color){
-                    influence++;
-                }
-            }
-        }
-        return influence;
-    }
-
     private List<List<Player>> getListsOfPlayersWithSameColor(List<Player> players){
         List<List<Player>> tmp = new ArrayList<>();
         for(Player player: players){

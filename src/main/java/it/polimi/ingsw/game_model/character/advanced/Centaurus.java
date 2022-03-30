@@ -11,6 +11,10 @@ public class Centaurus extends AdvancedCharacter{
     public Centaurus(Game game) {
         super(AdvancedCharacterType.CENTAURUS, game);
     }
+
+    /**
+     * When resolving a Conquering on an island, Towers do not count towards influence.
+     */
     public void playEffect() {
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){

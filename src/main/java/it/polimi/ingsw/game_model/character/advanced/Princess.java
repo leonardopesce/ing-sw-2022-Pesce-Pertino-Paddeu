@@ -24,7 +24,12 @@ public class Princess extends AdvancedCharacter{
         }
     }
 
-
+    /**
+     * Take 1 student from this card and place it in your dining room. Then, draw a new student
+     * from the bag and place it on this card.
+     * @param player who played the card effect
+     * @param studentFromCard selected student
+     */
     public void playEffect(Player player, int studentFromCard){
         player.getSchool().getDiningHall().getTableOfColor(studensOnCard.get(studentFromCard).getColor()).addStudent();
         studensOnCard.remove(studentFromCard);

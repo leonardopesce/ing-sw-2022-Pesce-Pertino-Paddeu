@@ -5,6 +5,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.school.Entrance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +26,20 @@ public class Jester extends AdvancedCharacter{
         }
     }
 
-
+    /**
+     * You may take up to 3 students from this card and replace them with the same number of students from your Entrance.
+     * @param player who is playing the card
+     * @param studentsFromCard list of students selected card
+     * @param studentsFromEntrance list of students selected from entrance
+     */
     public void playEffect(Player player, List<Integer> studentsFromCard, List<Integer> studentsFromEntrance){
-        var playerEntrance = player.getSchool().getEntrance();
+        Entrance playerEntrance = player.getSchool().getEntrance();
 
+        //TODO è necessario controllare che la dimensione dei due array sia uguale?
         if(studentsFromCard.size() == studentsFromEntrance.size()) {
             for(int i=0; i<studentsFromCard.size(); i++) {
-                var tempStudentFromEntrance = playerEntrance.moveStudent(studentsFromEntrance.get(i));
+                studentsOnCard.add(playerEntrance.moveStudent(studentsFromEntrance.get(i)));
                 playerEntrance.addStudent(studentsOnCard.remove(studentsFromCard.get(i).intValue()));
-                studentsOnCard.add(tempStudentFromEntrance);
             }
         }
     }

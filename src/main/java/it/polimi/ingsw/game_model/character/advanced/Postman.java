@@ -9,6 +9,10 @@ public class Postman extends AdvancedCharacter{
         super(AdvancedCharacterType.POSTMAN, game);
     }
 
+    /**
+     * You can move Mother Nature up to 2 additional islands compared to the value of the assistant card you played.
+     * @param player player that selected the card
+     */
     public void playEffect(Player player){
         player.getDiscardedCard().incrementPossibleSteps(2);
     }

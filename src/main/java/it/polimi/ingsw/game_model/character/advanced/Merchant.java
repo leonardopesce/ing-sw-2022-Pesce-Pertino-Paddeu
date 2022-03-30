@@ -11,9 +11,16 @@ public class Merchant extends AdvancedCharacter{
         super(AdvancedCharacterType.MERCHANT, game);
     }
 
+    /**
+     * Choose a type of student: every player (including yourself) must return 3 students of that type from their
+     * dining room to the bag. If any player has fewer than 3 students of that type, return as many students as they have.
+     * @param color color of student chosen
+     */
     public void playEffect(ColorCharacter color) {
         for(Player player : game.getPlayers()) {
-            player.getSchool().getDiningHall().getTableOfColor(color).removeStudent(3);
+            game.getBag().insertBack(
+                    player.getSchool().getDiningHall().getTableOfColor(color).removeStudent(3)
+            );
         }
     }
 }

@@ -7,8 +7,6 @@ import it.polimi.ingsw.game_model.game_type.Game;
 import java.util.List;
 import java.util.Random;
 
-import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
-
 /**
  * An abstract class to represent all the 12 character cards.
  *
