@@ -1,5 +1,6 @@
-package it.polimi.ingsw.game_model;
+package it.polimi.ingsw.game_model.utils;
 
+import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 

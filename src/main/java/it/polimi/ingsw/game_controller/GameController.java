@@ -1,8 +1,8 @@
 package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
-import it.polimi.ingsw.game_model.CalculatorInfluence;
-import it.polimi.ingsw.game_model.CalculatorTeacherOwnership;
+import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
+import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;

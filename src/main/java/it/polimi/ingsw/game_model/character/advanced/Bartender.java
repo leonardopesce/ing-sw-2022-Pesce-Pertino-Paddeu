@@ -1,6 +1,6 @@
 package it.polimi.ingsw.game_model.character.advanced;
 
-import it.polimi.ingsw.game_model.CalculatorTeacherOwnership;
+import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;

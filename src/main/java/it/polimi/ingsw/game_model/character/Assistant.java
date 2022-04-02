@@ -30,9 +30,4 @@ public class Assistant extends Character{
         Assistant assistant = (Assistant) o;
         return cardType == assistant.cardType;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cardType);
-    }
 }
