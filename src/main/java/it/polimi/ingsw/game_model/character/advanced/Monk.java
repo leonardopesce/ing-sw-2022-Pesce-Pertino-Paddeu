@@ -3,7 +3,7 @@ package it.polimi.ingsw.game_model.character.advanced;
 import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
-import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
 import java.util.ArrayList;

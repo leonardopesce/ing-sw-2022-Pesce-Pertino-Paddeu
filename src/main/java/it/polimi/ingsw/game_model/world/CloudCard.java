@@ -19,6 +19,8 @@ public class CloudCard {
         return tmp;
     }
 
+    public void clear() { studentsOnCloud.clear(); }
+
     public void refill(List<Student> students){
         studentsOnCloud.addAll(students);
     }

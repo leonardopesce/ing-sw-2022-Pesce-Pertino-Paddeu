@@ -7,7 +7,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
-import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
@@ -85,6 +85,7 @@ public class GameController {
         createNextPlanningOrder(new Random().nextInt(game.getNumberOfPlayers()));
         try {
             game.setupBoard();
+            game.setUpGamePhase(GamePhase.NEW_ROUND);
             playTurn();
         } catch (BagEmptyException | TooManyStudentsException e) {
             e.printStackTrace();
@@ -95,7 +96,7 @@ public class GameController {
      *  This function states the beginning of a new turn consisted in up to 4 planning phase and action phase
      */
     private void playTurn(){
-        if (game.winner().equals(Game.NO_NICKNAME)) {
+        if (game.winner().length == 0) {
             game.setUpGamePhase(GamePhase.PLANNING_PHASE);
             refillClouds();
             // every "turn" is divided in planning phase and action phase
@@ -190,7 +191,7 @@ public class GameController {
      * students. <p> If all player have already played, moves to a new turn with playTurn() </p>
      */
     private void nextActionPhase(){
-        if(turn < game.getNumberOfPlayers() && game.winner().equals(Game.NO_NICKNAME)){
+        if(turn < game.getNumberOfPlayers() && game.winner().length == 0){
             game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_STUDENTS);
             moveStudentPhase(game.getPlayerNumber(actionOrder[turn]));
         }
@@ -198,6 +199,7 @@ public class GameController {
             turn = 0;
             createNextPlanningOrder(actionOrder[0]);
 
+            game.setUpGamePhase(GamePhase.NEW_ROUND);
             playTurn();
         }
     }
@@ -262,7 +264,7 @@ public class GameController {
 
                 game.evaluateInfluences(game.getMotherNature().getPosition());
 
-                if(game.winner().equals(Game.NO_NICKNAME)) {
+                if(game.winner().length == 0){
                     game.setUpGamePhase(GamePhase.ACTION_PHASE_CHOOSING_CLOUD);
                 }
                 else {
@@ -298,6 +300,7 @@ public class GameController {
     }
 
     public void playAdvancedCard(Player player, AdvancedCharacter card, Object... args){
+        //TODO check if game is advanced
         if(player.equals(game.getPlayerNumber(actionOrder[turn])) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
                 if(AdvancedCardController.checkArgument(card, args)){
@@ -318,7 +321,13 @@ public class GameController {
             try {
                 cloudCard.refill(game.getBag().drawNStudentFromBag(game.NUMBER_OF_STUDENTS_ON_CLOUD));
             } catch (BagEmptyException e) {
-                e.printStackTrace();
+                // If the cloud refill cannot be completed due to a lack of students, then the clouds are cleared. Since
+                // they are empty players cannot add any student from the cloud to their entrance in the last turn, according
+                // to the rules.
+                for(CloudCard cloudCard1 : game.getTerrain().getCloudCards()) {
+                    cloudCard1.clear();
+                }
+                break;
             }
         }
     }

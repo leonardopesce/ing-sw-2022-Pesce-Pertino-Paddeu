@@ -22,6 +22,7 @@ public class CalculatorInfluence {
         if(!island.isBlocked()) {
             List<List<Player>> teams = getListsOfPlayersWithSameColor(players);
             List<Player> mostInfluencingTeam = teams.get(0);
+            teams.remove(0);
             boolean draw = false;
 
             for (List<Player> team : teams) {

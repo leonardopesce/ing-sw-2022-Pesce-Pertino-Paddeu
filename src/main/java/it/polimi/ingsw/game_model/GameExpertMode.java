@@ -1,8 +1,7 @@
-package it.polimi.ingsw.game_model.game_type;
+package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
-import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 public class GameExpertMode extends Game {
@@ -11,8 +10,6 @@ public class GameExpertMode extends Game {
 
     public GameExpertMode(int playerNums) {
         super(playerNums);
-        setUpMoneyToPlayer();
-
     }
 
     private void setUpMoneyToPlayer(){
@@ -25,6 +22,7 @@ public class GameExpertMode extends Game {
     public void setupBoard() throws BagEmptyException, TooManyStudentsException{
         super.setupBoard();
         terrain.pickAdvancedCard(this);
+        setUpMoneyToPlayer();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.game_model.game_type;
+package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_model.CalculatorInfluence;
@@ -85,7 +85,7 @@ public class Game {
         createCloudCards();
     }
 
-    protected void setUpPlayersBoard() throws BagEmptyException{
+    private void setUpPlayersBoard() throws BagEmptyException{
         for (int i = 0; i < players.size(); i++) {
             players.get(i).initialSetup(
                     bag.drawNStudentFromBag(INITIAL_NUMBER_OF_STUDENTS_TO_DRAW),
@@ -119,7 +119,7 @@ public class Game {
         mostInfluencePlayer.ifPresent(player -> setUpIslandTower(terrain.getIslandWithId(islandID), player));
     }
 
-    protected void setUpIslandTower(Island island, Player owner){
+    private void setUpIslandTower(Island island, Player owner){
         //adds back tower to owner player
         for(Player pl: players){
             //remove tower from old owner
@@ -129,17 +129,14 @@ public class Game {
             }
         }
         //remove towers from most influencing player
-        owner.removeNTowers(island.getSize());
-        for(int i = 0; i < island.getSize(); i++){
-            island.getTowers().add(new Tower(owner.getColor()));
-        }
+        island.getTowers().addAll(owner.removeNTowers(island.getSize()));
 
         //If needed, merges surrounding islands
         checkMergeIsland(island, terrain.getNextIsland(island));
         checkMergeIsland(island, terrain.getPreviousIsland(island));
     }
 
-    protected void checkMergeIsland(Island island1, Island island2){
+    private void checkMergeIsland(Island island1, Island island2){
         if(!island2.getTowers().isEmpty() && island2.getTowers().get(0).getColor() == island1.getTowers().get(0).getColor()) {
             terrain.mergeIsland(island1, island2);
         }
@@ -148,16 +145,81 @@ public class Game {
     /**
      * Handles the win conditions logic.
      */
-    public String winner(){
-        // First condition: a player has built all his towers.
-        for(Player pl: players){
-            if(pl.getTowersAvailable() == 0){
-                return pl.getNickname();
+    public String[] winner(){
+        // First condition: a player has built all his towers in 4 players only the first two players have towers.
+        for(int i = 0; i < players.size(); i++){
+            if(INITIAL_NUMBER_OF_TOWER[i] != 0 && players.get(i).getTowersAvailable() == 0){
+                return getPlayerOfColor(players.get(i).getColor()).stream().map(Player::getNickname).toArray(String[]::new);
+            }
+        }
+
+        boolean draw = false;
+        int[] numberOfTower = {0, 0, 0};
+        if(terrain.getIslands().size() <= 3 ||
+                (bag.isEmpty() && gamePhase == GamePhase.NEW_ROUND) ||
+                players.stream().allMatch(pl -> pl.getDeckAssistants().getSize() == 0)){
+
+            for(Island is: terrain.getIslands()){
+                if(!is.getTowers().isEmpty()) {
+                    numberOfTower[is.getTowers().get(0).getColor().ordinal()] += is.getTowers().size();
+                }
+            }
+            int max = 0;
+            for(int i = 1; i < numberOfTower.length; i++){
+                if(numberOfTower[max] < numberOfTower[i]){
+                    max = i;
+                    draw = false;
+                }
+                else if(numberOfTower[max] == numberOfTower[i]){
+                    draw = true;
+                }
+            }
+
+            if(draw){
+                //if there are more player with the same number of tower
+                draw = false;
+                // inside max it's stored the position of the first player with the maximum number of tower
+                int maxProfessor = max;
+                // get the player (color) with the maximum number of professor
+                for(int i = max + 1; i < numberOfTower.length; i++){
+                    if(numberOfTower[i] == numberOfTower[max]){
+                        if(getPlayerOfColor(ColorTower.values()[i]).stream().mapToInt(pl -> pl.getTeachers().size()).sum()
+                                > getPlayerOfColor(ColorTower.values()[maxProfessor]).stream().mapToInt(pl -> pl.getTeachers().size()).sum()){
+                            maxProfessor = i;
+                            draw = false;
+                        }
+                        else{
+                            draw = true;
+                        }
+                    }
+                }
+                //If again it's a draw all the player with the same number of tower and Professors won
+                if(draw){
+                    List<Player> winnerPlayers = new ArrayList<>(getPlayerOfColor(ColorTower.values()[maxProfessor]));
+
+                    for(int i = maxProfessor + 1; i < numberOfTower.length; i++){
+                        if(getPlayerOfColor(ColorTower.values()[i]).stream().mapToInt(pl -> pl.getTeachers().size()).sum()
+                                == getPlayerOfColor(ColorTower.values()[maxProfessor]).stream().mapToInt(pl -> pl.getTeachers().size()).sum()) {
+                            winnerPlayers.addAll(getPlayerOfColor(ColorTower.values()[i]));
+                        }
+                    }
+                    return winnerPlayers.stream().map(Player::getNickname).toArray(String[]::new);
+                }
+                else{
+                    return getPlayerOfColor(ColorTower.values()[maxProfessor]).stream().map(Player::getNickname).toArray(String[]::new);
+                }
+            }
+            else{
+                return getPlayerOfColor(ColorTower.values()[max]).stream().map(Player::getNickname).toArray(String[]::new);
             }
         }
 
         // Second condition: there are only 3 island left
-        return NO_NICKNAME;
+        return new String[0];
+    }
+
+    private List<Player> getPlayerOfColor(ColorTower color){
+        return players.stream().filter(pl -> pl.getColor() == color).toList();
     }
 
     public Terrain getTerrain(){

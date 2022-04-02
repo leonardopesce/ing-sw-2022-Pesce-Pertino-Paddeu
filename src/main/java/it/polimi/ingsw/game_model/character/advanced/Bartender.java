@@ -4,7 +4,7 @@ import it.polimi.ingsw.game_model.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
-import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.Game;
 
 public class Bartender extends AdvancedCharacter{
     public Bartender(Game game){
@@ -21,8 +21,7 @@ public class Bartender extends AdvancedCharacter{
                     @Override
                     protected void addTeacherToPlayerWithHighestNumberOfStudentOfColor(Player currentPlayer, Player oldOwner, Teacher teacher){
                         Player newOwner = getNewPlayerOwnerOfTeacherOfColor(teacher);
-                        if(currentPlayer.hasPlayedSpecialCard() &&
-                                currentPlayer.getNumberOfStudentAtTableOfColor(teacher.getColor()) >=
+                        if(currentPlayer.getNumberOfStudentAtTableOfColor(teacher.getColor()) >=
                                 newOwner.getNumberOfStudentAtTableOfColor(teacher.getColor())){
                                 newOwner.getSchool().addTeacher(teacher);
                         }

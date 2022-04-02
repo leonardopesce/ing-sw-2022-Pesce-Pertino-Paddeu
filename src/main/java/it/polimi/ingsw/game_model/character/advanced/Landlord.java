@@ -5,11 +5,9 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
-import it.polimi.ingsw.game_model.game_type.Game;
+import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
-
-import java.awt.*;
 
 public class Landlord extends AdvancedCharacter{
     public Landlord(Game game){

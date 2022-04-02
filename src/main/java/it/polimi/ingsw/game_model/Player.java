@@ -5,12 +5,14 @@ import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
+import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.School;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,12 +75,13 @@ public class Player {
         return school.getTowersAvailable();
     }
 
-    public void removeNTowers(int x){
-        if (x > getTowersAvailable()) {
-            school.setTowersAvailable(0);
-        } else {
-            school.setTowersAvailable(getTowersAvailable() - x);
+    public List<Tower> removeNTowers(int x){
+        List<Tower> towers = new ArrayList<>();
+        for(int i = 0; i < x && getTowersAvailable() > 0; i++){
+            towers.add(new Tower(color));
+            school.setTowersAvailable(getTowersAvailable() - 1);
         }
+        return towers;
     }
 
     public void addNTowers(int x){

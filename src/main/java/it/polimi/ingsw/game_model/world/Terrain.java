@@ -2,8 +2,8 @@ package it.polimi.ingsw.game_model.world;
 
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.basic.Student;
-import it.polimi.ingsw.game_model.game_type.Game;
-import it.polimi.ingsw.game_model.game_type.GameExpertMode;
+import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.GameExpertMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +73,10 @@ public class Terrain {
                 advancedCharacters.add(character);
             }
         }
+    }
+
+    public List<AdvancedCharacter> getAdvancedCharacters() {
+        return advancedCharacters;
     }
 
     public void addStudentToIsland(Student student, int island) {
