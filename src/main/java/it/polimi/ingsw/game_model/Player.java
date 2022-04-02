@@ -147,7 +147,7 @@ public class Player {
         this.movedStudents = 0;
     }
 
-    public void moveStudentToDiningHall(ColorCharacter color) throws TooManyStudentsException{
+    public void moveStudentToDiningHall(ColorCharacter color) {
         school.getDiningHall().getTableOfColor(color).addStudent();
     }
 

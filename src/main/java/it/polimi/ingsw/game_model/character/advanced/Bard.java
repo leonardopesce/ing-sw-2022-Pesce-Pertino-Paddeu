@@ -29,7 +29,11 @@ public class Bard extends AdvancedCharacter{
 
         // Adding the students to the Dining table (no need to store them they are saved with a counter)
         for(Integer i : studentsFromEntrance) {
-            playerDiningHall.getTableOfColor(playerEntrance.moveStudent(i).getColor()).addStudent();
+            playerDiningHall.getTableOfColor(playerEntrance.getStudent(i).getColor()).addStudent();
+        }
+        for(Integer i : studentsFromEntrance) {
+            // Removing the student only after they are added to their dining table. Otherwise, indexes problems may occur.
+            playerEntrance.moveStudent(i);
         }
         // Adding the student to the Entrance
         for(ColorCharacter color : studentsFromDiningHall) {

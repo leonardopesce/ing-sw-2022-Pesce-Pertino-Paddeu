@@ -7,6 +7,7 @@ import it.polimi.ingsw.game_model.GameExpertMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Math;
 
 public class Terrain {
     private final List<CloudCard> cloudCards;
@@ -33,7 +34,7 @@ public class Terrain {
     }
 
     public Island getPreviousIsland(Island is){
-        return islandsRing.get((islandsRing.indexOf(is) - 1) % islandsRing.size());
+        return islandsRing.get(Math.floorMod((islandsRing.indexOf(is) - 1), islandsRing.size()));
     }
 
     public void mergeIsland(Island baseIsland, Island islandToMerge){

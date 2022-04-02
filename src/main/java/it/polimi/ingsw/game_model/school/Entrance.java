@@ -15,6 +15,10 @@ public class Entrance {
         return students;
     }
 
+    public Student getStudent(int indexOfStudent) {
+        return students.get(indexOfStudent);
+    }
+
     public Student moveStudent(int student) {
         return students.remove(student);
     }
