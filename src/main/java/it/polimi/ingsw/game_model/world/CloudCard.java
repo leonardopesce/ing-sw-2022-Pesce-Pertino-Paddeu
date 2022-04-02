@@ -12,8 +12,11 @@ public class CloudCard {
         this.studentsOnCloud = new ArrayList<>();
     }
 
-    public List<Student> getStudentsOnCloud() {
-        return studentsOnCloud;
+    public List<Student> removeStudentsOnCloud() {
+        //TODO checl if it empties the island
+        List<Student> tmp = studentsOnCloud.stream().toList();
+        studentsOnCloud.clear();
+        return tmp;
     }
 
     public void refill(List<Student> students){

@@ -11,7 +11,6 @@ import it.polimi.ingsw.game_model.game_type.Game;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
-import it.polimi.ingsw.game_view.GameView;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -285,7 +284,7 @@ public class GameController {
 
     public void choseCloud(Player player, CloudCard cloudCard){
         if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
-            player.getSchool().getEntrance().addAllStudents(cloudCard.getStudentsOnCloud());
+            player.getSchool().getEntrance().addAllStudents(cloudCard.removeStudentsOnCloud());
             turn++;
             //TODO reset
             player.resetPlayedSpecialCard();
