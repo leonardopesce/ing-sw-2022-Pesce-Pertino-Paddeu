@@ -42,14 +42,15 @@ public class GameController {
                 try {
                     addPlayer(new Player(name, type));
                 } catch (TooManyPlayerException e) {
+                    // Impossible to reach. When the lobby is full the game starts.
                     e.printStackTrace();
                 }
             }
             //TODO else mazzo già scelto
         } else {
+            //TODO else nome già scelto
             throw new NicknameAlreadyChosenException("Already existing");
         }
-        //TODO else nome già scelto
     }
 
     /**
@@ -60,7 +61,7 @@ public class GameController {
      *
      * @see Player
      */
-    public void addPlayer(Player player) throws TooManyPlayerException {
+    protected void addPlayer(Player player) throws TooManyPlayerException {
         // Checking whether the game is full or not.
         if(game.getNumberOfPlayers() < game.MAX_PLAYERS){
             // Effectively adding the player to the list.
@@ -70,6 +71,7 @@ public class GameController {
             }
         }
         else {
+            // Impossible to reach. When the game is full it automatically starts
             throw new TooManyPlayerException("The game as already reached the limit of " + game.MAX_PLAYERS + " players");
         }
     }
@@ -331,5 +333,10 @@ public class GameController {
         for(int i = 1; i < game.getNumberOfPlayers(); i++){
             planningOrder[i] = (planningOrder[i-1] + 1) % game.getNumberOfPlayers();
         }
+    }
+
+    public Player getCurrentPlayer() {
+        if(game.getGamePhase().toString().startsWith("ACTION")) return game.getPlayers().get(actionOrder[turn]);
+        else return game.getPlayers().get(planningOrder[turn]);
     }
 }
