@@ -302,6 +302,33 @@ class GameTest {
         assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
     }
 
+    @DisplayName("Healer effect test")
+    @Test
+    void evaluateInfluenceHealerEffect(){
+        initialization(2, true);
+
+        var card = new Healer(game);
+        card.playEffect(game.terrain.getIslandWithId(0));
+
+        game.terrain.getIslands().get(0).addAllTower(game.players.get(1).removeNTowers(1));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.players.get(0).getSchool().addTeacher(new Teacher(RED));
+        game.evaluateInfluences(0);
+
+        assertEquals(1, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0], game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1] - 1, game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(1).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+
+        game.evaluateInfluences(0);
+
+        assertEquals(1, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0] - 1, game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1], game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+    }
+
     @DisplayName("Landlord effect test")
     @Test
     void evaluateInfluenceLandlordEffect(){

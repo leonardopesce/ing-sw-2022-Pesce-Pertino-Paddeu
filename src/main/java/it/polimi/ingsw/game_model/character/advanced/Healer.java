@@ -28,7 +28,7 @@ public class Healer extends AdvancedCharacter{
             islandToDeny.getIsBlocked().addListener(new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                    if((Integer) newValue > (Integer) oldValue) {
+                    if((Integer) newValue < (Integer) oldValue) {
                         numberOfDeniableIslands++;
                         islandToDeny.getIsBlocked().removeListener(this);
                     }

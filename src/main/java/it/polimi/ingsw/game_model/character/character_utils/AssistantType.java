@@ -15,7 +15,7 @@ public enum AssistantType {
 
     private final String name;
     private final int cardTurnValue;
-    private int possibleSteps;
+    private final int possibleSteps;
 
     AssistantType(String cardName, int cardTurnValue, int cardPossibleSteps) {
         this.name = cardName;
@@ -33,9 +33,5 @@ public enum AssistantType {
 
     public int getPossibleSteps() {
         return possibleSteps;
-    }
-
-    public void setPossibleSteps(int possibleSteps) {
-        this.possibleSteps = possibleSteps;
     }
 }
