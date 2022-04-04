@@ -23,7 +23,7 @@ public class Bartender extends AdvancedCharacter{
                         Player newOwner = getNewPlayerOwnerOfTeacherOfColor(teacher);
                         if(currentPlayer.getNumberOfStudentAtTableOfColor(teacher.getColor()) >=
                                 newOwner.getNumberOfStudentAtTableOfColor(teacher.getColor())){
-                                newOwner.getSchool().addTeacher(teacher);
+                            newOwner.getSchool().addTeacher(teacher);
                         }
                         else {
                             normalOwnershipCondition(oldOwner, teacher);
