@@ -59,4 +59,6 @@ public class GameControllerTest {
         Assertions.assertEquals(new Assistant(AssistantType.CAT), firstPlayer.getDiscardedCard());
 
     }
+
+
 }

@@ -229,8 +229,16 @@ class GameTest {
         game.moveStudentToDiningHall(game.getPlayers().get(1), ColorCharacter.GREEN);
         game.updateTeacherOwnership(game.getPlayers().get(1), ColorCharacter.GREEN);
 
+        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(ColorCharacter.RED));
+        game.moveStudentToDiningHall(game.getPlayers().get(1), ColorCharacter.RED);
+        game.updateTeacherOwnership(game.getPlayers().get(1), ColorCharacter.RED);
+
         Assertions.assertTrue(game.getPlayers().get(1).hasTeacherOfColor(ColorCharacter.GREEN));
         Assertions.assertFalse(game.getPlayers().get(0).hasTeacherOfColor(ColorCharacter.GREEN));
+        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(ColorCharacter.RED));
+        Assertions.assertFalse(game.getPlayers().get(1).hasTeacherOfColor(ColorCharacter.RED));
     }
 
 
