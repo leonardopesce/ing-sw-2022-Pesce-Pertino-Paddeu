@@ -4,13 +4,13 @@ import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.custom_exceptions.NicknameAlreadyChosenException;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_controller.GameController;
-import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
-import it.polimi.ingsw.game_model.character.advanced.Bard;
-import it.polimi.ingsw.game_model.character.advanced.Bartender;
+import it.polimi.ingsw.game_model.character.Assistant;
+import it.polimi.ingsw.game_model.character.advanced.*;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
@@ -23,6 +23,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.game_model.utils.ColorCharacter.GREEN;
+import static it.polimi.ingsw.game_model.utils.ColorCharacter.RED;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
@@ -183,9 +185,9 @@ class GameTest {
     void simpleUpdateTeacherOwnershipTest() throws TooManyStudentsException{
         initialization(2, false);
 
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.updateTeacherOwnership(game.getPlayers().get(0), ColorCharacter.RED);
-        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(ColorCharacter.RED));
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.updateTeacherOwnership(game.getPlayers().get(0), RED);
+        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(RED));
     }
 
     @DisplayName("Steal teacher ownership")
@@ -207,13 +209,13 @@ class GameTest {
     void drawTeacherOwnershipNormalTest() throws TooManyStudentsException{
         initialization(2, false);
 
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.GREEN);
-        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(ColorCharacter.GREEN));
-        game.moveStudentToDiningHall(game.getPlayers().get(1), ColorCharacter.GREEN);
-        game.updateTeacherOwnership(game.getPlayers().get(0), ColorCharacter.GREEN);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), GREEN);
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(GREEN));
+        game.moveStudentToDiningHall(game.getPlayers().get(1), GREEN);
+        game.updateTeacherOwnership(game.getPlayers().get(0), GREEN);
 
-        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(ColorCharacter.GREEN));
-        Assertions.assertFalse(game.getPlayers().get(1).hasTeacherOfColor(ColorCharacter.GREEN));
+        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(GREEN));
+        Assertions.assertFalse(game.getPlayers().get(1).hasTeacherOfColor(GREEN));
     }
 
     @DisplayName("Draw teacher ownership condition bartender effect")
@@ -224,23 +226,133 @@ class GameTest {
         var card = new Bartender(game);
         card.playEffect();
 
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.GREEN);
-        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(ColorCharacter.GREEN));
-        game.moveStudentToDiningHall(game.getPlayers().get(1), ColorCharacter.GREEN);
-        game.updateTeacherOwnership(game.getPlayers().get(1), ColorCharacter.GREEN);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), GREEN);
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(GREEN));
+        game.moveStudentToDiningHall(game.getPlayers().get(1), GREEN);
+        game.updateTeacherOwnership(game.getPlayers().get(1), GREEN);
 
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(ColorCharacter.RED));
-        game.moveStudentToDiningHall(game.getPlayers().get(1), ColorCharacter.RED);
-        game.updateTeacherOwnership(game.getPlayers().get(1), ColorCharacter.RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(RED));
+        game.moveStudentToDiningHall(game.getPlayers().get(1), RED);
+        game.updateTeacherOwnership(game.getPlayers().get(1), RED);
 
-        Assertions.assertTrue(game.getPlayers().get(1).hasTeacherOfColor(ColorCharacter.GREEN));
-        Assertions.assertFalse(game.getPlayers().get(0).hasTeacherOfColor(ColorCharacter.GREEN));
-        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(ColorCharacter.RED));
-        Assertions.assertFalse(game.getPlayers().get(1).hasTeacherOfColor(ColorCharacter.RED));
+        Assertions.assertTrue(game.getPlayers().get(1).hasTeacherOfColor(GREEN));
+        Assertions.assertFalse(game.getPlayers().get(0).hasTeacherOfColor(GREEN));
+        Assertions.assertTrue(game.getPlayers().get(0).hasTeacherOfColor(RED));
+        Assertions.assertFalse(game.getPlayers().get(1).hasTeacherOfColor(RED));
     }
 
+    @DisplayName("Centaurus effect test")
+    @Test
+    void evaluateInfluenceCentaurusEffect(){
+        initialization(2, true);
+
+        var card = new Centaurus(game);
+        card.playEffect();
+
+        game.terrain.getIslands().get(0).addAllTower(game.players.get(1).removeNTowers(1));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.players.get(0).getSchool().addTeacher(new Teacher(RED));
+        game.evaluateInfluences(0);
+        assertEquals(1, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0] - 1, game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1], game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+    }
+
+    @DisplayName("Knight effect test")
+    @Test
+    void evaluateInfluenceKnightEffect(){
+        initialization(2, true);
+
+        var card = new Knight(game);
+        card.playEffect();
+        game.players.get(0).setPlayedSpecialCard();
+
+        game.terrain.getIslands().get(1).addAllTower(game.players.get(1).removeNTowers(1));
+        game.terrain.mergeIsland(game.terrain.getIslands().get(0), game.terrain.getIslands().get(1));
+        game.terrain.getIslands().get(0).addAllTower(game.players.get(1).removeNTowers(1));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.players.get(0).getSchool().addTeacher(new Teacher(RED));
+
+        game.evaluateInfluences(0);
+        assertEquals(2, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0] - 2, game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1], game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+    }
+
+    @DisplayName("Flagman effect test")
+    @Test
+    void evaluateInfluenceFlagmanEffect(){
+        initialization(2, true);
+
+        var card = new Flagman(game);
+
+        game.terrain.getIslands().get(0).addAllTower(game.players.get(1).removeNTowers(1));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.players.get(0).getSchool().addTeacher(new Teacher(RED));
+        card.playEffect(0);
+
+        assertEquals(1, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0] - 1, game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1], game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+    }
+
+    @DisplayName("Landlord effect test")
+    @Test
+    void evaluateInfluenceLandlordEffect(){
+        initialization(2, true);
+
+        var card = new Landlord(game);
+        card.playEffect(RED);
+
+        game.terrain.getIslands().get(0).addAllTower(game.players.get(1).removeNTowers(1));
+        game.terrain.getIslands().get(0).addStudent(new Student(RED));
+        game.players.get(0).getSchool().addTeacher(new Teacher(RED));
+        game.evaluateInfluences(0);
+
+        assertEquals(1, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0], game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1] - 1, game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(1).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+
+        game.terrain.getIslands().get(0).addStudent(new Student(GREEN));
+        game.terrain.getIslands().get(0).addStudent(new Student(GREEN));
+        game.players.get(0).getSchool().addTeacher(new Teacher(GREEN));
+        game.evaluateInfluences(0);
+
+        assertEquals(1, game.terrain.getIslands().get(0).getTowers().size());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[0] - 1, game.players.get(0).getTowersAvailable());
+        assertEquals(game.INITIAL_NUMBER_OF_TOWER[1], game.players.get(1).getTowersAvailable());
+        assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
+    }
+
+    @DisplayName("Postman effect test")
+    @Test
+    void evaluateInfluencePostmanEffect(){
+        initialization(2, true);
+
+        var card = new Postman(game);
+
+        game.players.get(0).playAssistant(new Assistant(AssistantType.DOG));
+        card.playEffect(game.players.get(0));
+
+        assertEquals(AssistantType.DOG.getPossibleSteps() + 2, game.players.get(0).getDiscardedCard().getPossibleSteps());
+    }
+
+    @DisplayName("Mother Nature movement")
+    @Test
+    void checkMotherNatureMovement(){
+        initialization(2, false);
+        int x = game.motherNature.getPosition();
+        game.motherNature.moveOfIslands(game.terrain, 3);
+
+        assertEquals((x + 3) % 12, game.motherNature.getPosition());
+    }
 
     @DisplayName("evaluate influence with 2 player in a winning condition test")
     @Test
@@ -255,7 +367,7 @@ class GameTest {
 
         Assertions.assertEquals(oldTowersNum-1, game.getPlayers().get(0).getTowersAvailable());
         Assertions.assertEquals(game.getPlayers().get(0).getColor(), game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1).getTowers().get(0).getColor());
-        Assertions.assertEquals(1, game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1 % 12).getTowers().size());
+        Assertions.assertEquals(1, game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1) % 12).getTowers().size());
     }
 
     @DisplayName("evaluate influence with 2 player in a losing condition test")
@@ -271,9 +383,9 @@ class GameTest {
 
         Assertions.assertEquals(oldTowersNum, game.getPlayers().get(0).getTowersAvailable());
         Assertions.assertEquals(oldTowersNum-1, game.getPlayers().get(1).getTowersAvailable());
-        Assertions.assertNotEquals(game.getPlayers().get(0).getColor(), game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1%12).getTowers().get(0).getColor());
+        Assertions.assertNotEquals(game.getPlayers().get(0).getColor(), game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1)%12).getTowers().get(0).getColor());
         Assertions.assertEquals(game.getPlayers().get(1).getColor(), game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1).getTowers().get(0).getColor());
-        Assertions.assertEquals(1, game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1 % 12).getTowers().size());
+        Assertions.assertEquals(1, game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1) % 12).getTowers().size());
     }
 
     @DisplayName("evaluate influence with 3 player in a drawish condition test")
@@ -281,13 +393,13 @@ class GameTest {
     void evaluateInfluences3PlayerDrawConditionTest() {
         initialization(3, false);
 
-        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(ColorCharacter.GREEN));
-        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(ColorCharacter.GREEN));
-        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(ColorCharacter.RED));
-        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(ColorCharacter.RED));
+        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(GREEN));
+        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(GREEN));
+        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(RED));
+        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(RED));
         game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(ColorCharacter.PINK));
-        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(ColorCharacter.GREEN));
-        game.getPlayers().get(1).getSchool().addTeacher(new Teacher(ColorCharacter.RED));
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(GREEN));
+        game.getPlayers().get(1).getSchool().addTeacher(new Teacher(RED));
         game.getPlayers().get(2).getSchool().addTeacher(new Teacher(ColorCharacter.PINK));
 
         game.evaluateInfluences(game.getMotherNature().getPosition());
@@ -322,11 +434,11 @@ class GameTest {
 
         // in case the players have the same number of tower check for the number of teacher
         game.terrain.getNextIsland(is).addAllTower(game.players.get(0).removeNTowers(1));
-        game.players.get(0).getSchool().addTeacher(new Teacher(ColorCharacter.GREEN));
+        game.players.get(0).getSchool().addTeacher(new Teacher(GREEN));
         assertEquals(1, game.winner().length);
         assertTrue(game.winner()[0].equals(names[0]));
 
-        game.players.get(1).getSchool().addTeacher(new Teacher(ColorCharacter.RED));
+        game.players.get(1).getSchool().addTeacher(new Teacher(RED));
         game.players.get(1).getSchool().addTeacher(new Teacher(ColorCharacter.PINK));
         assertEquals(1, game.winner().length);
         assertTrue(game.winner()[0].equals(names[1]));
@@ -346,9 +458,9 @@ class GameTest {
 
         // Adding 3 students to the first player's dining hall --> should result also in adding
         // a coin to its treasury.
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
 
         // Verifying the additional coin
         Assertions.assertEquals(2, game.getPlayers().get(0).getMoney());
@@ -365,8 +477,8 @@ class GameTest {
         game.getTerrain().getNextIsland(game.getTerrain().getIslandWithId(game.getMotherNature().getPosition())).addAllTower(whiteTowers);
         game.getTerrain().getPreviousIsland(game.getTerrain().getIslandWithId(game.getMotherNature().getPosition())).addAllTower(whiteTowers);
 
-        game.getPlayers().get(1).getSchool().addTeacher(new Teacher(ColorCharacter.RED));
-        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(ColorCharacter.RED));
+        game.getPlayers().get(1).getSchool().addTeacher(new Teacher(RED));
+        game.terrain.getIslands().get(game.getMotherNature().getPosition()).addStudent(new Student(RED));
         game.evaluateInfluences(game.getMotherNature().getPosition());
 
         // Now island should be merged
@@ -390,13 +502,13 @@ class GameTest {
         fromEntranceToDiningRoom.add(0);
         fromEntranceToDiningRoom.add(1);
         fromEntranceToDiningRoom.add(2);
-        fromDiningRoomToEntrance.add(ColorCharacter.RED);
-        fromDiningRoomToEntrance.add(ColorCharacter.RED);
-        fromDiningRoomToEntrance.add(ColorCharacter.RED);
+        fromDiningRoomToEntrance.add(RED);
+        fromDiningRoomToEntrance.add(RED);
+        fromDiningRoomToEntrance.add(RED);
 
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
-        game.moveStudentToDiningHall(game.getPlayers().get(0), ColorCharacter.RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
+        game.moveStudentToDiningHall(game.getPlayers().get(0), RED);
 
         card.playEffect(game.getPlayers().get(0), fromEntranceToDiningRoom, fromDiningRoomToEntrance);
 
@@ -415,8 +527,8 @@ class GameTest {
             }
         }
 
-        Assertions.assertEquals(redInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.RED).getNumberOfStudents());
-        Assertions.assertEquals(greenInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.GREEN).getNumberOfStudents());
+        Assertions.assertEquals(redInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(RED).getNumberOfStudents());
+        Assertions.assertEquals(greenInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(GREEN).getNumberOfStudents());
         Assertions.assertEquals(yellowInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.YELLOW).getNumberOfStudents());
         Assertions.assertEquals(pinkInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.PINK).getNumberOfStudents());
         Assertions.assertEquals(blueInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.BLUE).getNumberOfStudents());

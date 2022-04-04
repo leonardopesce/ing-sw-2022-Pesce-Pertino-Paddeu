@@ -14,6 +14,6 @@ public class Postman extends AdvancedCharacter{
      * @param player player that selected the card
      */
     public void playEffect(Player player){
-        player.getDiscardedCard().incrementPossibleSteps(2);
+        player.getDiscardedCard().setPossibleSteps(player.getDiscardedCard().getPossibleSteps() + 2);
     }
 }
