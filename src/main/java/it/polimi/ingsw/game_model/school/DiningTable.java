@@ -10,16 +10,18 @@ import java.util.List;
 public class DiningTable {
     private final ColorCharacter color;
     private int numberOfStudents = 0;
-    private final int MAX_POSITIONS = 10;
+    public static final int MAX_POSITIONS = 10;
 
     public DiningTable(ColorCharacter color) {
         this.color = color;
     }
 
-    public void addStudent() {
+    public void addStudent() throws TooManyStudentsException{
         //TODO in view block the possibility to add students when table is full
         if(numberOfStudents + 1 <= MAX_POSITIONS) {
             numberOfStudents++;
+        } else {
+            throw new TooManyStudentsException("There are already 10 students at this table.");
         }
     }
 

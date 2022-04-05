@@ -48,12 +48,9 @@ public class Jester extends AdvancedCharacter{
 
         Entrance playerEntrance = player.getSchool().getEntrance();
 
-        //TODO è necessario controllare che la dimensione dei due array sia uguale?
-        if(studentsFromCard.size() == studentsFromEntrance.size()) {
-            for(int i=0; i<studentsFromCard.size(); i++) {
-                studentsOnCard.add(studentsFromCard.get(i) + 1, playerEntrance.moveStudent(studentsFromEntrance.get(i)));
-                playerEntrance.getStudents().add(studentsFromEntrance.get(i), studentsOnCard.remove(studentsFromCard.get(i).intValue()));
-            }
+        for(int i=0; i<studentsFromCard.size(); i++) {
+            studentsOnCard.add(studentsFromCard.get(i) + 1, playerEntrance.moveStudent(studentsFromEntrance.get(i)));
+            playerEntrance.getStudents().add(studentsFromEntrance.get(i), studentsOnCard.remove(studentsFromCard.get(i).intValue()));
         }
         return true;
     }
@@ -67,6 +64,10 @@ public class Jester extends AdvancedCharacter{
             Player player = (Player) attributes[0];
             ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
             ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
+
+            if(studentsFromCard.size() == studentsFromEntrance.size()) {
+                return false;
+            }
         }
         catch (Exception e){
             return false;
