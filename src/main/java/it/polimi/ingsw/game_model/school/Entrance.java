@@ -23,11 +23,8 @@ public class Entrance {
         return students.remove(student);
     }
 
-    public void addStudent(Student student) {
-        if(students.size()<9) students.add(student);
-    }
-
     public void addAllStudents(List<Student> students){
+        //TODO does this rise a problem in case there are more than 9 students?
         if(this.students.size() + students.size() <= 9) this.students.addAll(students);
     }
 }

@@ -65,7 +65,7 @@ public class Jester extends AdvancedCharacter{
             ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
             ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
 
-            if(studentsFromCard.size() == studentsFromEntrance.size()) {
+            if(studentsFromCard.size() != studentsFromEntrance.size()) {
                 return false;
             }
         }

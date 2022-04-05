@@ -67,7 +67,6 @@ public class Princess extends AdvancedCharacter{
             Player player = (Player) attributes[0];
             Integer studentFromCard = (Integer) attributes[1];
 
-            if(player.getSchool().getDiningHall().getTableOfColor(studentsOnCard.get(studentFromCard).getColor()).getNumberOfStudents() + 1 > DiningTable.MAX_POSITIONS) throw new Exception();
         }catch (Exception e){
             return false;
         }

@@ -61,19 +61,6 @@ public class Bard extends AdvancedCharacter{
             List<Integer> studentsFromEntrance = (List<Integer>)args[1];
             List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>)args[2];
             ColorCharacter color = player.getSchool().getEntrance().getStudent(studentsFromEntrance.get(0)).getColor();
-            if(studentsFromEntrance.size() == 2){
-                if(player.getSchool().getEntrance().getStudent(studentsFromEntrance.get(1)).getColor() == color &&
-                        player.getSchool().getDiningHall().getTableOfColor(color).getNumberOfStudents() + 2 > DiningTable.MAX_POSITIONS){
-                    throw new Exception();
-                }
-                else if(player.getSchool().getDiningHall().getTableOfColor(player.getSchool().getEntrance().getStudent(studentsFromEntrance.get(1)).getColor()).getNumberOfStudents() + 2 > DiningTable.MAX_POSITIONS){
-                    throw new Exception();
-                }
-            }
-            if(player.getSchool().getDiningHall().getTableOfColor(color).getNumberOfStudents() + 1 > DiningTable.MAX_POSITIONS){
-                throw new Exception();
-            }
-
         } catch(Exception ex) {
             return false;
         }

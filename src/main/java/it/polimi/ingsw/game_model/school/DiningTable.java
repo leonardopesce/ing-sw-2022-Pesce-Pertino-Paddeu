@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_model.school;
 
-import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
@@ -16,12 +15,10 @@ public class DiningTable {
         this.color = color;
     }
 
-    public void addStudent() throws TooManyStudentsException{
+    public void addStudent(){
         //TODO in view block the possibility to add students when table is full
         if(numberOfStudents + 1 <= MAX_POSITIONS) {
             numberOfStudents++;
-        } else {
-            throw new TooManyStudentsException("There are already 10 students at this table.");
         }
     }
 
