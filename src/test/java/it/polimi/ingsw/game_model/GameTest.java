@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ class GameTest {
     Game game;
     GameExpertMode gameExpert;
     GameController controller;
-    private String[] names = {"Leonardo", "Paolo", "Alberto", "Bot"};
+    private final String[] names = {"Leonardo", "Paolo", "Alberto", "Bot"};
 
     void initialization(int numOfPlayer, boolean expertMode) {
         if(expertMode){
@@ -562,7 +561,7 @@ class GameTest {
         initialization(2, false);
         game.terrain.getIslands().get(0).addAllTower(game.players.get(0).removeNTowers(game.players.get(0).getTowersAvailable()));
         assertEquals(1, game.winner().length);
-        assertTrue(game.winner()[0].equals(names[0]));
+        assertEquals(game.winner()[0], names[0]);
     }
 
     @DisplayName("player win when he merges island (2 player mode)")
@@ -576,18 +575,18 @@ class GameTest {
         }
         is.addAllTower(game.players.get(1).removeNTowers(1));
         assertEquals(1, game.winner().length);
-        assertTrue(game.winner()[0].equals(names[1]));
+        assertEquals(game.winner()[0], names[1]);
 
         // in case the players have the same number of tower check for the number of teacher
         game.terrain.getNextIsland(is).addAllTower(game.players.get(0).removeNTowers(1));
         game.players.get(0).getSchool().addTeacher(new Teacher(GREEN));
         assertEquals(1, game.winner().length);
-        assertTrue(game.winner()[0].equals(names[0]));
+        assertEquals(game.winner()[0], names[0]);
 
         game.players.get(1).getSchool().addTeacher(new Teacher(RED));
         game.players.get(1).getSchool().addTeacher(new Teacher(PINK));
         assertEquals(1, game.winner().length);
-        assertTrue(game.winner()[0].equals(names[1]));
+        assertEquals(game.winner()[0], names[1]);
 
         game.players.get(0).getSchool().addTeacher(new Teacher(ColorCharacter.YELLOW));
         assertEquals(2, game.winner().length);
