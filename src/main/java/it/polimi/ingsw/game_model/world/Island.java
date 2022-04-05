@@ -1,17 +1,22 @@
 package it.polimi.ingsw.game_model.world;
 
-import it.polimi.ingsw.game_model.Player;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.Healer;
 import it.polimi.ingsw.game_model.character.basic.Student;
-import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.basic.Tower;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Island {
     private final int id;
     private int size = 1;
-    private List<Student> students;
-    private List<Tower> towers;
+    private final List<Student> students = new ArrayList<>();
+    private final List<Tower> towers = new ArrayList<>();
+    private IntegerProperty isBlocked = new SimpleIntegerProperty();
 
     public Island(int id) {
         this.id = id;
@@ -41,6 +46,20 @@ public class Island {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isBlocked() { return isBlocked.intValue() > 0; }
+
+    public void denyIsland() {
+        isBlocked.setValue(isBlocked.intValue() + 1);
+    }
+
+    public void freeIsland() {
+        isBlocked.setValue(isBlocked.intValue() - 1);
+    }
+
+    public IntegerProperty getIsBlocked(){
+        return isBlocked;
     }
 
     public List<Student> getStudents() {

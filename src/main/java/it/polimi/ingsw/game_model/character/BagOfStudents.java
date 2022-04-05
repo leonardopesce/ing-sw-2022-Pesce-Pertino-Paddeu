@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_model.character;
 
+import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
@@ -10,17 +11,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class rappresenting the bag of the game.
+ * A class representing the bag of the game.
  * A bag contains:
  * <ul>
  *     <li>unpickedStudents - A list of all the students which are not already been played.</li>
  * </ul>
  */
 public class BagOfStudents extends Character{
-    private List<Student> unpickedStudents;
+    private final List<Student> unpickedStudents;
 
     public BagOfStudents(){
-        unpickedStudents = new ArrayList<Student>();
+        unpickedStudents = new ArrayList<>();
     }
 
     /**
@@ -64,10 +65,24 @@ public class BagOfStudents extends Character{
      * @return a randomly picked student from the bag.
      * @see Student
      */
-    public Student drawStudentFromBag(){
+    public Student drawStudentFromBag() throws BagEmptyException {
         Random randomPicker = new Random();
-        Student pickedStudent = this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
+        if(!isEmpty()) {
+            return this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
+        }
+        else throw new BagEmptyException("The bag is empty");
+    }
 
-        return pickedStudent;
+    public List<Student> drawNStudentFromBag(int n) throws BagEmptyException{
+        List<Student> temp = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            temp.add(drawStudentFromBag());
+        }
+        return temp;
+    }
+
+    public void insertBack(List<Student> students) {
+        unpickedStudents.addAll(students);
+        Collections.shuffle(unpickedStudents);
     }
 }

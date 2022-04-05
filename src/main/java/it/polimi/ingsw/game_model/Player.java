@@ -1,52 +1,52 @@
 package it.polimi.ingsw.game_model;
 
+import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
-import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
+import it.polimi.ingsw.game_model.character.basic.Tower;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.School;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Player {
     //TODO sistemare questione torri in 4 giocatori
     private final String nickname;
     private ColorTower color;
     private School school;
-    private DeckAssistants deckAssistants;
+    private final DeckAssistants deckAssistants;
     private Assistant discardedCard;
     private int money = 0;
     private boolean playedSpecialCard = false;
+    private int movedStudents = 0;
 
-    public Player(String nickname) {
+    public Player(String nickname, DeckType deckType) {
         this.nickname = nickname;
-        this.school = new School();
+        this.deckAssistants = new DeckAssistants(deckType);
     }
 
-    public Player(String nickname, Player mate){
-        this.nickname = nickname;
-        // le torri del player saranno le stesse del mate
-    }
-
-    public void discardAssistant(){
+    public void initialSetup(List<Student> students, int numTower, ColorTower color){
+        school = new School(students, numTower);
+        this.color = color;
 
     }
 
-    public void playedSpecialCard(AdvancedCharacter card){
-        if(!playedSpecialCard && money >= card.getAdvanceCharacterType().getCardCost()){
-            money -= card.getAdvanceCharacterType().getCardCost();
-            playedSpecialCard = true;
-        }
-
+    public void setPlayedSpecialCard(){
+        playedSpecialCard = true;
     }
 
     public boolean hasPlayedSpecialCard() {
         return playedSpecialCard;
     }
 
+    //TODO to use when GameControllerAdvanced
     public void resetPlayedSpecialCard(){
         playedSpecialCard = false;
     }
@@ -59,10 +59,8 @@ public class Player {
         return nickname;
     }
 
-    public void playAssistant() {
-        //TODO control based event, una volta ricevuto dal controller quale carta ha scelto il giocatore
-        // la togliamo dal suo deck e la impostiamo come quella appena giocata (in un turno due giocatori
-        // non possono giocare la stessa carta)
+    public void playAssistant(Assistant discardedCard) {
+         this.discardedCard = deckAssistants.playAssistant(discardedCard);
     }
 
     public School getSchool() {
@@ -77,20 +75,17 @@ public class Player {
         return school.getTowersAvailable();
     }
 
-    public void removeNTowers(int x){
-        if (x > getTowersAvailable()) {
-            school.setTowersAvailable(0);
-        } else {
-            school.setTowersAvailable(getTowersAvailable() - x);
+    public List<Tower> removeNTowers(int x){
+        List<Tower> towers = new ArrayList<>();
+        for(int i = 0; i < x && getTowersAvailable() > 0; i++){
+            towers.add(new Tower(color));
+            school.setTowersAvailable(getTowersAvailable() - 1);
         }
+        return towers;
     }
 
     public void addNTowers(int x){
         school.setTowersAvailable(getTowersAvailable() + x);
-    }
-
-    public void setDiscardedCard(Assistant discardedCard) {
-        this.discardedCard = discardedCard;
     }
 
     public int getMoney() {
@@ -117,7 +112,11 @@ public class Player {
         return false;
     }
 
-    public Teacher getTeacherOfColor(ColorCharacter color){
+    public int getNumberOfStudentAtTableOfColor(ColorCharacter color){
+        return getDiningTableWithColor(color).getNumberOfStudents();
+    }
+
+    public Teacher moveTeacherOfColor(ColorCharacter color){
         for(Teacher t: getTeachers()){
             if(t.getColor() == color){
                 getTeachers().remove(t);
@@ -128,8 +127,43 @@ public class Player {
         return null;
     }
 
+    public DeckAssistants getDeckAssistants() {
+        return deckAssistants;
+    }
+
     public List<Teacher> getTeachers(){
         return school.getDiningHall().getTeacherList();
     }
 
+    public int getNumberOfMovedStudents() {
+        return movedStudents;
+    }
+
+    public void incrementNumberOfMovedStudents(){
+        movedStudents++;
+    }
+
+    public void resetNumberOfMovedStudents() {
+        this.movedStudents = 0;
+    }
+
+    public void moveStudentToDiningHall(ColorCharacter color) {
+        school.getDiningHall().getTableOfColor(color).addStudent();
+    }
+
+    public int addMoney(int availableMoney){
+        if(availableMoney > 0){
+            availableMoney--;
+            money++;
+        }
+        return availableMoney;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return Objects.equals(nickname, player.nickname);
+    }
 }

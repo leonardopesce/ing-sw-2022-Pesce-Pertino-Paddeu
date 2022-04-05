@@ -1,8 +1,11 @@
 package it.polimi.ingsw.game_model.school;
 
-import it.polimi.ingsw.custom_exceptions.EmptyDiningTableException;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
+import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiningTable {
     private final ColorCharacter color;
@@ -13,19 +16,23 @@ public class DiningTable {
         this.color = color;
     }
 
-    public void addStudent() throws TooManyStudentsException{
+    public void addStudent() {
+        //TODO in view block the possibility to add students when table is full
         if(numberOfStudents + 1 <= MAX_POSITIONS) {
-                numberOfStudents++;
-                //@TODO: handle professor logic.
-
-
+            numberOfStudents++;
         }
-        else throw new TooManyStudentsException("There are no available seats at this table.");
     }
 
-    public void removeStudent() throws EmptyDiningTableException {
-        if(numberOfStudents > 0) numberOfStudents--;
-        else throw new EmptyDiningTableException("The table is empty. You cannot remove any student.");
+    public List<Student> removeStudent(int numberToRemove) {
+        List<Student> students = new ArrayList<>();
+        for(int i=0; i<numberToRemove; i++) {
+            if(numberOfStudents > 0){
+                numberOfStudents--;
+                students.add(new Student(color));
+            }
+            else break;
+        }
+        return students;
     }
 
     public ColorCharacter getColor() {
