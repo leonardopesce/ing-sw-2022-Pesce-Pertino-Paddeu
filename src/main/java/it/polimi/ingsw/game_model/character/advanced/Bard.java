@@ -62,7 +62,6 @@ public class Bard extends AdvancedCharacter{
             List<Integer> studentsFromEntrance = (List<Integer>)args[1];
             List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>)args[2];
         } catch(Exception ex) {
-            ex.printStackTrace();
             return false;
         }
 

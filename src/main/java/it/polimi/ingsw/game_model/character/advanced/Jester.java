@@ -69,7 +69,6 @@ public class Jester extends AdvancedCharacter{
             ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
         }
         catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

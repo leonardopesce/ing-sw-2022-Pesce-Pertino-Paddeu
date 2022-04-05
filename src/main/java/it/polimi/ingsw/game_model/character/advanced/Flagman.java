@@ -34,7 +34,6 @@ public class Flagman extends AdvancedCharacter{
             Integer islandID = (Integer) attributes[0];
         }
         catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

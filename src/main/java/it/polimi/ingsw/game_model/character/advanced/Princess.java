@@ -59,7 +59,6 @@ public class Princess extends AdvancedCharacter{
             Player player = (Player) attributes[0];
             Integer studentFromCard = (Integer) attributes[1];
         }catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

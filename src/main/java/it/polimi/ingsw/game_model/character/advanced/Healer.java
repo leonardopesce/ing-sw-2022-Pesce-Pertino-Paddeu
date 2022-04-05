@@ -55,7 +55,6 @@ public class Healer extends AdvancedCharacter{
             Island islandToDeny = (Island) attributes[0];
         }
         catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

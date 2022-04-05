@@ -59,7 +59,6 @@ public class Landlord extends AdvancedCharacter{
             ColorCharacter color = (ColorCharacter) attributes[0];
         }
         catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

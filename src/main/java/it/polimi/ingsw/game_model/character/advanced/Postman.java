@@ -33,7 +33,6 @@ public class Postman extends AdvancedCharacter{
             Player player = (Player) attributes[0];
         }
         catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

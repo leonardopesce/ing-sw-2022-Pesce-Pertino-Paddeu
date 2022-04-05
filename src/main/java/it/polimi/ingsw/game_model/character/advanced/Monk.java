@@ -65,7 +65,6 @@ public class Monk extends AdvancedCharacter{
             Island islandToPlaceStudentOn = (Island) args[0];
             Integer studentsToPick = (Integer) args[1];
         } catch(Exception ex) {
-            ex.printStackTrace();
             return false;
         }
 

@@ -44,7 +44,6 @@ public class Merchant extends AdvancedCharacter{
         try {
             ColorCharacter color = (ColorCharacter) args[0];
         } catch (Exception ex) {
-            ex.printStackTrace();
             return false;
         }
 
