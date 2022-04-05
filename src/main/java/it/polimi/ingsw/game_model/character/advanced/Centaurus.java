@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
 public class Centaurus extends AdvancedCharacter{
@@ -15,7 +16,12 @@ public class Centaurus extends AdvancedCharacter{
     /**
      * When resolving a Conquering on an island, Towers do not count towards influence.
      */
-    public void playEffect() {
+    @Override
+    public boolean playEffect(Object... attributes) {
+        if(!validateArgs(attributes)){
+            return false;
+        }
+
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){
                     @Override
@@ -24,6 +30,11 @@ public class Centaurus extends AdvancedCharacter{
                     }
                 }
         );
+        return true;
     }
 
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        return attributes.length==0;
+    }
 }

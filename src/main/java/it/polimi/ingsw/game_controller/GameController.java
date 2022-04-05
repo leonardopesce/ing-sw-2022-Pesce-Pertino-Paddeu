@@ -299,14 +299,16 @@ public class GameController {
         }
     }
 
-    public void playAdvancedCard(Player player, AdvancedCharacter card, Object... args){
+    public void playAdvancedCard(Player player, AdvancedCharacter card, Object... args) throws Exception{
         //TODO check if game is advanced
         if(player.equals(game.getPlayerNumber(actionOrder[turn])) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
-                if(AdvancedCardController.checkArgument(card, args)){
+                if(card.playEffect(args)){
                     player.setPlayedSpecialCard();
                     card.getType().incrementCardCost();
-                    AdvancedCardController.playEffectOfCard(card, args);
+                }
+                else {
+                    throw new Exception("Error on the number of arguments or type of arguments");
                 }
             }
         }

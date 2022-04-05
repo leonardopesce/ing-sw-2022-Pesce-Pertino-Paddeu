@@ -16,7 +16,11 @@ public class Knight extends AdvancedCharacter{
     /**
      * During the influence calculation this turn, you count as having 2 more influence.
      */
-    public void playEffect() {
+    public boolean playEffect(Object... attributes) {
+        if(!validateArgs(attributes)){
+            return false;
+        }
+
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){
                     @Override
@@ -30,6 +34,11 @@ public class Knight extends AdvancedCharacter{
                     }
                 }
         );
+        return true;
     }
 
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        return attributes.length == 0;
+    }
 }

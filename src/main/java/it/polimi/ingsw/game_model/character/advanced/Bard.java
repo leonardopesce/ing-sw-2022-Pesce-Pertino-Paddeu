@@ -17,11 +17,18 @@ public class Bard extends AdvancedCharacter{
 
     /**
      * You may exchange up to 2 students between your entrance and your dining room.
-     * @param player Who has played the
-     * @param studentsFromEntrance Student selected from entrance
-     * @param studentsFromDiningHall Student selected from dining hall
+     * @param attributes
      */
-    public void playEffect(Player player, List<Integer> studentsFromEntrance, List<ColorCharacter> studentsFromDiningHall) {
+    @Override
+    public boolean playEffect(Object... attributes) {
+        if(!validateArgs(attributes)) {
+            return false;
+        }
+        Player player = (Player) attributes[0];
+        List<Integer> studentsFromEntrance = (List<Integer>) attributes[1];
+        List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>) attributes[2];
+
+
         Entrance playerEntrance = player.getSchool().getEntrance();
         DiningHall playerDiningHall = player.getSchool().getDiningHall();
 
@@ -41,7 +48,24 @@ public class Bard extends AdvancedCharacter{
                     playerDiningHall.getTableOfColor(color).removeStudent(1)
             );
         }
-
+        return true;
     }
 
+    @Override
+    protected boolean validateArgs(Object... args) {
+        if(args.length != 3) {
+            return false;
+        }
+
+        try {
+            Player player = (Player) args[0];
+            List<Integer> studentsFromEntrance = (List<Integer>)args[1];
+            List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>)args[2];
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 }

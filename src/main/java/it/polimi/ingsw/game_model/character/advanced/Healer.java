@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model.character.advanced;
 
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,9 +18,15 @@ public class Healer extends AdvancedCharacter{
     /**
      * Place a No Entry tile on an island of your choice. The first time Mother Nature ends her movement
      * there put the no entry tile back onto this card without calculating influence of placing any tower.
-     * @param islandToDeny Chosen Island
+     * @param attributes
      */
-    public void playEffect(Island islandToDeny) {
+    @Override
+    public boolean playEffect(Object... attributes) {
+        if(!validateArgs(attributes)){
+            return false;
+        }
+        Island islandToDeny = (Island) attributes[0];
+
         if(numberOfDeniableIslands > 0) {
             islandToDeny.denyIsland();
             numberOfDeniableIslands--;
@@ -36,7 +43,23 @@ public class Healer extends AdvancedCharacter{
             });
         }
 
-
+        return true;
     }
+
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        if(attributes.length != 1){
+            return false;
+        }
+        try {
+            Island islandToDeny = (Island) attributes[0];
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
 }

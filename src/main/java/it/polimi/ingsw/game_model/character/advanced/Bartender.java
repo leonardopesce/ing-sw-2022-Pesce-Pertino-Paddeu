@@ -5,6 +5,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 public class Bartender extends AdvancedCharacter{
     public Bartender(Game game){
@@ -15,7 +16,12 @@ public class Bartender extends AdvancedCharacter{
      * During this turn, you take the control of the other players' teachers even if you have the same
      * amount of students in your room as the player currently controlling them.
      */
-    public void playEffect(){
+    @Override
+    public boolean playEffect(Object... attributes){
+        if(!validateArgs(attributes)){
+            return false;
+        }
+
         game.setTeacherOwnershipCalculator(
                 new CalculatorTeacherOwnership(){
                     @Override
@@ -31,6 +37,11 @@ public class Bartender extends AdvancedCharacter{
                     }
                 }
         );
+        return true;
     }
 
+    @Override
+    protected boolean validateArgs(Object... args) {
+        return args.length == 0;
+    }
 }
