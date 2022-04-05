@@ -305,6 +305,7 @@ public class GameController {
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
                 if(card.playEffect(args)){
                     player.setPlayedSpecialCard();
+                    player.setMoney(player.getMoney() - card.getType().getCardCost());
                     card.getType().incrementCardCost();
                 }
                 else {
