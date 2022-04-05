@@ -31,17 +31,37 @@ public class Princess extends AdvancedCharacter{
     /**
      * Take 1 student from this card and place it in your dining room. Then, draw a new student
      * from the bag and place it on this card.
-     * @param player who played the card effect
-     * @param studentFromCard selected student
+     * @param attributes values of the card
      */
-    public void playEffect(Player player, int studentFromCard){
+    @Override
+    public boolean playEffect(Object... attributes){
+        if(!validateArgs(attributes)) return false;
+
+        Player player = (Player) attributes[0];
+        Integer studentFromCard = (Integer) attributes[1];
+
         player.getSchool().getDiningHall().getTableOfColor(studentsOnCard.get(studentFromCard).getColor()).addStudent();
-        studentsOnCard.remove(studentFromCard);
+        studentsOnCard.remove(studentFromCard.intValue());
         try {
             studentsOnCard.add(game.getBag().drawStudentFromBag());
         } catch (BagEmptyException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        if(attributes.length != 2){
+            return false;
+        }
+        try{
+            Player player = (Player) attributes[0];
+            Integer studentFromCard = (Integer) attributes[1];
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

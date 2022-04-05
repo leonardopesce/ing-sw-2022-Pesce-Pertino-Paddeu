@@ -16,9 +16,16 @@ public class Landlord extends AdvancedCharacter{
 
     /**
      * Chose a color of student: during the calculation of influence this turn, that color adds no influence.
-     * @param color color chosen
+     * @param attributes
      */
-    public void playEffect(ColorCharacter color){
+    @Override
+    public boolean playEffect(Object... attributes){
+        if(!validateArgs(attributes)){
+            return false;
+        }
+
+        ColorCharacter color = (ColorCharacter) attributes[0];
+
         game.setInfluenceCalculator(
                 new CalculatorInfluence(){
                     private final ColorCharacter COLOR_TO_EXCLUDE = color;
@@ -40,6 +47,21 @@ public class Landlord extends AdvancedCharacter{
                     }
                 }
         );
+        return true;
     }
 
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        if(attributes.length != 1){
+            return false;
+        }
+        try {
+            ColorCharacter color = (ColorCharacter) attributes[0];
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

@@ -56,4 +56,7 @@ public abstract class AdvancedCharacter extends Character {
             default -> throw new IllegalStateException("Unexpected value for random Expert mode card getter: " + value);
         };
     }
+
+    public abstract boolean playEffect(Object... attributes);
+    protected abstract boolean validateArgs(Object... attributes);
 }

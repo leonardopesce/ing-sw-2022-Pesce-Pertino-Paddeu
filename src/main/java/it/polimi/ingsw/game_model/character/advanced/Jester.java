@@ -6,8 +6,10 @@ import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.school.Entrance;
+import it.polimi.ingsw.game_model.world.Island;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Jester extends AdvancedCharacter{
@@ -32,11 +34,18 @@ public class Jester extends AdvancedCharacter{
 
     /**
      * You may take up to 3 students from this card and replace them with the same number of students from your Entrance.
-     * @param player who is playing the card
-     * @param studentsFromCard list of students selected card
-     * @param studentsFromEntrance list of students selected from entrance
+     * @param attributes
      */
-    public void playEffect(Player player, List<Integer> studentsFromCard, List<Integer> studentsFromEntrance){
+    @Override
+    public boolean playEffect(Object... attributes){
+        if(!validateArgs(attributes)){
+            return false;
+        }
+
+        Player player = (Player) attributes[0];
+        ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
+        ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
+
         Entrance playerEntrance = player.getSchool().getEntrance();
 
         //TODO è necessario controllare che la dimensione dei due array sia uguale?
@@ -46,6 +55,24 @@ public class Jester extends AdvancedCharacter{
                 playerEntrance.getStudents().add(studentsFromEntrance.get(i), studentsOnCard.remove(studentsFromCard.get(i).intValue()));
             }
         }
+        return true;
+    }
+
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        if(attributes.length != 3){
+            return false;
+        }
+        try {
+            Player player = (Player) attributes[0];
+            ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
+            ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }

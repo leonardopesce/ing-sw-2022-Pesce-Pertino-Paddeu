@@ -393,15 +393,15 @@ class GameTest {
         var card = new Monk(game);
         List<Student> exStudents = new ArrayList<>(card.getStudentsOnCard());
         exStudents.remove(0);
-        var studentsOnCloud = game.terrain.getIslands().get(0).getStudents().stream().toList();
-        card.playEffect(game.terrain.getIslands().get(0), 0);
+        Island island = game.terrain.getIslandWithId(0).getStudents().size() == 0 ? game.terrain.getIslandWithId(1) : game.terrain.getIslandWithId(0);
+        var studentsOnCloud = new ArrayList<>(island.getStudents());
+        card.playEffect(island, 0);
 
-
-        assertSame(game.terrain.getIslands().get(0).getStudents().get(0).getColor(), studentsOnCloud.get(0).getColor());
+        assertSame(island.getStudents().get(0).getColor(), studentsOnCloud.get(0).getColor());
         assertSame(card.getStudentsOnCard().get(0).getColor(), exStudents.get(0).getColor());
         assertSame(card.getStudentsOnCard().get(1).getColor(), exStudents.get(1).getColor());
         assertSame(card.getStudentsOnCard().get(2).getColor(), exStudents.get(2).getColor());
-        assertEquals(2, game.terrain.getIslands().get(0).getStudents().size());
+        assertEquals(2, island.getStudents().size());
         assertEquals(4, card.getStudentsOnCard().size());
 
 
@@ -511,7 +511,7 @@ class GameTest {
         Assertions.assertEquals(oldTowersNum, game.getPlayers().get(0).getTowersAvailable());
         Assertions.assertEquals(oldTowersNum-1, game.getPlayers().get(1).getTowersAvailable());
         Assertions.assertNotEquals(game.getPlayers().get(0).getColor(), game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1)%12).getTowers().get(0).getColor());
-        Assertions.assertEquals(game.getPlayers().get(1).getColor(), game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1).getTowers().get(0).getColor());
+        Assertions.assertEquals(game.getPlayers().get(1).getColor(), game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1)%12).getTowers().get(0).getColor());
         Assertions.assertEquals(1, game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1) % 12).getTowers().size());
     }
 

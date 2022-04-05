@@ -11,10 +11,32 @@ public class Postman extends AdvancedCharacter{
 
     /**
      * You can move Mother Nature up to 2 additional islands compared to the value of the assistant card you played.
-     * @param player player that selected the card
+     * @param attributes
      */
-    public void playEffect(Player player){
+    @Override
+    public boolean playEffect(Object... attributes){
+        if(!validateArgs(attributes)){
+            return false;
+        }
+        Player player = (Player) attributes[0];
+
         player.getDiscardedCard().setPossibleSteps(player.getDiscardedCard().getPossibleSteps() + 2);
+        return true;
+    }
+
+    @Override
+    protected boolean validateArgs(Object... attributes) {
+        if(attributes.length != 1){
+            return false;
+        }
+        try {
+            Player player = (Player) attributes[0];
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }
