@@ -16,4 +16,5 @@ public class Flagman extends AdvancedCharacter{
     public void playEffect(int islandID){
         game.evaluateInfluences(islandID);
     }
+
 }

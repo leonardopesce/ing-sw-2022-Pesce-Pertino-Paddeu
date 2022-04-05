@@ -25,6 +25,9 @@ public class Monk extends AdvancedCharacter{
         }
     }
 
+    public List<Student> getStudentsOnCard() {
+        return studentsOnCard;
+    }
 
     /**
      * Take 1 student from this card and place it on an island of your choice. Then
@@ -43,4 +46,5 @@ public class Monk extends AdvancedCharacter{
             e.printStackTrace();
         }
     }
+
 }

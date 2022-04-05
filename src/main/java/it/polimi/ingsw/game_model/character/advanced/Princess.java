@@ -10,18 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Princess extends AdvancedCharacter{
-    private List<Student> studensOnCard;
+    private List<Student> studentsOnCard;
 
     public Princess(Game game){
         super(AdvancedCharacterType.PRINCESS, game);
 
-        studensOnCard = new ArrayList<>();
+        studentsOnCard = new ArrayList<>();
         try {
-            studensOnCard.addAll(game.getBag().drawNStudentFromBag(4));
+            studentsOnCard.addAll(game.getBag().drawNStudentFromBag(4));
         } catch (BagEmptyException e) {
             // Impossible to reach since the cards are eventually setup at the beginning of the match
             e.printStackTrace();
         }
+    }
+
+    public List<Student> getStudentsOnCard() {
+        return studentsOnCard;
     }
 
     /**
@@ -31,12 +35,13 @@ public class Princess extends AdvancedCharacter{
      * @param studentFromCard selected student
      */
     public void playEffect(Player player, int studentFromCard){
-        player.getSchool().getDiningHall().getTableOfColor(studensOnCard.get(studentFromCard).getColor()).addStudent();
-        studensOnCard.remove(studentFromCard);
+        player.getSchool().getDiningHall().getTableOfColor(studentsOnCard.get(studentFromCard).getColor()).addStudent();
+        studentsOnCard.remove(studentFromCard);
         try {
-            studensOnCard.add(game.getBag().drawStudentFromBag());
+            studentsOnCard.add(game.getBag().drawStudentFromBag());
         } catch (BagEmptyException e) {
             e.printStackTrace();
         }
     }
+
 }

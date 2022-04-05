@@ -358,13 +358,113 @@ class GameTest {
         assertSame(game.players.get(0).getColor(), game.terrain.getIslands().get(0).getTowers().get(0).getColor());
     }
 
+    @DisplayName("Merchant effect test")
+    @Test
+    void merchantEffectTest(){
+        initialization(4, true);
+
+        var card = new Merchant(game);
+
+        game.players.get(0).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        game.players.get(0).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        game.players.get(0).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        game.players.get(0).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        
+        game.players.get(1).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        
+        game.players.get(2).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        
+        game.players.get(3).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        game.players.get(3).getSchool().getDiningHall().getTableOfColor(RED).addStudent();
+        
+        card.playEffect(RED);
+
+        assertEquals(1, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(RED).getNumberOfStudents());
+        assertEquals(0, game.getPlayers().get(1).getSchool().getDiningHall().getTableOfColor(RED).getNumberOfStudents());
+        assertEquals(0, game.getPlayers().get(2).getSchool().getDiningHall().getTableOfColor(RED).getNumberOfStudents());
+        assertEquals(0, game.getPlayers().get(3).getSchool().getDiningHall().getTableOfColor(RED).getNumberOfStudents());
+    }
+
+    @DisplayName("Monk effect test")
+    @Test
+    void monkEffectTest(){
+        initialization(2, true);
+
+        var card = new Monk(game);
+        List<Student> exStudents = new ArrayList<>(card.getStudentsOnCard());
+        exStudents.remove(0);
+        var studentsOnCloud = game.terrain.getIslands().get(0).getStudents().stream().toList();
+        card.playEffect(game.terrain.getIslands().get(0), 0);
+
+
+        assertSame(game.terrain.getIslands().get(0).getStudents().get(0).getColor(), studentsOnCloud.get(0).getColor());
+        assertSame(card.getStudentsOnCard().get(0).getColor(), exStudents.get(0).getColor());
+        assertSame(card.getStudentsOnCard().get(1).getColor(), exStudents.get(1).getColor());
+        assertSame(card.getStudentsOnCard().get(2).getColor(), exStudents.get(2).getColor());
+        assertEquals(2, game.terrain.getIslands().get(0).getStudents().size());
+        assertEquals(4, card.getStudentsOnCard().size());
+
+
+    }
+
+    @DisplayName("Princess effect test")
+    @Test
+    void PrincessEffectTest(){
+        initialization(2, true);
+
+        var card = new Princess(game);
+        var exStudents = new ArrayList<>(card.getStudentsOnCard());
+        var studentsOnDiningHall = game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(exStudents.remove(0).getColor());
+
+        card.playEffect(game.players.get(0), 0);
+
+
+        assertSame(card.getStudentsOnCard().get(0).getColor(), exStudents.get(0).getColor());
+        assertSame(card.getStudentsOnCard().get(1).getColor(), exStudents.get(1).getColor());
+        assertSame(card.getStudentsOnCard().get(2).getColor(), exStudents.get(2).getColor());
+        assertEquals(1, studentsOnDiningHall.getNumberOfStudents());
+        assertEquals(4, card.getStudentsOnCard().size());
+    }
+
+    @DisplayName("Jester effect test")
+    @Test
+    void jesterEffectTest() {
+        initialization(4, true);
+
+        var card = new Jester(game);
+
+        var fromEntranceToCard = new ArrayList<Integer>();
+        var fromCardToEntrance = new ArrayList<Integer>();
+        var playerEntrance = game.getPlayers().get(3).getSchool().getEntrance();
+        fromEntranceToCard.add(1); fromEntranceToCard.add(3); fromEntranceToCard.add(4);
+        var firstStudentFromEntrance = playerEntrance.getStudent(1);
+        var secondStudentFromEntrance = playerEntrance.getStudent(3);
+        var thirdStudentFromEntrance = playerEntrance.getStudent(4);
+        fromCardToEntrance.add(0); fromCardToEntrance.add(2); fromCardToEntrance.add(5);
+        var firstStudentFromCard = card.getStudentsOnCard().get(0);
+        var secondStudentFromCard = card.getStudentsOnCard().get(2);
+        var thirdStudentFromCard = card.getStudentsOnCard().get(5);
+
+
+
+        card.playEffect(game.getPlayers().get(3), fromCardToEntrance, fromEntranceToCard);
+        
+        for(int i = 0; i<3; i++) {
+            Assertions.assertEquals(playerEntrance.getStudent(1).getColor(), firstStudentFromCard.getColor());
+            Assertions.assertEquals(playerEntrance.getStudent(3).getColor(), secondStudentFromCard.getColor());
+            Assertions.assertEquals(playerEntrance.getStudent(4).getColor(), thirdStudentFromCard.getColor());
+            Assertions.assertEquals(card.getStudentsOnCard().get(0).getColor(), firstStudentFromEntrance.getColor());
+            Assertions.assertEquals(card.getStudentsOnCard().get(2).getColor(), secondStudentFromEntrance.getColor());
+            Assertions.assertEquals(card.getStudentsOnCard().get(5).getColor(), thirdStudentFromEntrance.getColor());
+        }
+    }
+    
     @DisplayName("Postman effect test")
     @Test
     void evaluateInfluencePostmanEffect(){
         initialization(2, true);
 
         var card = new Postman(game);
-
         game.players.get(0).playAssistant(new Assistant(AssistantType.DOG));
         card.playEffect(game.players.get(0));
 
@@ -393,7 +493,7 @@ class GameTest {
         game.evaluateInfluences((game.getMotherNature().getPosition()+1) % 12);
 
         Assertions.assertEquals(oldTowersNum-1, game.getPlayers().get(0).getTowersAvailable());
-        Assertions.assertEquals(game.getPlayers().get(0).getColor(), game.getTerrain().getIslands().get(game.getMotherNature().getPosition()+1).getTowers().get(0).getColor());
+        Assertions.assertEquals(game.getPlayers().get(0).getColor(), game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1) % 12).getTowers().get(0).getColor());
         Assertions.assertEquals(1, game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1) % 12).getTowers().size());
     }
 

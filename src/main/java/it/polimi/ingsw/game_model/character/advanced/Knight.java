@@ -31,4 +31,5 @@ public class Knight extends AdvancedCharacter{
                 }
         );
     }
+
 }

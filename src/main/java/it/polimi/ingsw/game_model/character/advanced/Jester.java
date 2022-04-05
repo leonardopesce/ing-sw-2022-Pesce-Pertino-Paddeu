@@ -26,6 +26,10 @@ public class Jester extends AdvancedCharacter{
         }
     }
 
+    public List<Student> getStudentsOnCard() {
+        return studentsOnCard;
+    }
+
     /**
      * You may take up to 3 students from this card and replace them with the same number of students from your Entrance.
      * @param player who is playing the card
@@ -38,9 +42,10 @@ public class Jester extends AdvancedCharacter{
         //TODO è necessario controllare che la dimensione dei due array sia uguale?
         if(studentsFromCard.size() == studentsFromEntrance.size()) {
             for(int i=0; i<studentsFromCard.size(); i++) {
-                studentsOnCard.add(playerEntrance.moveStudent(studentsFromEntrance.get(i)));
-                playerEntrance.addStudent(studentsOnCard.remove(studentsFromCard.get(i).intValue()));
+                studentsOnCard.add(studentsFromCard.get(i) + 1, playerEntrance.moveStudent(studentsFromEntrance.get(i)));
+                playerEntrance.getStudents().add(studentsFromEntrance.get(i), studentsOnCard.remove(studentsFromCard.get(i).intValue()));
             }
         }
     }
+
 }

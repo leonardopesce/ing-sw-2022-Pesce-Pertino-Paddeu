@@ -41,4 +41,5 @@ public class Landlord extends AdvancedCharacter{
                 }
         );
     }
+
 }
