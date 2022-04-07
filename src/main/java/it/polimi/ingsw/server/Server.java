@@ -78,8 +78,6 @@ public class Server {
                 connection.asyncSend(game.print());
 
             }
-
-
         }
     }
 

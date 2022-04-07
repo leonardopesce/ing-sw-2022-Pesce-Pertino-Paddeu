@@ -61,30 +61,18 @@ public class SocketClientConnection extends Observable<Object> implements Client
 
     @Override
     public void run() {
-        Scanner in;
-        String name;
-        try{
-            in = new Scanner(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
-            send("Welcome!\nWhat is your name?");
-            String read = in.nextLine();
-            while(server.getConnectedPlayersName().contains(read)){
-                send("Sorry the name: \"" + read + " is already chosen. What is your name?");
-                read = in.nextLine();
-            }
-            name = read;
-            server.lobby(this, name);
-            in.close();
-            ObjectInputStream objectReader = new ObjectInputStream(socket.getInputStream());
+        ObjectInputStream objectReader;
+        askName();
+        try {
+            objectReader = new ObjectInputStream(socket.getInputStream());
             while(isActive()){
                 GameAction action = (GameAction)objectReader.readObject();
                 notify(action);
             }
-        } catch (IOException | NoSuchElementException e) {
-            System.err.println("Error! " + e.getMessage());
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        } finally{
+        }
+        finally {
             close();
         }
     }
@@ -131,7 +119,7 @@ public class SocketClientConnection extends Observable<Object> implements Client
 
                 send("Select your deck, available use number " + deckChooseString);
                 int value = Integer.parseInt(in.nextLine());
-                while (value <= 0 || value > availableDeck.size()){
+                while (value < 0 || value >= availableDeck.size()){
                     send("You selected something different from the available choice.\n" +
                             "Select your deck, available use number " + deckChooseString);
                     value = Integer.parseInt(in.nextLine());
@@ -144,5 +132,25 @@ public class SocketClientConnection extends Observable<Object> implements Client
         }
         return type.get();
 
+    }
+
+    private void askName(){
+        Scanner in;
+        String name;
+        try{
+            in = new Scanner(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            send("Welcome!\nWhat is your name?");
+            String read = in.nextLine();
+            while(server.getConnectedPlayersName().contains(read)){
+                send("Sorry the name: \"" + read + " is already chosen. What is your name?");
+                read = in.nextLine();
+            }
+            name = read;
+            server.lobby(this, name);
+
+        } catch (IOException | NoSuchElementException e) {
+            System.err.println("Error! " + e.getMessage());
+        }
     }
 }
