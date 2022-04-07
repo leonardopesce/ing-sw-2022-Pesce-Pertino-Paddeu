@@ -41,11 +41,7 @@ class GameTest {
         }
         controller = new GameController(game);
         for(int i = 0; i < numOfPlayer; i++){
-            try {
-                controller.createPlayer(names[i], DeckType.values()[i]);
-            } catch (NicknameAlreadyChosenException e) {
-                e.printStackTrace();
-            }
+            controller.createPlayer(names[i], DeckType.values()[i]);
         }
     }
 

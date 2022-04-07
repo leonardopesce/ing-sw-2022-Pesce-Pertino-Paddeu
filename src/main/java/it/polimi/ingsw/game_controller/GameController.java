@@ -1,6 +1,8 @@
 package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
+import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.Player;
@@ -13,12 +15,9 @@ import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class GameController {
+public class GameController implements Observer<GameAction> {
     private final Game game;
     // private final GameView view;
     private int turn = 0;
@@ -31,24 +30,13 @@ public class GameController {
         actionOrder = new int[game.MAX_PLAYERS];
     }
 
-    /**
-    * @throws NicknameAlreadyChosenException  if the player nickname has already been chosen by another player
-     * already added to the game (note that letter cases will be ignored, so "paolo" equals "PaOLo")
-    */
-    public void createPlayer(String name, DeckType type) throws NicknameAlreadyChosenException{
-        if(!game.getPlayers().stream().map(pl -> pl.getNickname()).anyMatch(nm -> nm.equals(name))){
-            if(!game.getPlayers().stream().map(pl -> pl.getDeckAssistants().getType()).anyMatch(val -> val.equals(type))) {
-                try {
-                    addPlayer(new Player(name, type));
-                } catch (TooManyPlayerException e) {
-                    // Impossible to reach. When the lobby is full the game starts.
-                    e.printStackTrace();
-                }
-            }
-            //TODO else mazzo già scelto
-        } else {
-            //TODO else nome già scelto
-            throw new NicknameAlreadyChosenException("Already existing");
+
+    public void createPlayer(String name, DeckType type){
+        try {
+            addPlayer(new Player(name, type));
+        } catch (TooManyPlayerException e) {
+            // Impossible to reach. When the lobby is full the game starts.
+            e.printStackTrace();
         }
     }
 
@@ -349,5 +337,16 @@ public class GameController {
     public Player getCurrentPlayer() {
         if(game.getGamePhase().toString().startsWith("ACTION")) return game.getPlayers().get(actionOrder[turn]);
         else return game.getPlayers().get(planningOrder[turn]);
+    }
+
+    public List<DeckType> getAvailableDeckType(){
+        return Arrays.stream(DeckType.values()).filter(type ->
+                !(game.getPlayers().stream().filter(pl -> pl.getDeckAssistants() != null)
+                        .map(pl -> pl.getDeckAssistants().getType()).toList().contains(type))).toList();
+    }
+
+    @Override
+    public void update(GameAction action) {
+        action.perform(this);
     }
 }

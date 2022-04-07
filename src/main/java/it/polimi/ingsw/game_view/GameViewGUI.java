@@ -1,32 +1,22 @@
 package it.polimi.ingsw.game_view;
 
+import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.DeckAssistants;
 
 public class GameViewGUI extends GameView{
 
-    @Override
-    public void showPlayerDeck(Player player, DeckAssistants deck) {
-        //TODO
+    protected GameViewGUI(Player player) {
+        super(player);
     }
 
     @Override
-    public void showStudentsLeftToMovePlayer(Player player, int toMove) {
-        //TODO
+    protected void showMessage(Object message) {
+
     }
 
     @Override
-    public void showNewTeachersOwnership() {
-        //TODO
-    }
+    public void update(MoveMessage message) {
 
-    @Override
-    public void showMotherNaturePossibleStep(int possibleSteps) {
-        //TODO
-    }
-
-    @Override
-    public void showNewInfluence() {
-        //TODO
     }
 }
