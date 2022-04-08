@@ -8,6 +8,9 @@ import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
@@ -65,8 +68,7 @@ public class GameViewCLI extends GameViewClient{
 
     private int whileInputNotIntegerInRange0To(int a, int b){
         String read = input.nextLine();
-        while(!read.chars().allMatch(Character::isDigit) ||
-                Integer.parseInt(read) < a || Integer.parseInt(read) >= b){
+        while(Pattern.compile(String.format("^[%d-%d]",a,b)).matcher(read).find()){
             System.out.println("Not a number or not in the range given");
             read = input.nextLine();
         }
