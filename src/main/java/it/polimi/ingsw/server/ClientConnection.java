@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.observer.Observer;
 
 public interface ClientConnection {
@@ -8,5 +9,5 @@ public interface ClientConnection {
 
     void addObserver(Observer<Object> observer);
 
-    void asyncSend(Object message);
+    void asyncSend(CommunicationMessage message);
 }

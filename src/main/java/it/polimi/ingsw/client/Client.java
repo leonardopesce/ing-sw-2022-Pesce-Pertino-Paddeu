@@ -1,22 +1,30 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_view.GameViewCLI;
+import it.polimi.ingsw.game_view.GameViewClient;
+import it.polimi.ingsw.game_view.GameViewGUI;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Client {
-    private String ip;
-    private int port;
+    private final String ip;
+    private final int port;
+    private final boolean gui;
     private boolean active = true;
+    private ObjectOutputStream socketOut;
+    private final GameViewClient view;
 
-    public Client(String ip, int port){
+    public Client(String ip, int port, boolean gui){
         this.ip = ip;
         this.port = port;
+        this.gui = gui;
+        view = gui ? new GameViewGUI(this) : new GameViewCLI(this);
     }
 
     public synchronized boolean isActive(){
@@ -32,11 +40,10 @@ public class Client {
             try {
                 while (isActive()) {
                     Object inputObject = socketIn.readObject();
-                    if(inputObject instanceof String){
-                        System.out.println((String)inputObject);
-                    } else if (inputObject instanceof Game){
-                        ((Game)inputObject).print();
-                    } else {
+                    if(inputObject instanceof CommunicationMessage){
+                        analyzeMessage((CommunicationMessage)inputObject);
+                    }
+                    else {
                         throw new IllegalArgumentException();
                     }
                 }
@@ -48,34 +55,40 @@ public class Client {
         return t;
     }
 
-    public Thread asyncWriteToSocket(final Scanner stdin, final PrintWriter socketOut){
-        Thread t = new Thread(() -> {
+    private void analyzeMessage(CommunicationMessage message) {
+        switch (message.getID()){
+            case ASK_NAME   -> view.askName();
+            case REASK_NAME -> view.reaskName();
+            case ASK_DECK   -> view.askDeck(message.getMessage());
+            case ASK_GAME_TYPE -> view.askGameType();
+            case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
+
+        }
+    }
+
+    public void asyncWriteToSocket(CommunicationMessage message){
+        new Thread(() -> {
             try {
-                while (isActive()) {
-                    String inputLine = stdin.nextLine();
-                    socketOut.println(inputLine);
+                if (isActive()) {
+                    socketOut.writeObject(message);
                     socketOut.flush();
                 }
             }catch(Exception e){
                 setActive(false);
             }
-        });
-        t.start();
-        return t;
+        }).start();
     }
 
     public void run() throws IOException {
         Socket socket = new Socket(ip, port);
         System.out.println("Connection established");
         ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
-        PrintWriter socketOut = new PrintWriter(socket.getOutputStream());
+        socketOut = new ObjectOutputStream(socket.getOutputStream());
         Scanner stdin = new Scanner(System.in);
 
         try{
             Thread t0 = asyncReadFromSocket(socketIn);
-            Thread t1 = asyncWriteToSocket(stdin, socketOut);
             t0.join();
-            t1.join();
         } catch(InterruptedException | NoSuchElementException e){
             System.out.println("Connection closed from the client side");
         } finally {

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
@@ -12,6 +13,8 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
 
 public class Server {
 
@@ -40,16 +43,12 @@ public class Server {
 
         for (String key : keys) {
             ClientConnection connection = waitingConnection.get(key);
-            connection.asyncSend("Connected User: " + key);
+            connection.asyncSend(new CommunicationMessage(ERROR, "Connected User: " + key));
         }
         waitingConnection.put(name, c);
         if(waitingConnection.size() == 1){
-            Optional<String[]> parameter;
-            do {
-                parameter = ((SocketClientConnection) c).askGameType();
-            } while(parameter.isEmpty());
-            numberOfPlayer = Integer.parseInt(parameter.get()[0]);
-            expertMode = parameter.get()[1].equals("e");
+            numberOfPlayer = ((SocketClientConnection) c).askGameNumberOfPlayer();
+            expertMode = ((SocketClientConnection) c).askGameType();;
         }
 
         keys = new ArrayList<>(waitingConnection.keySet());
@@ -61,10 +60,7 @@ public class Server {
                 ClientConnection connection = waitingConnection.get(nameKey);
 
                 controller.createPlayer(nameKey, ((SocketClientConnection)waitingConnection.get(nameKey)).askDeckType(controller.getAvailableDeckType()));
-                GameView view = new RemoteGameView(
-                        game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(nameKey) ? pl1 :pl2).get(),
-                        connection
-                );
+                GameView view = new RemoteGameView(connection);
                 /*
                  * add game observer
                  *  model.addObserver(view);
@@ -75,7 +71,7 @@ public class Server {
                 playingConnection.put(c2, c1);
                 waitingConnection.clear();
                 */
-                connection.asyncSend(game.print());
+                //connection.asyncSend(game.print());
 
             }
         }

@@ -1,17 +1,36 @@
 package it.polimi.ingsw.game_view;
 
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.game_model.MoveMessage;
-import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_model.character.DeckAssistants;
 
-public class GameViewGUI extends GameView{
+public class GameViewGUI extends GameViewClient{
 
-    protected GameViewGUI(Player player) {
+    public GameViewGUI(Client player) {
         super(player);
     }
 
     @Override
-    protected void showMessage(Object message) {
+    public void askName() {
+
+    }
+
+    @Override
+    public void reaskName() {
+
+    }
+
+    @Override
+    public void askDeck(Object availableDecks) {
+
+    }
+
+    @Override
+    public void askGameType() {
+
+    }
+
+    @Override
+    public void askPlayerNumber() {
 
     }
 
@@ -19,4 +38,6 @@ public class GameViewGUI extends GameView{
     public void update(MoveMessage message) {
 
     }
+
+
 }
