@@ -69,6 +69,7 @@ public class SocketClientConnection extends Observable<Object> implements Client
         try {
             while(isActive()){
                 CommunicationMessage message = (CommunicationMessage)in.readObject();
+                in.reset();
                 notify(message);
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -104,7 +105,6 @@ public class SocketClientConnection extends Observable<Object> implements Client
         try {
             send(new CommunicationMessage(ASK_GAME_TYPE, null));
             mode = (boolean)((CommunicationMessage)in.readObject()).getMessage();
-
         }
         catch (Exception e){
             e.printStackTrace();
@@ -117,12 +117,22 @@ public class SocketClientConnection extends Observable<Object> implements Client
         DeckType type = null;
         try {
             send(new CommunicationMessage(ASK_DECK, availableDecks));
-            type = (DeckType)((CommunicationMessage)in.readObject()).getMessage();
+            type = (DeckType)getResponse().get().getMessage();
         }
         catch (Exception e){
             e.printStackTrace();
         }
         return type;
+    }
+
+    private Optional<CommunicationMessage> getResponse(){
+        Optional<CommunicationMessage> message = Optional.empty();
+        try {
+            message = Optional.of((CommunicationMessage)in.readObject());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 
     private void askName(){

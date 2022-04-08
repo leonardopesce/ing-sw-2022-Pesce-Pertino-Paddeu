@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.GameView;
 import it.polimi.ingsw.game_view.RemoteGameView;
 
@@ -17,7 +18,6 @@ import java.util.concurrent.Executors;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
 
 public class Server {
-
     private static final int PORT = 12345;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(128);
@@ -58,14 +58,14 @@ public class Server {
             GameController controller = new GameController(game);
             for(String nameKey: keys){
                 ClientConnection connection = waitingConnection.get(nameKey);
-
-                controller.createPlayer(nameKey, ((SocketClientConnection)waitingConnection.get(nameKey)).askDeckType(controller.getAvailableDeckType()));
-                GameView view = new RemoteGameView(connection);
+                DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
+                controller.createPlayer(nameKey, deck);
+                //GameView view = new RemoteGameView(connection);
                 /*
                  * add game observer
                  *  model.addObserver(view);
                  */
-                view.addObserver(controller);
+                //view.addObserver(controller);
                 /*
                 playingConnection.put(c1, c2);
                 playingConnection.put(c2, c1);

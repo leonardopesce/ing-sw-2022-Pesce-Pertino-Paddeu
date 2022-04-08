@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class Client {
     private final String ip;
@@ -72,6 +71,7 @@ public class Client {
                 if (isActive()) {
                     socketOut.writeObject(message);
                     socketOut.flush();
+                    socketOut.reset();
                 }
             }catch(Exception e){
                 setActive(false);
@@ -84,7 +84,6 @@ public class Client {
         System.out.println("Connection established");
         ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
         socketOut = new ObjectOutputStream(socket.getOutputStream());
-        Scanner stdin = new Scanner(System.in);
 
         try{
             Thread t0 = asyncReadFromSocket(socketIn);
@@ -92,7 +91,6 @@ public class Client {
         } catch(InterruptedException | NoSuchElementException e){
             System.out.println("Connection closed from the client side");
         } finally {
-            stdin.close();
             socketIn.close();
             socketOut.close();
             socket.close();

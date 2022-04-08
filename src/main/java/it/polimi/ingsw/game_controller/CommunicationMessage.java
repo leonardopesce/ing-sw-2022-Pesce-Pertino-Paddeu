@@ -1,10 +1,11 @@
 package it.polimi.ingsw.game_controller;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class CommunicationMessage implements Serializable{
-
+    private static final long serialVersionUID = 1234567L;
     public enum MessageType {
         ASK_NAME,
         REASK_NAME,
