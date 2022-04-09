@@ -29,7 +29,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         } catch (IOException e) {
             e.printStackTrace();
         }
-        askName();
+        new Thread(this::askName).start();
     }
 
     private synchronized boolean isActive(){

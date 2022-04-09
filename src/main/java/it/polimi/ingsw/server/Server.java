@@ -25,6 +25,9 @@ public class Server {
     private Map<String, ClientConnection> waitingConnection = new HashMap<>();
     private List<List<ClientConnection>> playingConnection = new ArrayList<>();
 
+    private int numberOfPlayer = 0;
+    private boolean expertMode = false;
+
     public Map<String, ClientConnection> getWaitingConnection() {
         return waitingConnection;
     }
@@ -43,13 +46,7 @@ public class Server {
     //Wait for other players
     public synchronized void lobby(ClientConnection c, String name){
         List<String> keys = new ArrayList<>(waitingConnection.keySet());
-        int numberOfPlayer = 2;
-        boolean expertMode = false;
 
-        for (String key : keys) {
-            ClientConnection connection = waitingConnection.get(key);
-            connection.asyncSend(new CommunicationMessage(ERROR, "Connected User: " + name));
-        }
         waitingConnection.put(name, c);
         if(waitingConnection.size() == 1){
             numberOfPlayer = ((SocketClientConnection)c).askGameNumberOfPlayer();
@@ -79,6 +76,11 @@ public class Server {
         }
         else{
             c.asyncSend(new CommunicationMessage(ERROR, "Waiting for other players"));
+
+            for (String key : keys) {
+                ClientConnection connection = waitingConnection.get(key);
+                connection.asyncSend(new CommunicationMessage(ERROR, "Lobby: " + name));
+            }
         }
     }
 
@@ -97,7 +99,6 @@ public class Server {
                 connections++;
                 System.out.println("Ready for the new connection - " + connections);
                 SocketClientConnection socketConnection = new SocketClientConnection(newSocket, this);
-
             } catch (IOException e) {
                 running = false;
                 System.out.println("Connection Error!");
