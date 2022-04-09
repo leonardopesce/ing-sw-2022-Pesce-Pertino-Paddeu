@@ -68,19 +68,19 @@ public class Server {
                 view.addObserver(controller);
 
 
-                connection.asyncSend(new CommunicationMessage(ERROR, "send gameBoard"));
+                ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "send gameBoard"));
                 executor.submit(((SocketClientConnection)connection));
-                connection.asyncSend(new CommunicationMessage(ERROR, "Game is starting"));
+                ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "Game is starting"));
             }
             playingConnection.add(waitingConnection.values().stream().toList());
             waitingConnection.clear();
         }
         else{
-            c.asyncSend(new CommunicationMessage(ERROR, "Waiting for other players"));
+            ((SocketClientConnection)c).send(new CommunicationMessage(ERROR, "Waiting for other players"));
 
             for (String key : keys) {
                 ClientConnection connection = waitingConnection.get(key);
-                connection.asyncSend(new CommunicationMessage(ERROR, "Lobby: " + name));
+                ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "Lobby: " + name));
             }
         }
     }
