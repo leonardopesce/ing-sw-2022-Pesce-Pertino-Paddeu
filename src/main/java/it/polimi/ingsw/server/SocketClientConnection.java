@@ -12,18 +12,24 @@ import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
-public class SocketClientConnection extends Observable<Object> implements ClientConnection, Runnable {
-    private Socket socket;
+public class SocketClientConnection implements ClientConnection, Runnable {
+    private final Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private Server server;
+    private final Server server;
 
     private boolean active = true;
 
     public SocketClientConnection(Socket socket, Server server) {
         this.socket = socket;
         this.server = server;
-        setUpInputOutput();
+        try {
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        askName();
     }
 
     private synchronized boolean isActive(){
@@ -65,27 +71,18 @@ public class SocketClientConnection extends Observable<Object> implements Client
 
     @Override
     public void run() {
-        askName();
         try {
+            System.out.println("Sono arrivato " +
+                    server.getWaitingConnection().keySet().stream().filter(key -> server.getWaitingConnection().get(key).equals(this)).toList().get(0));
             while(isActive()){
                 CommunicationMessage message = (CommunicationMessage)in.readObject();
                 in.reset();
-                notify(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         finally {
             close();
-        }
-    }
-
-    private void setUpInputOutput(){
-        try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -153,5 +150,13 @@ public class SocketClientConnection extends Observable<Object> implements Client
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SocketClientConnection that = (SocketClientConnection) o;
+        return active == that.active && Objects.equals(socket, that.socket) && Objects.equals(out, that.out) && Objects.equals(in, that.in) && Objects.equals(server, that.server);
     }
 }

@@ -68,7 +68,7 @@ public class GameViewCLI extends GameViewClient{
 
     private int whileInputNotIntegerInRange0To(int a, int b){
         String read = input.nextLine();
-        while(Pattern.compile(String.format("^[%d-%d]",a,b)).matcher(read).find()){
+        while(!Pattern.compile(String.format("^[%d-%d]",a,b)).matcher(read).find()){
             System.out.println("Not a number or not in the range given");
             read = input.nextLine();
         }

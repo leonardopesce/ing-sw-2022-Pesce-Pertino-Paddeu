@@ -1,7 +1,5 @@
 package it.polimi.ingsw.game_controller;
 
-
-import java.io.Serial;
 import java.io.Serializable;
 
 public class CommunicationMessage implements Serializable{

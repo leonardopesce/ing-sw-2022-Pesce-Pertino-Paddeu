@@ -21,12 +21,16 @@ public class Server {
     private static final int PORT = 12345;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(128);
-    private Map<String, ClientConnection> waitingConnection = new HashMap<>();
-    private Map<ClientConnection, ClientConnection> playingConnection = new HashMap<>();
+    private Map<String, SocketClientConnection> waitingConnection = new HashMap<>();
+    private Map<SocketClientConnection, SocketClientConnection> playingConnection = new HashMap<>();
+
+    public Map<String, SocketClientConnection> getWaitingConnection() {
+        return waitingConnection;
+    }
 
     //Deregister connection
-    public synchronized void deregisterConnection(ClientConnection c) {
-        ClientConnection opponent = playingConnection.get(c);
+    public synchronized void deregisterConnection(SocketClientConnection c) {
+        SocketClientConnection opponent = playingConnection.get(c);
         if(opponent != null) {
             opponent.closeConnection();
         }
@@ -36,19 +40,19 @@ public class Server {
     }
 
     //Wait for other players
-    public synchronized void lobby(ClientConnection c, String name){
+    public synchronized void lobby(SocketClientConnection c, String name){
         List<String> keys = new ArrayList<>(waitingConnection.keySet());
         int numberOfPlayer = 2;
         boolean expertMode = false;
 
         for (String key : keys) {
-            ClientConnection connection = waitingConnection.get(key);
+            SocketClientConnection connection = waitingConnection.get(key);
             connection.asyncSend(new CommunicationMessage(ERROR, "Connected User: " + key));
         }
         waitingConnection.put(name, c);
         if(waitingConnection.size() == 1){
-            numberOfPlayer = ((SocketClientConnection) c).askGameNumberOfPlayer();
-            expertMode = ((SocketClientConnection) c).askGameType();;
+            numberOfPlayer = c.askGameNumberOfPlayer();
+            expertMode = c.askGameType();;
         }
 
         keys = new ArrayList<>(waitingConnection.keySet());
@@ -57,8 +61,8 @@ public class Server {
             Game game = expertMode ? new GameExpertMode(numberOfPlayer) : new Game(numberOfPlayer);
             GameController controller = new GameController(game);
             for(String nameKey: keys){
-                ClientConnection connection = waitingConnection.get(nameKey);
-                DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
+                SocketClientConnection connection = waitingConnection.get(nameKey);
+                DeckType deck = connection.askDeckType(controller.getAvailableDeckType());
                 controller.createPlayer(nameKey, deck);
                 //GameView view = new RemoteGameView(connection);
                 /*
@@ -72,7 +76,7 @@ public class Server {
                 waitingConnection.clear();
                 */
                 //connection.asyncSend(game.print());
-
+                executor.submit(connection);
             }
         }
     }
@@ -92,7 +96,7 @@ public class Server {
                 connections++;
                 System.out.println("Ready for the new connection - " + connections);
                 SocketClientConnection socketConnection = new SocketClientConnection(newSocket, this);
-                executor.submit(socketConnection);
+
             } catch (IOException e) {
                 running = false;
                 System.out.println("Connection Error!");

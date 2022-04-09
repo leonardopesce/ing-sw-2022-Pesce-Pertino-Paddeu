@@ -31,7 +31,7 @@ public class RemoteGameView extends GameView {
     public RemoteGameView( ClientConnection c) {
         super();
         this.clientConnection = c;
-        c.addObserver(new MessageReceiver());
+        //c.addObserver(new MessageReceiver());
     }
 
     @Override
