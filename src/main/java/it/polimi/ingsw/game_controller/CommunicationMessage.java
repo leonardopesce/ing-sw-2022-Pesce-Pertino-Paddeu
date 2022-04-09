@@ -15,7 +15,8 @@ public class CommunicationMessage implements Serializable{
         ERROR,
         YOU_LOSE,
         YOU_WIN,
-        VIEW_UPDATE
+        VIEW_UPDATE,
+        GAME_READY
     }
     private final MessageType ID;
     private final Object message;

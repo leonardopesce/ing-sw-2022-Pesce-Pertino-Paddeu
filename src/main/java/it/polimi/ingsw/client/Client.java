@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.GameViewCLI;
 import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.GameViewGUI;
+import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -62,6 +63,7 @@ public class Client {
             case ASK_GAME_TYPE -> view.askGameType();
             case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
             case ERROR -> System.out.println(message.getMessage());
+            case GAME_READY -> view.gameReady((GameBoard) message.getMessage());
         }
     }
 

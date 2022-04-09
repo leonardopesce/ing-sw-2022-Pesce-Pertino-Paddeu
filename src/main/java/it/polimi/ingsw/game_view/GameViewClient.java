@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.game_view.board.GameBoard;
 
 public abstract class GameViewClient extends GameView{
     public static final String ASK_NAME_QUESTION = "Insert a Nickname:";
@@ -21,4 +22,5 @@ public abstract class GameViewClient extends GameView{
     public abstract void askDeck(Object decksAvailable);
     public abstract void askGameType();
     public abstract void askPlayerNumber();
+    public abstract void gameReady(GameBoard board);
 }

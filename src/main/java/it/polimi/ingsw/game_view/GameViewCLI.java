@@ -60,6 +60,10 @@ public class GameViewCLI extends GameViewClient{
                 whileInputNotIntegerInRange(2, 4)));
     }
 
+    @Override
+    public void gameReady(GameBoard board){
+        
+    }
 
     @Override
     public void update(MoveMessage message) {
