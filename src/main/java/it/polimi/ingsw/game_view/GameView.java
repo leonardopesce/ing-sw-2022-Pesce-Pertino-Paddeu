@@ -10,6 +10,8 @@ public abstract class GameView extends Observable<GameAction> implements Observe
     public GameView() {
     }
 
+    protected abstract void showMessage(Object message);
+
     void handleMove(GameAction action) {
         System.out.println("from player: " + ", received game action: " + action.toString());
         notify(action);

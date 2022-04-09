@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
 
@@ -21,38 +22,38 @@ public class Server {
     private static final int PORT = 12345;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(128);
-    private Map<String, SocketClientConnection> waitingConnection = new HashMap<>();
-    private Map<SocketClientConnection, SocketClientConnection> playingConnection = new HashMap<>();
+    private Map<String, ClientConnection> waitingConnection = new HashMap<>();
+    private List<List<ClientConnection>> playingConnection = new ArrayList<>();
 
-    public Map<String, SocketClientConnection> getWaitingConnection() {
+    public Map<String, ClientConnection> getWaitingConnection() {
         return waitingConnection;
     }
 
     //Deregister connection
-    public synchronized void deregisterConnection(SocketClientConnection c) {
-        SocketClientConnection opponent = playingConnection.get(c);
-        if(opponent != null) {
-            opponent.closeConnection();
-        }
-        playingConnection.remove(c);
-        playingConnection.remove(opponent);
+    public synchronized void deregisterConnection(ClientConnection c) {
+        Optional<List<ClientConnection>> opponent = playingConnection.stream().reduce((list1, list2) -> list1.contains(c) ? list1 : list2);
+        opponent.ifPresent(list -> {
+            playingConnection.remove(list);
+            list.forEach(ClientConnection::closeConnection);
+        });
+
         waitingConnection.keySet().removeIf(s -> waitingConnection.get(s) == c);
     }
 
     //Wait for other players
-    public synchronized void lobby(SocketClientConnection c, String name){
+    public synchronized void lobby(ClientConnection c, String name){
         List<String> keys = new ArrayList<>(waitingConnection.keySet());
         int numberOfPlayer = 2;
         boolean expertMode = false;
 
         for (String key : keys) {
-            SocketClientConnection connection = waitingConnection.get(key);
-            connection.asyncSend(new CommunicationMessage(ERROR, "Connected User: " + key));
+            ClientConnection connection = waitingConnection.get(key);
+            connection.asyncSend(new CommunicationMessage(ERROR, "Connected User: " + name));
         }
         waitingConnection.put(name, c);
         if(waitingConnection.size() == 1){
-            numberOfPlayer = c.askGameNumberOfPlayer();
-            expertMode = c.askGameType();;
+            numberOfPlayer = ((SocketClientConnection)c).askGameNumberOfPlayer();
+            expertMode = ((SocketClientConnection)c).askGameType();;
         }
 
         keys = new ArrayList<>(waitingConnection.keySet());
@@ -61,23 +62,23 @@ public class Server {
             Game game = expertMode ? new GameExpertMode(numberOfPlayer) : new Game(numberOfPlayer);
             GameController controller = new GameController(game);
             for(String nameKey: keys){
-                SocketClientConnection connection = waitingConnection.get(nameKey);
-                DeckType deck = connection.askDeckType(controller.getAvailableDeckType());
+                ClientConnection connection = waitingConnection.get(nameKey);
+                DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
                 controller.createPlayer(nameKey, deck);
-                //GameView view = new RemoteGameView(connection);
-                /*
-                 * add game observer
-                 *  model.addObserver(view);
-                 */
-                //view.addObserver(controller);
-                /*
-                playingConnection.put(c1, c2);
-                playingConnection.put(c2, c1);
-                waitingConnection.clear();
-                */
-                //connection.asyncSend(game.print());
-                executor.submit(connection);
+
+                GameView view = new RemoteGameView(connection);
+                game.addObserver(view);
+                view.addObserver(controller);
+
+                connection.asyncSend(new CommunicationMessage(ERROR, "send gameBoard"));
+                executor.submit(((SocketClientConnection)connection));
+                connection.asyncSend(new CommunicationMessage(ERROR, "Game is starting"));
             }
+            playingConnection.add(waitingConnection.values().stream().toList());
+            waitingConnection.clear();
+        }
+        else{
+            c.asyncSend(new CommunicationMessage(ERROR, "Waiting for other players"));
         }
     }
 

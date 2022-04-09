@@ -7,19 +7,22 @@ import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.server.ClientConnection;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_ACTION;
 
 public class RemoteGameView extends GameView {
 
     private ClientConnection clientConnection;
 
-    private class MessageReceiver implements Observer<Object> {
+    private class MessageReceiver implements Observer<CommunicationMessage> {
 
         @Override
-        public void update(Object message) {
+        public void update(CommunicationMessage message) {
             System.out.println("Received: " + message);
             try{
-                //TODO implement ConnectionMessage
-                handleMove((GameAction)message);
+                if(message.getID() == GAME_ACTION){
+                    handleMove((GameAction)message.getMessage());
+                }
+
             }catch(IllegalArgumentException | ArrayIndexOutOfBoundsException e){
                 clientConnection.asyncSend(new CommunicationMessage(ERROR,"Error!"));
             }
@@ -27,11 +30,15 @@ public class RemoteGameView extends GameView {
 
     }
 
+    @Override
+    protected void showMessage(Object message){
+        //TODO send message to client
+    }
 
-    public RemoteGameView( ClientConnection c) {
+    public RemoteGameView(ClientConnection c) {
         super();
         this.clientConnection = c;
-        //c.addObserver(new MessageReceiver());
+        c.addObserver(new MessageReceiver());
     }
 
     @Override
@@ -49,7 +56,7 @@ public class RemoteGameView extends GameView {
         }
         else {
             if (draw) {
-                resultMsg = gameMessage.drawMessage + "\n";
+            //    resultMsg = gameMessage.drawMessage + "\n";
             }
         }
         /*if(message.getPlayer() == getPlayer()){

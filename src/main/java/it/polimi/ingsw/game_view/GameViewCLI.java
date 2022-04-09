@@ -40,7 +40,7 @@ public class GameViewCLI extends GameViewClient{
         System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_DECK,
-                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange0To(0, ((List<?>) decksAvailable).size()))
+                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange0To(0, ((List<?>) decksAvailable).size() - 1))
         ));
     }
 
@@ -90,5 +90,10 @@ public class GameViewCLI extends GameViewClient{
             msg = msg.concat("\n" + i + " = " + ((DeckType)decks.get(i)).getName());
         }
         return msg;
+    }
+
+    @Override
+    protected void showMessage(Object message) {
+
     }
 }

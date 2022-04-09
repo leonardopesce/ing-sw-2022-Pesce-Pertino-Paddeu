@@ -12,7 +12,7 @@ import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
-public class SocketClientConnection implements ClientConnection, Runnable {
+public class SocketClientConnection extends Observable<CommunicationMessage> implements ClientConnection, Runnable {
     private final Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -77,6 +77,7 @@ public class SocketClientConnection implements ClientConnection, Runnable {
             while(isActive()){
                 CommunicationMessage message = (CommunicationMessage)in.readObject();
                 in.reset();
+                notify(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

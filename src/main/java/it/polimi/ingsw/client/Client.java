@@ -61,7 +61,7 @@ public class Client {
             case ASK_DECK   -> view.askDeck(message.getMessage());
             case ASK_GAME_TYPE -> view.askGameType();
             case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
-
+            case ERROR -> System.out.println(message.getMessage());
         }
     }
 

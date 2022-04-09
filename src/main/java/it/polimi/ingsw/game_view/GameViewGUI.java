@@ -40,4 +40,8 @@ public class GameViewGUI extends GameViewClient{
     }
 
 
+    @Override
+    protected void showMessage(Object message) {
+
+    }
 }

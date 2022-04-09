@@ -8,7 +8,7 @@ public class PlayAssistantCardAction extends GameAction{
     private final Assistant assistant;
 
     public PlayAssistantCardAction(Player player, Assistant assistant) {
-        super(player, PLAY_ASSISTANT_ID);
+        super(player);
         this.assistant = assistant;
     }
 
