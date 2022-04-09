@@ -95,7 +95,7 @@ public class GameViewCLI extends GameViewClient{
     @Override
     protected void showMessage(CommunicationMessage message) {
         if(message.getID() == GAME_ACTION){
-            ((GameBoard)message.getMessage()).
+            ((GameBoard)message.getMessage()).print();
         }
     }
 }
