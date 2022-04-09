@@ -32,4 +32,8 @@ public class GameExpertMode extends Game {
             treasury = player.addMoney(treasury);
         }
     }
+
+    public int getTreasury() {
+        return treasury;
+    }
 }

@@ -37,9 +37,6 @@ public abstract class AdvancedCharacter extends Character {
             value = new Random().nextInt(AdvancedCharacterType.values().length - 1);
         }
 
-        /*
-         *  DO NOT CHANGE ORDER, just in case
-         */
         return switch (AdvancedCharacterType.values()[value]) {
             case MONK -> new Monk(game);
             case BARTENDER -> new Bartender(game);

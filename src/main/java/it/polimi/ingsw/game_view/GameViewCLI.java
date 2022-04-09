@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,6 +94,8 @@ public class GameViewCLI extends GameViewClient{
 
     @Override
     protected void showMessage(CommunicationMessage message) {
-
+        if(message.getID() == GAME_ACTION){
+            ((GameBoard)message.getMessage()).
+        }
     }
 }

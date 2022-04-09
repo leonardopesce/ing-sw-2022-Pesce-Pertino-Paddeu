@@ -24,4 +24,8 @@ public class CloudCard {
     public void refill(List<Student> students){
         studentsOnCloud.addAll(students);
     }
+
+    public List<Student> getStudent() {
+        return studentsOnCloud;
+    }
 }

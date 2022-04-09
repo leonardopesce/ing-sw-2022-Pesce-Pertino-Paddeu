@@ -54,7 +54,7 @@ public class RemoteGameView extends GameView {
                             YOU_WIN : YOU_LOSE, null)
             );
         }
-        showMessage(new CommunicationMessage(VIEW_UPDATE, message.getGameUpdate()));
+        showMessage(new CommunicationMessage(VIEW_UPDATE, message.getGameBoardUpdate()));
     }
 
 }
