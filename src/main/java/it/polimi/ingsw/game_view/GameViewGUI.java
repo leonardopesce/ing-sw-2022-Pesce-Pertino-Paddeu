@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.MoveMessage;
 
 public class GameViewGUI extends GameViewClient{
@@ -41,7 +42,7 @@ public class GameViewGUI extends GameViewClient{
 
 
     @Override
-    protected void showMessage(Object message) {
+    protected void showMessage(CommunicationMessage message) {
 
     }
 }

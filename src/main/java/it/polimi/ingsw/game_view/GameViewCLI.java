@@ -8,7 +8,6 @@ import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -40,7 +39,7 @@ public class GameViewCLI extends GameViewClient{
         System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_DECK,
-                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange0To(0, ((List<?>) decksAvailable).size() - 1))
+                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size() - 1))
         ));
     }
 
@@ -57,7 +56,7 @@ public class GameViewCLI extends GameViewClient{
         System.out.println(GameViewClient.ASK_PLAYER_NUMBER_QUESTION);
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_GAME_TYPE,
-                whileInputNotIntegerInRange0To(2, 4)));
+                whileInputNotIntegerInRange(2, 4)));
     }
 
 
@@ -66,7 +65,7 @@ public class GameViewCLI extends GameViewClient{
 
     }
 
-    private int whileInputNotIntegerInRange0To(int a, int b){
+    private int whileInputNotIntegerInRange(int a, int b){
         String read = input.nextLine();
         while(!Pattern.compile(String.format("^[%d-%d]",a,b)).matcher(read).find()){
             System.out.println("Not a number or not in the range given");
@@ -93,7 +92,7 @@ public class GameViewCLI extends GameViewClient{
     }
 
     @Override
-    protected void showMessage(Object message) {
+    protected void showMessage(CommunicationMessage message) {
 
     }
 }

@@ -15,4 +15,9 @@ public class MoveMessage {
     public Game getGame() {
         return game;
     }
+
+    public Object[] getGameUpdate() {
+
+        return null;
+    }
 }

@@ -12,6 +12,7 @@ public abstract class GameViewClient extends GameView{
     protected Client client;
 
     protected GameViewClient(Client client){
+        super("");
         this.client = client;
     }
 

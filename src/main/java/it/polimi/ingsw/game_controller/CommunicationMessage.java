@@ -11,7 +11,11 @@ public class CommunicationMessage implements Serializable{
         ASK_PLAYER_NUMBER,
         ASK_GAME_TYPE,
         GAME_ACTION,
-        ERROR
+        HELP,
+        ERROR,
+        YOU_LOSE,
+        YOU_WIN,
+        VIEW_UPDATE
     }
     private final MessageType ID;
     private final Object message;

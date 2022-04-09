@@ -31,35 +31,23 @@ public class GameController implements Observer<GameAction> {
     }
 
 
-    public void createPlayer(String name, DeckType type){
-        try {
-            addPlayer(new Player(name, type));
-        } catch (TooManyPlayerException e) {
-            // Impossible to reach. When the lobby is full the game starts.
-            e.printStackTrace();
-        }
+    public Player createPlayer(String name, DeckType type){
+        Player player = new Player(name, type);
+        addPlayer(player);
+        return player;
     }
 
     /**
-     * Adds a player to the list of players if the game is not full and if the player's nickname has not been chosen yet.
+     * Adds a player to the list of players.
      *
      * @param player  the player to be added to the game's player list
-     * @throws TooManyPlayerException  if the game is already full
      *
      * @see Player
      */
-    protected void addPlayer(Player player) throws TooManyPlayerException {
-        // Checking whether the game is full or not.
-        if(game.getNumberOfPlayers() < game.MAX_PLAYERS){
-            // Effectively adding the player to the list.
-            game.getPlayers().add(player);
-            if(game.getNumberOfPlayers() == game.MAX_PLAYERS){
-                start();
-            }
-        }
-        else {
-            // Impossible to reach. When the game is full it automatically starts
-            throw new TooManyPlayerException("The game as already reached the limit of " + game.MAX_PLAYERS + " players");
+    protected void addPlayer(Player player){
+        game.getPlayers().add(player);
+        if(game.getNumberOfPlayers() == game.MAX_PLAYERS){
+            start();
         }
     }
 
@@ -272,9 +260,9 @@ public class GameController implements Observer<GameAction> {
         //TODO the game is ended
     }
 
-    public void choseCloud(Player player, CloudCard cloudCard){
+    public void choseCloud(Player player, int cloudCardIndex){
         if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
-            player.getSchool().getEntrance().addAllStudents(cloudCard.removeStudentsOnCloud());
+            player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
             turn++;
             //TODO reset
             player.resetPlayedSpecialCard();
