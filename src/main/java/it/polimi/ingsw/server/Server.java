@@ -8,6 +8,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.GameView;
 import it.polimi.ingsw.game_view.RemoteGameView;
+import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_READY;
 
 public class Server {
     private static final int PORT = 12345;
@@ -58,21 +60,24 @@ public class Server {
         if (waitingConnection.size() == numberOfPlayer) {
             Game game = expertMode ? new GameExpertMode(numberOfPlayer) : new Game(numberOfPlayer);
             GameController controller = new GameController(game);
-            for(String nameKey: keys){
-                ClientConnection connection = waitingConnection.get(nameKey);
+            for(String playerName: keys){
+                ClientConnection connection = waitingConnection.get(playerName);
                 DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
-                Player player = controller.createPlayer(nameKey, deck);
+                Player player = controller.createPlayer(playerName, deck);
 
                 GameView view = new RemoteGameView(player, connection);
                 game.addObserver(view);
                 view.addObserver(controller);
 
 
-                ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "send gameBoard"));
                 executor.submit(((SocketClientConnection)connection));
-                ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "Game is starting"));
             }
-            playingConnection.add(waitingConnection.values().stream().toList());
+            for(String playerName: keys) {
+                ((SocketClientConnection) waitingConnection.get(playerName)).send(
+                        new CommunicationMessage(GAME_READY, new GameBoard(game))
+                );
+            }
+                playingConnection.add(waitingConnection.values().stream().toList());
             waitingConnection.clear();
         }
         else{

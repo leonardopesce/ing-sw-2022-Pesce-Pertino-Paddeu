@@ -76,6 +76,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
                     server.getWaitingConnection().keySet().stream().filter(key -> server.getWaitingConnection().get(key).equals(this)).toList().get(0));
             while(isActive()){
                 CommunicationMessage message = (CommunicationMessage)in.readObject();
+                //TODO may be a problem in.reset()
                 in.reset();
                 notify(message);
             }

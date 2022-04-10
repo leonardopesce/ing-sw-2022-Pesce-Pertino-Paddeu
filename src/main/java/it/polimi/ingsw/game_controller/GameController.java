@@ -100,10 +100,12 @@ public class GameController implements Observer<GameAction> {
     /**
      * This function will be called when a player as chosen which Assistant card to play.
      * It notifies the game model which card as been chosen and then tries to play the next planning phase.
-     * @param player the player who request the action.
-     * @param assistant the played assistant card.
+     * @param playerName the name of the player who request the action.
+     * @param assistantIndex the played assistant card.
      */
-    public void selectAssistantCard(Player player, Assistant assistant){
+    public void selectAssistantCard(String playerName, int assistantIndex){
+        Player player = getPlayerFromName(playerName);
+        Assistant assistant = player.getDeckAssistants().getAssistants().get(assistantIndex);
         if(game.getPlayers().get(planningOrder[turn]).equals(player)){
             if(isAssistantCardPlayable(player, assistant)) {
                 game.getPlayerNumber(planningOrder[turn]).playAssistant(assistant);
@@ -111,13 +113,14 @@ public class GameController implements Observer<GameAction> {
                 turn++;
                 nextPlanningPhase();
             }
-            else {
-                //TODO non puoi giocare questa carta, è già stata giocata
-            }
         }
         else{
             //TODO non è il tuo turno stai fermo
         }
+    }
+
+    private Player getPlayerFromName(String playerName) {
+        return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2).get();
     }
 
     /**
@@ -192,8 +195,9 @@ public class GameController implements Observer<GameAction> {
     }
 
     // view callback for moving students
-    public void playerMoveStudentToIsland(Player player, int student, int islandNumber){
+    public void playerMoveStudentToIsland(String playerName, int student, int islandNumber){
         Player pl = game.getPlayerNumber(actionOrder[turn]);
+        Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
             //TODO display movement of student directly in view
             game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
@@ -206,8 +210,9 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
-    public void playerMoveStudentToDiningHall(Player player, int student){
+    public void playerMoveStudentToDiningHall(String playerName, int student){
         Player pl = game.getPlayerNumber(actionOrder[turn]);
+        Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
             try {
                 ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
@@ -228,12 +233,12 @@ public class GameController implements Observer<GameAction> {
     /**
      * Given the max possible steps, it lets the user choose how many steps mother nature
      * has to do, and then it moves her.
-     *
-     * @param player: the player who called the action
-     * @param numberOfSteps: selected steps that mother nature has to perform
-     *                (based on the value of the assistant card played and possible usage of advanced card).
+     *  @param playerName : the player who called the action
+     * @param numberOfSteps : selected steps that mother nature has to perform
      */
-    public void moveMotherNatureOfSteps(Player player, int numberOfSteps){
+    public void moveMotherNatureOfSteps(String playerName, int numberOfSteps){
+        Player player = getPlayerFromName(playerName);
+
         if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
             if(1 <= numberOfSteps && numberOfSteps <= player.getDiscardedCard().getPossibleSteps()){
                 game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
@@ -260,7 +265,8 @@ public class GameController implements Observer<GameAction> {
         //TODO the game is ended
     }
 
-    public void choseCloud(Player player, int cloudCardIndex){
+    public void choseCloud(String playerName, int cloudCardIndex){
+        Player player = getPlayerFromName(playerName);
         if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
             player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
             turn++;
@@ -275,8 +281,10 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
-    public void playAdvancedCard(Player player, AdvancedCharacter card, Object... args) throws Exception{
+    public void playAdvancedCard(String playerName, AdvancedCharacter card, Object... args) throws Exception{
         //TODO check if game is advanced
+        Player player = getPlayerFromName(playerName);
+
         if(player.equals(game.getPlayerNumber(actionOrder[turn])) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
                 if(card.playEffect(args)){

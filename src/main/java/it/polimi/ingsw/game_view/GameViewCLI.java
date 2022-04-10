@@ -2,8 +2,12 @@ package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_controller.action.ChooseCloudCardAction;
+import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.game_controller.action.PlayAssistantCardAction;
 import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_view.board.DeckBoard;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.util.Arrays;
@@ -17,7 +21,6 @@ import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*
 public class GameViewCLI extends GameViewClient{
     private final Scanner input;
 
-
     public GameViewCLI(Client client) {
         super(client);
         input = new Scanner(System.in);
@@ -26,13 +29,13 @@ public class GameViewCLI extends GameViewClient{
     @Override
     public void askName() {
         System.out.println(GameViewClient.ASK_NAME_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(ASK_NAME, input.nextLine()));
+        client.asyncWriteToSocket(new CommunicationMessage(ASK_NAME, client.setName(input.nextLine())));
     }
 
     @Override
     public void reaskName() {
         System.out.println(GameViewClient.REASK_NAME_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(REASK_NAME, input.nextLine()));
+        client.asyncWriteToSocket(new CommunicationMessage(REASK_NAME, client.setName(input.nextLine())));
     }
 
     @Override
@@ -62,13 +65,28 @@ public class GameViewCLI extends GameViewClient{
 
     @Override
     public void gameReady(GameBoard board){
-        
+        this.board = board;
+        System.out.println(board.print());
+        asyncReadInput();
     }
 
     @Override
     public void update(MoveMessage message) {
 
     }
+
+    public void asyncReadInput(){
+        new Thread(() -> {
+            while(client.isActive()){
+                switch (GameAction.gameActionID.values()[whileInputNotIntegerInRange(0, 10)]){
+                    case PLAY_ASSISTANT_CARD_ACTION -> playAssistantCardAction();
+                    case CHOOSE_CLOUD_CARD_ACTION -> chooseCloudCardAction();
+
+                }
+            }
+        }).start();
+    }
+
 
     private int whileInputNotIntegerInRange(int a, int b){
         String read = input.nextLine();
@@ -101,5 +119,28 @@ public class GameViewCLI extends GameViewClient{
         if(message.getID() == GAME_ACTION){
             ((GameBoard)message.getMessage()).print();
         }
+    }
+
+
+    private void playAssistantCardAction(){
+        DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
+        int selectedCard;
+        System.out.println("Select an assistant card to play (use value from 0 to " + (playerDeck.getCards().size() - 1)
+                + " to select the card):\n");
+        System.out.println(playerDeck.print());
+        selectedCard = whileInputNotIntegerInRange(0, playerDeck.getCards().size() - 1);
+        System.out.println("You selected: " + playerDeck.getCards().get(selectedCard).getName());
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selectedCard)));
+    }
+
+    private void chooseCloudCardAction(){
+        System.out.println("Select a Cloud from where to pick student (use number from 0 to" + (board.getTerrain().getCloudCards().size() - 1)
+                + " to select the cloud):\n");
+        int selectedCard = whileInputNotIntegerInRange(0, board.getTerrain().getCloudCards().size() - 1);
+        while(board.getTerrain().getCloudCards().get(selectedCard).isEmpty()){
+            System.out.println("You selected an empty cloud, please pick another one");
+            selectedCard = whileInputNotIntegerInRange(0, board.getTerrain().getCloudCards().size() - 1);
+        }
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new ChooseCloudCardAction(client.getName(), selectedCard)));
     }
 }

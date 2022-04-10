@@ -3,6 +3,7 @@ package it.polimi.ingsw.game_view;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.MoveMessage;
+import it.polimi.ingsw.game_view.board.GameBoard;
 
 public class GameViewGUI extends GameViewClient{
 
@@ -32,6 +33,11 @@ public class GameViewGUI extends GameViewClient{
 
     @Override
     public void askPlayerNumber() {
+
+    }
+
+    @Override
+    public void gameReady(GameBoard board) {
 
     }
 

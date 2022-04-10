@@ -255,4 +255,5 @@ public class Game extends Observable<MoveMessage> {
     public GamePhase getGamePhase() {
         return gamePhase;
     }
+
 }

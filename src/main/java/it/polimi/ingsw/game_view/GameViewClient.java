@@ -11,6 +11,7 @@ public abstract class GameViewClient extends GameView{
     public static final String ASK_PLAYER_NUMBER_QUESTION = "You are the first player! Choose the number of player in the game (2, 3 or 4)";
 
     protected Client client;
+    protected GameBoard board;
 
     protected GameViewClient(Client client){
         super("");

@@ -19,6 +19,7 @@ public class Client {
     private boolean active = true;
     private ObjectOutputStream socketOut;
     private final GameViewClient view;
+    private String name;
 
     public Client(String ip, int port, boolean gui){
         this.ip = ip;
@@ -54,6 +55,8 @@ public class Client {
         t.start();
         return t;
     }
+
+
 
     private void analyzeMessage(CommunicationMessage message) {
         switch (message.getID()){
@@ -99,4 +102,12 @@ public class Client {
         }
     }
 
+    public String setName(String name){
+        this.name = name;
+        return this.name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

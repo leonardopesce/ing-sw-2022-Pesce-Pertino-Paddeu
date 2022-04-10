@@ -53,10 +53,11 @@ public class GameControllerTest {
         controller.createPlayer("Alberto", DeckType.SORCERER);
 
 
-        var firstPlayer = controller.getCurrentPlayer();
+        var firstPlayer = controller.getCurrentPlayer().getNickname();
+        var assistantType = controller.getCurrentPlayer().getDeckAssistants().getAssistants().get(0);
 
-        controller.selectAssistantCard(firstPlayer, new Assistant(AssistantType.CAT));
-        Assertions.assertEquals(new Assistant(AssistantType.CAT), firstPlayer.getDiscardedCard());
+        controller.selectAssistantCard(firstPlayer, 0);
+        Assertions.assertEquals(assistantType, controller.getCurrentPlayer().getDiscardedCard());
 
     }
 

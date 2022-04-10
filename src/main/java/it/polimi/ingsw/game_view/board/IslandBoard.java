@@ -5,10 +5,11 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import it.polimi.ingsw.game_model.world.Island;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IslandBoard {
+public class IslandBoard implements Serializable {
     List<ColorCharacter> students;
     int towerNumber;
     ColorTower towerColor;
