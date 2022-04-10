@@ -5,7 +5,6 @@ import it.polimi.ingsw.game_view.board.GameBoard;
 public class MoveMessage {
     private final Player player;
     private final Game game;
-    private Object gameUpdate;
 
     MoveMessage(Game game, Player player) {
         this.player = player;

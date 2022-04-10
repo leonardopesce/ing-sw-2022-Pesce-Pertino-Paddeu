@@ -67,7 +67,7 @@ public class Client {
             case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
             case ERROR -> System.out.println(message.getMessage());
             case GAME_READY -> view.gameReady((GameBoard) message.getMessage());
-            case BOARD_UPDATE -> view.updateBoardMessage((GameBoard) message.getMessage());
+            case VIEW_UPDATE -> view.updateBoardMessage((GameBoard) message.getMessage());
         }
     }
 

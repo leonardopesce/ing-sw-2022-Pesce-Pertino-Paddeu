@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.GameAction;
 import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.game_model.Player;
+import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.server.ClientConnection;
 
@@ -44,9 +45,7 @@ public class RemoteGameView extends GameView {
 
     @Override
     public void update(MoveMessage message){
-        //showMessage(message.getGame());
-        String resultMsg = "";
-        boolean gameOver = message.getGame().winner().length == 0;
+        boolean gameOver = message.getGame().winner().length != 0;
         boolean draw = message.getGame().MAX_PLAYERS == 4 ? (message.getGame().winner().length == 4) :(message.getGame().winner().length == 2 || message.getGame().winner().length == 3);
         if (gameOver) {
             showMessage(new CommunicationMessage(
@@ -54,7 +53,7 @@ public class RemoteGameView extends GameView {
                             YOU_WIN : YOU_LOSE, null)
             );
         }
-        showMessage(new CommunicationMessage(VIEW_UPDATE, message.getGameBoardUpdate()));
+        showMessage(new CommunicationMessage(VIEW_UPDATE, new GameBoard(message.getGame())));
     }
 
 }

@@ -256,4 +256,8 @@ public class Game extends Observable<MoveMessage> {
     public void setCurrentlyPlaying(int indexCurrentlyPlayingPlayer) {
         this.currentlyPlaying = players.get(indexCurrentlyPlayingPlayer);
     }
+
+    public void runNotify(){
+        notify(new MoveMessage(this, getCurrentlyPlayingPlayer()));
+    }
 }

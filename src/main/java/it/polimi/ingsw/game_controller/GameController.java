@@ -111,6 +111,7 @@ public class GameController implements Observer<GameAction> {
 
                 turn++;
                 nextPlanningPhase();
+                game.runNotify();
             }
         }
         else{
@@ -203,6 +204,7 @@ public class GameController implements Observer<GameAction> {
             player.incrementNumberOfMovedStudents();
 
             moveStudentPhase(pl);
+            game.runNotify();
         }
     }
 
@@ -220,6 +222,7 @@ public class GameController implements Observer<GameAction> {
                 e.printStackTrace();
             }
             moveStudentPhase(player);
+            game.runNotify();
         }
     }
 
@@ -245,6 +248,7 @@ public class GameController implements Observer<GameAction> {
                     game.setUpGamePhase(GamePhase.GAME_ENDED);
                     endGame();
                 }
+                game.runNotify();
             }
             else{
                 //TODO non sei nel range di step valido
@@ -267,6 +271,7 @@ public class GameController implements Observer<GameAction> {
             game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
             nextActionPhase();
+            game.runNotify();
         }
     }
 
@@ -280,6 +285,7 @@ public class GameController implements Observer<GameAction> {
                     player.setPlayedSpecialCard();
                     player.setMoney(player.getMoney() - card.getType().getCardCost());
                     card.getType().incrementCardCost();
+                    game.runNotify();
                 }
                 else {
                     throw new Exception("Error on the number of arguments or type of arguments");
