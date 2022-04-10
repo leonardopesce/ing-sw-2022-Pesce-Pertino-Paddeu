@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TerrainBoard implements Serializable {
     List<List<ColorCharacter>> cloudCards = new ArrayList<>();
-    List<IslandBoard>  islands = new ArrayList<>();
+    List<IslandBoard> islands = new ArrayList<>();
     List<AdvancedCharacterType> advancedCard = new ArrayList<>();
 
     public TerrainBoard(Terrain terrain) {
@@ -32,6 +32,14 @@ public class TerrainBoard implements Serializable {
 
     public List<List<ColorCharacter>> getCloudCards() {
         return cloudCards;
+    }
+
+    public List<AdvancedCharacterType> getAdvancedCard() {
+        return advancedCard;
+    }
+
+    public List<IslandBoard> getIslands() {
+        return islands;
     }
 
     public String print() {

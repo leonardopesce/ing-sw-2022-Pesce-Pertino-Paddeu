@@ -1,9 +1,10 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
-public abstract class GameViewClient extends GameView{
+public abstract class GameViewClient{
     public static final String ASK_NAME_QUESTION = "Insert a Nickname:";
     public static final String REASK_NAME_QUESTION = "Nickname already chosen. Insert a Nickname:";
     public static final String ASK_DECK_TYPE_QUESTION = "Select your deck, available use number ";
@@ -12,12 +13,27 @@ public abstract class GameViewClient extends GameView{
 
     protected Client client;
     protected GameBoard board;
+    protected boolean actionSent = false;
 
     protected GameViewClient(Client client){
-        super("");
         this.client = client;
     }
 
+    public void updateBoardMessage(GameBoard board){
+        this.board = board;
+        actionSent = false;
+        if(board.getCurrentlyPlaying().equals(client.getName())){
+            updateBoard(board);
+            displayYourTurn();
+            if(board.isExpertMode()){
+                displayExpertMode();
+            }
+        }
+    }
+
+    public abstract void updateBoard(GameBoard board);
+    public abstract void displayYourTurn();
+    public abstract void displayExpertMode();
     public abstract void askName();
     public abstract void reaskName();
     public abstract void askDeck(Object decksAvailable);

@@ -31,6 +31,10 @@ public class SchoolBoard implements Serializable {
         towerColor = colorTower;
     }
 
+    public List<ColorCharacter> getEntrance() {
+        return entrance;
+    }
+
     public String print() {
         StringBuilder school = new StringBuilder();
         int studentIndex = 0, towerIndex = 0;

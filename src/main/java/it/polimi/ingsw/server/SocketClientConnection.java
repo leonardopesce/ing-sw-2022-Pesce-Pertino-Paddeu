@@ -77,7 +77,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             while(isActive()){
                 CommunicationMessage message = (CommunicationMessage)in.readObject();
                 //TODO may be a problem in.reset()
-                in.reset();
+                //in.reset();
                 notify(message);
             }
         } catch (IOException | ClassNotFoundException e) {

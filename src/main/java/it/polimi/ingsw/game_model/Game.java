@@ -24,11 +24,7 @@ public class Game extends Observable<MoveMessage> {
     protected final List<Player> players = new ArrayList<>();
     protected final BagOfStudents bag = new BagOfStudents();
     protected final Terrain terrain = new Terrain();
-
-    public Object print(){
-        System.out.println("Game board");
-        return this;
-    }
+    private Player currentlyPlaying;
 
     /*
      * Placing mother nature on a random island between 0 and 11.
@@ -230,10 +226,6 @@ public class Game extends Observable<MoveMessage> {
         return terrain;
     }
 
-    public Player getPlayerNumber(int x){
-        return players.get(x);
-    }
-
     public BagOfStudents getBag() { return bag; }
 
     public List<Player> getPlayers() { return players; }
@@ -256,4 +248,12 @@ public class Game extends Observable<MoveMessage> {
         return gamePhase;
     }
 
+
+    public Player getCurrentlyPlayingPlayer() {
+        return currentlyPlaying;
+    }
+
+    public void setCurrentlyPlaying(int indexCurrentlyPlayingPlayer) {
+        this.currentlyPlaying = players.get(indexCurrentlyPlayingPlayer);
+    }
 }

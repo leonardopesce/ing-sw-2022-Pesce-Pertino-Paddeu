@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
+import it.polimi.ingsw.game_model.utils.GamePhase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,13 +42,15 @@ public class GameBoard implements Serializable{
     public static final String TOWER = "⊗";
 
 
-    private boolean gameType = false;
+    private boolean expertMode = false;
     private final List<SchoolBoard> schools = new ArrayList<>();
     private final TerrainBoard terrain;
     private final List<DeckBoard> decks = new ArrayList<>();
     private final List<Integer> moneys = new ArrayList<>();
     private final List<String> names = new ArrayList<>();
     private int treasury;
+    private final GamePhase phase;
+    private final String currentlyPlaying;
 
     public GameBoard(Game game) {
         for(Player player: game.getPlayers()){
@@ -58,10 +61,12 @@ public class GameBoard implements Serializable{
         }
         terrain = new TerrainBoard(game.getTerrain());
         treasury = 0;
+        phase = game.getGamePhase();
+        currentlyPlaying = game.getCurrentlyPlayingPlayer().getNickname();
     }
 
     protected void setGameToExpertMode() {
-        this.gameType = true;
+        this.expertMode = true;
     }
 
     protected void setTreasury(int treasury) {
@@ -80,6 +85,22 @@ public class GameBoard implements Serializable{
         return terrain;
     }
 
+    public String getCurrentlyPlaying() {
+        return currentlyPlaying;
+    }
+
+    public GamePhase getPhase() {
+        return phase;
+    }
+
+    public boolean isExpertMode() {
+        return expertMode;
+    }
+
+    public List<SchoolBoard> getSchools() {
+        return schools;
+    }
+
     public String print(){
         StringBuilder board = new StringBuilder();
         for(int i = 0; i < names.size(); i++){
@@ -96,7 +117,7 @@ public class GameBoard implements Serializable{
     }
 
 
-    protected static String getColorString(ColorCharacter colorCharacter){
+    public static String getColorString(ColorCharacter colorCharacter){
         if(colorCharacter == ColorCharacter.RED){
             return TEXT_RED;
         }
@@ -114,7 +135,7 @@ public class GameBoard implements Serializable{
         }
     }
 
-    protected static String getColorTowerString(ColorTower color){
+    public static String getColorTowerString(ColorTower color){
         if(color == ColorTower.WHITE){
             return TEXT_RESET;
         }

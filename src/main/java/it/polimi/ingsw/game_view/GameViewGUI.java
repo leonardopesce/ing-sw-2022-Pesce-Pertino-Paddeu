@@ -12,6 +12,21 @@ public class GameViewGUI extends GameViewClient{
     }
 
     @Override
+    public void updateBoard(GameBoard board) {
+
+    }
+
+    @Override
+    public void displayYourTurn() {
+
+    }
+
+    @Override
+    public void displayExpertMode() {
+
+    }
+
+    @Override
     public void askName() {
 
     }
@@ -38,17 +53,6 @@ public class GameViewGUI extends GameViewClient{
 
     @Override
     public void gameReady(GameBoard board) {
-
-    }
-
-    @Override
-    public void update(MoveMessage message) {
-
-    }
-
-
-    @Override
-    protected void showMessage(CommunicationMessage message) {
 
     }
 }

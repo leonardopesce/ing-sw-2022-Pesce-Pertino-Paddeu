@@ -3,7 +3,6 @@ package it.polimi.ingsw.game_view;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.GameAction;
 import it.polimi.ingsw.game_model.MoveMessage;
-import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
 
@@ -18,6 +17,7 @@ public abstract class GameView extends Observable<GameAction> implements Observe
     protected String getPlayer(){
         return playerName;
     }
+
     protected abstract void showMessage(CommunicationMessage message);
 
     void handleMove(GameAction action) {

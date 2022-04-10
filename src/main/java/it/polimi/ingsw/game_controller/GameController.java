@@ -19,13 +19,11 @@ import java.util.*;
 
 public class GameController implements Observer<GameAction> {
     private final Game game;
-    // private final GameView view;
     private int turn = 0;
     private final int[] planningOrder, actionOrder;
 
     public GameController(Game game) {
         this.game = game;
-        // this.view = view;
         planningOrder = new int[game.MAX_PLAYERS];
         actionOrder = new int[game.MAX_PLAYERS];
     }
@@ -59,6 +57,7 @@ public class GameController implements Observer<GameAction> {
         game.setUpGamePhase(GamePhase.GAME_PENDING);
         // at the beginning a random player is chosen
         createNextPlanningOrder(new Random().nextInt(game.getNumberOfPlayers()));
+        game.setCurrentlyPlaying(planningOrder[0]);
         try {
             game.setupBoard();
             game.setUpGamePhase(GamePhase.NEW_ROUND);
@@ -86,12 +85,12 @@ public class GameController implements Observer<GameAction> {
      */
     private void nextPlanningPhase(){
         if(turn < game.getNumberOfPlayers()){
-            Player pl = game.getPlayerNumber(planningOrder[turn]);
-            //TODO vedere come implementare model observer per view
+            game.setCurrentlyPlaying(planningOrder[turn]);
         }
         else{
             turn = 0;
             createActionPhaseOrder();
+            game.setCurrentlyPlaying(actionOrder[turn]);
             resetPlayerNumberOfMovedStudents();
             nextActionPhase();
         }
@@ -106,9 +105,9 @@ public class GameController implements Observer<GameAction> {
     public void selectAssistantCard(String playerName, int assistantIndex){
         Player player = getPlayerFromName(playerName);
         Assistant assistant = player.getDeckAssistants().getAssistants().get(assistantIndex);
-        if(game.getPlayers().get(planningOrder[turn]).equals(player)){
+        if(game.getCurrentlyPlayingPlayer().equals(player)){
             if(isAssistantCardPlayable(player, assistant)) {
-                game.getPlayerNumber(planningOrder[turn]).playAssistant(assistant);
+                game.getCurrentlyPlayingPlayer().playAssistant(assistant);
 
                 turn++;
                 nextPlanningPhase();
@@ -172,12 +171,13 @@ public class GameController implements Observer<GameAction> {
     private void nextActionPhase(){
         if(turn < game.getNumberOfPlayers() && game.winner().length == 0){
             game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_STUDENTS);
-            moveStudentPhase(game.getPlayerNumber(actionOrder[turn]));
+            game.setCurrentlyPlaying(actionOrder[turn]);
+            moveStudentPhase(game.getCurrentlyPlayingPlayer());
         }
         else{
             turn = 0;
             createNextPlanningOrder(actionOrder[0]);
-
+            game.setCurrentlyPlaying(planningOrder[turn]);
             game.setUpGamePhase(GamePhase.NEW_ROUND);
             playTurn();
         }
@@ -196,22 +196,18 @@ public class GameController implements Observer<GameAction> {
 
     // view callback for moving students
     public void playerMoveStudentToIsland(String playerName, int student, int islandNumber){
-        Player pl = game.getPlayerNumber(actionOrder[turn]);
+        Player pl = game.getCurrentlyPlayingPlayer();
         Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
-            //TODO display movement of student directly in view
             game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
             player.incrementNumberOfMovedStudents();
 
             moveStudentPhase(pl);
         }
-        else{
-            //TODO non è il tuo turno
-        }
     }
 
     public void playerMoveStudentToDiningHall(String playerName, int student){
-        Player pl = game.getPlayerNumber(actionOrder[turn]);
+        Player pl = game.getCurrentlyPlayingPlayer();
         Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
             try {
@@ -225,9 +221,6 @@ public class GameController implements Observer<GameAction> {
             }
             moveStudentPhase(player);
         }
-        else{
-            //TODO non è il tuo turno
-        }
     }
 
     /**
@@ -239,7 +232,7 @@ public class GameController implements Observer<GameAction> {
     public void moveMotherNatureOfSteps(String playerName, int numberOfSteps){
         Player player = getPlayerFromName(playerName);
 
-        if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
+        if(player.equals(game.getCurrentlyPlayingPlayer())){
             if(1 <= numberOfSteps && numberOfSteps <= player.getDiscardedCard().getPossibleSteps()){
                 game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
 
@@ -256,8 +249,6 @@ public class GameController implements Observer<GameAction> {
             else{
                 //TODO non sei nel range di step valido
             }
-        } else {
-            //TODO non è il tuo turno
         }
     }
 
@@ -267,7 +258,7 @@ public class GameController implements Observer<GameAction> {
 
     public void choseCloud(String playerName, int cloudCardIndex){
         Player player = getPlayerFromName(playerName);
-        if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
+        if(player.equals(game.getCurrentlyPlayingPlayer())){
             player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
             turn++;
             //TODO reset
@@ -276,8 +267,6 @@ public class GameController implements Observer<GameAction> {
             game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
             nextActionPhase();
-        } else {
-            //TODO non è il tuo turno
         }
     }
 
@@ -285,7 +274,7 @@ public class GameController implements Observer<GameAction> {
         //TODO check if game is advanced
         Player player = getPlayerFromName(playerName);
 
-        if(player.equals(game.getPlayerNumber(actionOrder[turn])) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
+        if(player.equals(game.getCurrentlyPlayingPlayer()) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
                 if(card.playEffect(args)){
                     player.setPlayedSpecialCard();
@@ -296,9 +285,6 @@ public class GameController implements Observer<GameAction> {
                     throw new Exception("Error on the number of arguments or type of arguments");
                 }
             }
-        }
-        else {
-            //TODO fa il bravo non è il tuo turno
         }
     }
 
