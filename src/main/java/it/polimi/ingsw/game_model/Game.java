@@ -260,4 +260,8 @@ public class Game extends Observable<MoveMessage> {
     public void runNotify(){
         notify(new MoveMessage(this, getCurrentlyPlayingPlayer()));
     }
+
+    public void errorNotify(MoveMessage message){
+        notify(message);
+    }
 }

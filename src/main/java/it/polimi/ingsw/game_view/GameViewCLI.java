@@ -9,9 +9,12 @@ import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
 import it.polimi.ingsw.game_view.board.SchoolBoard;
 
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 
@@ -87,11 +90,10 @@ public class GameViewCLI extends GameViewClient{
                     }
                     actionSent = true;
                 }
-                else if(input.hasNext()){
+                else if(input.hasNextLine()){
                     input.nextLine();
                     System.out.println("PLEASE WAIT FOR YOUR TURN");
                 }
-
             }
         }).start();
     }
@@ -109,7 +111,7 @@ public class GameViewCLI extends GameViewClient{
 
     private int whileInputNotIntegerInRange(int a, int b){
         String read = input.nextLine();
-        while(!read.chars().allMatch(Character::isDigit) ||
+        while(read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
                 Integer.parseInt(read) < a || Integer.parseInt(read) >= b){
             System.out.println("Not a number or not in the range given");
             read = input.nextLine();

@@ -33,7 +33,6 @@ public class RemoteGameView extends GameView {
 
     @Override
     protected void showMessage(CommunicationMessage message){
-        //TODO send message to client
         clientConnection.asyncSend(message);
     }
 
@@ -47,12 +46,16 @@ public class RemoteGameView extends GameView {
     public void update(MoveMessage message){
         boolean gameOver = message.getGame().winner().length != 0;
         boolean draw = message.getGame().MAX_PLAYERS == 4 ? (message.getGame().winner().length == 4) :(message.getGame().winner().length == 2 || message.getGame().winner().length == 3);
+        if(message.hasError()){
+            showMessage(new CommunicationMessage(ERROR, message.getErrorMessage()));
+        }
         if (gameOver) {
             showMessage(new CommunicationMessage(
                     Arrays.stream(message.getGame().winner()).anyMatch(str -> str.equals(getPlayer())) ?
                             YOU_WIN : YOU_LOSE, null)
             );
         }
+
         showMessage(new CommunicationMessage(VIEW_UPDATE, new GameBoard(message.getGame())));
     }
 

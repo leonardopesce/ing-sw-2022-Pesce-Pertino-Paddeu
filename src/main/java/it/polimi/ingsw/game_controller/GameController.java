@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
@@ -113,9 +114,9 @@ public class GameController implements Observer<GameAction> {
                 nextPlanningPhase();
                 game.runNotify();
             }
-        }
-        else{
-            //TODO non è il tuo turno stai fermo
+            else{
+                game.errorNotify(new MoveMessage(game, game.getCurrentlyPlayingPlayer(), true, "The card was already played by someone else, select another card"));
+            }
         }
     }
 
