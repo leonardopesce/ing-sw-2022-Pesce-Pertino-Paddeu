@@ -21,7 +21,7 @@ public class GameBoard implements Serializable{
     public static final String TEXT_PURPLE = "\u001B[35m";
     public static final String TEXT_CYAN = "\u001B[36m";
     public static final String TEXT_WHITE = "\u001B[37m";
-    public static final int LENGTH = 48;
+    public static final int LENGTH = 18*4;
     public static final String TL_CORNER = "┏";
     public static final String TR_CORNER = "┓";
     public static final String BL_CORNER = "┗";
@@ -33,9 +33,9 @@ public class GameBoard implements Serializable{
     public static final String V_BAR = "┃";
     public static final String H_BAR = "━";
 
-    public static final String NEW_LINE_HIGH = TL_CORNER + H_BAR.repeat(LENGTH) + TR_CORNER + "\n";
-    public static final String NEW_LINE_MID =  ML_CORNER + H_BAR.repeat(LENGTH) + MR_CORNER + "\n";
-    public static final String NEW_LINE_LOW = BL_CORNER + H_BAR.repeat(LENGTH) + BR_CORNER + "\n";
+    public static final String NEW_LINE_HIGH = TL_CORNER + H_BAR.repeat(LENGTH - 1) + TR_CORNER + "\n";
+    public static final String NEW_LINE_MID =  ML_CORNER + H_BAR.repeat(LENGTH - 1) + MR_CORNER + "\n";
+    public static final String NEW_LINE_LOW = BL_CORNER + H_BAR.repeat(LENGTH - 1) + BR_CORNER + "\n";
 
     public static final String TEACHER = "◉";
     public static final String STUDENT = "●";
@@ -105,8 +105,8 @@ public class GameBoard implements Serializable{
         StringBuilder board = new StringBuilder();
         for(int i = 0; i < names.size(); i++){
             String name = names.get(i);
-            String spaces = " ".repeat((LENGTH - name.length())  / 2);
-            board.append(NEW_LINE_HIGH + V_BAR + spaces + name + (name.length() % 2 == 0 ? spaces : spaces + " ") + V_BAR + "\n");
+            String spaces = " ".repeat((LENGTH - name.length())  / 2 - 1);
+            board.append(NEW_LINE_HIGH + V_BAR + spaces + name + spaces + "  " + V_BAR + "\n");
             board.append(schools.get(i).print());
         }
 
