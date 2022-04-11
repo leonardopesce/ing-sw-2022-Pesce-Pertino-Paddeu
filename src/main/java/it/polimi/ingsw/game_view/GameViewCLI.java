@@ -9,6 +9,8 @@ import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
 import it.polimi.ingsw.game_view.board.SchoolBoard;
 
+import java.io.IOException;
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -41,7 +43,7 @@ public class GameViewCLI extends GameViewClient{
         System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_DECK,
-                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size()-1))
+                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size() - 1))
         ));
     }
 
@@ -95,6 +97,17 @@ public class GameViewCLI extends GameViewClient{
                         stateMachine(-1);
                     }
                 }
+                else {
+                    try {
+                        if(System.in.available() > 0){
+                            input.nextLine();
+                            System.out.println("PLEASE WAIT FOR YOUR TURN");
+                        }
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }).start();
     }
@@ -144,83 +157,55 @@ public class GameViewCLI extends GameViewClient{
 
     protected void stateMachine(int selection){
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
+        int selectedCard;
+        int b = playerDeck.getCards().size() - 1;
+        System.out.println("Select an assistant card to play (use value from 0 to " + b + " to select the card):\n");
+        System.out.println(playerDeck.print());
+        selectedCard = whileInputNotIntegerInRange(0, b);
+        System.out.println("You selected: " + playerDeck.getCards().get(selectedCard).getName());
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selectedCard)));
+    }
+
+    private void movingStudentAction() {
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
+        int b = school.getEntrance().size() - 1;
+        System.out.println("Please select a student to move (use number from 0 to " +
+                b + " starting counting from left to right and top to bottom");
+        int selectedStudent = whileInputNotIntegerInRange(0, b);
+        System.out.println("You selected student " + selectedStudent
+                + GameBoard.getColorString(school.getEntrance().get(selectedStudent))
+                + GameBoard.STUDENT + GameBoard.TEXT_RESET);
+
         List<IslandBoard> islands = board.getTerrain().getIslands();
+        b = islands.size();
+        System.out.println("Please select where to move the student (use number from 0 to " +
+                (b - 1) + " to select an island and number " + b + " to select the dining hall");
+        int selectedPlace = whileInputNotIntegerInRange(0, b);
+        if(selectedPlace == islands.size()){
+            System.out.println("Dining hall selected");
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToDiningHallAction(client.getName(), selectedStudent)));
+        }
+        else {
+            System.out.println("Island " + selectedPlace + " selected");
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToIslandAction(client.getName(), selectedStudent, selectedPlace)));
+        }
+    }
 
-        switch(state) {
-            case PLANNING_PHASE_START:
-                rangeA = 0;
-                rangeB = playerDeck.getCards().size() - 1;
-                System.out.println("Select an assistant card to play (use value from 0 to " + rangeB
-                        + " to select the card):\n" + playerDeck.print());
-                state = InputStateMachine.SELECT_ASSISTANT_CARD_SEND_MESSAGE;
-                break;
+    private void moveMotherNatureAction() {
+        DeckBoard deck = board.getDecks().get(board.getNames().indexOf(client.getName()));
+        int b = deck.getDiscardedCard().getPossibleSteps();
+        System.out.println("How many step would you like to move mother nature (use a number between 1 and " + b + ")");
+        int step = whileInputNotIntegerInRange(1, b);
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveMotherNatureAction(client.getName(), step)));
+    }
 
-            case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
-                System.out.println("You selected: " + playerDeck.getCards().get(selection).getName());
-                client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selection)));
-                actionSent = true;
-                break;
-
-            case MOVING_STUDENT_PHASE_START:
-                rangeA = 0;
-                rangeB = school.getEntrance().size() - 1;
-                System.out.println("Please select a student to move (use number from 0 to " + rangeB
-                        + " starting counting from left to right and top to bottom");
-                state = InputStateMachine.MOVE_STUDENT_SECOND_PHASE;
-                break;
-
-            case MOVE_STUDENT_SECOND_PHASE:
-                rangeA = 0;
-                rangeB = islands.size();
-                System.out.println("You selected student " + selection
-                        + GameBoard.getColorString(school.getEntrance().get(selection))
-                        + GameBoard.STUDENT + GameBoard.TEXT_RESET);
-                System.out.println("Please select where to move the student (use number from 0 to " +
-                        rangeB + " to select an island and number " + rangeB + " to select the dining hall)");
-                holder1 = selection;
-                state = InputStateMachine.MOVE_STUDENT_SEND_MESSAGE;
-                break;
-
-            case MOVE_STUDENT_SEND_MESSAGE:
-                if(selection == islands.size()){
-                    System.out.println("Dining hall selected");
-                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToDiningHallAction(client.getName(), holder1)));
-                }
-                else {
-                    System.out.println("Island " + selection + " selected");
-                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToIslandAction(client.getName(), holder1, selection)));
-                }
-                actionSent = true;
-                break;
-
-            case MOVE_MOTHER_NATURE_START:
-                rangeA = 1;
-                rangeB = playerDeck.getDiscardedCard().getPossibleSteps();
-                System.out.println("How many step would you like to move mother nature (use a number between 1 and " + rangeB + ")");
-                state = InputStateMachine.MOVE_MOTHER_NATURE_SEND_MESSAGE;
-                break;
-
-            case MOVE_MOTHER_NATURE_SEND_MESSAGE:
-                client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveMotherNatureAction(client.getName(), selection)));
-                actionSent = true;
-                break;
-
-            case CHOOSE_CLOUD_CARD_START:
-                rangeA = 0;
-                rangeB = board.getTerrain().getCloudCards().size() - 1;
-                System.out.println("Select a Cloud from where to pick student (use number from 0 to" + rangeB
-                        + " to select the cloud):\n");
-                state = InputStateMachine.CHOOSE_CLOUD_CARD_SEND_MESSAGE;
-
-            case CHOOSE_CLOUD_CARD_SEND_MESSAGE:
-                if(board.getTerrain().getCloudCards().get(selection).isEmpty()){
-                    System.out.println("You selected an empty cloud, please pick another one");
-                }
-                else {
-                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new ChooseCloudCardAction(client.getName(), selection)));
-                    actionSent = true;
-                }
+    private void chooseCloudCardAction(){
+        int b = board.getTerrain().getCloudCards().size() - 1;
+        System.out.println("Select a Cloud from where to pick student (use number from 0 to" + b + " to select the cloud):\n");
+        int selectedCard = whileInputNotIntegerInRange(0, b);
+        while(board.getTerrain().getCloudCards().get(selectedCard).isEmpty()){
+            System.out.println("You selected an empty cloud, please pick another one");
+            selectedCard = whileInputNotIntegerInRange(0, b);
         }
     }
 }
