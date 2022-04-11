@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
 public abstract class GameViewClient{
@@ -11,6 +10,19 @@ public abstract class GameViewClient{
     public static final String ASK_GAME_TYPE_QUESTION = "Choose the game mode! (type \"e\" for expert mode, type \"n\" for normal mode)";
     public static final String ASK_PLAYER_NUMBER_QUESTION = "You are the first player! Choose the number of player in the game (2, 3 or 4)";
 
+    protected enum InputStateMachine {
+        PLANNING_PHASE_START,
+        SELECT_ASSISTANT_CARD_SEND_MESSAGE,
+        MOVING_STUDENT_PHASE_START,
+        MOVE_STUDENT_SECOND_PHASE,
+        MOVE_STUDENT_SEND_MESSAGE,
+        MOVE_MOTHER_NATURE_START,
+        MOVE_MOTHER_NATURE_SEND_MESSAGE,
+        CHOOSE_CLOUD_CARD_START,
+        CHOOSE_CLOUD_CARD_SEND_MESSAGE
+    }
+
+    protected InputStateMachine state;
     protected Client client;
     protected GameBoard board;
     protected boolean actionSent = false;
@@ -28,9 +40,17 @@ public abstract class GameViewClient{
             if(board.isExpertMode()){
                 displayExpertMode();
             }
+            switch (board.getPhase()){
+                case PLANNING_PHASE -> state = InputStateMachine.PLANNING_PHASE_START;
+                case ACTION_PHASE_CHOOSING_CLOUD -> state = InputStateMachine.CHOOSE_CLOUD_CARD_START;
+                case ACTION_PHASE_MOVING_STUDENTS -> state = InputStateMachine.MOVING_STUDENT_PHASE_START;
+                case ACTION_PHASE_MOVING_MOTHER_NATURE -> state = InputStateMachine.MOVE_MOTHER_NATURE_START;
+            }
+
         }
     }
 
+    public abstract void displayNotYourTurn();
     public abstract void updateBoard(GameBoard board);
     public abstract void displayYourTurn();
     public abstract void displayExpertMode();

@@ -12,6 +12,11 @@ public class GameViewGUI extends GameViewClient{
     }
 
     @Override
+    public void displayNotYourTurn() {
+
+    }
+
+    @Override
     public void updateBoard(GameBoard board) {
 
     }
