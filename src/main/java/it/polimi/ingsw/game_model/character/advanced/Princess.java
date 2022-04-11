@@ -1,10 +1,12 @@
 package it.polimi.ingsw.game_model.character.advanced;
 
 import it.polimi.ingsw.custom_exceptions.BagEmptyException;
+import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.school.DiningTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,13 @@ public class Princess extends AdvancedCharacter{
         Player player = (Player) attributes[0];
         Integer studentFromCard = (Integer) attributes[1];
 
-        player.getSchool().getDiningHall().getTableOfColor(studentsOnCard.get(studentFromCard).getColor()).addStudent();
+        try {
+            game.moveStudentToDiningHall(player, studentsOnCard.get(studentFromCard).getColor());
+        } catch (TooManyStudentsException e) {
+            // Impossible to reach since we check if all the students can be added in validateArgs method.
+            return false;
+        }
+
         studentsOnCard.remove(studentFromCard.intValue());
         try {
             studentsOnCard.add(game.getBag().drawStudentFromBag());
@@ -58,9 +66,11 @@ public class Princess extends AdvancedCharacter{
         try{
             Player player = (Player) attributes[0];
             Integer studentFromCard = (Integer) attributes[1];
+
         }catch (Exception e){
             return false;
         }
+
         return true;
     }
 }

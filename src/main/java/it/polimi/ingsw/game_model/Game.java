@@ -11,11 +11,11 @@ import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
+import it.polimi.ingsw.observer.Observable;
 
 import java.util.*;
 
-public class Game {
-    public static final String NO_NICKNAME = "";
+public class Game extends Observable<MoveMessage> {
     public final int NUMBER_OF_STUDENTS_ON_CLOUD;
     protected final int[] INITIAL_NUMBER_OF_TOWER;
     protected final int INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
@@ -24,6 +24,8 @@ public class Game {
     protected final List<Player> players = new ArrayList<>();
     protected final BagOfStudents bag = new BagOfStudents();
     protected final Terrain terrain = new Terrain();
+    private Player currentlyPlaying;
+
     /*
      * Placing mother nature on a random island between 0 and 11.
      * Each island is recognized by an id. Mother nature position is equal to
@@ -224,10 +226,6 @@ public class Game {
         return terrain;
     }
 
-    public Player getPlayerNumber(int x){
-        return players.get(x);
-    }
-
     public BagOfStudents getBag() { return bag; }
 
     public List<Player> getPlayers() { return players; }
@@ -248,5 +246,22 @@ public class Game {
 
     public GamePhase getGamePhase() {
         return gamePhase;
+    }
+
+
+    public Player getCurrentlyPlayingPlayer() {
+        return currentlyPlaying;
+    }
+
+    public void setCurrentlyPlaying(int indexCurrentlyPlayingPlayer) {
+        this.currentlyPlaying = players.get(indexCurrentlyPlayingPlayer);
+    }
+
+    public void runNotify(){
+        notify(new MoveMessage(this, getCurrentlyPlayingPlayer()));
+    }
+
+    public void errorNotify(MoveMessage message){
+        notify(message);
     }
 }

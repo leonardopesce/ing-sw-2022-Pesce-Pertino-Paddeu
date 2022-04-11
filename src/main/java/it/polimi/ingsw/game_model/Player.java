@@ -166,4 +166,8 @@ public class Player {
         Player player = (Player) o;
         return Objects.equals(nickname, player.nickname);
     }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
 }

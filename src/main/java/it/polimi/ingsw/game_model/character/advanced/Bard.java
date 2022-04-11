@@ -1,9 +1,11 @@
 package it.polimi.ingsw.game_model.character.advanced;
 
+import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.school.DiningHall;
+import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.Entrance;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
@@ -33,20 +35,17 @@ public class Bard extends AdvancedCharacter{
         DiningHall playerDiningHall = player.getSchool().getDiningHall();
 
         //TODO è necessario controllare che la dimensione dei due array sia uguale?
-
-        // Adding the students to the Dining table (no need to store them they are saved with a counter)
-        for(Integer i : studentsFromEntrance) {
-            playerDiningHall.getTableOfColor(playerEntrance.getStudent(i).getColor()).addStudent();
-        }
-        for(Integer i : studentsFromEntrance) {
-            // Removing the student only after they are added to their dining table. Otherwise, indexes problems may occur.
-            playerEntrance.moveStudent(i);
-        }
-        // Adding the student to the Entrance
-        for(ColorCharacter color : studentsFromDiningHall) {
-            playerEntrance.addAllStudents(
-                    playerDiningHall.getTableOfColor(color).removeStudent(1)
-            );
+        if(studentsFromEntrance.size() == studentsFromDiningHall.size()){
+            for(int i = 0; i < studentsFromEntrance.size(); i++) {
+                try {
+                    game.moveStudentToDiningHall(player, playerEntrance.moveStudent(studentsFromEntrance.get(i)).getColor());
+                } catch (TooManyStudentsException e) {
+                    return false;
+                }
+                playerEntrance.getStudents().add(
+                        studentsFromEntrance.get(i),
+                        playerDiningHall.getTableOfColor(studentsFromDiningHall.get(i)).removeStudent(1).get(0));
+            }
         }
         return true;
     }
@@ -61,6 +60,7 @@ public class Bard extends AdvancedCharacter{
             Player player = (Player) args[0];
             List<Integer> studentsFromEntrance = (List<Integer>)args[1];
             List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>)args[2];
+            ColorCharacter color = player.getSchool().getEntrance().getStudent(studentsFromEntrance.get(0)).getColor();
         } catch(Exception ex) {
             return false;
         }

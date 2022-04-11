@@ -41,11 +41,7 @@ class GameTest {
         }
         controller = new GameController(game);
         for(int i = 0; i < numOfPlayer; i++){
-            try {
-                controller.createPlayer(names[i], DeckType.values()[i]);
-            } catch (NicknameAlreadyChosenException e) {
-                e.printStackTrace();
-            }
+            controller.createPlayer(names[i], DeckType.values()[i]);
         }
     }
 
@@ -533,7 +529,7 @@ class GameTest {
         Assertions.assertEquals(1, game.getTerrain().getIslands().get((game.getMotherNature().getPosition()+1) % 12).getTowers().size());
     }
 
-    @DisplayName("evaluate influence with 3 player in a drawish condition test")
+    @DisplayName("evaluate influence with 3 player in a draw condition test")
     @Test
     void evaluateInfluences3PlayerDrawConditionTest() {
         initialization(3, false);

@@ -1,6 +1,9 @@
 package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
+import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.game_model.MoveMessage;
+import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.Player;
@@ -13,65 +16,37 @@ import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class GameController {
+public class GameController implements Observer<GameAction> {
     private final Game game;
-    // private final GameView view;
     private int turn = 0;
     private final int[] planningOrder, actionOrder;
 
     public GameController(Game game) {
         this.game = game;
-        // this.view = view;
         planningOrder = new int[game.MAX_PLAYERS];
         actionOrder = new int[game.MAX_PLAYERS];
     }
 
-    /**
-    * @throws NicknameAlreadyChosenException  if the player nickname has already been chosen by another player
-     * already added to the game (note that letter cases will be ignored, so "paolo" equals "PaOLo")
-    */
-    public void createPlayer(String name, DeckType type) throws NicknameAlreadyChosenException{
-        if(!game.getPlayers().stream().map(pl -> pl.getNickname()).anyMatch(nm -> nm.equals(name))){
-            if(!game.getPlayers().stream().map(pl -> pl.getDeckAssistants().getType()).anyMatch(val -> val.equals(type))) {
-                try {
-                    addPlayer(new Player(name, type));
-                } catch (TooManyPlayerException e) {
-                    // Impossible to reach. When the lobby is full the game starts.
-                    e.printStackTrace();
-                }
-            }
-            //TODO else mazzo già scelto
-        } else {
-            //TODO else nome già scelto
-            throw new NicknameAlreadyChosenException("Already existing");
-        }
+
+    public Player createPlayer(String name, DeckType type){
+        Player player = new Player(name, type);
+        addPlayer(player);
+        return player;
     }
 
     /**
-     * Adds a player to the list of players if the game is not full and if the player's nickname has not been chosen yet.
+     * Adds a player to the list of players.
      *
      * @param player  the player to be added to the game's player list
-     * @throws TooManyPlayerException  if the game is already full
      *
      * @see Player
      */
-    protected void addPlayer(Player player) throws TooManyPlayerException {
-        // Checking whether the game is full or not.
-        if(game.getNumberOfPlayers() < game.MAX_PLAYERS){
-            // Effectively adding the player to the list.
-            game.getPlayers().add(player);
-            if(game.getNumberOfPlayers() == game.MAX_PLAYERS){
-                start();
-            }
-        }
-        else {
-            // Impossible to reach. When the game is full it automatically starts
-            throw new TooManyPlayerException("The game as already reached the limit of " + game.MAX_PLAYERS + " players");
+    protected void addPlayer(Player player){
+        game.getPlayers().add(player);
+        if(game.getNumberOfPlayers() == game.MAX_PLAYERS){
+            start();
         }
     }
 
@@ -83,6 +58,7 @@ public class GameController {
         game.setUpGamePhase(GamePhase.GAME_PENDING);
         // at the beginning a random player is chosen
         createNextPlanningOrder(new Random().nextInt(game.getNumberOfPlayers()));
+        game.setCurrentlyPlaying(planningOrder[0]);
         try {
             game.setupBoard();
             game.setUpGamePhase(GamePhase.NEW_ROUND);
@@ -110,12 +86,12 @@ public class GameController {
      */
     private void nextPlanningPhase(){
         if(turn < game.getNumberOfPlayers()){
-            Player pl = game.getPlayerNumber(planningOrder[turn]);
-            //TODO vedere come implementare model observer per view
+            game.setCurrentlyPlaying(planningOrder[turn]);
         }
         else{
             turn = 0;
             createActionPhaseOrder();
+            game.setCurrentlyPlaying(actionOrder[turn]);
             resetPlayerNumberOfMovedStudents();
             nextActionPhase();
         }
@@ -124,24 +100,28 @@ public class GameController {
     /**
      * This function will be called when a player as chosen which Assistant card to play.
      * It notifies the game model which card as been chosen and then tries to play the next planning phase.
-     * @param player the player who request the action.
-     * @param assistant the played assistant card.
+     * @param playerName the name of the player who request the action.
+     * @param assistantIndex the played assistant card.
      */
-    public void selectAssistantCard(Player player, Assistant assistant){
-        if(game.getPlayers().get(planningOrder[turn]).equals(player)){
+    public void selectAssistantCard(String playerName, int assistantIndex){
+        Player player = getPlayerFromName(playerName);
+        Assistant assistant = player.getDeckAssistants().getAssistants().get(assistantIndex);
+        if(game.getCurrentlyPlayingPlayer().equals(player)){
             if(isAssistantCardPlayable(player, assistant)) {
-                game.getPlayerNumber(planningOrder[turn]).playAssistant(assistant);
+                game.getCurrentlyPlayingPlayer().playAssistant(assistant);
 
                 turn++;
                 nextPlanningPhase();
+                game.runNotify();
             }
-            else {
-                //TODO non puoi giocare questa carta, è già stata giocata
+            else{
+                game.errorNotify(new MoveMessage(game, game.getCurrentlyPlayingPlayer(), true, "The card was already played by someone else, select another card"));
             }
         }
-        else{
-            //TODO non è il tuo turno stai fermo
-        }
+    }
+
+    private Player getPlayerFromName(String playerName) {
+        return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2).get();
     }
 
     /**
@@ -193,12 +173,13 @@ public class GameController {
     private void nextActionPhase(){
         if(turn < game.getNumberOfPlayers() && game.winner().length == 0){
             game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_STUDENTS);
-            moveStudentPhase(game.getPlayerNumber(actionOrder[turn]));
+            game.setCurrentlyPlaying(actionOrder[turn]);
+            moveStudentPhase(game.getCurrentlyPlayingPlayer());
         }
         else{
             turn = 0;
             createNextPlanningOrder(actionOrder[0]);
-
+            game.setCurrentlyPlaying(planningOrder[turn]);
             game.setUpGamePhase(GamePhase.NEW_ROUND);
             playTurn();
         }
@@ -216,22 +197,21 @@ public class GameController {
     }
 
     // view callback for moving students
-    public void playerMoveStudentToIsland(Player player, int student, int islandNumber){
-        Player pl = game.getPlayerNumber(actionOrder[turn]);
+    public void playerMoveStudentToIsland(String playerName, int student, int islandNumber){
+        Player pl = game.getCurrentlyPlayingPlayer();
+        Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
-            //TODO display movement of student directly in view
             game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
             player.incrementNumberOfMovedStudents();
 
             moveStudentPhase(pl);
-        }
-        else{
-            //TODO non è il tuo turno
+            game.runNotify();
         }
     }
 
-    public void playerMoveStudentToDiningHall(Player player, int student){
-        Player pl = game.getPlayerNumber(actionOrder[turn]);
+    public void playerMoveStudentToDiningHall(String playerName, int student){
+        Player pl = game.getCurrentlyPlayingPlayer();
+        Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
             try {
                 ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
@@ -243,22 +223,20 @@ public class GameController {
                 e.printStackTrace();
             }
             moveStudentPhase(player);
-        }
-        else{
-            //TODO non è il tuo turno
+            game.runNotify();
         }
     }
 
     /**
      * Given the max possible steps, it lets the user choose how many steps mother nature
      * has to do, and then it moves her.
-     *
-     * @param player: the player who called the action
-     * @param numberOfSteps: selected steps that mother nature has to perform
-     *                (based on the value of the assistant card played and possible usage of advanced card).
+     *  @param playerName : the player who called the action
+     * @param numberOfSteps : selected steps that mother nature has to perform
      */
-    public void moveMotherNatureOfSteps(Player player, int numberOfSteps){
-        if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
+    public void moveMotherNatureOfSteps(String playerName, int numberOfSteps){
+        Player player = getPlayerFromName(playerName);
+
+        if(player.equals(game.getCurrentlyPlayingPlayer())){
             if(1 <= numberOfSteps && numberOfSteps <= player.getDiscardedCard().getPossibleSteps()){
                 game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
 
@@ -271,12 +249,11 @@ public class GameController {
                     game.setUpGamePhase(GamePhase.GAME_ENDED);
                     endGame();
                 }
+                game.runNotify();
             }
             else{
                 //TODO non sei nel range di step valido
             }
-        } else {
-            //TODO non è il tuo turno
         }
     }
 
@@ -284,9 +261,10 @@ public class GameController {
         //TODO the game is ended
     }
 
-    public void choseCloud(Player player, CloudCard cloudCard){
-        if(player.equals(game.getPlayerNumber(actionOrder[turn]))){
-            player.getSchool().getEntrance().addAllStudents(cloudCard.removeStudentsOnCloud());
+    public void choseCloud(String playerName, int cloudCardIndex){
+        Player player = getPlayerFromName(playerName);
+        if(player.equals(game.getCurrentlyPlayingPlayer())){
+            player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
             turn++;
             //TODO reset
             player.resetPlayedSpecialCard();
@@ -294,26 +272,26 @@ public class GameController {
             game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
             nextActionPhase();
-        } else {
-            //TODO non è il tuo turno
+            game.runNotify();
         }
     }
 
-    public void playAdvancedCard(Player player, AdvancedCharacter card, Object... args) throws Exception{
+    public void playAdvancedCard(String playerName, AdvancedCharacter card, Object... args) throws Exception{
         //TODO check if game is advanced
-        if(player.equals(game.getPlayerNumber(actionOrder[turn])) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
+        Player player = getPlayerFromName(playerName);
+
+        if(player.equals(game.getCurrentlyPlayingPlayer()) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
                 if(card.playEffect(args)){
                     player.setPlayedSpecialCard();
+                    player.setMoney(player.getMoney() - card.getType().getCardCost());
                     card.getType().incrementCardCost();
+                    game.runNotify();
                 }
                 else {
                     throw new Exception("Error on the number of arguments or type of arguments");
                 }
             }
-        }
-        else {
-            //TODO fa il bravo non è il tuo turno
         }
     }
 
@@ -348,5 +326,16 @@ public class GameController {
     public Player getCurrentPlayer() {
         if(game.getGamePhase().toString().startsWith("ACTION")) return game.getPlayers().get(actionOrder[turn]);
         else return game.getPlayers().get(planningOrder[turn]);
+    }
+
+    public List<DeckType> getAvailableDeckType(){
+        return Arrays.stream(DeckType.values()).filter(type ->
+                !(game.getPlayers().stream().filter(pl -> pl.getDeckAssistants() != null)
+                        .map(pl -> pl.getDeckAssistants().getType()).toList().contains(type))).toList();
+    }
+
+    @Override
+    public void update(GameAction action) {
+        action.perform(this);
     }
 }

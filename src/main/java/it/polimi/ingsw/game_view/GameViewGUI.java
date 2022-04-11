@@ -1,32 +1,58 @@
 package it.polimi.ingsw.game_view;
 
-import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_model.character.DeckAssistants;
+import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_model.MoveMessage;
+import it.polimi.ingsw.game_view.board.GameBoard;
 
-public class GameViewGUI extends GameView{
+public class GameViewGUI extends GameViewClient{
 
-    @Override
-    public void showPlayerDeck(Player player, DeckAssistants deck) {
-        //TODO
+    public GameViewGUI(Client player) {
+        super(player);
     }
 
     @Override
-    public void showStudentsLeftToMovePlayer(Player player, int toMove) {
-        //TODO
+    public void updateBoard(GameBoard board) {
+
     }
 
     @Override
-    public void showNewTeachersOwnership() {
-        //TODO
+    public void displayYourTurn() {
+
     }
 
     @Override
-    public void showMotherNaturePossibleStep(int possibleSteps) {
-        //TODO
+    public void displayExpertMode() {
+
     }
 
     @Override
-    public void showNewInfluence() {
-        //TODO
+    public void askName() {
+
+    }
+
+    @Override
+    public void reaskName() {
+
+    }
+
+    @Override
+    public void askDeck(Object availableDecks) {
+
+    }
+
+    @Override
+    public void askGameType() {
+
+    }
+
+    @Override
+    public void askPlayerNumber() {
+
+    }
+
+    @Override
+    public void gameReady(GameBoard board) {
+
     }
 }

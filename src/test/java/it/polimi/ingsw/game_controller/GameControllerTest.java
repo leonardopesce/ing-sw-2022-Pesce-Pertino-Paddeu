@@ -23,7 +23,7 @@ public class GameControllerTest {
 
     @DisplayName("Player Creation standard")
     @Test
-    void playerCreationStandardNoErrorTest() throws Exception{
+    void playerCreationStandardNoErrorTest(){
         controller.createPlayer("Alberto", DeckType.KING);
         controller.createPlayer("Leonardo", DeckType.ELDER);
         Assertions.assertEquals("Alberto", game.getPlayers().get(0).getNickname());
@@ -33,14 +33,14 @@ public class GameControllerTest {
 
     @DisplayName("Player creation with duplicate nicknames")
     @Test
-    void duplicateNicknameExceptionTest() throws Exception{
+    void duplicateNicknameExceptionTest(){
         controller.createPlayer("Paolo", DeckType.KING);
         Assertions.assertThrows(NicknameAlreadyChosenException.class,() -> controller.createPlayer("Paolo", DeckType.ELDER));
     }
 
     @DisplayName("Player creation with duplicate deck types")
     @Test
-    void duplicateDeckTypesCreationTest() throws Exception{
+    void duplicateDeckTypesCreationTest(){
         controller.createPlayer("Paolo", DeckType.KING);
         controller.createPlayer("Alberto", DeckType.KING);
         Assertions.assertEquals(1, game.getNumberOfPlayers());
@@ -48,15 +48,16 @@ public class GameControllerTest {
 
     @DisplayName("Play an assistant card")
     @Test
-    void playAnAssistantCard() throws Exception{
+    void playAnAssistantCard(){
         controller.createPlayer("Paolo", DeckType.KING);
         controller.createPlayer("Alberto", DeckType.SORCERER);
 
 
-        var firstPlayer = controller.getCurrentPlayer();
+        var firstPlayer = controller.getCurrentPlayer().getNickname();
+        var assistantType = controller.getCurrentPlayer().getDeckAssistants().getAssistants().get(0);
 
-        controller.selectAssistantCard(firstPlayer, new Assistant(AssistantType.CAT));
-        Assertions.assertEquals(new Assistant(AssistantType.CAT), firstPlayer.getDiscardedCard());
+        controller.selectAssistantCard(firstPlayer, 0);
+        Assertions.assertEquals(assistantType, controller.getCurrentPlayer().getDiscardedCard());
 
     }
 
