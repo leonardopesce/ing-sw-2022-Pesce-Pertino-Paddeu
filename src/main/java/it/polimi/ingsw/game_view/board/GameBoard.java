@@ -32,6 +32,12 @@ public class GameBoard implements Serializable{
     public static final String TR_BAR = "┻";
     public static final String V_BAR = "┃";
     public static final String H_BAR = "━";
+    public static final String H2_BAR = "—";
+    public static final String V2_BAR = "│";
+    public static final String TL2_CORNER = "╭";
+    public static final String TR2_CORNER = "╮";
+    public static final String BL2_CORNER = "╰";
+    public static final String BR2_CORNER = "╯";
 
     public static final String NEW_LINE_HIGH = TL_CORNER + H_BAR.repeat(LENGTH - 1) + TR_CORNER + "\n";
     public static final String NEW_LINE_MID =  ML_CORNER + H_BAR.repeat(LENGTH - 1) + MR_CORNER + "\n";
@@ -40,7 +46,7 @@ public class GameBoard implements Serializable{
     public static final String TEACHER = "◉";
     public static final String STUDENT = "●";
     public static final String TOWER = "⊗";
-
+    public static final String DENY = TEXT_RED + "✖" + TEXT_RESET;
 
     private boolean expertMode = false;
     private final List<SchoolBoard> schools = new ArrayList<>();

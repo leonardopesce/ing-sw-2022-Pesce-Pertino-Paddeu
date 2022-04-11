@@ -15,11 +15,14 @@ import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import it.polimi.ingsw.game_model.world.Island;
+import it.polimi.ingsw.game_view.board.IslandBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static it.polimi.ingsw.game_model.utils.ColorCharacter.*;
@@ -675,5 +678,14 @@ class GameTest {
         Assertions.assertEquals(yellowInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.YELLOW).getNumberOfStudents());
         Assertions.assertEquals(pinkInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(PINK).getNumberOfStudents());
         Assertions.assertEquals(blueInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.BLUE).getNumberOfStudents());
+    }
+
+    @Test
+    void tmpTestIslandDraw(){
+        Island island = new Island(0);
+        island.denyIsland();
+        island.addStudent(new Student(RED));
+        island.addAllTower(List.of(new Tower(ColorTower.GREY), new Tower(ColorTower.GREY)));
+        System.out.println(new IslandBoard(island).print(10));
     }
 }

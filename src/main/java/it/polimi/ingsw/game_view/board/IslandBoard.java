@@ -22,4 +22,19 @@ public class IslandBoard implements Serializable {
         towerColor = island.getTowers().size() > 0 ? island.getTowers().get(0).getColor() : ColorTower.WHITE;
         deniedCounter = island.getIsBlocked().get();
     }
+
+    public String print(int pos){
+        StringBuilder island = new StringBuilder();
+        island.append(GameBoard.TL2_CORNER).append(GameBoard.H2_BAR.repeat(15)).append(GameBoard.TR2_CORNER).append("\n");
+        island.append(GameBoard.V2_BAR).append("\tID = " + pos + "\t\t").append(GameBoard.V2_BAR).append("\n");
+        island.append(GameBoard.V2_BAR).append("\t").append(deniedCounter > 0 ? GameBoard.DENY + deniedCounter : "\t").append("\t")
+            .append(towerNumber > 0 ? GameBoard.getColorTowerString(towerColor) + GameBoard.TOWER + GameBoard.TEXT_RESET
+                    + towerNumber: "\t").append(GameBoard.V2_BAR).append("\n");
+        island.append(GameBoard.V2_BAR).append("\t\t\t\t").append(GameBoard.V2_BAR).append("\n");
+        island.append(GameBoard.V2_BAR).append("\t\t\t\t").append(GameBoard.V2_BAR).append("\n");
+        island.append(GameBoard.V2_BAR).append("\t\t\t\t").append(GameBoard.V2_BAR).append("\n");
+        island.append(GameBoard.BL2_CORNER).append(GameBoard.H2_BAR.repeat(15)).append(GameBoard.BR2_CORNER).append("\n");
+
+        return island.toString();
+    }
 }
