@@ -31,21 +31,6 @@ public class GameControllerTest {
         Assertions.assertEquals(2, game.getNumberOfPlayers());
     }
 
-    @DisplayName("Player creation with duplicate nicknames")
-    @Test
-    void duplicateNicknameExceptionTest(){
-        controller.createPlayer("Paolo", DeckType.KING);
-        Assertions.assertThrows(NicknameAlreadyChosenException.class,() -> controller.createPlayer("Paolo", DeckType.ELDER));
-    }
-
-    @DisplayName("Player creation with duplicate deck types")
-    @Test
-    void duplicateDeckTypesCreationTest(){
-        controller.createPlayer("Paolo", DeckType.KING);
-        controller.createPlayer("Alberto", DeckType.KING);
-        Assertions.assertEquals(1, game.getNumberOfPlayers());
-    }
-
     @DisplayName("Play an assistant card")
     @Test
     void playAnAssistantCard(){
@@ -57,7 +42,7 @@ public class GameControllerTest {
         var assistantType = controller.getCurrentPlayer().getDeckAssistants().getAssistants().get(0);
 
         controller.selectAssistantCard(firstPlayer, 0);
-        Assertions.assertEquals(assistantType, controller.getCurrentPlayer().getDiscardedCard());
+        Assertions.assertEquals(assistantType.getType(), game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(firstPlayer) ? pl1 : pl2).get().getDiscardedCard().getType());
 
     }
 
