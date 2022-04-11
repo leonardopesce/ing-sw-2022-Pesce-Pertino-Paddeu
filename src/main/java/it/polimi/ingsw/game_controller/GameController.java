@@ -64,6 +64,7 @@ public class GameController implements Observer<GameAction> {
             game.setUpGamePhase(GamePhase.NEW_ROUND);
             playTurn();
         } catch (BagEmptyException | TooManyStudentsException e) {
+            // impossible to reach
             e.printStackTrace();
         }
     }
