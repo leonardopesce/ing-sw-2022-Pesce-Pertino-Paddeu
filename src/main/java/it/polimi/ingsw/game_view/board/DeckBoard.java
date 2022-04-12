@@ -18,15 +18,16 @@ public class DeckBoard implements Serializable {
         discardedCard = player.getDiscardedCard() != null ? player.getDiscardedCard().getType() : null;
     }
 
-    public String print() {
-        return cards.toString();
-    }
-
     public List<AssistantType> getCards() {
         return cards;
     }
 
     public AssistantType getDiscardedCard() {
         return discardedCard;
+    }
+
+    @Override
+    public String toString() {
+        return cards.toString();
     }
 }

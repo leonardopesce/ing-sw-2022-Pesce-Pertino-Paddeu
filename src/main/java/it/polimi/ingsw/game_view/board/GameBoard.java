@@ -107,50 +107,51 @@ public class GameBoard implements Serializable{
         return schools;
     }
 
-    public String print(){
-        StringBuilder board = new StringBuilder();
-        for(int i = 0; i < names.size(); i++){
-            String name = names.get(i);
-            String spaces = " ".repeat((LENGTH - name.length())  / 2 - 1);
-            board.append(NEW_LINE_HIGH + V_BAR + spaces + name + spaces + "  " + V_BAR + "\n");
-            board.append(schools.get(i).print());
-        }
-
-        board.append(terrain.print());
-
-        board.append("\n");
-        return board.toString();
-    }
-
 
     public static String getColorString(ColorCharacter colorCharacter){
         if(colorCharacter == ColorCharacter.RED){
-            return TEXT_RED;
+            return Printable.TEXT_RED;
         }
         else if(colorCharacter == ColorCharacter.GREEN){
-            return TEXT_GREEN;
+            return Printable.TEXT_GREEN;
         }
         else if(colorCharacter == ColorCharacter.YELLOW){
-            return TEXT_YELLOW;
+            return Printable.TEXT_YELLOW;
         }
         else if(colorCharacter == ColorCharacter.PINK){
-            return TEXT_PURPLE;
+            return Printable.TEXT_PURPLE;
         }
         else{
-            return TEXT_BLUE;
+            return Printable.TEXT_BLUE;
         }
     }
 
     public static String getColorTowerString(ColorTower color){
         if(color == ColorTower.WHITE){
-            return TEXT_RESET;
+            return Printable.TEXT_RESET;
         }
         else if(color == ColorTower.GREY){
-            return TEXT_WHITE;
+            return Printable.TEXT_WHITE;
         }
         else{
-            return TEXT_CYAN;
+            return Printable.TEXT_CYAN;
         }
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder board = new StringBuilder();
+        for(int i = 0; i < names.size(); i++){
+            String name = names.get(i);
+            String spaces = " ".repeat((Printable.LENGTH - name.length())  / 2 - 1);
+            board.append(Printable.NEW_LINE_HIGH + Printable.V_BAR + spaces + name + spaces + "  " + Printable.V_BAR + "\n");
+            board.append(schools.get(i));
+        }
+
+        board.append(terrain);
+
+        board.append("\n");
+        return board.toString();
     }
 
 }

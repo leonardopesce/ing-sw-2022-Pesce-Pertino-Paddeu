@@ -11,6 +11,7 @@ import java.util.List;
 
 public class IslandBoard implements Serializable {
     List<ColorCharacter> students;
+    int islandId;
     int towerNumber;
     ColorTower towerColor;
     int deniedCounter;
@@ -21,19 +22,20 @@ public class IslandBoard implements Serializable {
         //TODO check if there are more than 0 tower
         towerColor = island.getTowers().size() > 0 ? island.getTowers().get(0).getColor() : ColorTower.WHITE;
         deniedCounter = island.getIsBlocked().get();
+        islandId = island.getId();
     }
-
-    public String print(int pos){
+    @Override
+    public String toString(){
         StringBuilder island = new StringBuilder();
-        island.append(GameBoard.TL2_CORNER).append(GameBoard.H2_BAR.repeat(15)).append(GameBoard.TR2_CORNER).append("\n");
-        island.append(GameBoard.V2_BAR).append("\tID = " + pos + "\t\t").append(GameBoard.V2_BAR).append("\n");
-        island.append(GameBoard.V2_BAR).append("\t").append(deniedCounter > 0 ? GameBoard.DENY + deniedCounter : "\t").append("\t")
-            .append(towerNumber > 0 ? GameBoard.getColorTowerString(towerColor) + GameBoard.TOWER + GameBoard.TEXT_RESET
-                    + towerNumber: "\t").append(GameBoard.V2_BAR).append("\n");
-        island.append(GameBoard.V2_BAR).append("\t\t\t\t").append(GameBoard.V2_BAR).append("\n");
-        island.append(GameBoard.V2_BAR).append("\t\t\t\t").append(GameBoard.V2_BAR).append("\n");
-        island.append(GameBoard.V2_BAR).append("\t\t\t\t").append(GameBoard.V2_BAR).append("\n");
-        island.append(GameBoard.BL2_CORNER).append(GameBoard.H2_BAR.repeat(15)).append(GameBoard.BR2_CORNER).append("\n");
+        island.append(Printable.TL2_CORNER).append(Printable.H2_BAR.repeat(15)).append(Printable.TR2_CORNER).append("\n");
+        island.append(Printable.V2_BAR).append("\tID = " + islandId + "\t\t").append(Printable.V2_BAR).append("\n");
+        island.append(Printable.V2_BAR).append("\t").append(deniedCounter > 0 ? Printable.DENY + deniedCounter : "  ").append("\t")
+            .append(towerNumber > 0 ? GameBoard.getColorTowerString(towerColor) + Printable.TOWER + Printable.TEXT_RESET
+                    + towerNumber + "\t\t": "  \t\t").append(Printable.V2_BAR).append("\n");
+        island.append(Printable.V2_BAR).append("\t\t\t\t").append(Printable.V2_BAR).append("\n");
+        island.append(Printable.V2_BAR).append("\t\t\t\t").append(Printable.V2_BAR).append("\n");
+        island.append(Printable.V2_BAR).append("\t\t\t\t").append(Printable.V2_BAR).append("\n");
+        island.append(Printable.BL2_CORNER).append(Printable.H2_BAR.repeat(15)).append(Printable.BR2_CORNER).append("\n");
 
         return island.toString();
     }

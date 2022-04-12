@@ -69,13 +69,13 @@ public class GameViewCLI extends GameViewClient{
     @Override
     public void gameReady(GameBoard board){
         this.board = board;
-        System.out.println(board.print());
+        System.out.println(board);
         asyncReadInput();
     }
 
     @Override
     public void updateBoard(GameBoard board) {
-        System.out.println(board.print());
+        System.out.println(board);
     }
 
     public void asyncReadInput(){
@@ -149,7 +149,7 @@ public class GameViewCLI extends GameViewClient{
         int selectedCard;
         int b = playerDeck.getCards().size() - 1;
         System.out.println("Select an assistant card to play (use value from 0 to " + b + " to select the card):\n");
-        System.out.println(playerDeck.print());
+        System.out.println(playerDeck);
         selectedCard = whileInputNotIntegerInRange(0, b);
         System.out.println("You selected: " + playerDeck.getCards().get(selectedCard).getName());
         client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selectedCard)));

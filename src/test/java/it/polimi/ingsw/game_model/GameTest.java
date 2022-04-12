@@ -686,6 +686,6 @@ class GameTest {
         island.denyIsland();
         island.addStudent(new Student(RED));
         island.addAllTower(List.of(new Tower(ColorTower.GREY), new Tower(ColorTower.GREY)));
-        System.out.println(new IslandBoard(island).print(10));
+        System.out.println(new IslandBoard(island));
     }
 }

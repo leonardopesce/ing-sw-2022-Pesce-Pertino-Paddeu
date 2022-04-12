@@ -42,7 +42,8 @@ public class TerrainBoard implements Serializable {
         return islands;
     }
 
-    public String print() {
+    @Override
+    public String toString() {
         StringBuilder terrain = new StringBuilder();
 
         return null;
