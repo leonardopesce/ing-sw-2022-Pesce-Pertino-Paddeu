@@ -65,7 +65,7 @@ public class GameBoard implements Serializable{
             moneys.add(player.getMoney());
             names.add(player.getNickname());
         }
-        terrain = new TerrainBoard(game.getTerrain());
+        terrain = new TerrainBoard(game.getTerrain(), game.getMotherNature().getPosition());
         treasury = 0;
         phase = game.getGamePhase();
         currentlyPlaying = game.getCurrentlyPlayingPlayer().getNickname();
