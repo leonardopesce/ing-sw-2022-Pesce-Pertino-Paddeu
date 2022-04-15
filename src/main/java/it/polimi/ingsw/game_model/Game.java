@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.*;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
@@ -257,11 +258,8 @@ public class Game extends Observable<MoveMessage> {
         this.currentlyPlaying = players.get(indexCurrentlyPlayingPlayer);
     }
 
-    public void runNotify(){
-        notify(new MoveMessage(this));
+    public void runNotify(CommunicationMessage.MessageType type){
+        notify(new MoveMessage(this, type));
     }
 
-    public void notifyError(MoveMessage message){
-        notify(message);
-    }
 }

@@ -1,23 +1,16 @@
 package it.polimi.ingsw.game_model;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
+
 public class MoveMessage {
     private final Player player;
     private final Game game;
-    private final boolean error;
-    private final String errorMessage;
+    private final CommunicationMessage.MessageType type;
 
-    public MoveMessage(Game game, boolean error, String errorMessage) {
+    public MoveMessage(Game game, CommunicationMessage.MessageType type) {
         this.player = game.getCurrentlyPlayingPlayer();
         this.game = game;
-        this.error = error;
-        this.errorMessage = errorMessage;
-    }
-
-    MoveMessage(Game game) {
-        this.player = game.getCurrentlyPlayingPlayer();
-        this.game = game;
-        error = false;
-        errorMessage = "";
+        this.type = type;
     }
 
     public Player getPlayer() {
@@ -26,12 +19,7 @@ public class MoveMessage {
     public Game getGame() {
         return game;
     }
-
-    public boolean hasError() {
-        return error;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
+    public CommunicationMessage.MessageType getType(){
+        return type;
     }
 }

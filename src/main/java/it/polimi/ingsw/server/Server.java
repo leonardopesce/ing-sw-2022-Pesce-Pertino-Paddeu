@@ -6,7 +6,6 @@ import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
-import it.polimi.ingsw.game_view.GameView;
 import it.polimi.ingsw.game_view.RemoteGameView;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
@@ -65,7 +64,7 @@ public class Server {
                 DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
                 Player player = controller.createPlayer(playerName, deck);
 
-                GameView view = new RemoteGameView(player, connection);
+                RemoteGameView view = new RemoteGameView(player.getNickname(), connection);
                 game.addObserver(view);
                 view.addObserver(controller);
 

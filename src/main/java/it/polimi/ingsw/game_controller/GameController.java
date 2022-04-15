@@ -113,10 +113,10 @@ public class GameController implements Observer<GameAction> {
 
                 turn++;
                 nextPlanningPhase();
-                game.runNotify();
+                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
             }
             else{
-                game.notifyError(new MoveMessage(game, true, "assistant not playable"));
+                game.runNotify(CommunicationMessage.MessageType.ASSISTANT_NOT_PLAYABLE);
             }
         }
     }
@@ -206,7 +206,7 @@ public class GameController implements Observer<GameAction> {
             player.incrementNumberOfMovedStudents();
 
             moveStudentPhase(pl);
-            game.runNotify();
+            game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
         }
     }
 
@@ -224,7 +224,7 @@ public class GameController implements Observer<GameAction> {
                 e.printStackTrace();
             }
             moveStudentPhase(player);
-            game.runNotify();
+            game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
         }
     }
 
@@ -250,7 +250,7 @@ public class GameController implements Observer<GameAction> {
                     game.setUpGamePhase(GamePhase.GAME_ENDED);
                     endGame();
                 }
-                game.runNotify();
+                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
             }
             else{
                 //TODO non sei nel range di step valido
@@ -273,7 +273,7 @@ public class GameController implements Observer<GameAction> {
             game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
             nextActionPhase();
-            game.runNotify();
+            game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
         }
     }
 
@@ -287,7 +287,7 @@ public class GameController implements Observer<GameAction> {
                     player.setPlayedSpecialCard();
                     player.setMoney(player.getMoney() - card.getType().getCardCost());
                     card.getType().incrementCardCost();
-                    game.runNotify();
+                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
                 }
                 else {
                     throw new Exception("Error on the number of arguments or type of arguments");
