@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_view.board;
 
-import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.character.basic.BasicCharacter;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
@@ -9,7 +8,6 @@ import it.polimi.ingsw.game_model.world.Island;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class IslandBoard implements Serializable {
     private final List<ColorCharacter> students;
@@ -17,7 +15,7 @@ public class IslandBoard implements Serializable {
     private final int towerNumber;
     private final ColorTower towerColor;
     private final int deniedCounter;
-    private boolean hasMotherNature;
+    private final boolean hasMotherNature;
 
     public IslandBoard(Island island, boolean hasMotherNature) {
         students = new ArrayList<>(island.getStudents().stream().map(BasicCharacter::getColor).toList());
@@ -30,7 +28,6 @@ public class IslandBoard implements Serializable {
     }
     @Override
     public String toString(){
-
         return Printable.TL2_CORNER + Printable.H2_BAR.repeat(11) + Printable.TR2_CORNER + "\n" +
                 Printable.V2_BAR + "\tID = " + islandId + "\t" + Printable.V2_BAR + "\n" +
                 Printable.V2_BAR + "\t" + (deniedCounter > 0 ? Printable.DENY + deniedCounter : "  ") + "\t" + (hasMotherNature ? Printable.TEXT_ORANGE + Printable.MOTHER_NATURE + Printable.TEXT_RESET : " ") + "\t" + Printable.V2_BAR + "\n" +

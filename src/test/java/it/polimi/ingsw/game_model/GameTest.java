@@ -680,10 +680,4 @@ class GameTest {
         Assertions.assertEquals(pinkInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(PINK).getNumberOfStudents());
         Assertions.assertEquals(blueInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.BLUE).getNumberOfStudents());
     }
-
-    @Test
-    void printClouds(){
-        initialization(2, false);
-        System.out.println(new GameBoard(game));
-    }
 }

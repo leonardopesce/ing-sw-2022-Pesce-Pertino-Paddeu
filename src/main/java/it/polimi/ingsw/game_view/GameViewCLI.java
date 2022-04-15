@@ -4,10 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
-import it.polimi.ingsw.game_view.board.DeckBoard;
-import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.game_view.board.IslandBoard;
-import it.polimi.ingsw.game_view.board.SchoolBoard;
+import it.polimi.ingsw.game_view.board.*;
 
 import java.io.IOException;
 import java.sql.Time;
@@ -163,7 +160,7 @@ public class GameViewCLI extends GameViewClient{
         int selectedStudent = whileInputNotIntegerInRange(0, b);
         System.out.println("You selected student " + selectedStudent
                 + GameBoard.getColorString(school.getEntrance().get(selectedStudent))
-                + GameBoard.STUDENT + GameBoard.TEXT_RESET);
+                + Printable.STUDENT + Printable.TEXT_RESET);
 
         List<IslandBoard> islands = board.getTerrain().getIslands();
         b = islands.size();
