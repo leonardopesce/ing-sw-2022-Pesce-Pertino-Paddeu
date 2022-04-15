@@ -65,6 +65,7 @@ public class Client {
             case ASK_DECK   -> view.askDeck(message.getMessage());
             case ASK_GAME_TYPE -> view.askGameType();
             case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
+            case ASSISTANT_NOT_PLAYABLE -> System.out.println("Assistant already played, pick another one!\n");
             case ERROR -> System.out.println(message.getMessage());
             case GAME_READY -> view.gameReady((GameBoard) message.getMessage());
             case VIEW_UPDATE -> view.updateBoardMessage((GameBoard) message.getMessage());

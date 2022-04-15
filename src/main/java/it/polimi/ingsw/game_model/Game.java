@@ -178,7 +178,7 @@ public class Game extends Observable<MoveMessage> {
             if(draw){
                 //if there are more player with the same number of tower
                 draw = false;
-                // inside max it's stored the position of the first player with the maximum number of tower
+                // inside max, it's stored the position of the first player with the maximum number of tower
                 int maxProfessor = max;
                 // get the player (color) with the maximum number of professor
                 for(int i = max + 1; i < numberOfTower.length; i++){
@@ -258,10 +258,10 @@ public class Game extends Observable<MoveMessage> {
     }
 
     public void runNotify(){
-        notify(new MoveMessage(this, getCurrentlyPlayingPlayer()));
+        notify(new MoveMessage(this));
     }
 
-    public void errorNotify(MoveMessage message){
+    public void notifyError(MoveMessage message){
         notify(message);
     }
 }

@@ -10,13 +10,14 @@ public class CommunicationMessage implements Serializable{
         ASK_DECK,
         ASK_PLAYER_NUMBER,
         ASK_GAME_TYPE,
+        ASSISTANT_NOT_PLAYABLE,
         GAME_ACTION,
         HELP,
         ERROR,
         YOU_LOSE,
         YOU_WIN,
         VIEW_UPDATE,
-        BOARD_UPDATE, GAME_READY
+        GAME_READY
     }
     private final MessageType ID;
     private final Object message;

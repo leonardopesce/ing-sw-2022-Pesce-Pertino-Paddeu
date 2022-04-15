@@ -116,7 +116,7 @@ public class GameController implements Observer<GameAction> {
                 game.runNotify();
             }
             else{
-                game.errorNotify(new MoveMessage(game, game.getCurrentlyPlayingPlayer(), true, "The card was already played by someone else, select another card"));
+                game.notifyError(new MoveMessage(game, true, "assistant not playable"));
             }
         }
     }
