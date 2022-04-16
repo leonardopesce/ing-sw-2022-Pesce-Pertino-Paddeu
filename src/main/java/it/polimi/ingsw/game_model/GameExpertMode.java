@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 public class GameExpertMode extends Game {
@@ -26,7 +27,7 @@ public class GameExpertMode extends Game {
     }
 
     @Override
-    public void moveStudentToDiningHall(Player player, ColorCharacter color) throws TooManyStudentsException{
+    public void moveStudentToDiningHall(Player player, ColorCharacter color){
         player.moveStudentToDiningHall(color);
         if(player.getSchool().getDiningHall().getTableOfColor(color).getNumberOfStudents() % 3 == 0){
             treasury = player.addMoney(treasury);
@@ -35,5 +36,10 @@ public class GameExpertMode extends Game {
 
     public int getTreasury() {
         return treasury;
+    }
+
+    @Override
+    public void runNotify(CommunicationMessage.MessageType type){
+        notify(new MoveMessage(this, type, true));
     }
 }

@@ -6,7 +6,7 @@ package it.polimi.ingsw.game_view.board;
  * @see <a href="https://www.piliapp.com/symbol/line">Symbols library</a>
  * @see <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI Colors</a>
  */
-public class Printable {
+public abstract class Printable {
     // ANSI Colors
     public static final String TEXT_RESET = "\u001B[0m";
     public static final String TEXT_BLACK = "\u001B[30m";
@@ -50,6 +50,7 @@ public class Printable {
     public static final String TOWER = "⊗";
     public static final String DENY = TEXT_RED + "✖" + TEXT_RESET;
     public static final String MOTHER_NATURE = "✿";
+    public static final String DOLLAR = "$";
 
     public static final String NEW_LINE_HIGH = TL_CORNER + H_BAR.repeat(LENGTH - 1) + TR_CORNER + "\n";
     public static final String NEW_LINE_MID =  ML_CORNER + H_BAR.repeat(LENGTH - 1) + MR_CORNER + "\n";

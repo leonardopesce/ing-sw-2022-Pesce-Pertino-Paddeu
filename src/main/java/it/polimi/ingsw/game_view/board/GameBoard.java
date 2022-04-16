@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.game_view.board.Printable.*;
+
 public class GameBoard implements Serializable{
     private boolean expertMode = false;
     private final List<SchoolBoard> schools = new ArrayList<>();
@@ -18,6 +20,7 @@ public class GameBoard implements Serializable{
     private final List<Integer> moneys = new ArrayList<>();
     private final List<String> names = new ArrayList<>();
     private int treasury;
+    protected List<Integer> bankAccounts = new ArrayList<>();
     private final GamePhase phase;
     private final String currentlyPlaying;
 
@@ -32,6 +35,7 @@ public class GameBoard implements Serializable{
         treasury = 0;
         phase = game.getGamePhase();
         currentlyPlaying = game.getCurrentlyPlayingPlayer().getNickname();
+
     }
 
     protected void setGameToExpertMode() {
@@ -106,9 +110,17 @@ public class GameBoard implements Serializable{
         StringBuilder board = new StringBuilder();
         for(int i = 0; i < names.size(); i++){
             String name = names.get(i);
-            String spaces = " ".repeat((Printable.LENGTH - name.length())  / 2 - 1);
-            board.append(Printable.NEW_LINE_HIGH).append(Printable.V_BAR).append(spaces).append(name).append(spaces).append("  ").append(Printable.V_BAR).append("\n");
+            String spaces = " ".repeat((LENGTH - name.length())  / 2 - 1 - (expertMode ? 1 : 0));
+            board.append(NEW_LINE_HIGH).append(V_BAR).append(spaces).append(name).append(spaces)
+                    .append((expertMode ? bankAccounts.get(i) + DOLLAR + (bankAccounts.get(i) > 9 ? " " : "  ") : "  "))
+                    .append(V_BAR).append("\n");
             board.append(schools.get(i));
+        }
+        if(expertMode){
+            board.append("TREASURY\n")
+                .append(TL4_CORNER).append(H4_BAR.repeat(treasury > 9 ? 5 : 4)).append(TR4_CORNER).append("\n")
+                .append(V4_BAR).append(" ").append(treasury).append(DOLLAR).append(" ").append(V4_BAR).append("\n")
+                .append(BL4_CORNER).append(H4_BAR.repeat(treasury > 9 ? 5 : 4)).append(BR4_CORNER).append("\n");
         }
 
         board.append(terrain);

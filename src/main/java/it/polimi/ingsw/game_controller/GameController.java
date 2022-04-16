@@ -2,7 +2,6 @@ package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.action.GameAction;
-import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;

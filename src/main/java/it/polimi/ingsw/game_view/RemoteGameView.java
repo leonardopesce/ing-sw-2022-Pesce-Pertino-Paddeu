@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.GameAction;
 import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.game_view.board.GameBoard;
+import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.server.ClientConnection;
@@ -58,7 +59,7 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
             );
         }
         else {
-            sendMessage(new CommunicationMessage(message.getType(), new GameBoard(message.getGame())));
+            sendMessage(new CommunicationMessage(message.getType(), message.isExpertMode() ? new GameBoardAdvanced(message.getGame()) : new GameBoard(message.getGame())));
         }
     }
 

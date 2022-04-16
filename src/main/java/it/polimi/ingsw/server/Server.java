@@ -8,6 +8,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.RemoteGameView;
 import it.polimi.ingsw.game_view.board.GameBoard;
+import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -57,7 +58,7 @@ public class Server {
         keys = new ArrayList<>(waitingConnection.keySet());
 
         if (waitingConnection.size() == numberOfPlayer) {
-            Game game = expertMode ? new GameExpertMode(numberOfPlayer) : new Game(numberOfPlayer);
+            var game = expertMode ? new GameExpertMode(numberOfPlayer) : new Game(numberOfPlayer);
             GameController controller = new GameController(game);
             for(String playerName: keys){
                 ClientConnection connection = waitingConnection.get(playerName);
@@ -72,7 +73,7 @@ public class Server {
             }
             for(String playerName: keys) {
                 ((SocketClientConnection) waitingConnection.get(playerName)).send(
-                        new CommunicationMessage(GAME_READY, new GameBoard(game))
+                        new CommunicationMessage(GAME_READY, expertMode ? new GameBoardAdvanced(game) : new GameBoard(game))
                 );
             }
                 playingConnection.add(waitingConnection.values().stream().toList());
