@@ -191,7 +191,6 @@ public class GameController implements Observer<GameAction> {
      * @param player the player who request the action
      */
     private void moveStudentPhase(Player player){
-        //TODO creare observer per la view per mostrare la nuova fase{
         if(game.studentsLeftToMove(player) == 0){
             game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE);
         }

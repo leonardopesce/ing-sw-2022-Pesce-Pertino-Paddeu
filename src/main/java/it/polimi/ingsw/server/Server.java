@@ -68,7 +68,6 @@ public class Server {
                 game.addObserver(view);
                 view.addObserver(controller);
 
-
                 executor.submit(((SocketClientConnection)connection));
             }
             for(String playerName: keys) {
