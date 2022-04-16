@@ -190,6 +190,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         int numberOfPlayer = askGameNumberOfPlayer();
         boolean expertMode = askGameType();
         Lobby newLobby = new Lobby(this, numberOfPlayer, expertMode);
+        newLobby.registerClientToLobby(this);
         server.addGameLobby(newLobby);
         server.handleLobbyState(newLobby);
     }
