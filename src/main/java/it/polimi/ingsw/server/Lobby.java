@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
+
 public class Lobby implements Runnable {
 
     private final ClientConnection lobbyOwner;
@@ -25,7 +27,6 @@ public class Lobby implements Runnable {
 
     public Lobby(ClientConnection owner, int gameSize, boolean isExpertGame) {
         lobbyOwner = owner;
-        connectedPlayersToLobby.add(owner);
         expertMode = isExpertGame;
         numberOfPlayers = gameSize;
     }
@@ -58,12 +59,21 @@ public class Lobby implements Runnable {
 
     public synchronized void registerClientToLobby(ClientConnection newClient) {
         connectedPlayersToLobby.add(newClient);
+
+        // Notify all the lobby partecipants that a new player has joined
+        for(ClientConnection lobbyPartecipant : getConnectedPlayersToLobby()) {
+            ((SocketClientConnection)lobbyPartecipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
+        }
     }
 
     @Override
     public void run() {
         Game game = isExpertMode() ? new GameExpertMode(numberOfPlayers) : new Game(numberOfPlayers);
         GameController controller = new GameController(game);
+
+        for(ClientConnection connection : connectedPlayersToLobby) {
+            ((SocketClientConnection) connection).send(new CommunicationMessage(ERROR, "The lobby is full:\n" + this + "The game is starting...\n"));
+        }
 
         for(ClientConnection connection : connectedPlayersToLobby){
             DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());

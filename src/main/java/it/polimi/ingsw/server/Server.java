@@ -51,54 +51,7 @@ public class Server {
         if(lobbyToHandle.isFull()) {
             // The game is startable
             new Thread(lobbyToHandle).start();
-        } else {
-            // Notify all the lobby partecipants that a new player has joined
-            for(ClientConnection lobbyPartecipant : lobbyToHandle.getConnectedPlayersToLobby()) {
-                ((SocketClientConnection)lobbyPartecipant).send(new CommunicationMessage(ERROR, lobbyToHandle.getLastJoined() + " has joined the lobby."));
-            }
         }
-        /*
-        List<String> keys = new ArrayList<>(waitingConnection.keySet());
-
-        waitingConnection.put(name, c);
-        if(waitingConnection.size() == 1){
-            numberOfPlayer = ((SocketClientConnection)c).askGameNumberOfPlayer();
-            expertMode = ((SocketClientConnection)c).askGameType();;
-        }
-
-        keys = new ArrayList<>(waitingConnection.keySet());
-
-        if (waitingConnection.size() == numberOfPlayer) {
-            var game = expertMode ? new GameExpertMode(numberOfPlayer) : new Game(numberOfPlayer);
-            GameController controller = new GameController(game);
-            for(String playerName: keys){
-                ClientConnection connection = waitingConnection.get(playerName);
-                DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
-                Player player = controller.createPlayer(playerName, deck);
-
-                RemoteGameView view = new RemoteGameView(player.getNickname(), connection);
-                game.addObserver(view);
-                view.addObserver(controller);
-
-                executor.submit(((SocketClientConnection)connection));
-            }
-            for(String playerName: keys) {
-                ((SocketClientConnection) waitingConnection.get(playerName)).send(
-                        new CommunicationMessage(GAME_READY, expertMode ? new GameBoardAdvanced(game) : new GameBoard(game))
-                );
-            }
-                playingConnection.add(waitingConnection.values().stream().toList());
-            waitingConnection.clear();
-        }
-        else{
-            ((SocketClientConnection)c).send(new CommunicationMessage(ERROR, "Waiting for other players"));
-
-            for (String key : keys) {
-                ClientConnection connection = waitingConnection.get(key);
-                ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "Lobby: " + name));
-            }
-        }
-       */
     }
 
     public Server() throws IOException {
