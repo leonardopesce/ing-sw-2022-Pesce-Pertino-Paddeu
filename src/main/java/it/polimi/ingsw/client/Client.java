@@ -69,6 +69,8 @@ public class Client {
             case ERROR -> System.out.println(message.getMessage());
             case GAME_READY -> view.gameReady((GameBoard) message.getMessage());
             case VIEW_UPDATE -> view.updateBoardMessage((GameBoard) message.getMessage());
+            case YOU_WIN -> System.out.println("YOU WIN!!!");
+            case YOU_LOSE -> System.out.println("YOU LOSE!");
         }
     }
 

@@ -258,7 +258,7 @@ public class GameController implements Observer<GameAction> {
     }
 
     private void endGame(){
-        //TODO the game is ended
+        game.runNotify(CommunicationMessage.MessageType.GAME_ACTION);
     }
 
     public void choseCloud(String playerName, int cloudCardIndex){
