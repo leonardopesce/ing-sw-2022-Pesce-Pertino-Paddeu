@@ -60,5 +60,7 @@ public class Healer extends AdvancedCharacter{
         return true;
     }
 
-
+    public int getNumberOfDeniableIslands() {
+        return numberOfDeniableIslands;
+    }
 }

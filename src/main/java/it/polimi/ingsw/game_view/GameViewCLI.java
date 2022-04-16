@@ -49,7 +49,7 @@ public class GameViewCLI extends GameViewClient{
         System.out.println(GameViewClient.ASK_GAME_TYPE_QUESTION);
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_GAME_TYPE,
-                whileInputNotContainedInt(Arrays.asList("e", "n")).equals("e")));
+                whileInputNotContainedIn(Arrays.asList("e", "n")).equals("e")));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class GameViewCLI extends GameViewClient{
             System.out.println(i + ". " + lobby.getLobbyName() + " | " + (lobby.isFull() ? Printable.TEXT_RED + lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize() + " Lobby Full" + Printable.TEXT_RESET : Printable.TEXT_GREEN + lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize() + Printable.TEXT_RESET));
             i++;
         }
-        client.asyncWriteToSocket(new CommunicationMessage(ASK_LOBBY_TO_JOIN, whileInputNotContainedInt(((List<LobbyInfo>)listOfLobbyInfos).stream().map(LobbyInfo::getLobbyName).toList())));
+        client.asyncWriteToSocket(new CommunicationMessage(ASK_LOBBY_TO_JOIN, whileInputNotContainedIn(((List<LobbyInfo>)listOfLobbyInfos).stream().map(LobbyInfo::getLobbyName).toList())));
     }
 
     @Override
@@ -130,6 +130,9 @@ public class GameViewCLI extends GameViewClient{
 
     private int whileInputNotIntegerInRange(int a, int b){
         String read = input.nextLine();
+        if(read.equals("play")){
+
+        }
         while(read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
                 Integer.parseInt(read) < a || Integer.parseInt(read) > b){
             System.out.println("Not a number or not in the range given");
@@ -138,7 +141,7 @@ public class GameViewCLI extends GameViewClient{
         return Integer.parseInt(read);
     }
 
-    private String whileInputNotContainedInt(List<String> container){
+    private String whileInputNotContainedIn(List<String> container){
         String read = input.nextLine();
         while(!container.contains(read)){
             System.out.println("Selection not available please follow instruction");

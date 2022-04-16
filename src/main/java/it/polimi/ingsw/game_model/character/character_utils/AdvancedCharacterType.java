@@ -1,9 +1,12 @@
 package it.polimi.ingsw.game_model.character.character_utils;
 
-import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.advanced.*;
+import it.polimi.ingsw.game_view.board.Printable;
 
 
 import java.util.Random;
+
+import static it.polimi.ingsw.game_view.board.Printable.*;
 
 /**
  * An enumeration which represent the type of character card.
