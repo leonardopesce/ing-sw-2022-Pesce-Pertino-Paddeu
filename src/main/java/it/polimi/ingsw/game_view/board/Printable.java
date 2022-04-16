@@ -38,6 +38,12 @@ public class Printable {
     public static final String BR2_CORNER = "╯";
     public static final String H3_BAR = "☷";
     public static final String V3_BAR = "┋";
+    public static final String H4_BAR = "═";
+    public static final String V4_BAR = "║";
+    public static final String TL4_CORNER = "╔";
+    public static final String TR4_CORNER = "╗";
+    public static final String BL4_CORNER = "╚";
+    public static final String BR4_CORNER = "╝";
 
     public static final String TEACHER = "◉";
     public static final String STUDENT = "●";
