@@ -22,31 +22,42 @@ import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.G
 
 public class Server {
     private static final int PORT = 12345;
-    private ServerSocket serverSocket;
-    private ExecutorService executor = Executors.newFixedThreadPool(128);
-    private Map<String, ClientConnection> waitingConnection = new HashMap<>();
-    private List<List<ClientConnection>> playingConnection = new ArrayList<>();
+    private final ServerSocket serverSocket;
+    private final List<ClientConnection> waitingConnection = new ArrayList<>();
+    private final List<Lobby> activeGames = new ArrayList<>();
 
     private int numberOfPlayer = 0;
     private boolean expertMode = false;
 
-    public Map<String, ClientConnection> getWaitingConnection() {
+    public List<ClientConnection> getWaitingConnection() {
         return waitingConnection;
     }
 
     //Deregister connection
     public synchronized void deregisterConnection(ClientConnection c) {
+        /*
         Optional<List<ClientConnection>> opponent = playingConnection.stream().reduce((list1, list2) -> list1.contains(c) ? list1 : list2);
         opponent.ifPresent(list -> {
             playingConnection.remove(list);
             list.forEach(ClientConnection::closeConnection);
         });
 
-        waitingConnection.keySet().removeIf(s -> waitingConnection.get(s) == c);
+        waitingConnection.remove(c);
+        */
     }
 
     //Wait for other players
-    public synchronized void lobby(ClientConnection c, String name){
+    public synchronized void handleLobbyState(Lobby lobbyToHandle){
+        if(lobbyToHandle.isFull()) {
+            // The game is startable
+            new Thread(lobbyToHandle).start();
+        } else {
+            // Notify all the lobby partecipants that a new player has joined
+            for(ClientConnection lobbyPartecipant : lobbyToHandle.getConnectedPlayersToLobby()) {
+                ((SocketClientConnection)lobbyPartecipant).send(new CommunicationMessage(ERROR, lobbyToHandle.getLastJoined() + " has joined the lobby."));
+            }
+        }
+        /*
         List<String> keys = new ArrayList<>(waitingConnection.keySet());
 
         waitingConnection.put(name, c);
@@ -87,13 +98,14 @@ public class Server {
                 ((SocketClientConnection)connection).send(new CommunicationMessage(ERROR, "Lobby: " + name));
             }
         }
+       */
     }
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
     }
 
-    public void run(){
+    public void run() throws IOException {
         int connections = 0;
         boolean running = true;
         System.out.println("Server is running");
@@ -106,12 +118,41 @@ public class Server {
                 SocketClientConnection socketConnection = new SocketClientConnection(newSocket, this);
             } catch (IOException e) {
                 running = false;
+                serverSocket.close();
                 System.out.println("Connection Error!");
             }
         }
     }
 
-    public Set<String> getConnectedPlayersName() {
-        return waitingConnection.keySet();
+    public synchronized Set<String> getConnectedPlayersName() {
+        Set<String> currentlyPlayingNicknames = new HashSet<>();
+
+        for (ClientConnection connection : waitingConnection) {
+            currentlyPlayingNicknames.add(((SocketClientConnection)connection).getClientName());
+        }
+
+        for(Lobby gameLobby : activeGames) {
+            for(ClientConnection player : gameLobby.getConnectedPlayersToLobby()) {
+                currentlyPlayingNicknames.add(((SocketClientConnection)player).getClientName());
+            }
+        }
+
+        return currentlyPlayingNicknames;
+    }
+
+    public synchronized void addGameLobby(Lobby newLobby) {
+        activeGames.add(newLobby);
+    }
+
+    public synchronized List<Lobby> getActiveGames() {
+        return activeGames;
+    }
+
+    public void newWaitingConnection(ClientConnection connection) {
+        synchronized (this) {
+            waitingConnection.add(connection);
+        }
+
+        ((SocketClientConnection)connection).askJoiningAction();
     }
 }

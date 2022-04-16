@@ -5,6 +5,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.board.*;
+import it.polimi.ingsw.server.LobbyInfo;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -49,6 +50,23 @@ public class GameViewCLI extends GameViewClient{
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_GAME_TYPE,
                 whileInputNotContainedInt(Arrays.asList("e", "n")).equals("e")));
+    }
+
+    @Override
+    public void askJoiningAction() {
+        System.out.println(GameViewClient.ASK_JOINING_ACTION_QUESTION);
+        client.asyncWriteToSocket(new CommunicationMessage(ASK_JOINING_ACTION, whileInputNotIntegerInRange(0,1)));
+    }
+
+    @Override
+    public void askLobbyToJoin(Object listOfLobbyInfos) {
+        System.out.println(GameViewClient.ASK_LOBBY_TO_JOIN_QUESTION);
+        int i = 0;
+        for(LobbyInfo lobby : (List<LobbyInfo>)listOfLobbyInfos) {
+            System.out.println(i + ". " + lobby.getLobbyName() + " | " + (lobby.isFull() ? Printable.TEXT_RED + lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize() + " Lobby Full" + Printable.TEXT_RESET : Printable.TEXT_GREEN + lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize() + Printable.TEXT_RESET));
+            i++;
+        }
+        client.asyncWriteToSocket(new CommunicationMessage(ASK_LOBBY_TO_JOIN, whileInputNotContainedInt(((List<LobbyInfo>)listOfLobbyInfos).stream().map(LobbyInfo::getLobbyName).toList())));
     }
 
     @Override

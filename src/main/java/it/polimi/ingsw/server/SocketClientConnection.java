@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.observer.Observable;
 
@@ -17,6 +18,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private final Server server;
+    private String clientName;
 
     private boolean active = true;
 
@@ -72,8 +74,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     @Override
     public void run() {
         try {
-            System.out.println("Sono arrivato " +
-                    server.getWaitingConnection().keySet().stream().filter(key -> server.getWaitingConnection().get(key).equals(this)).toList().get(0));
             while(isActive()){
                 CommunicationMessage message = (CommunicationMessage)in.readObject();
                 notify(message);
@@ -83,6 +83,21 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
         finally {
             close();
+        }
+    }
+
+    public void askJoiningAction() {
+        int joiningActionChosen = 0; // 0 for creating a new match | 1 for joining an existing one if present
+        try {
+            send(new CommunicationMessage(ASK_JOINING_ACTION, null));
+            joiningActionChosen = (int)((CommunicationMessage)in.readObject()).getMessage();
+
+            switch (joiningActionChosen) {
+                case 0 -> createNewGame();
+                case 1 -> joinExistingGame();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -143,13 +158,61 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
                 name = ((CommunicationMessage)in.readObject()).getMessage().toString();
             }
 
-            server.lobby(this, name);
+            clientName = name;
+            server.newWaitingConnection(this);
 
         } catch (IOException | NoSuchElementException e) {
             System.err.println("Error! " + e.getMessage());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private String askChoseLobby() {
+        String chosenLobby = null;
+
+        try {
+            List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
+            // Setting up the lobbies to a serializable version
+            for(Lobby lobby : server.getActiveGames()) {
+                lobbyInfosToSend.add(new LobbyInfo(lobby));
+            }
+            send(new CommunicationMessage(ASK_LOBBY_TO_JOIN, lobbyInfosToSend));
+            chosenLobby = (String)getResponse().get().getMessage();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return chosenLobby;
+    }
+
+    private void createNewGame() {
+        int numberOfPlayer = askGameNumberOfPlayer();
+        boolean expertMode = askGameType();
+        Lobby newLobby = new Lobby(this, numberOfPlayer, expertMode);
+        server.addGameLobby(newLobby);
+        server.handleLobbyState(newLobby);
+    }
+
+    private void joinExistingGame() {
+        if(server.getActiveGames().size() <= 0) {
+            send(new CommunicationMessage(ERROR, "No lobbies are available."));
+            askJoiningAction();
+        } else {
+            String lobbyChosen = askChoseLobby();
+            Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
+            if(selectedLobby.isFull()) {
+                send(new CommunicationMessage(ERROR, "The lobby you selected is already full or got full while you were chosing."));
+                askJoiningAction();
+            } else {
+                selectedLobby.registerClientToLobby(this);
+                server.handleLobbyState(selectedLobby);
+            }
+        }
+    }
+
+    public String getClientName() {
+        return clientName;
     }
 
     @Override

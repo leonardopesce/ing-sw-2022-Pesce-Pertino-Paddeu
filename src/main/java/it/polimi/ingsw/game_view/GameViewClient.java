@@ -8,6 +8,8 @@ public abstract class GameViewClient{
     public static final String REASK_NAME_QUESTION = "Nickname already chosen. Insert a Nickname:";
     public static final String ASK_DECK_TYPE_QUESTION = "Select your deck, available use number ";
     public static final String ASK_GAME_TYPE_QUESTION = "Choose the game mode! (type \"e\" for expert mode, type \"n\" for normal mode)";
+    public static final String ASK_JOINING_ACTION_QUESTION = "Would you like to create a new match or joining an existing one?\n0. Create a new game\n1. Join a game";
+    public static final String ASK_LOBBY_TO_JOIN_QUESTION = "Select the lobby you want to join by entering the lobby owner name:";
     public static final String ASK_PLAYER_NUMBER_QUESTION = "You are the first player! Choose the number of player in the game (2, 3 or 4)";
 
     protected Client client;
@@ -37,6 +39,8 @@ public abstract class GameViewClient{
     public abstract void reaskName();
     public abstract void askDeck(Object decksAvailable);
     public abstract void askGameType();
+    public abstract void askJoiningAction();
+    public abstract void askLobbyToJoin(Object listOfLobbyInfos);
     public abstract void askPlayerNumber();
     public abstract void gameReady(GameBoard board);
 }

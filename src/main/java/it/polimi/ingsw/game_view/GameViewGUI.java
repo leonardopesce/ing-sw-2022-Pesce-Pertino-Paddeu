@@ -47,6 +47,16 @@ public class GameViewGUI extends GameViewClient{
     }
 
     @Override
+    public void askJoiningAction() {
+
+    }
+
+    @Override
+    public void askLobbyToJoin(Object listOfLobbyInfos) {
+
+    }
+
+    @Override
     public void askPlayerNumber() {
 
     }

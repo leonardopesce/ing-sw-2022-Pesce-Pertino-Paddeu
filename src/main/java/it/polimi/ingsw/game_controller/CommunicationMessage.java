@@ -10,6 +10,8 @@ public class CommunicationMessage implements Serializable{
         ASK_DECK,
         ASK_PLAYER_NUMBER,
         ASK_GAME_TYPE,
+        ASK_JOINING_ACTION,
+        ASK_LOBBY_TO_JOIN,
         ASSISTANT_NOT_PLAYABLE,
         GAME_ACTION,
         HELP,
