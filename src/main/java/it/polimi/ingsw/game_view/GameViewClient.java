@@ -12,9 +12,23 @@ public abstract class GameViewClient{
     public static final String ASK_LOBBY_TO_JOIN_QUESTION = "Select the lobby you want to join by entering the lobby owner name:";
     public static final String ASK_PLAYER_NUMBER_QUESTION = "You are the first player! Choose the number of player in the game (2, 3 or 4)";
 
+    protected enum InputStateMachine {
+        PLANNING_PHASE_START,
+        SELECT_ASSISTANT_CARD_SEND_MESSAGE,
+        MOVING_STUDENT_PHASE_START,
+        MOVE_STUDENT_SECOND_PHASE,
+        MOVE_STUDENT_SEND_MESSAGE,
+        MOVE_MOTHER_NATURE_START,
+        MOVE_MOTHER_NATURE_SEND_MESSAGE,
+        CHOOSE_CLOUD_CARD_START,
+        CHOOSE_CLOUD_CARD_SEND_MESSAGE,
+        PLAY_ADVANCED_CARD
+    }
+
+    protected InputStateMachine state;
     protected Client client;
     protected GameBoard board;
-    protected boolean actionSent = false;
+    protected boolean actionSent = true;
 
     protected GameViewClient(Client client){
         this.client = client;
@@ -22,16 +36,23 @@ public abstract class GameViewClient{
 
     public void updateBoardMessage(GameBoard board){
         this.board = board;
-        actionSent = false;
         if(board.getCurrentlyPlaying().equals(client.getName())){
             updateBoard(board);
             displayYourTurn();
             if(board.isExpertMode()){
                 displayExpertMode();
             }
+            switch (board.getPhase()){
+                case PLANNING_PHASE -> state = InputStateMachine.PLANNING_PHASE_START;
+                case ACTION_PHASE_CHOOSING_CLOUD -> state = InputStateMachine.CHOOSE_CLOUD_CARD_START;
+                case ACTION_PHASE_MOVING_STUDENTS -> state = InputStateMachine.MOVING_STUDENT_PHASE_START;
+                case ACTION_PHASE_MOVING_MOTHER_NATURE -> state = InputStateMachine.MOVE_MOTHER_NATURE_START;
+            }
+            actionSent = false;
         }
     }
 
+    public abstract void displayNotYourTurn();
     public abstract void updateBoard(GameBoard board);
     public abstract void displayYourTurn();
     public abstract void displayExpertMode();

@@ -12,11 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
+import static it.polimi.ingsw.game_view.GameViewClient.InputStateMachine.PLAY_ADVANCED_CARD;
 
 public class GameViewCLI extends GameViewClient{
     private final Scanner input;
+    private int rangeA, rangeB;
 
     public GameViewCLI(Client client) {
         super(client);
@@ -79,8 +80,8 @@ public class GameViewCLI extends GameViewClient{
 
     @Override
     public void gameReady(GameBoard board){
-        this.board = board;
-        System.out.println(board);
+        updateBoardMessage(board);
+        state = InputStateMachine.PLANNING_PHASE_START;
         asyncReadInput();
     }
 
@@ -92,73 +93,60 @@ public class GameViewCLI extends GameViewClient{
     public void asyncReadInput(){
         new Thread(() -> {
             while(client.isActive()){
-
-                if(!actionSent && board.getCurrentlyPlaying().equals(client.getName())) {
-                    switch (board.getPhase()) {
-                        case PLANNING_PHASE -> playAssistantCardAction();
-                        case ACTION_PHASE_MOVING_STUDENTS -> movingStudentAction();
-                        case ACTION_PHASE_MOVING_MOTHER_NATURE -> moveMotherNatureAction();
-                        case ACTION_PHASE_CHOOSING_CLOUD -> chooseCloudCardAction();
-                    }
-                    actionSent = true;
-                }
-                else {
+                if(!board.getCurrentlyPlaying().equals(client.getName())){
                     try {
-                        if(System.in.available() > 0){
+                        if(System.in.available() > 0) {
                             input.nextLine();
-                            System.out.println("PLEASE WAIT FOR YOUR TURN");
+                            displayNotYourTurn();
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+                else if(!actionSent) {
+                    printStateMachine();
+                    actionStateMachine(whileInputNotIntegerInRange(rangeA, rangeB));
                 }
             }
         }).start();
     }
 
-    @Override
-    public void displayYourTurn() {
-        System.out.println("IT'S YOUR TURN!");
-    }
+    private void printStateMachine(){
+        DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
+        SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
 
-    @Override
-    public void displayExpertMode() {
-        System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
-        System.out.println(board.getTerrain().getAdvancedCard());
-    }
-
-    private int whileInputNotIntegerInRange(int a, int b){
-        String read = input.nextLine();
-        if(read.equals("play")){
-
+        switch (state) {
+            case PLANNING_PHASE_START -> {
+                rangeA = 0;
+                rangeB = playerDeck.getCards().size() - 1;
+                System.out.println("Select an assistant card to play (use value from 0 to " + rangeB
+                        + " to select the card):\n" + playerDeck.print());
+                state = InputStateMachine.SELECT_ASSISTANT_CARD_SEND_MESSAGE;
+            }
+            case MOVING_STUDENT_PHASE_START -> {
+                rangeA = 0;
+                rangeB = school.getEntrance().size() - 1;
+                System.out.println("Please select a student to move (use number from 0 to " + rangeB
+                        + " starting counting from left to right and top to bottom");
+                state = InputStateMachine.MOVE_STUDENT_SEND_MESSAGE;
+            }
+            case MOVE_MOTHER_NATURE_START -> {
+                rangeA = 1;
+                rangeB = playerDeck.getDiscardedCard().getPossibleSteps();
+                System.out.println("How many step would you like to move mother nature (use a number between 1 and " + rangeB + ")");
+                state = InputStateMachine.MOVE_MOTHER_NATURE_SEND_MESSAGE;
+            }
+            case CHOOSE_CLOUD_CARD_START -> {
+                rangeA = 0;
+                rangeB = board.getTerrain().getCloudCards().size() - 1;
+                System.out.println("Select a Cloud from where to pick student (use number from 0 to" + rangeB
+                        + " to select the cloud):\n");
+                state = InputStateMachine.CHOOSE_CLOUD_CARD_SEND_MESSAGE;
+            }
         }
-        while(read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
-                Integer.parseInt(read) < a || Integer.parseInt(read) > b){
-            System.out.println("Not a number or not in the range given");
-            read = input.nextLine();
-        }
-        return Integer.parseInt(read);
     }
 
-    private String whileInputNotContainedIn(List<String> container){
-        String read = input.nextLine();
-        while(!container.contains(read)){
-            System.out.println("Selection not available please follow instruction");
-            read = input.nextLine();
-        }
-        return read;
-    }
-
-    private String decksToString(List<?> decks){
-        String msg = "";
-        for(int i = 0; i < decks.size(); i++){
-            msg = msg.concat("\n" + i + " = " + ((DeckType)decks.get(i)).getName());
-        }
-        return msg;
-    }
-
-    private void playAssistantCardAction(){
+    protected void actionStateMachine(int selection){
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
         int selectedCard;
         int b = playerDeck.getCards().size() - 1;
@@ -194,22 +182,106 @@ public class GameViewCLI extends GameViewClient{
         }
     }
 
-    private void moveMotherNatureAction() {
-        DeckBoard deck = board.getDecks().get(board.getNames().indexOf(client.getName()));
-        int b = deck.getDiscardedCard().getPossibleSteps();
-        System.out.println("How many step would you like to move mother nature (use a number between 1 and " + b + ")");
-        int step = whileInputNotIntegerInRange(1, b);
-        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveMotherNatureAction(client.getName(), step)));
+        switch(state) {
+            case PLAY_ADVANCED_CARD:
+                System.out.println("Select an advanced card " + board.getTerrain().getAdvancedCard());
+                break;
+
+            case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
+                System.out.println("You selected: " + playerDeck.getCards().get(selection).getName());
+                client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selection)));
+                actionSent = true;
+                break;
+
+            case MOVE_STUDENT_SEND_MESSAGE:
+                rangeA = 0;
+                rangeB = islands.size();
+                System.out.println("You selected student " + selection + GameBoard.getColorString(school.getEntrance().get(selection))
+                        + GameBoard.STUDENT + GameBoard.TEXT_RESET);
+                System.out.println("Please select where to move the student (use number from 0 to " +
+                        rangeB + " to select an island and number " + rangeB + " to select the dining hall)");
+
+                String read = input.nextLine();
+                while(read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
+                        Integer.parseInt(read) < rangeA || Integer.parseInt(read) > rangeB){
+                    System.out.println("Not a number or not in the range given");
+                    read = input.nextLine();
+                }
+
+                if(Integer.parseInt(read) == islands.size()){
+                    System.out.println("Dining hall selected");
+                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToDiningHallAction(client.getName(), selection)));
+                }
+                else {
+                    System.out.println("Island " + selection + " selected");
+                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToIslandAction(client.getName(), selection, Integer.parseInt(read))));
+                }
+                actionSent = true;
+                break;
+
+            case MOVE_MOTHER_NATURE_SEND_MESSAGE:
+                client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveMotherNatureAction(client.getName(), selection)));
+                actionSent = true;
+                break;
+
+            case CHOOSE_CLOUD_CARD_SEND_MESSAGE:
+                if(board.getTerrain().getCloudCards().get(selection).isEmpty()){
+                    System.out.println("You selected an empty cloud, please pick another one");
+                }
+                else {
+                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new ChooseCloudCardAction(client.getName(), selection)));
+                    actionSent = true;
+                }
+        }
     }
 
-    private void chooseCloudCardAction(){
-        int b = board.getTerrain().getCloudCards().size() - 1;
-        System.out.println("Select a Cloud from where to pick student (use number from 0 to" + b + " to select the cloud):\n");
-        int selectedCard = whileInputNotIntegerInRange(0, b);
-        while(board.getTerrain().getCloudCards().get(selectedCard).isEmpty()){
-            System.out.println("You selected an empty cloud, please pick another one");
-            selectedCard = whileInputNotIntegerInRange(0, b);
+
+
+    @Override
+    public void displayNotYourTurn(){
+        System.out.println("PLEASE WAIT FOR YOUR TURN");
+    }
+
+    @Override
+    public void displayYourTurn() {
+        System.out.println("IT'S YOUR TURN! [PRESS ENTER TO START]");
+    }
+
+    @Override
+    public void displayExpertMode() {
+        System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
+        System.out.println(board.getTerrain().getAdvancedCard());
+    }
+
+    private int whileInputNotIntegerInRange(int a, int b){
+        String read = input.nextLine();
+        while(read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
+                Integer.parseInt(read) < a || Integer.parseInt(read) > b &&
+                (!board.isExpertMode() || !read.equals("play"))){
+            System.out.println("Not a number or not in the range given");
+            read = input.nextLine();
         }
-        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new ChooseCloudCardAction(client.getName(), selectedCard)));
+        if(read.equals("play")){
+            state = PLAY_ADVANCED_CARD;
+            return 0;
+        }
+        return Integer.parseInt(read);
+    }
+
+    private String whileInputNotContainedIn(List<String> container){
+        String read = input.nextLine();
+        while(!container.contains(read)){
+            System.out.println("Selection not available please follow instruction");
+            read = input.nextLine();
+        }
+        return read;
+    }
+
+    private String decksToString(List<?> decks){
+        String msg = "";
+        for(int i = 0; i < decks.size(); i++){
+            msg = msg.concat("\n" + i + " = " + ((DeckType)decks.get(i)).getName());
+        }
+        return msg;
     }
 }
