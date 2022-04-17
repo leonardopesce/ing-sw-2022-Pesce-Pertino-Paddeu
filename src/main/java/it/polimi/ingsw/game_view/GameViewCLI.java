@@ -43,7 +43,7 @@ public class GameViewCLI extends GameViewClient{
         System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
         client.asyncWriteToSocket(new CommunicationMessage(
                 ASK_DECK,
-                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size()-1))
+                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size() - 1))
         ));
     }
 
@@ -133,8 +133,39 @@ public class GameViewCLI extends GameViewClient{
 
     protected void actionStateMachine(int selection){
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
+        int selectedCard;
+        int b = playerDeck.getCards().size() - 1;
+        System.out.println("Select an assistant card to play (use value from 0 to " + b + " to select the card):\n");
+        System.out.println(playerDeck.print());
+        selectedCard = whileInputNotIntegerInRange(0, b);
+        System.out.println("You selected: " + playerDeck.getCards().get(selectedCard).getName());
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selectedCard)));
+    }
+
+    private void movingStudentAction() {
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
+        int b = school.getEntrance().size() - 1;
+        System.out.println("Please select a student to move (use number from 0 to " +
+                b + " starting counting from left to right and top to bottom");
+        int selectedStudent = whileInputNotIntegerInRange(0, b);
+        System.out.println("You selected student " + selectedStudent
+                + GameBoard.getColorString(school.getEntrance().get(selectedStudent))
+                + GameBoard.STUDENT + GameBoard.TEXT_RESET);
+
         List<IslandBoard> islands = board.getTerrain().getIslands();
+        b = islands.size();
+        System.out.println("Please select where to move the student (use number from 0 to " +
+                (b - 1) + " to select an island and number " + b + " to select the dining hall");
+        int selectedPlace = whileInputNotIntegerInRange(0, b);
+        if(selectedPlace == islands.size()){
+            System.out.println("Dining hall selected");
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToDiningHallAction(client.getName(), selectedStudent)));
+        }
+        else {
+            System.out.println("Island " + selectedPlace + " selected");
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToIslandAction(client.getName(), selectedStudent, selectedPlace)));
+        }
+    }
 
         switch(state) {
             case PLAY_ADVANCED_CARD:
