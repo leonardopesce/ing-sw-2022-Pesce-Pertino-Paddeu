@@ -19,13 +19,14 @@ public abstract class GameViewClient{
         MOVE_MOTHER_NATURE_START,
         MOVE_MOTHER_NATURE_SEND_MESSAGE,
         CHOOSE_CLOUD_CARD_START,
-        CHOOSE_CLOUD_CARD_SEND_MESSAGE
+        CHOOSE_CLOUD_CARD_SEND_MESSAGE,
+        PLAY_ADVANCED_CARD
     }
 
     protected InputStateMachine state;
     protected Client client;
     protected GameBoard board;
-    protected boolean actionSent = false;
+    protected boolean actionSent = true;
 
     protected GameViewClient(Client client){
         this.client = client;
@@ -33,7 +34,6 @@ public abstract class GameViewClient{
 
     public void updateBoardMessage(GameBoard board){
         this.board = board;
-        actionSent = false;
         if(board.getCurrentlyPlaying().equals(client.getName())){
             updateBoard(board);
             displayYourTurn();
@@ -46,7 +46,7 @@ public abstract class GameViewClient{
                 case ACTION_PHASE_MOVING_STUDENTS -> state = InputStateMachine.MOVING_STUDENT_PHASE_START;
                 case ACTION_PHASE_MOVING_MOTHER_NATURE -> state = InputStateMachine.MOVE_MOTHER_NATURE_START;
             }
-
+            actionSent = false;
         }
     }
 
