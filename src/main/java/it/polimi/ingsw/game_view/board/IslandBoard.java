@@ -11,7 +11,6 @@ import java.util.List;
 
 public class IslandBoard implements Serializable {
     private final List<ColorCharacter> students;
-    private final int islandId;
     private final int islandIndex;
     private final int towerNumber;
     private final ColorTower towerColor;
@@ -22,10 +21,8 @@ public class IslandBoard implements Serializable {
         students = new ArrayList<>(island.getStudents().stream().map(BasicCharacter::getColor).toList());
         towerNumber = island.getTowers().size();
         this.islandIndex = islandIndex;
-        //TODO check if there are more than 0 tower
         towerColor = island.getTowers().size() > 0 ? island.getTowers().get(0).getColor() : ColorTower.WHITE;
         deniedCounter = island.getIsBlocked().get();
-        islandId = island.getId();
         this.hasMotherNature = hasMotherNature;
     }
     @Override

@@ -30,7 +30,6 @@ public class Bard extends AdvancedCharacter{
         List<Integer> studentsFromEntrance = (List<Integer>) attributes[1];
         List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>) attributes[2];
 
-
         Entrance playerEntrance = player.getSchool().getEntrance();
         DiningHall playerDiningHall = player.getSchool().getDiningHall();
 
