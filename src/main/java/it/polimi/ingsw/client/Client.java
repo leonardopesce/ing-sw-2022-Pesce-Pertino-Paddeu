@@ -67,7 +67,7 @@ public class Client {
             case ASK_JOINING_ACTION -> view.askJoiningAction();
             case ASK_LOBBY_TO_JOIN -> view.askLobbyToJoin(message.getMessage());
             case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
-            case ASSISTANT_NOT_PLAYABLE -> System.out.println("Assistant already played, pick another one!\n");
+            case ASSISTANT_NOT_PLAYABLE -> view.reaskAssistant();
             case ERROR -> System.out.println(message.getMessage());
             case GAME_READY -> view.gameReady((GameBoard) message.getMessage());
             case VIEW_UPDATE -> view.updateBoardMessage((GameBoard) message.getMessage());

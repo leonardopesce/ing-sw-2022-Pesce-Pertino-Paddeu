@@ -86,6 +86,13 @@ public class GameViewCLI extends GameViewClient{
     }
 
     @Override
+    public void reaskAssistant() {
+        System.out.println("Assistant not playable pick another one");
+        state = PLANNING_PHASE_START;
+        actionSent = false;
+    }
+
+    @Override
     public void updateBoard(GameBoard board) {
         System.out.println(board);
     }

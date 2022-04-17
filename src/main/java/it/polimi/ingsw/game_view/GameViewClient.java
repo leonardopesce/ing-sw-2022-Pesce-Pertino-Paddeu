@@ -64,4 +64,5 @@ public abstract class GameViewClient{
     public abstract void askLobbyToJoin(Object listOfLobbyInfos);
     public abstract void askPlayerNumber();
     public abstract void gameReady(GameBoard board);
+    public abstract void reaskAssistant();
 }

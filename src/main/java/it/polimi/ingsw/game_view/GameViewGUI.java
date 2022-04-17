@@ -70,4 +70,9 @@ public class GameViewGUI extends GameViewClient{
     public void gameReady(GameBoard board) {
 
     }
+
+    @Override
+    public void reaskAssistant() {
+
+    }
 }
