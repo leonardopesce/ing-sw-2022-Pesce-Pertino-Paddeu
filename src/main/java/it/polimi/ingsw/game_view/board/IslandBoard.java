@@ -12,14 +12,16 @@ import java.util.List;
 public class IslandBoard implements Serializable {
     private final List<ColorCharacter> students;
     private final int islandId;
+    private final int islandIndex;
     private final int towerNumber;
     private final ColorTower towerColor;
     private final int deniedCounter;
     private final boolean hasMotherNature;
 
-    public IslandBoard(Island island, boolean hasMotherNature) {
+    public IslandBoard(Island island, boolean hasMotherNature, int islandIndex) {
         students = new ArrayList<>(island.getStudents().stream().map(BasicCharacter::getColor).toList());
         towerNumber = island.getTowers().size();
+        this.islandIndex = islandIndex;
         //TODO check if there are more than 0 tower
         towerColor = island.getTowers().size() > 0 ? island.getTowers().get(0).getColor() : ColorTower.WHITE;
         deniedCounter = island.getIsBlocked().get();
@@ -29,7 +31,7 @@ public class IslandBoard implements Serializable {
     @Override
     public String toString(){
         return Printable.TL2_CORNER + Printable.H2_BAR.repeat(11) + Printable.TR2_CORNER + "\n" +
-                Printable.V2_BAR + "\tID = " + islandId + "\t" + Printable.V2_BAR + "\n" +
+                Printable.V2_BAR + "\tID = " + islandIndex + "\t" + Printable.V2_BAR + "\n" +
                 Printable.V2_BAR + "\t" + (deniedCounter > 0 ? Printable.DENY + deniedCounter : "  ") + "\t" + (hasMotherNature ? Printable.TEXT_ORANGE + Printable.MOTHER_NATURE + Printable.TEXT_RESET : " ") + "\t" + Printable.V2_BAR + "\n" +
                 Printable.V2_BAR + "\t" + Printable.TEXT_RED + Printable.STUDENT + Printable.TEXT_RESET + students.stream().filter(color -> color.equals(ColorCharacter.RED)).toList().size() + "\t" + Printable.TEXT_GREEN + Printable.STUDENT + Printable.TEXT_RESET + students.stream().filter(color -> color.equals(ColorCharacter.GREEN)).toList().size() + "\t" + Printable.V2_BAR + "\n" +
                 Printable.V2_BAR + "\t" + Printable.TEXT_PURPLE + Printable.STUDENT + Printable.TEXT_RESET + students.stream().filter(color -> color.equals(ColorCharacter.PINK)).toList().size() + "\t" + Printable.TEXT_YELLOW + Printable.STUDENT + Printable.TEXT_RESET + students.stream().filter(color -> color.equals(ColorCharacter.YELLOW)).toList().size() + "\t" + Printable.V2_BAR + "\n" +

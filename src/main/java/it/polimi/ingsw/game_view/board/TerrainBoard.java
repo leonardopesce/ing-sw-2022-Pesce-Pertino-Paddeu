@@ -21,8 +21,8 @@ public class TerrainBoard implements Serializable {
         for(CloudCard cloud: terrain.getCloudCards()){
             cloudCards.add(new ArrayList<>(cloud.getStudent().stream().map(BasicCharacter::getColor).toList()));
         }
-        for(Island island: terrain.getIslands()){
-            islands.add(new IslandBoard(island, island.getId() == motherNaturePosition));
+        for(int i = 0; i < terrain.getIslands().size(); i++){
+            islands.add(new IslandBoard(terrain.getIslands().get(i), terrain.getIslands().get(i).getId() == motherNaturePosition, i));
         }
         for(AdvancedCharacter card: terrain.getAdvancedCharacters()){
             advancedCard.add(new AdvancedCardBoard(card));

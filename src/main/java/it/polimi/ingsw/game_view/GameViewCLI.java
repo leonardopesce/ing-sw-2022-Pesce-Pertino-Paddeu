@@ -160,6 +160,9 @@ public class GameViewCLI extends GameViewClient{
         switch(state) {
             case PLAY_ADVANCED_CARD:
                 System.out.println("Select an advanced card " + board.getTerrain().getAdvancedCard());
+                int selectedCard = whileInputNotIntegerInRange(0, 2);
+                System.out.println("You played: " + board.getTerrain().getAdvancedCard().get(selectedCard));
+                //client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction()));
                 break;
 
             case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
@@ -219,7 +222,7 @@ public class GameViewCLI extends GameViewClient{
 
     @Override
     public void displayYourTurn() {
-        System.out.println("IT'S YOUR TURN! [PRESS ENTER TO START]");
+        System.out.println("IT'S YOUR TURN!");
     }
 
     @Override
@@ -230,8 +233,8 @@ public class GameViewCLI extends GameViewClient{
 
     private int whileInputNotIntegerInRange(int a, int b){
         String read = input.nextLine();
-        while(read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
-                Integer.parseInt(read) < a || Integer.parseInt(read) > b &&
+        while((read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
+                Integer.parseInt(read) < a || Integer.parseInt(read) > b) &&
                 (!board.isExpertMode() || !read.equals("play"))){
             System.out.println("Not a number or not in the range given");
             read = input.nextLine();

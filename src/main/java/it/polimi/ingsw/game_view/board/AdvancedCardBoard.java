@@ -4,13 +4,14 @@ import it.polimi.ingsw.game_model.character.advanced.*;
 import it.polimi.ingsw.game_model.character.basic.BasicCharacter;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 import static it.polimi.ingsw.game_view.board.Printable.*;
 
-public class AdvancedCardBoard {
+public class AdvancedCardBoard implements Serializable {
     private final String name;
     private final int cost;
     private final List<ColorCharacter> students = new ArrayList();
@@ -37,9 +38,10 @@ public class AdvancedCardBoard {
     public String toString(){
         StringBuilder card = new StringBuilder();
         int line = 0;
-        card.append(TL4_CORNER).append(H4_BAR.repeat(11)).append(TR4_CORNER)
-                .append(V4_BAR).append("\t").append(name).append("\t").append(V4_BAR)
-                .append(V4_BAR).append("\tCOST: ").append(cost).append("\t").append(V4_BAR);
+        card.append(TL4_CORNER).append(H4_BAR.repeat(11)).append(TR4_CORNER).append("\n")
+                .append(V4_BAR).append(" ".repeat((11 - name.length()) / 2)).append(name).append(" ".repeat((11 - name.length()) / 2 + 1))
+                .append(V4_BAR).append("\n")
+                .append(V4_BAR).append("\tCOST:").append(cost).append("\t").append(V4_BAR).append("\n");
         if(name.equals(MONK.getCardName()) || name.equals(PRINCESS.getCardName()) || name.equals(JESTER.getCardName())){
             int i = 0;
             for(ColorCharacter color: students){
