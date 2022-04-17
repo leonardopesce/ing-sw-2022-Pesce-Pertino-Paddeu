@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
-import static it.polimi.ingsw.game_view.GameViewClient.InputStateMachine.PLAY_ADVANCED_CARD;
+import static it.polimi.ingsw.game_view.GameViewClient.InputStateMachine.*;
 
 public class GameViewCLI extends GameViewClient{
     private final Scanner input;
@@ -120,7 +120,7 @@ public class GameViewCLI extends GameViewClient{
                 rangeA = 0;
                 rangeB = playerDeck.getCards().size() - 1;
                 System.out.println("Select an assistant card to play (use value from 0 to " + rangeB
-                        + " to select the card):\n" + playerDeck.print());
+                        + " to select the card):\n" + playerDeck);
                 state = InputStateMachine.SELECT_ASSISTANT_CARD_SEND_MESSAGE;
             }
             case MOVING_STUDENT_PHASE_START -> {
@@ -148,40 +148,8 @@ public class GameViewCLI extends GameViewClient{
 
     protected void actionStateMachine(int selection){
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
-        int selectedCard;
-        int b = playerDeck.getCards().size() - 1;
-        System.out.println("Select an assistant card to play (use value from 0 to " + b + " to select the card):\n");
-        System.out.println(playerDeck);
-        selectedCard = whileInputNotIntegerInRange(0, b);
-        System.out.println("You selected: " + playerDeck.getCards().get(selectedCard).getName());
-        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selectedCard)));
-    }
-
-    private void movingStudentAction() {
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
-        int b = school.getEntrance().size() - 1;
-        System.out.println("Please select a student to move (use number from 0 to " +
-                b + " starting counting from left to right and top to bottom");
-        int selectedStudent = whileInputNotIntegerInRange(0, b);
-        System.out.println("You selected student " + selectedStudent
-                + GameBoard.getColorString(school.getEntrance().get(selectedStudent))
-                + Printable.STUDENT + Printable.TEXT_RESET);
-
         List<IslandBoard> islands = board.getTerrain().getIslands();
-        b = islands.size();
-        System.out.println("Please select where to move the student (use number from 0 to " +
-                (b - 1) + " to select an island and number " + b + " to select the dining hall");
-        int selectedPlace = whileInputNotIntegerInRange(0, b);
-        if(selectedPlace == islands.size()){
-            System.out.println("Dining hall selected");
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToDiningHallAction(client.getName(), selectedStudent)));
-        }
-        else {
-            System.out.println("Island " + selectedPlace + " selected");
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToIslandAction(client.getName(), selectedStudent, selectedPlace)));
-        }
-    }
-
         switch(state) {
             case PLAY_ADVANCED_CARD:
                 System.out.println("Select an advanced card " + board.getTerrain().getAdvancedCard());
@@ -197,7 +165,7 @@ public class GameViewCLI extends GameViewClient{
                 rangeA = 0;
                 rangeB = islands.size();
                 System.out.println("You selected student " + selection + GameBoard.getColorString(school.getEntrance().get(selection))
-                        + GameBoard.STUDENT + GameBoard.TEXT_RESET);
+                        + Printable.STUDENT + Printable.TEXT_RESET);
                 System.out.println("Please select where to move the student (use number from 0 to " +
                         rangeB + " to select an island and number " + rangeB + " to select the dining hall)");
 
