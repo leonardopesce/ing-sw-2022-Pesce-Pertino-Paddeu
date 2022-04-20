@@ -26,8 +26,9 @@ public class Server {
     private final List<ClientConnection> waitingConnection = new ArrayList<>();
     private final List<Lobby> activeGames = new ArrayList<>();
 
-    private int numberOfPlayer = 0;
-    private boolean expertMode = false;
+    public Server() throws IOException {
+        this.serverSocket = new ServerSocket(PORT);
+    }
 
     public List<ClientConnection> getWaitingConnection() {
         return waitingConnection;
@@ -54,9 +55,6 @@ public class Server {
         }
     }
 
-    public Server() throws IOException {
-        this.serverSocket = new ServerSocket(PORT);
-    }
 
     public void run() throws IOException {
         int connections = 0;

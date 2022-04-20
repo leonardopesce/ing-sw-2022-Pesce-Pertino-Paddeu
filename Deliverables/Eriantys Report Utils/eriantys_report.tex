@@ -21,6 +21,8 @@
 \usepackage{minted}
 % Hypertext references
 \usepackage{hyperref}
+% Citations
+\usepackage{epigraph}
 
 % Title Page
 \title{Eriantys - Prova Finale di Ingegneria del Software}
@@ -135,6 +137,9 @@
 		\item studiare il meccanismo delle carte personaggio per l'implementazione della modalità per esperti più approfonditamente
 		\item restyle del diagramma UML per renderlo coerente con il codice scritto
 	\end{itemize}
+
+	% Week 3: Model update & Controller
+	\newpage
 	\subsection{Settimana 3: Eriantys Model update e Controller}
 	\paragraph{}
 	Nella terza settimana è stato rivisitato e riscritto parte del codice del model e implementato la parte di controller. Tra le varie modifiche le più importanti risultano essere la nuova implementazione della classe Game che adesso risulta essere accorpata nelle varie versioni da 2, 3 e 4 giocatori, la nuova versione per l'implementazione delle carte avanzate e il ribilanciamento del carico tra controller e la classe game. \\
@@ -220,6 +225,41 @@
 	\paragraph{}
 	Infine è stato stilato il documento di Peer-Review del gruppo GC13 (vedi \emph{/Deliverables/Peer Reviews/Peer-Review-1-UML-GC13.pdf}).
 	
+	% Week 5: controller tests & network arch init
+	\newpage
+	\subsection{Settimana 5: Controller tests ed architettura di rete}
+	\paragraph{}
+	Nella quinta settimana di sviluppo sono stati testati i metodi del controller per verificarne il comportamento atteso a valle di test cases standard. Inoltre, in vista dell'introduzione della rete, il controller è stato corredato da diversi oggetti rappresentanti le azioni e richieste che il giocatore vuole eseguire durante una partita.\\
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.55]{gameActions.png}
+		\caption{Controller game actions}
+	\end{figure}
+	\paragraph{}
+	Tali azioni saranno oggetto di scambio tra client e server per gestire l'applicazione di azioni da parte del controller sul modello. Il metodo \textit{perform} di ogni azione, infatti, esegue l'operazione chiamando i rispettivi metodi del controllore con i dovuti parametri.\\
+	Infine, a seguito dell'esercitazione svolta su \emph{Socket e Serializzazione} è stata inserita una prima versione dell'architettura di rete.
+	
+	% Week 6: Network & CLI initialization
+	\subsection{Settimana 6: Network multi-partita e CLI}
+	\paragraph{}
+	Nel corso della sesta settimana di sviluppo abbiamo parallelamente aggiornato la nostra struttura di rete ed implementato un'iniziale versione di interfaccia utente da linea di comando.\\
+	\begin{figure}[h]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\resizebox{\linewidth}{!}{\input{{umlFifth&SixthWeek.pdf_tex}}}
+		\caption{Class Diagram - Quinta e Sesta settimana}
+	\end{figure}
+	\paragraph{}
+	Siamo pertanto riusciti a testare la nostra implementazione fino a poter giocare una partita completa con le regole standard. Di seguito riportiamo un elenco delle attività svolte:\\
+	\begin{itemize}
+		\item Interfaccia grafica da linea di comando. Fa uso di codici di escape ANSI per gestire i colori.
+		\item Implementazione della funzionalità avanzata "Partite Multiple" attraverso un sistema di gestione a Lobby.
+		\item Macchina a stati (?)
+		\item Gestione disconnessioni (?)
+		\item Messaggi scambiati (?)
+	\end{itemize}
+
+
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}
