@@ -60,9 +60,15 @@ public class Lobby implements Runnable {
     public synchronized void registerClientToLobby(ClientConnection newClient) {
         connectedPlayersToLobby.add(newClient);
 
-        // Notify all the lobby partecipants that a new player has joined
-        for(ClientConnection lobbyPartecipant : getConnectedPlayersToLobby()) {
-            ((SocketClientConnection)lobbyPartecipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
+        // Notify all the lobby participants that a new player has joined
+        for(ClientConnection lobbyParticipant : connectedPlayersToLobby) {
+            ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
+        }
+    }
+
+    public void unregisterLobbyParticipant(){
+        for(ClientConnection participant: connectedPlayersToLobby){
+            participant.closeConnection();
         }
     }
 

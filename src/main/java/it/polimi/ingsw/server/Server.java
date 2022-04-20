@@ -1,24 +1,9 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_controller.GameController;
-import it.polimi.ingsw.game_model.Game;
-import it.polimi.ingsw.game_model.GameExpertMode;
-import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_model.character.character_utils.DeckType;
-import it.polimi.ingsw.game_view.RemoteGameView;
-import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_READY;
 
 public class Server {
     private static final int PORT = 12345;
@@ -30,12 +15,18 @@ public class Server {
         this.serverSocket = new ServerSocket(PORT);
     }
 
-    public List<ClientConnection> getWaitingConnection() {
-        return waitingConnection;
-    }
-
-    //Deregister connection
     public synchronized void deregisterConnection(ClientConnection c) {
+        if(waitingConnection.contains(c)){
+            waitingConnection.remove(c);
+        }
+        else {
+            for(int i = 0; i < activeGames.size(); i++) {
+                if (activeGames.get(i).getConnectedPlayersToLobby().contains(c)) {
+                    activeGames.remove(i).unregisterLobbyParticipant();
+                }
+            }
+        }
+
         /*
         Optional<List<ClientConnection>> opponent = playingConnection.stream().reduce((list1, list2) -> list1.contains(c) ? list1 : list2);
         opponent.ifPresent(list -> {
@@ -66,7 +57,7 @@ public class Server {
                 Socket newSocket = serverSocket.accept();
                 connections++;
                 System.out.println("Ready for the new connection - " + connections);
-                SocketClientConnection socketConnection = new SocketClientConnection(newSocket, this);
+                new SocketClientConnection(newSocket, this);
             } catch (IOException e) {
                 running = false;
                 serverSocket.close();

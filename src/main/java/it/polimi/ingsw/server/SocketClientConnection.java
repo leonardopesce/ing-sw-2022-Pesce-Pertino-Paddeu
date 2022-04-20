@@ -61,7 +61,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
     private void close() {
         closeConnection();
-        System.out.println("Deregistering client...");
+        System.out.println("Unregistering client...");
         server.deregisterConnection(this);
         System.out.println("Done!");
     }
@@ -98,6 +98,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            close();
         }
     }
 
@@ -108,6 +109,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             size = (int)((CommunicationMessage)in.readObject()).getMessage();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            close();
         }
         return size;
     }
@@ -120,6 +122,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
         catch (Exception e){
             e.printStackTrace();
+            close();
         }
 
         return mode;
@@ -133,6 +136,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
         catch (Exception e){
             e.printStackTrace();
+            close();
         }
         return type;
     }
@@ -143,6 +147,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             message = Optional.of((CommunicationMessage)in.readObject());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            close();
         }
         return message;
     }
@@ -163,8 +168,10 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
         } catch (IOException | NoSuchElementException e) {
             System.err.println("Error! " + e.getMessage());
+            close();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            close();
         }
     }
 
@@ -181,6 +188,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             chosenLobby = (String)getResponse().get().getMessage();
         } catch (Exception e){
             e.printStackTrace();
+            close();
         }
 
         return chosenLobby;
