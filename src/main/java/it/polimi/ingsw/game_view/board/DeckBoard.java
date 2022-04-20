@@ -11,6 +11,7 @@ import java.util.List;
 public class DeckBoard implements Serializable {
     List<AssistantType> cards = new ArrayList<>();
     AssistantType discardedCard;
+
     public DeckBoard(Player player) {
         for(Assistant assistant: player.getDeckAssistants().getAssistants()){
             cards.add(assistant.getType());

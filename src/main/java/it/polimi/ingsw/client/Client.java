@@ -56,8 +56,6 @@ public class Client {
         return t;
     }
 
-
-
     private void analyzeMessage(CommunicationMessage message) {
         switch (message.getID()){
             case ASK_NAME   -> view.askName();

@@ -20,7 +20,7 @@ import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.E
 public class Lobby implements Runnable {
 
     private final ClientConnection lobbyOwner;
-    private final ExecutorService executor = Executors.newFixedThreadPool(128);
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
     private final List<ClientConnection> connectedPlayersToLobby = new ArrayList<>();
     private final boolean expertMode;
     private final int numberOfPlayers;
