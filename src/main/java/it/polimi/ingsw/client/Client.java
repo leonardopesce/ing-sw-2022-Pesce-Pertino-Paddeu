@@ -4,7 +4,9 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.GameViewCLI;
 import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.GameViewGUI;
-import it.polimi.ingsw.game_view.board.GameBoard;
+import it.polimi.ingsw.observer.Observable;
+import it.polimi.ingsw.observer.Observer;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,7 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 
-public class Client {
+public class Client extends Observable<CommunicationMessage> implements Observer<Pair<CommunicationMessage.MessageType, Object>> {
     private final String ip;
     private final int port;
     private final boolean gui;
@@ -25,7 +27,8 @@ public class Client {
         this.ip = ip;
         this.port = port;
         this.gui = gui;
-        view = gui ? new GameViewGUI(this) : new GameViewCLI(this);
+        view = gui ? new GameViewGUI() : new GameViewCLI(this);
+        this.addObserver(view.getMessageObserver());
     }
 
     public synchronized boolean isActive(){
@@ -42,7 +45,7 @@ public class Client {
                 while (isActive()) {
                     Object inputObject = socketIn.readObject();
                     if(inputObject instanceof CommunicationMessage){
-                        analyzeMessage((CommunicationMessage)inputObject);
+                        notify((CommunicationMessage)inputObject);
                     }
                     else {
                         throw new IllegalArgumentException();
@@ -54,26 +57,6 @@ public class Client {
         });
         t.start();
         return t;
-    }
-
-
-
-    private void analyzeMessage(CommunicationMessage message) {
-        switch (message.getID()){
-            case ASK_NAME   -> view.askName();
-            case REASK_NAME -> view.reaskName();
-            case ASK_DECK   -> view.askDeck(message.getMessage());
-            case ASK_GAME_TYPE -> view.askGameType();
-            case ASK_JOINING_ACTION -> view.askJoiningAction();
-            case ASK_LOBBY_TO_JOIN -> view.askLobbyToJoin(message.getMessage());
-            case ASK_PLAYER_NUMBER -> view.askPlayerNumber();
-            case ASSISTANT_NOT_PLAYABLE -> view.reaskAssistant();
-            case ERROR -> System.out.println(message.getMessage());
-            case GAME_READY -> view.gameReady((GameBoard) message.getMessage());
-            case VIEW_UPDATE -> view.updateBoardMessage((GameBoard) message.getMessage());
-            case YOU_WIN -> System.out.println("YOU WIN!!!");
-            case YOU_LOSE -> System.out.println("YOU LOSE!");
-        }
     }
 
     public void asyncWriteToSocket(CommunicationMessage message){
@@ -115,5 +98,10 @@ public class Client {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void update(Pair<CommunicationMessage.MessageType, Object> message) {
+        asyncWriteToSocket(new CommunicationMessage(message.getKey(), message.getValue()));
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
@@ -15,19 +16,24 @@ import java.util.Scanner;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 import static it.polimi.ingsw.game_view.GameViewClient.InputStateMachine.*;
 
-public class GameViewCLI extends GameViewClient{
+public class GameViewCLI implements GameViewClient{
     private final Scanner input;
     private int rangeA, rangeB;
+    private ClientMessageObserverHandler msgHandler;
+    private GameBoard board;
+    private Client client;
 
     public GameViewCLI(Client client) {
-        super(client);
+        this.client = client;
         input = new Scanner(System.in);
+        msgHandler = new ClientMessageObserverHandler(this);
+        msgHandler.addObserver(client);
     }
 
     @Override
     public void askName() {
         System.out.println(GameViewClient.ASK_NAME_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(ASK_NAME, client.setName(input.nextLine())));
+        msgHandler.notifier(ASK_NAME, client.setName(input.nextLine()));
     }
 
     @Override
@@ -80,16 +86,16 @@ public class GameViewCLI extends GameViewClient{
 
     @Override
     public void gameReady(GameBoard board){
-        updateBoardMessage(board);
-        state = InputStateMachine.PLANNING_PHASE_START;
+        msgHandler.updateBoardMessage(board);
+        msgHandler.setState(PLANNING_PHASE_START);
         asyncReadInput();
     }
 
     @Override
     public void reaskAssistant() {
         System.out.println("Assistant not playable pick another one");
-        state = PLANNING_PHASE_START;
-        actionSent = false;
+        msgHandler.setState(PLANNING_PHASE_START);
+        msgHandler.setActionSent(true);
     }
 
     @Override
@@ -110,7 +116,7 @@ public class GameViewCLI extends GameViewClient{
                         e.printStackTrace();
                     }
                 }
-                else if(!actionSent) {
+                else if(!msgHandler.isActionSent()) {
                     printStateMachine();
                     actionStateMachine(whileInputNotIntegerInRange(rangeA, rangeB));
                 }
@@ -122,33 +128,33 @@ public class GameViewCLI extends GameViewClient{
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
 
-        switch (state) {
+        switch (msgHandler.getState()) {
             case PLANNING_PHASE_START -> {
                 rangeA = 0;
                 rangeB = playerDeck.getCards().size() - 1;
                 System.out.println("Select an assistant card to play (use value from 0 to " + rangeB
                         + " to select the card):\n" + playerDeck);
-                state = InputStateMachine.SELECT_ASSISTANT_CARD_SEND_MESSAGE;
+                msgHandler.setState(SELECT_ASSISTANT_CARD_SEND_MESSAGE);
             }
             case MOVING_STUDENT_PHASE_START -> {
                 rangeA = 0;
                 rangeB = school.getEntrance().size() - 1;
                 System.out.println("Please select a student to move (use number from 0 to " + rangeB
                         + " starting counting from left to right and top to bottom");
-                state = InputStateMachine.MOVE_STUDENT_SEND_MESSAGE;
+                msgHandler.setState(MOVE_STUDENT_SEND_MESSAGE);
             }
             case MOVE_MOTHER_NATURE_START -> {
                 rangeA = 1;
                 rangeB = playerDeck.getDiscardedCard().getPossibleSteps();
                 System.out.println("How many step would you like to move mother nature (use a number between 1 and " + rangeB + ")");
-                state = InputStateMachine.MOVE_MOTHER_NATURE_SEND_MESSAGE;
+                msgHandler.setState(MOVE_MOTHER_NATURE_SEND_MESSAGE);
             }
             case CHOOSE_CLOUD_CARD_START -> {
                 rangeA = 0;
                 rangeB = board.getTerrain().getCloudCards().size() - 1;
                 System.out.println("Select a Cloud from where to pick student (use number from 0 to" + rangeB
                         + " to select the cloud):\n");
-                state = InputStateMachine.CHOOSE_CLOUD_CARD_SEND_MESSAGE;
+                msgHandler.setState(CHOOSE_CLOUD_CARD_SEND_MESSAGE);
             }
         }
     }
@@ -157,7 +163,7 @@ public class GameViewCLI extends GameViewClient{
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
         List<IslandBoard> islands = board.getTerrain().getIslands();
-        switch(state) {
+        switch(msgHandler.getState()) {
             case PLAY_ADVANCED_CARD:
                 System.out.println("Select an advanced card " + board.getTerrain().getAdvancedCard());
                 int selectedCard = whileInputNotIntegerInRange(0, 2);
@@ -168,7 +174,7 @@ public class GameViewCLI extends GameViewClient{
             case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
                 System.out.println("You selected: " + playerDeck.getCards().get(selection).getName());
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selection)));
-                actionSent = true;
+                msgHandler.setActionSent(true);
                 break;
 
             case MOVE_STUDENT_SEND_MESSAGE:
@@ -194,12 +200,12 @@ public class GameViewCLI extends GameViewClient{
                     System.out.println("Island " + selection + " selected");
                     client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveStudentToIslandAction(client.getName(), selection, Integer.parseInt(read))));
                 }
-                actionSent = true;
+                msgHandler.setActionSent(true);
                 break;
 
             case MOVE_MOTHER_NATURE_SEND_MESSAGE:
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveMotherNatureAction(client.getName(), selection)));
-                actionSent = true;
+                msgHandler.setActionSent(true);
                 break;
 
             case CHOOSE_CLOUD_CARD_SEND_MESSAGE:
@@ -208,7 +214,7 @@ public class GameViewCLI extends GameViewClient{
                 }
                 else {
                     client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new ChooseCloudCardAction(client.getName(), selection)));
-                    actionSent = true;
+                    msgHandler.setActionSent(true);
                 }
         }
     }
@@ -240,7 +246,7 @@ public class GameViewCLI extends GameViewClient{
             read = input.nextLine();
         }
         if(read.equals("play")){
-            state = PLAY_ADVANCED_CARD;
+            msgHandler.setState(PLAY_ADVANCED_CARD);
             return 0;
         }
         return Integer.parseInt(read);
@@ -261,5 +267,22 @@ public class GameViewCLI extends GameViewClient{
             msg = msg.concat("\n" + i + " = " + ((DeckType)decks.get(i)).getName());
         }
         return msg;
+    }
+
+    public GameBoard getBoard() {
+        return board;
+    }
+
+    public void setBoard(GameBoard board) {
+        this.board = board;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    @Override
+    public ClientMessageObserverHandler getMessageObserver() {
+        return msgHandler;
     }
 }
