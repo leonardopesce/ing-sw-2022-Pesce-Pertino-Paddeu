@@ -3,28 +3,44 @@ package it.polimi.ingsw.game_view;
 import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.ClientMessageObserverHandler;
-import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.observer.Observer;
+import it.polimi.ingsw.game_view.controller.InitialPageController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private static final String pathInitialPage = "initialPage.fxml";
-    private Stage stage;
     private GameBoard board;
     private ClientMessageObserverHandler msgHandler;
+    private InitialPageController controllerInitial;
 
     @Override
     public void start(Stage stage) throws Exception {
+        Parent root;
+
+        try{
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
+            root = loader.load();
+            this.controllerInitial = loader.getController();
+            stage = new Stage();
+            stage.setTitle("Eriantys");
+            stage.setScene(new Scene(root, 450, 450));
+            stage.setResizable(false);
+            stage.setWidth(630);
+            stage.setHeight(630);
+            stage.show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         Client client = new Client(ClientApp.IP, ClientApp.port);
         new Thread(() -> {
             try {
@@ -35,25 +51,7 @@ public class GameViewGUI extends Application implements GameViewClient{
         }).start();
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
-
-        Parent root;
-
-        try{
-            /*FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("controller/InitialPageController.java"));
-            loader.setControllerFactory(controllerClass -> new InitialPageController(client));
-            root = loader.load();*/
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
-            stage = new Stage();
-            stage.setWidth(Screen.getPrimary().getBounds().getWidth());
-            stage.setHeight(Screen.getPrimary().getBounds().getHeight());
-            stage.setTitle("My New Stage Title");
-            stage.setScene(new Scene(root, 450, 450));
-            stage.show();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
+        this.controllerInitial.setClient(client);
     }
 
     @Override
@@ -78,12 +76,13 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askName() {
-
+        System.out.println("Asking name");
+        Platform.runLater(() -> controllerInitial.askNameView());
     }
 
     @Override
     public void reaskName() {
-
+        System.out.println("Reasking name");
     }
 
     @Override
@@ -98,7 +97,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askJoiningAction() {
-
+        System.out.println("Asking join");
     }
 
     @Override

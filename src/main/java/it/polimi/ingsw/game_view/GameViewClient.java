@@ -1,8 +1,6 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.client.ClientMessageObserverHandler;
-import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
 public interface GameViewClient{

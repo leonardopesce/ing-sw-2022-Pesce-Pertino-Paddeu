@@ -49,6 +49,7 @@ public class Client extends Observable<CommunicationMessage> {
                 }
             } catch (Exception e){
                 setActive(false);
+                e.printStackTrace();
             }
         });
         t.start();
