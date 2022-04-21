@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private static final String pathInitialPage = "initialPage.fxml";
+    private static final String pathInitialPage = "fxml/initialPage.fxml";
     private GameBoard board;
     private ClientMessageObserverHandler msgHandler;
     private InitialPageController controllerInitial;
