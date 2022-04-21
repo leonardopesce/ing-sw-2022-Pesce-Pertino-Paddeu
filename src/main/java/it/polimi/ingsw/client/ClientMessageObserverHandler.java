@@ -3,11 +3,9 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
-import javafx.util.Pair;
 
-public class ClientMessageObserverHandler extends Observable<Pair<CommunicationMessage.MessageType, Object>> implements Observer<CommunicationMessage> {
+public class ClientMessageObserverHandler implements Observer<CommunicationMessage> {
     private final GameViewClient view;
     private GameViewClient.InputStateMachine state;
     boolean actionSent = true;
@@ -60,10 +58,6 @@ public class ClientMessageObserverHandler extends Observable<Pair<CommunicationM
 
     public void setState(GameViewClient.InputStateMachine state) {
         this.state = state;
-    }
-
-    public void notifier(CommunicationMessage.MessageType type, Object content){
-        notify(new Pair<>(type, content));
     }
 
     public boolean isActionSent() {

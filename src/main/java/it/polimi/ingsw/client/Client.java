@@ -6,6 +6,7 @@ import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.GameViewGUI;
 import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
+import javafx.application.Application;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -14,21 +15,16 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 
-public class Client extends Observable<CommunicationMessage> implements Observer<Pair<CommunicationMessage.MessageType, Object>> {
+public class Client extends Observable<CommunicationMessage> {
     private final String ip;
     private final int port;
-    private final boolean gui;
     private boolean active = true;
     private ObjectOutputStream socketOut;
-    private final GameViewClient view;
     private String name;
 
-    public Client(String ip, int port, boolean gui){
+    public Client(String ip, int port){
         this.ip = ip;
         this.port = port;
-        this.gui = gui;
-        view = gui ? new GameViewGUI() : new GameViewCLI(this);
-        this.addObserver(view.getMessageObserver());
     }
 
     public synchronized boolean isActive(){
@@ -98,10 +94,5 @@ public class Client extends Observable<CommunicationMessage> implements Observer
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    public void update(Pair<CommunicationMessage.MessageType, Object> message) {
-        asyncWriteToSocket(new CommunicationMessage(message.getKey(), message.getValue()));
     }
 }

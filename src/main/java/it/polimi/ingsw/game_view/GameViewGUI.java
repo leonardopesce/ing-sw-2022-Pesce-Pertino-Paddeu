@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_view;
 
+import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
@@ -9,9 +10,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private static final String pathInitialPage = "initialPage.fxml";
@@ -21,8 +25,17 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void start(Stage stage) throws Exception {
+        Client client = new Client(ClientApp.IP, ClientApp.port);
+        new Thread(() -> {
+            try {
+                client.run();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
         msgHandler = new ClientMessageObserverHandler(this);
-        msgHandler.addObserver(getClient());
+        client.addObserver(msgHandler);
+
         Parent root;
 
         try{
@@ -31,6 +44,8 @@ public class GameViewGUI extends Application implements GameViewClient{
             root = loader.load();*/
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
             stage = new Stage();
+            stage.setWidth(Screen.getPrimary().getBounds().getWidth());
+            stage.setHeight(Screen.getPrimary().getBounds().getHeight());
             stage.setTitle("My New Stage Title");
             stage.setScene(new Scene(root, 450, 450));
             stage.show();
@@ -38,10 +53,6 @@ public class GameViewGUI extends Application implements GameViewClient{
         catch (Exception e){
             e.printStackTrace();
         }
-
-    }
-
-    public void updateBoardMessage(GameBoard board) {
 
     }
 
@@ -125,15 +136,4 @@ public class GameViewGUI extends Application implements GameViewClient{
         return null;
     }
 
-    @Override
-    public ClientMessageObserverHandler getMessageObserver() {
-        return msgHandler;
-    }
-
-    /*public class HandleCommunicationMessage implements Observer<CommunicationMessage>{
-        @Override
-        public void update(CommunicationMessage message) {
-
-        }
-    }*/
 }

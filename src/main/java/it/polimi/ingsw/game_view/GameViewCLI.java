@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_view;
 
+import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
@@ -21,19 +22,26 @@ public class GameViewCLI implements GameViewClient{
     private int rangeA, rangeB;
     private ClientMessageObserverHandler msgHandler;
     private GameBoard board;
-    private Client client;
+    private final Client client;
 
-    public GameViewCLI(Client client) {
-        this.client = client;
+    public GameViewCLI() {
+        client = new Client(ClientApp.IP, ClientApp.port);
+        new Thread(() -> {
+            try {
+                client.run();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
         input = new Scanner(System.in);
         msgHandler = new ClientMessageObserverHandler(this);
-        msgHandler.addObserver(client);
+        client.addObserver(msgHandler);
     }
 
     @Override
     public void askName() {
         System.out.println(GameViewClient.ASK_NAME_QUESTION);
-        msgHandler.notifier(ASK_NAME, client.setName(input.nextLine()));
+        client.asyncWriteToSocket(new CommunicationMessage(ASK_NAME, client.setName(input.nextLine())));
     }
 
     @Override
@@ -281,8 +289,4 @@ public class GameViewCLI implements GameViewClient{
         return client;
     }
 
-    @Override
-    public ClientMessageObserverHandler getMessageObserver() {
-        return msgHandler;
-    }
 }

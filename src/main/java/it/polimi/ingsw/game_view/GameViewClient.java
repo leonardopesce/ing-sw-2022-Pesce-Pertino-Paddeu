@@ -43,5 +43,4 @@ public interface GameViewClient{
     GameBoard getBoard();
     void setBoard(GameBoard board);
     Client getClient();
-    ClientMessageObserverHandler getMessageObserver();
 }
