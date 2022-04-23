@@ -94,7 +94,8 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askGameType() {
-
+        System.out.println("Asking Game mode");
+        Platform.runLater(() -> controllerInitial.askGameTypeView());
     }
 
     @Override
@@ -105,12 +106,14 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askLobbyToJoin(Object listOfLobbyInfos) {
-
+        System.out.println("Asking lobby to join");
+        Platform.runLater(() -> controllerInitial.askLobbyToJoinView(listOfLobbyInfos));
     }
 
     @Override
     public void askPlayerNumber() {
-
+        System.out.println("Asking number of player");
+        Platform.runLater(() -> controllerInitial.askNumberOfPlayerView());
     }
 
     @Override

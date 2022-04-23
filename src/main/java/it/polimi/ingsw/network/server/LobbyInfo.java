@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.game_view.board.Printable;
+
 import java.io.Serializable;
 
 public class LobbyInfo implements Serializable {
@@ -31,5 +33,12 @@ public class LobbyInfo implements Serializable {
 
     public int getLobbyMaxSize() {
         return lobbyMaxSize;
+    }
+
+    @Override
+    public String toString(){
+        return lobbyName + " | " + (isLobbyFull ? Printable.TEXT_RED + currentLobbySize + "/" + lobbyMaxSize
+                + " Lobby Full" + Printable.TEXT_RESET : Printable.TEXT_GREEN + currentLobbySize + "/"
+                + lobbyMaxSize + Printable.TEXT_RESET);
     }
 }

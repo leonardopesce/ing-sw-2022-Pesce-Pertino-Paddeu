@@ -17,8 +17,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ASK_GAME_TYPE;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ASK_LOBBY_TO_JOIN;
 
 public class InitialPageController implements Initializable {
     private Client client;
@@ -91,10 +96,91 @@ public class InitialPageController implements Initializable {
 
     public void askLobbyToJoinView(Object listOfLobbyInfos){
         mainPane.getChildren().clear();
+        errorTextField.setText("");
         currentBox = createQuestionBox(2.5, 2.5);
 
-        ListView<LobbyInfo> listView = new ListView<>();
+        currentBox.getChildren().add(createTextLabel("Choose a Lobby", FontWeight.BOLD, Color.BLACK, 20));
 
+        ListView<LobbyInfo> listView = new ListView<>();
+        listView.getItems().addAll((List<LobbyInfo>)listOfLobbyInfos);
+        currentBox.getChildren().addAll(listView, errorTextField);
+
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+
+        Button goBack = new Button("Go back");
+        goBack.setOnAction(ActionEvent -> {
+            askJoiningActionView();
+        });
+
+        Button select = new Button("Select");
+        select.setOnAction(ActionEvent -> {
+
+            if(listView.getSelectionModel().getSelectedItems().size() == 1){
+                LobbyInfo selected = listView.getSelectionModel().getSelectedItems().get(0);
+                if(!selected.isFull()){
+                    client.asyncWriteToSocket(new CommunicationMessage(ASK_LOBBY_TO_JOIN, selected.getLobbyName()));
+                }
+                else{
+                    errorTextField.setText("Lobby full choose another or go back");
+                }
+            }
+            else {
+                errorTextField.setText("Please select a lobby");
+            }
+        });
+
+        hBox.getChildren().addAll(goBack, select);
+        currentBox.getChildren().add(hBox);
+
+        mainPane.getChildren().add(currentBox);
+    }
+
+    public void askNumberOfPlayerView(){
+        mainPane.getChildren().clear();
+        errorTextField.setText("");
+        currentBox = createQuestionBox(1.5, 5);
+
+        currentBox.getChildren().add(createTextLabel("How many player do you want", FontWeight.BOLD, Color.BLACK, 20));
+
+        Button button2 = new Button("2");
+        Button button3 = new Button("3");
+        Button button4 = new Button("4");
+
+        button2.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, 2)));
+        button3.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, 3)));
+        button4.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, 4)));
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(button2, button3, button4);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+        currentBox.getChildren().add(hBox);
+
+        mainPane.getChildren().add(currentBox);
+    }
+
+    public void askGameTypeView(){
+        mainPane.getChildren().clear();
+        errorTextField.setText("");
+        currentBox = createQuestionBox(1.5, 5);
+
+        currentBox.getChildren().add(createTextLabel("Do you want to play in expert mode?", FontWeight.BOLD, Color.BLACK, 20));
+
+        Button yesButton = new Button("No");
+        Button noButton = new Button("Yes");
+
+        noButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, false)));
+        yesButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, true)));
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(noButton, yesButton);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+        currentBox.getChildren().add(hBox);
+
+        mainPane.getChildren().add(currentBox);
     }
 
     private VBox createQuestionBox(double widthDivider, double heightDivider){
