@@ -100,6 +100,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void askJoiningAction() {
         System.out.println("Asking join");
+        Platform.runLater(() -> controllerInitial.askJoiningActionView());
     }
 
     @Override

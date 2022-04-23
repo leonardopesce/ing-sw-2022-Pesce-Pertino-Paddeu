@@ -2,13 +2,16 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_model.character.advanced.Healer;
 import it.polimi.ingsw.game_view.GameViewClient;
+import it.polimi.ingsw.server.LobbyInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -53,9 +56,9 @@ public class InitialPageController implements Initializable {
 
         Button send = new Button();
         send.setText("Choose name");
-        send.setOnAction(actionEvent -> {
-            client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_NAME, response.getText()));
-        });
+        send.setOnAction(actionEvent ->
+            client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_NAME, response.getText()))
+        );
         currentBox.getChildren().add(send);
 
         mainPane.getChildren().add(currentBox);
@@ -64,9 +67,37 @@ public class InitialPageController implements Initializable {
     public void reaskNameView(){
         errorTextField.setTextFill(Color.RED);
         errorTextField.setText("nickname already chosen");
-
     }
 
+    public void askJoiningActionView(){
+        mainPane.getChildren().clear();
+        errorTextField.setText("");
+        currentBox = createQuestionBox(1.5, 5);
+
+        currentBox.getChildren().add(createTextLabel("What do you want to do?", FontWeight.BOLD, Color.BLACK, 20));
+        Button createGame = new Button("Create a game");
+        Button joinButton = new Button("Join a game");
+
+        createGame.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_JOINING_ACTION, 0)));
+        joinButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_JOINING_ACTION, 1)));
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(createGame, joinButton);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+
+        currentBox.getChildren().add(hBox);
+
+        mainPane.getChildren().add(currentBox);
+    }
+
+    public void askLobbyToJoinView(Object listOfLobbyInfos){
+        mainPane.getChildren().clear();
+        currentBox = createQuestionBox(2.5, 2.5);
+
+        ListView<LobbyInfo> listView = new ListView<>();
+
+    }
 
     private VBox createQuestionBox(double widthDivider, double heightDivider){
         VBox box = new VBox();
