@@ -10,6 +10,7 @@ import it.polimi.ingsw.game_view.RemoteGameView;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,15 +84,17 @@ public class Lobby implements Runnable {
                 }
                 lobbyPartecipant.closeConnection();
             }
-            connectedPlayersToLobby.remove(lobbyPartecipant);
+            server.deregisterConnection(lobbyPartecipant);
         }
+
+        connectedPlayersToLobby.clear();
     }
 
     @Override
     public void run() {
         Game game = isExpertMode() ? new GameExpertMode(numberOfPlayers) : new Game(numberOfPlayers);
         GameController controller = new GameController(game);
-
+        
         for(ClientConnection connection : connectedPlayersToLobby) {
             try {
                 ((SocketClientConnection) connection).send(new CommunicationMessage(ERROR, "The lobby is full:\n" + this + "The game is starting...\n"));
@@ -102,19 +105,19 @@ public class Lobby implements Runnable {
         }
 
         for(ClientConnection connection : connectedPlayersToLobby){
-            DeckType deck = null;
             try {
-                deck = ((SocketClientConnection) connection).askDeckType(controller.getAvailableDeckType());
-            } catch (SocketException e) {
+                Player player = controller.createPlayer(
+                        ((SocketClientConnection) connection).getClientName(),
+                        ((SocketClientConnection) connection).askDeckType(controller.getAvailableDeckType()));
+
+                RemoteGameView view = new RemoteGameView(player.getNickname(), connection);
+                game.addObserver(view);
+                view.addObserver(controller);
+                executor.submit(((SocketClientConnection) connection));
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 closeLobby(connection);
             }
-            Player player = controller.createPlayer(((SocketClientConnection) connection).getClientName(), deck);
-
-            RemoteGameView view = new RemoteGameView(player.getNickname(), connection);
-            game.addObserver(view);
-            view.addObserver(controller);
-            executor.submit(((SocketClientConnection)connection));
         }
 
         for(ClientConnection connection : connectedPlayersToLobby) {

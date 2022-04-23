@@ -32,11 +32,7 @@ public class Server {
     public synchronized void handleLobbyState(Lobby lobbyToHandle){
         if(lobbyToHandle.isFull()) {
             // The game is startable
-            try {
-                new Thread(lobbyToHandle).start();
-            } catch (Exception e) {
-                System.out.println("Ti ho catchato ahahahahahahah");
-            }
+            new Thread(lobbyToHandle).start();
         }
     }
 

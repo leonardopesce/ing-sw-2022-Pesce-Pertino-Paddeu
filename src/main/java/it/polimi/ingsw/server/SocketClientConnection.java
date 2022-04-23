@@ -137,7 +137,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return mode;
     }
 
-    protected DeckType askDeckType(List<DeckType> availableDecks) throws SocketException{
+    protected DeckType askDeckType(List<DeckType> availableDecks) throws IOException, ClassNotFoundException{
         DeckType type = null;
         send(new CommunicationMessage(ASK_DECK, availableDecks));
         type = (DeckType)getResponse().get().getMessage();
@@ -145,14 +145,9 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return type;
     }
 
-    private Optional<CommunicationMessage> getResponse(){
+    private Optional<CommunicationMessage> getResponse() throws IOException, ClassNotFoundException{
         Optional<CommunicationMessage> message = Optional.empty();
-        try {
-            message = Optional.of((CommunicationMessage)in.readObject());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            close();
-        }
+        message = Optional.of((CommunicationMessage)in.readObject());
         return message;
     }
 
@@ -170,7 +165,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         server.newWaitingConnection(this);
     }
 
-    private String askChoseLobby() throws SocketException{
+    private String askChoseLobby() throws IOException, ClassNotFoundException{
         String chosenLobby;
 
         List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
