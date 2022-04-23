@@ -22,30 +22,23 @@ public class Server {
         else {
             for(int i = 0; i < activeGames.size(); i++) {
                 if (activeGames.get(i).getConnectedPlayersToLobby().contains(c)) {
-                    activeGames.remove(i).unregisterLobbyParticipant();
+                    activeGames.remove(i).closeLobby(c);
                 }
             }
         }
-
-        /*
-        Optional<List<ClientConnection>> opponent = playingConnection.stream().reduce((list1, list2) -> list1.contains(c) ? list1 : list2);
-        opponent.ifPresent(list -> {
-            playingConnection.remove(list);
-            list.forEach(ClientConnection::closeConnection);
-        });
-
-        waitingConnection.remove(c);
-        */
     }
 
     //Wait for other players
     public synchronized void handleLobbyState(Lobby lobbyToHandle){
         if(lobbyToHandle.isFull()) {
             // The game is startable
-            new Thread(lobbyToHandle).start();
+            try {
+                new Thread(lobbyToHandle).start();
+            } catch (Exception e) {
+                System.out.println("Ti ho catchato ahahahahahahah");
+            }
         }
     }
-
 
     public void run() throws IOException {
         int connections = 0;
@@ -95,6 +88,10 @@ public class Server {
             waitingConnection.add(connection);
         }
 
-        ((SocketClientConnection)connection).askJoiningAction();
+        try {
+            ((SocketClientConnection)connection).askJoiningAction();
+        } catch (IOException | ClassNotFoundException e) {
+            deregisterConnection(connection);
+        }
     }
 }

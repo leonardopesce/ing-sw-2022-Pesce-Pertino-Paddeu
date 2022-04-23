@@ -10,6 +10,7 @@ import it.polimi.ingsw.game_view.RemoteGameView;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -18,14 +19,15 @@ import java.util.concurrent.Executors;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
 
 public class Lobby implements Runnable {
-
+    private final Server server;
     private final ClientConnection lobbyOwner;
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
     private final List<ClientConnection> connectedPlayersToLobby = new ArrayList<>();
     private final boolean expertMode;
     private final int numberOfPlayers;
 
-    public Lobby(ClientConnection owner, int gameSize, boolean isExpertGame) {
+    public Lobby(Server server, ClientConnection owner, int gameSize, boolean isExpertGame) {
+        this.server = server;
         lobbyOwner = owner;
         expertMode = isExpertGame;
         numberOfPlayers = gameSize;
@@ -62,13 +64,26 @@ public class Lobby implements Runnable {
 
         // Notify all the lobby participants that a new player has joined
         for(ClientConnection lobbyParticipant : connectedPlayersToLobby) {
-            ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
+            try {
+                ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
+            } catch (SocketException e) {
+                e.printStackTrace();
+                closeLobby(lobbyParticipant);
+            }
         }
     }
 
-    public void unregisterLobbyParticipant(){
-        for(ClientConnection participant: connectedPlayersToLobby){
-            participant.closeConnection();
+    public synchronized void closeLobby(ClientConnection connectionWhoMadeTheLobbyClose) {
+        for(ClientConnection lobbyPartecipant : connectedPlayersToLobby) {
+            if(!((SocketClientConnection)lobbyPartecipant).getClientName().equals(((SocketClientConnection)connectionWhoMadeTheLobbyClose).getClientName())) {
+                try {
+                    ((SocketClientConnection) lobbyPartecipant).send(new CommunicationMessage(ERROR, ((SocketClientConnection) connectionWhoMadeTheLobbyClose).getClientName() + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server."));
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+                lobbyPartecipant.closeConnection();
+            }
+            connectedPlayersToLobby.remove(lobbyPartecipant);
         }
     }
 
@@ -78,11 +93,22 @@ public class Lobby implements Runnable {
         GameController controller = new GameController(game);
 
         for(ClientConnection connection : connectedPlayersToLobby) {
-            ((SocketClientConnection) connection).send(new CommunicationMessage(ERROR, "The lobby is full:\n" + this + "The game is starting...\n"));
+            try {
+                ((SocketClientConnection) connection).send(new CommunicationMessage(ERROR, "The lobby is full:\n" + this + "The game is starting...\n"));
+            } catch (SocketException e) {
+                e.printStackTrace();
+                closeLobby(connection);
+            }
         }
 
         for(ClientConnection connection : connectedPlayersToLobby){
-            DeckType deck = ((SocketClientConnection)connection).askDeckType(controller.getAvailableDeckType());
+            DeckType deck = null;
+            try {
+                deck = ((SocketClientConnection) connection).askDeckType(controller.getAvailableDeckType());
+            } catch (SocketException e) {
+                e.printStackTrace();
+                closeLobby(connection);
+            }
             Player player = controller.createPlayer(((SocketClientConnection) connection).getClientName(), deck);
 
             RemoteGameView view = new RemoteGameView(player.getNickname(), connection);
@@ -92,7 +118,12 @@ public class Lobby implements Runnable {
         }
 
         for(ClientConnection connection : connectedPlayersToLobby) {
-            ((SocketClientConnection) connection).send(new CommunicationMessage(CommunicationMessage.MessageType.GAME_READY, expertMode ? new GameBoardAdvanced(game) : new GameBoard(game)));
+            try {
+                ((SocketClientConnection) connection).send(new CommunicationMessage(CommunicationMessage.MessageType.GAME_READY, expertMode ? new GameBoardAdvanced(game) : new GameBoard(game)));
+            } catch (SocketException e) {
+                e.printStackTrace();
+                closeLobby(connection);
+            }
         }
     }
 

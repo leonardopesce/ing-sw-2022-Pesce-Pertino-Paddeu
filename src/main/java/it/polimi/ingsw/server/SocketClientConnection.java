@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.observer.Observable;
 
@@ -9,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
@@ -31,14 +31,23 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new Thread(this::askName).start();
+        new Thread(() -> {
+            try{
+                askName();
+            }
+            catch (Exception e){
+                System.out.println("An error occurred while you were inserting your name.");
+                e.printStackTrace();
+                close();
+            }
+        }).start();
     }
 
     private synchronized boolean isActive(){
         return active;
     }
 
-    public synchronized void send(CommunicationMessage message) {
+    public synchronized void send(CommunicationMessage message) throws SocketException{
         try {
             out.reset();
             out.writeObject(message);
@@ -50,7 +59,12 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
     @Override
     public synchronized void closeConnection() {
-        send(new CommunicationMessage(ERROR, "Connection closed"));
+        try {
+            send(new CommunicationMessage(ERROR, "Connection closed"));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
         try {
             socket.close();
         } catch (IOException e) {
@@ -68,7 +82,13 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
     @Override
     public void asyncSend(final CommunicationMessage message){
-        new Thread(() -> send(message)).start();
+        new Thread(() -> {
+            try {
+                send(message);
+            } catch (SocketException e) {
+                server.deregisterConnection(this);
+            }
+        }).start();
     }
 
     @Override
@@ -79,6 +99,8 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
                 notify(message);
             }
         } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Connection interrupted.");
+            server.deregisterConnection(this);
             e.printStackTrace();
         }
         finally {
@@ -86,58 +108,40 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
     }
 
-    public void askJoiningAction() {
-        int joiningActionChosen = 0; // 0 for creating a new match | 1 for joining an existing one if present
-        try {
-            send(new CommunicationMessage(ASK_JOINING_ACTION, null));
-            joiningActionChosen = (int)((CommunicationMessage)in.readObject()).getMessage();
+    public void askJoiningAction() throws IOException, ClassNotFoundException{
+        int joiningActionChosen; // 0 for creating a new match | 1 for joining an existing one if present
 
-            switch (joiningActionChosen) {
-                case 0 -> createNewGame();
-                case 1 -> joinExistingGame();
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            close();
+        send(new CommunicationMessage(ASK_JOINING_ACTION, null));
+        joiningActionChosen = (int)((CommunicationMessage)in.readObject()).getMessage();
+
+        if (joiningActionChosen == 0) {
+            createNewGame();
+        } else {
+            joinExistingGame();
         }
     }
 
-    public int askGameNumberOfPlayer(){
+    public int askGameNumberOfPlayer() throws IOException, ClassNotFoundException{
         int size = 0;
-        try {
-            send(new CommunicationMessage(ASK_PLAYER_NUMBER, null));
-            size = (int)((CommunicationMessage)in.readObject()).getMessage();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            close();
-        }
+        send(new CommunicationMessage(ASK_PLAYER_NUMBER, null));
+        size = (int)((CommunicationMessage)in.readObject()).getMessage();
+
         return size;
     }
 
-    public boolean askGameType(){
+    public boolean askGameType() throws IOException, ClassNotFoundException{
         boolean mode = false;
-        try {
-            send(new CommunicationMessage(ASK_GAME_TYPE, null));
-            mode = (boolean)((CommunicationMessage)in.readObject()).getMessage();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            close();
-        }
+        send(new CommunicationMessage(ASK_GAME_TYPE, null));
+        mode = (boolean)((CommunicationMessage)in.readObject()).getMessage();
 
         return mode;
     }
 
-    protected DeckType askDeckType(List<DeckType> availableDecks){
+    protected DeckType askDeckType(List<DeckType> availableDecks) throws SocketException{
         DeckType type = null;
-        try {
-            send(new CommunicationMessage(ASK_DECK, availableDecks));
-            type = (DeckType)getResponse().get().getMessage();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            close();
-        }
+        send(new CommunicationMessage(ASK_DECK, availableDecks));
+        type = (DeckType)getResponse().get().getMessage();
+
         return type;
     }
 
@@ -152,58 +156,44 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return message;
     }
 
-    private void askName(){
+    private void askName() throws IOException, ClassNotFoundException{
         String name;
-        try{
-            send(new CommunicationMessage(ASK_NAME, null));
+        send(new CommunicationMessage(ASK_NAME, null));
 
+        name = ((CommunicationMessage)in.readObject()).getMessage().toString();
+        while(server.getConnectedPlayersName().contains(name)){
+            send(new CommunicationMessage(REASK_NAME, null));
             name = ((CommunicationMessage)in.readObject()).getMessage().toString();
-            while(server.getConnectedPlayersName().contains(name)){
-                send(new CommunicationMessage(REASK_NAME, null));
-                name = ((CommunicationMessage)in.readObject()).getMessage().toString();
-            }
-
-            clientName = name;
-            server.newWaitingConnection(this);
-
-        } catch (IOException | NoSuchElementException e) {
-            System.err.println("Error! " + e.getMessage());
-            close();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            close();
         }
+
+        clientName = name;
+        server.newWaitingConnection(this);
     }
 
-    private String askChoseLobby() {
-        String chosenLobby = null;
+    private String askChoseLobby() throws SocketException{
+        String chosenLobby;
 
-        try {
-            List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
-            // Setting up the lobbies to a serializable version
-            for(Lobby lobby : server.getActiveGames()) {
-                lobbyInfosToSend.add(new LobbyInfo(lobby));
-            }
-            send(new CommunicationMessage(ASK_LOBBY_TO_JOIN, lobbyInfosToSend));
-            chosenLobby = (String)getResponse().get().getMessage();
-        } catch (Exception e){
-            e.printStackTrace();
-            close();
+        List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
+        // Setting up the lobbies to a serializable version
+        for(Lobby lobby : server.getActiveGames()) {
+            lobbyInfosToSend.add(new LobbyInfo(lobby));
         }
+        send(new CommunicationMessage(ASK_LOBBY_TO_JOIN, lobbyInfosToSend));
+        chosenLobby = (String)getResponse().get().getMessage();
 
         return chosenLobby;
     }
 
-    private void createNewGame() {
+    private void createNewGame() throws IOException, ClassNotFoundException{
         int numberOfPlayer = askGameNumberOfPlayer();
         boolean expertMode = askGameType();
-        Lobby newLobby = new Lobby(this, numberOfPlayer, expertMode);
+        Lobby newLobby = new Lobby(server,this, numberOfPlayer, expertMode);
         newLobby.registerClientToLobby(this);
         server.addGameLobby(newLobby);
         server.handleLobbyState(newLobby);
     }
 
-    private void joinExistingGame() {
+    private void joinExistingGame() throws IOException, ClassNotFoundException{
         if(server.getActiveGames().size() <= 0) {
             send(new CommunicationMessage(ERROR, "No lobbies are available."));
             askJoiningAction();
@@ -211,7 +201,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             String lobbyChosen = askChoseLobby();
             Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
             if(selectedLobby.isFull()) {
-                send(new CommunicationMessage(ERROR, "The lobby you selected is already full or got full while you were chosing."));
+                send(new CommunicationMessage(ERROR, "The lobby you selected is already full or got full while you were choosing."));
                 askJoiningAction();
             } else {
                 selectedLobby.registerClientToLobby(this);
