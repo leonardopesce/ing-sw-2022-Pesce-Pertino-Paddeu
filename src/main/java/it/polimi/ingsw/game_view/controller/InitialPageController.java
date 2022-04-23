@@ -21,7 +21,8 @@ import java.util.ResourceBundle;
 
 public class InitialPageController implements Initializable {
     private Client client;
-
+    private Label errorTextField = new Label();
+    private VBox currentBox;
     @FXML
     StackPane mainPane;
 
@@ -39,31 +40,48 @@ public class InitialPageController implements Initializable {
     }
 
     public void askNameView(){
-        VBox box = new VBox();
-        box.setAlignment(Pos.CENTER);
-        box.setSpacing(20);
-        box.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(15), BorderStroke.THICK)));
-        box.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(15), Insets.EMPTY)));
-        box.setMaxSize(mainPane.widthProperty().multiply(0.4).get(), mainPane.heightProperty().divide(4).get());
+        currentBox = createQuestionBox(2.5, 3);
 
-        Label text = new Label();
-        text.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD,20));
-        text.setText(GameViewClient.ASK_NAME_QUESTION);
-        box.getChildren().add(text);
+        currentBox.getChildren().add(createTextLabel("Insert a NickName", FontWeight.BOLD, Color.BLACK, 20));
 
         TextField response = new TextField();
         response.setMaxWidth(mainPane.widthProperty().divide(3).get());
-        box.getChildren().add(response);
+        currentBox.getChildren().add(response);
+
+        currentBox.getChildren().add(errorTextField);
+        errorTextField.setText("");
 
         Button send = new Button();
         send.setText("Choose name");
         send.setOnAction(actionEvent -> {
             client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_NAME, response.getText()));
         });
-        box.getChildren().add(send);
+        currentBox.getChildren().add(send);
 
-        mainPane.getChildren().add(box);
+        mainPane.getChildren().add(currentBox);
+    }
+
+    public void reaskNameView(){
+        errorTextField.setTextFill(Color.RED);
+        errorTextField.setText("nickname already chosen");
+
     }
 
 
+    private VBox createQuestionBox(double widthDivider, double heightDivider){
+        VBox box = new VBox();
+        box.setAlignment(Pos.CENTER);
+        box.setSpacing(20);
+        box.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(15), BorderStroke.THICK)));
+        box.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(15), Insets.EMPTY)));
+        box.setMaxSize(mainPane.widthProperty().divide(widthDivider).get(), mainPane.heightProperty().divide(heightDivider).get());
+        return box;
+    }
+
+    private Label createTextLabel(String text, FontWeight style, Color color, int size){
+        Label label = new Label(text);
+        label.setFont(Font.font("Arial", style,size));
+        label.setTextFill(color);
+        return label;
+    }
 }

@@ -84,6 +84,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void reaskName() {
         System.out.println("Reasking name");
+        Platform.runLater(() -> controllerInitial.reaskNameView());
     }
 
     @Override
