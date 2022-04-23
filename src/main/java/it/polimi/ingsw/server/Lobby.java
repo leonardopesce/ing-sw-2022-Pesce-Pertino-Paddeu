@@ -60,45 +60,44 @@ public class Lobby implements Runnable {
 
     public String getLastJoined() { return ((SocketClientConnection)connectedPlayersToLobby.get(connectedPlayersToLobby.size()-1)).getClientName(); }
 
-    public synchronized void registerClientToLobby(ClientConnection newClient) {
+    public synchronized void registerClientToLobby(ClientConnection newClient) throws IOException{
         connectedPlayersToLobby.add(newClient);
 
         // Notify all the lobby participants that a new player has joined
         for(ClientConnection lobbyParticipant : connectedPlayersToLobby) {
-            try {
-                ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
-            } catch (SocketException e) {
-                e.printStackTrace();
-                closeLobby(lobbyParticipant);
-            }
+            ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(ERROR, getLastJoined() + " has joined the lobby."));
         }
     }
 
     public synchronized void closeLobby(ClientConnection connectionWhoMadeTheLobbyClose) {
+        server.getActiveGames().remove(this);
         for(ClientConnection lobbyPartecipant : connectedPlayersToLobby) {
             if(!((SocketClientConnection)lobbyPartecipant).getClientName().equals(((SocketClientConnection)connectionWhoMadeTheLobbyClose).getClientName())) {
                 try {
                     ((SocketClientConnection) lobbyPartecipant).send(new CommunicationMessage(ERROR, ((SocketClientConnection) connectionWhoMadeTheLobbyClose).getClientName() + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server."));
-                } catch (SocketException e) {
+
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-                lobbyPartecipant.closeConnection();
+                ((SocketClientConnection) lobbyPartecipant).close();
             }
-            server.deregisterConnection(lobbyPartecipant);
         }
-
         connectedPlayersToLobby.clear();
+    }
+
+    public synchronized boolean checkInactivityClients() {
+        return connectedPlayersToLobby.stream().anyMatch(c -> !c.isActive());
     }
 
     @Override
     public void run() {
         Game game = isExpertMode() ? new GameExpertMode(numberOfPlayers) : new Game(numberOfPlayers);
         GameController controller = new GameController(game);
-        
+
         for(ClientConnection connection : connectedPlayersToLobby) {
             try {
                 ((SocketClientConnection) connection).send(new CommunicationMessage(ERROR, "The lobby is full:\n" + this + "The game is starting...\n"));
-            } catch (SocketException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 closeLobby(connection);
             }
@@ -123,7 +122,7 @@ public class Lobby implements Runnable {
         for(ClientConnection connection : connectedPlayersToLobby) {
             try {
                 ((SocketClientConnection) connection).send(new CommunicationMessage(CommunicationMessage.MessageType.GAME_READY, expertMode ? new GameBoardAdvanced(game) : new GameBoard(game)));
-            } catch (SocketException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 closeLobby(connection);
             }

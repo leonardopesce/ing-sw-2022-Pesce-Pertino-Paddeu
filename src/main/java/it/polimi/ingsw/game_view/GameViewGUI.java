@@ -20,6 +20,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     private GameBoard board;
     private ClientMessageObserverHandler msgHandler;
     private InitialPageController controllerInitial;
+    private Client client;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -41,7 +42,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             e.printStackTrace();
         }
 
-        Client client = new Client(ClientApp.IP, ClientApp.port);
+        client = new Client(ClientApp.IP, ClientApp.port);
         new Thread(() -> {
             try {
                 client.run();
@@ -132,7 +133,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public Client getClient() {
-        return null;
+        return client;
     }
 
 }

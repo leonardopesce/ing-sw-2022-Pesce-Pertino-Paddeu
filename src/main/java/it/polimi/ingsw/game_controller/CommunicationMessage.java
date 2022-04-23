@@ -19,7 +19,9 @@ public class CommunicationMessage implements Serializable{
         YOU_LOSE,
         YOU_WIN,
         VIEW_UPDATE,
-        GAME_READY
+        GAME_READY,
+        PING,
+        PONG
     }
     private final MessageType ID;
     private final Object message;

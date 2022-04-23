@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    private static final int PORT = 12345;
+    private static final int PORT = 12346;
     private final ServerSocket serverSocket;
     private final List<ClientConnection> waitingConnection = new ArrayList<>();
     private final List<Lobby> activeGames = new ArrayList<>();
@@ -29,10 +29,19 @@ public class Server {
     }
 
     //Wait for other players
-    public synchronized void handleLobbyState(Lobby lobbyToHandle){
+    public synchronized void handleLobbyState(Lobby lobbyToHandle, ClientConnection connectionToMove){
+        waitingConnection.remove(connectionToMove);
         if(lobbyToHandle.isFull()) {
             // The game is startable
             new Thread(lobbyToHandle).start();
+        }
+    }
+
+    public synchronized void handleInactiveLobbies() {
+        for(Lobby lobby : activeGames) {
+            if(lobby.checkInactivityClients()) {
+                //lobby.closeLobby();
+            }
         }
     }
 
@@ -79,15 +88,10 @@ public class Server {
         return activeGames;
     }
 
-    public void newWaitingConnection(ClientConnection connection) {
+    public void newWaitingConnection(ClientConnection connection) throws IOException, ClassNotFoundException{
         synchronized (this) {
             waitingConnection.add(connection);
         }
-
-        try {
-            ((SocketClientConnection)connection).askJoiningAction();
-        } catch (IOException | ClassNotFoundException e) {
-            deregisterConnection(connection);
-        }
+        ((SocketClientConnection)connection).askJoiningAction();
     }
 }

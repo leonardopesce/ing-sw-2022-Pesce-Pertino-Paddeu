@@ -5,6 +5,8 @@ import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.observer.Observer;
 
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PONG;
+
 public class ClientMessageObserverHandler implements Observer<CommunicationMessage> {
     private final GameViewClient view;
     private GameViewClient.InputStateMachine state;
