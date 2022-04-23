@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server;
+package it.polimi.ingsw.network.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    private static final int PORT = 12346;
+    private static final int PORT = 12347;
     private final ServerSocket serverSocket;
     private final List<ClientConnection> waitingConnection = new ArrayList<>();
     private final List<Lobby> activeGames = new ArrayList<>();

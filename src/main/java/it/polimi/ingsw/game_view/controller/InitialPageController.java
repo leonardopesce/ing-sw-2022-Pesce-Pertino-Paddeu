@@ -1,10 +1,8 @@
 package it.polimi.ingsw.game_view.controller;
 
-import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_model.character.advanced.Healer;
-import it.polimi.ingsw.game_view.GameViewClient;
-import it.polimi.ingsw.server.LobbyInfo;
+import it.polimi.ingsw.network.server.LobbyInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;

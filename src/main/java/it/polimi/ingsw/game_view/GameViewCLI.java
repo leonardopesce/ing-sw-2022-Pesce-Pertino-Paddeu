@@ -1,13 +1,13 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.ClientApp;
-import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.client.ClientMessageObserverHandler;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.board.*;
-import it.polimi.ingsw.server.LobbyInfo;
+import it.polimi.ingsw.network.server.LobbyInfo;
 
 import java.io.IOException;
 import java.util.Arrays;

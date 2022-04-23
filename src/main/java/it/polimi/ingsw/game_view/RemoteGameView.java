@@ -7,7 +7,7 @@ import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
-import it.polimi.ingsw.server.ClientConnection;
+import it.polimi.ingsw.network.server.ClientConnection;
 
 import java.util.Arrays;
 
