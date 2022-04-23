@@ -23,6 +23,7 @@ public class GameViewCLI implements GameViewClient{
     private ClientMessageObserverHandler msgHandler;
     private GameBoard board;
     private final Client client;
+    private boolean gameStarted = false;
 
     public GameViewCLI() {
         client = new Client(ClientApp.IP, ClientApp.port);
@@ -96,6 +97,7 @@ public class GameViewCLI implements GameViewClient{
     public void gameReady(GameBoard board){
         msgHandler.updateBoardMessage(board);
         msgHandler.setState(PLANNING_PHASE_START);
+        gameStarted = true;
         asyncReadInput();
     }
 
@@ -246,17 +248,22 @@ public class GameViewCLI implements GameViewClient{
     }
 
     private int whileInputNotIntegerInRange(int a, int b){
-        String read = input.nextLine();
-        while((read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
-                Integer.parseInt(read) < a || Integer.parseInt(read) > b) &&
-                (!board.isExpertMode() || !read.equals("play"))){
-            System.out.println("Not a number or not in the range given");
+        String read;
+        boolean first = true;
+        do{
+            if(!first) {
+                System.out.println("Not a number or not in the range given");
+            }
+            else {
+                first = false;
+            }
             read = input.nextLine();
-        }
-        if(read.equals("play")){
-            msgHandler.setState(PLAY_ADVANCED_CARD);
-            return 0;
-        }
+            if(gameStarted && board.isExpertMode() && read.equals("play")){
+                msgHandler.setState(PLAY_ADVANCED_CARD);
+                return 0;
+            }
+        }while (read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
+                Integer.parseInt(read) < a || Integer.parseInt(read) > b);
         return Integer.parseInt(read);
     }
 

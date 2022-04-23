@@ -104,9 +104,9 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Connection interrupted.");
-            server.deregisterConnection(this);
             e.printStackTrace();
         } finally {
+            server.deregisterConnection(this);
             close();
         }
     }
