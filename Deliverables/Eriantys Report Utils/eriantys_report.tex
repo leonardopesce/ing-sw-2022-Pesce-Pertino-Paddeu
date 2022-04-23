@@ -240,6 +240,7 @@
 	Infine, a seguito dell'esercitazione svolta su \emph{Socket e Serializzazione} è stata inserita una prima versione dell'architettura di rete.
 	
 	% Week 6: Network & CLI initialization
+	\newpage
 	\subsection{Settimana 6: Network multi-partita e CLI}
 	\paragraph{}
 	Nel corso della sesta settimana di sviluppo abbiamo parallelamente aggiornato la nostra struttura di rete ed implementato un'iniziale versione di interfaccia utente da linea di comando.\\
@@ -252,13 +253,29 @@
 	\paragraph{}
 	Siamo pertanto riusciti a testare la nostra implementazione fino a poter giocare una partita completa con le regole standard. Di seguito riportiamo un elenco delle attività svolte:\\
 	\begin{itemize}
-		\item Interfaccia grafica da linea di comando. Fa uso di codici di escape ANSI per gestire i colori.
-		\item Implementazione della funzionalità avanzata "Partite Multiple" attraverso un sistema di gestione a Lobby.
-		\item Macchina a stati (?)
-		\item Gestione disconnessioni (?)
-		\item Messaggi scambiati (?)
+		\item Interfaccia grafica da linea di comando. Abbiamo creato delle \textit{micro-classi} con lo scopo di rappresentare i vari componenti fisici del gioco. Queste rispetto al modello si distinguono per essere in minor numero (attualmente sono 6) e per contenere solo i dati essenziali a rappresentare la board in maniera visiva. Inoltre queste classi fanno override del metodo \textit{toString} così facendo viene automatico stampare sulla CLI un update grafico del gioco. La CLI fa uso di codici di escape ANSI per gestire i colori.
+		\item Implementazione della funzionalità avanzata "Partite Multiple" attraverso un sistema di gestione a Lobby .
+		\item I messaggi scambiati tra Client e Server sono tutti degli oggetti della classe \textit{CommunicationMessage} così facendo abbiamo un solo tipo di messaggio che viene scambiato e la comunicazione risulta più semplice. in base ad un ID sappiamo se il contenuto contiene un update grafico della board, azioni richieste dal client e altri ancora. Tra le azioni richiesta da client risultano le classi create la scorsa settimana \textit{GameActions} che vengono poi eseguite dal server.
 	\end{itemize}
 
+	% Week 7: Disconnessioni, completamento interfaccia CLI e inizio interfaccia GUI
+	\newpage
+	\subsection{Settimana 7: Disconnessioni, completamento interfaccia CLI e inizio interfaccia GUI}
+	\paragraph{}
+	Nel corso della settima settimana di sviluppo abbiamo controllato e sistemato come si comportava il server a seguito di una disconnessione lato client, completato l'implementazione dell'interfaccia cli (ad eccezione di come vengono raccolti i dati richiesti da alcune carte avanzate) e adattato ed iniziato il client per poter essere eseguito in modalità GUI\\
+	 
+	\begin{itemize}
+		\item \textbf{Disconnessioni del client:} abbiamo deciso di raggruppare il più possibile le eccezioni che potevano essere lanciate dal server (per quanto riguarda la parte del codice che si occupa di rispondere alle richieste del client) in modo da dover gestire le disconnessioni solo in due luoghi.
+		\item \textbf{Completamento interfaccia CLI:} abbiamo completato l'interfaccia da linea di comando, tra le modifiche più essenziali risulta esserci quella della gestione del client con una macchina a stati, ciò ci permette di avere un unico punto in cui leggere i messaggi dal socket con il server. Così facendo quando il server risponde, che sia un aggiornamento della partita o un errore, siamo sicuri che la lettura avvenga una sola volta e che venga eseguita l'azione corretta.
+		\item \textbf{Implementazione GUI:} oltre al resto abbiamo cominciato a sviluppare la GUI, per fare ciò ed avere le stesse azioni della CLI (ma con implementazioni diverse) abbiamo creato un interfaccia. 
+		Per leggere i messaggi che arrivano al client è stata creata una classe che fa da Observer per i messaggi e poi chiama il metodo dell'interfaccia (interpellata sopra) in modo da poter aggiornare anche la CLI in una maniera che ci sembra più pulita e ordinata e permette un implementazione di nuove azioni in maniera facile e lineare sia per CLI sia per GUI. 
+		È stata stesa una prima pagina della GUI per la fase iniziale.
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[scale=0.45]{first_GUI_page.png}
+			\caption{First GUI page :D}
+		\end{figure}
+	\end{itemize}
 
 	% Strumenti usati
 	\newpage
