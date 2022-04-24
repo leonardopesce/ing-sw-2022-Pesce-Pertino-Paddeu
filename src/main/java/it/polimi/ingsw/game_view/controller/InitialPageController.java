@@ -93,10 +93,9 @@ public class InitialPageController implements Initializable {
         for(int i = 0; i < ((List<?>)listAvailableDeck).size(); i++){
             Button button = new Button();
             DeckType card = ((DeckType)((List<?>)listAvailableDeck).get(i));
-            //button.setBackground(new Background(new BackgroundImage(new Image(card.getPath()),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false))));
-            int finalI = i;
-            button.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_DECK, finalI)));
             button.setPrefSize(mainPane.widthProperty().divide(7).get(), mainPane.heightProperty().divide(3).get());
+            button.setStyle("-fx-background-radius: 10; -fx-background-image: url(" + card.getPath() + "); -fx-background-size: 100% 100%; -fx-background-position: center");
+            button.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_DECK, card)));
             cardSelectionPane.add(button, i < 2 ? i : i % 2, i < 2 ? 0 : 1);
         }
 
