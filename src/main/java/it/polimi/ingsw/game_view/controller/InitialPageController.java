@@ -3,7 +3,7 @@ package it.polimi.ingsw.game_view.controller;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.network.server.LobbyInfo;
+import it.polimi.ingsw.network.utils.LobbyInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;

@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.board.Printable;
+import it.polimi.ingsw.network.utils.LobbyInfo;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.IOException;

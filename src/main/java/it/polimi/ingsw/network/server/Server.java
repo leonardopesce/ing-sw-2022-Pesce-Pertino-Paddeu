@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.network.utils.Logger;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -48,18 +50,19 @@ public class Server {
     public void run() throws IOException {
         int connections = 0;
         boolean running = true;
-        System.out.println("Server is running");
+
+        Logger.INFO("Server is running");
 
         while(running){
             try {
                 Socket newSocket = serverSocket.accept();
                 connections++;
-                System.out.println("Ready for the new connection - " + connections);
+                Logger.INFO("Ready for the new connection - " + connections);
                 new SocketClientConnection(newSocket, this);
             } catch (IOException e) {
                 running = false;
                 serverSocket.close();
-                System.out.println("Connection Error!");
+                Logger.ERROR("Connection Error!", e.getMessage());
             }
         }
     }

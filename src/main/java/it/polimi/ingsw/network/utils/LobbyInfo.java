@@ -1,4 +1,6 @@
-package it.polimi.ingsw.network.server;
+package it.polimi.ingsw.network.utils;
+
+import it.polimi.ingsw.network.server.Lobby;
 
 import it.polimi.ingsw.game_view.board.Printable;
 

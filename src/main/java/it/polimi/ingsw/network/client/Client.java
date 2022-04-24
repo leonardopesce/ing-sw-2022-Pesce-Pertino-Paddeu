@@ -49,6 +49,7 @@ public class Client extends Observable<CommunicationMessage> {
                 }
             } catch (Exception e){
                 setActive(false);
+                // TODO: loggare
                 e.printStackTrace();
             }
         });
