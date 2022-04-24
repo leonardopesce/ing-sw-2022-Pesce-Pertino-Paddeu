@@ -4,12 +4,20 @@ import java.io.Serializable;
 
 public enum DeckType implements Serializable {
 
-    KING("King Caglioti"), ELDER("Gadioli, il saggio"), PIXIE("Fata Cheru"), SORCERER("Buslacchi, l'Oscuro");
+    KING("King Caglioti", "/img/card_retro/King.jpg"),
+    ELDER("Gadioli, il saggio", "/img/card_retro/Elder.jpg"),
+    PIXIE("Fata Cheru", "/img/card_retro/Pixie.jpg"),
+    SORCERER("Buslacchi, l'Oscuro", "/img/card_retro/Sorcer.jpg");
 
     private static final long serialVersionUID = 1L;
     private final String name;
+    private final String path;
 
-    DeckType(String name) {this.name=name;}
+    DeckType(String name, String path) {
+        this.name = name;
+        this.path = path;
+    }
 
     public String getName() { return name; }
+    public String getPath() { return path; }
 }

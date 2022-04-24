@@ -1,18 +1,24 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.ClientApp;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.controller.InitialPageController;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
@@ -21,6 +27,9 @@ public class GameViewGUI extends Application implements GameViewClient{
     private ClientMessageObserverHandler msgHandler;
     private InitialPageController controllerInitial;
     private Client client;
+    private Stage stage;
+
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -30,13 +39,18 @@ public class GameViewGUI extends Application implements GameViewClient{
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
             root = loader.load();
             this.controllerInitial = loader.getController();
-            stage = new Stage();
-            stage.setTitle("Eriantys");
-            stage.setScene(new Scene(root, 450, 450));
-            stage.setResizable(false);
-            stage.setWidth(630);
-            stage.setHeight(630);
-            stage.show();
+            this.stage = new Stage();
+            this.stage.setTitle("Eriantys");
+            this.stage.setScene(new Scene(root, 450, 450));
+            this.stage.setResizable(false);
+            this.stage.setWidth(630);
+            this.stage.setHeight(630);
+            this.stage.setOnCloseRequest(windowEvent -> {
+                Platform.exit();
+                System.exit(0);
+            });
+            this.stage.show();
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -89,7 +103,12 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askDeck(Object availableDecks) {
-
+        Platform.runLater(() -> {
+            stage.setResizable(true);
+            stage.setMaximized(true);
+            controllerInitial.setBackgroundColor();
+            controllerInitial.askDeckView(availableDecks);
+        });
     }
 
     @Override

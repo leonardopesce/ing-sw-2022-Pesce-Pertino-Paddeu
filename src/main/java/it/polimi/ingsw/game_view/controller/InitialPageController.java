@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_view.controller;
 
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.network.server.LobbyInfo;
@@ -11,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -22,16 +24,16 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ASK_GAME_TYPE;
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ASK_LOBBY_TO_JOIN;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
+import static javafx.scene.paint.Color.SKYBLUE;
+import static javafx.scene.paint.Color.gray;
 
 public class InitialPageController implements Initializable {
     private Client client;
-    private Label errorTextField = new Label();
+    private final Label errorTextField = new Label();
     private VBox currentBox;
     @FXML
     StackPane mainPane;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -72,6 +74,37 @@ public class InitialPageController implements Initializable {
         errorTextField.setText("nickname already chosen");
     }
 
+    public void setBackgroundColor(){
+        mainPane.setBackground(new Background(new BackgroundFill(SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
+    public void askDeckView(Object listAvailableDeck){
+        mainPane.getChildren().clear();
+        errorTextField.setText("");
+        currentBox = createQuestionBox(3, 1.2);
+
+        currentBox.getChildren().add(createTextLabel("Which deck do you want to choose?", FontWeight.BOLD, Color.BLACK, 20));
+
+        GridPane cardSelectionPane = new GridPane();
+        cardSelectionPane.setHgap(10);
+        cardSelectionPane.setVgap(10);
+        cardSelectionPane.setAlignment(Pos.CENTER);
+
+        for(int i = 0; i < ((List<?>)listAvailableDeck).size(); i++){
+            Button button = new Button();
+            DeckType card = ((DeckType)((List<?>)listAvailableDeck).get(i));
+            //button.setBackground(new Background(new BackgroundImage(new Image(card.getPath()),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false))));
+            int finalI = i;
+            button.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_DECK, finalI)));
+            button.setPrefSize(mainPane.widthProperty().divide(7).get(), mainPane.heightProperty().divide(3).get());
+            cardSelectionPane.add(button, i < 2 ? i : i % 2, i < 2 ? 0 : 1);
+        }
+
+        currentBox.getChildren().add(cardSelectionPane);
+
+        mainPane.getChildren().add(currentBox);
+    }
+
     public void askJoiningActionView(){
         mainPane.getChildren().clear();
         errorTextField.setText("");
@@ -109,14 +142,13 @@ public class InitialPageController implements Initializable {
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(20);
 
-        Button goBack = new Button("Go back");
+        /*Button goBack = new Button("Go back");
         goBack.setOnAction(ActionEvent -> {
             askJoiningActionView();
-        });
+        });*/
 
         Button select = new Button("Select");
         select.setOnAction(ActionEvent -> {
-
             if(listView.getSelectionModel().getSelectedItems().size() == 1){
                 LobbyInfo selected = listView.getSelectionModel().getSelectedItems().get(0);
                 if(!selected.isFull()){
@@ -131,7 +163,7 @@ public class InitialPageController implements Initializable {
             }
         });
 
-        hBox.getChildren().addAll(goBack, select);
+        hBox.getChildren().addAll(select);
         currentBox.getChildren().add(hBox);
 
         mainPane.getChildren().add(currentBox);
