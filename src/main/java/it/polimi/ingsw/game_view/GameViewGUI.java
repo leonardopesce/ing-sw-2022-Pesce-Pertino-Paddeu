@@ -1,11 +1,13 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.ClientApp;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.controller.InitialPageController;
+import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -20,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PONG;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private static final String pathInitialPage = "fxml/initialPage.fxml";
@@ -77,6 +81,12 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void updateBoard(GameBoard board) {
 
+    }
+
+    @Override
+    public void pongServer() {
+        Logger.INFO("Pinged from server, pinging back.");
+        client.asyncWriteToSocket(new CommunicationMessage(PONG, null));
     }
 
     @Override

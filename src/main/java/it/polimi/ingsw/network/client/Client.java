@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.GameViewCLI;
 import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.GameViewGUI;
+import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
 import javafx.application.Application;
@@ -49,8 +50,8 @@ public class Client extends Observable<CommunicationMessage> {
                 }
             } catch (Exception e){
                 setActive(false);
-                // TODO: loggare
-                e.printStackTrace();
+                Logger.ERROR("Connection interrupted due to socket corruption. Exiting...", e.getMessage());
+                //e.printStackTrace();
             }
         });
         t.start();
@@ -73,7 +74,7 @@ public class Client extends Observable<CommunicationMessage> {
 
     public void run() throws IOException {
         Socket socket = new Socket(ip, port);
-        System.out.println("Connection established");
+        Logger.INFO("Connection established");
         ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
         socketOut = new ObjectOutputStream(socket.getOutputStream());
 
@@ -81,7 +82,7 @@ public class Client extends Observable<CommunicationMessage> {
             Thread t0 = asyncReadFromSocket(socketIn);
             t0.join();
         } catch(InterruptedException | NoSuchElementException e){
-            System.out.println("Connection closed from the client side");
+            Logger.INFO("Connection closed from the client side");
         } finally {
             socketIn.close();
             socketOut.close();

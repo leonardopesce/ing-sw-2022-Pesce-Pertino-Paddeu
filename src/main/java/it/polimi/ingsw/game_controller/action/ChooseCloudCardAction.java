@@ -14,4 +14,9 @@ public class ChooseCloudCardAction extends GameAction{
     public void perform(GameController controller) {
         controller.choseCloud(playerName, cloudCardIndex);
     }
+
+    @Override
+    public String toString() {
+        return "Choose cloud card action. Chosen card : " + cloudCardIndex;
+    }
 }

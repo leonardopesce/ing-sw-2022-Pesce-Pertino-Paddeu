@@ -8,6 +8,7 @@ import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.board.*;
 import it.polimi.ingsw.network.utils.LobbyInfo;
+import it.polimi.ingsw.network.utils.Logger;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -111,6 +112,12 @@ public class GameViewCLI implements GameViewClient{
     @Override
     public void updateBoard(GameBoard board) {
         System.out.println(board);
+    }
+
+    @Override
+    public void pongServer() {
+        // Logger.INFO("Pinged from server, pinging back.");
+        client.asyncWriteToSocket(new CommunicationMessage(PONG, null));
     }
 
     public void asyncReadInput(){
@@ -247,7 +254,7 @@ public class GameViewCLI implements GameViewClient{
         System.out.println(board.getTerrain().getAdvancedCard());
     }
 
-    private int whileInputNotIntegerInRange(int a, int b){
+    private synchronized int whileInputNotIntegerInRange(int a, int b){
         String read;
         boolean first = true;
         do{
@@ -267,7 +274,7 @@ public class GameViewCLI implements GameViewClient{
         return Integer.parseInt(read);
     }
 
-    private String whileInputNotContainedIn(List<String> container){
+    private synchronized String whileInputNotContainedIn(List<String> container){
         String read = input.nextLine();
         while(!container.contains(read)){
             System.out.println("Selection not available please follow instruction");

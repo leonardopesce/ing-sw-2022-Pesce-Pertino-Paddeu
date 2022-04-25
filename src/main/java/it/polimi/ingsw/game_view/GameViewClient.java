@@ -38,6 +38,7 @@ public interface GameViewClient{
     void askPlayerNumber();
     void gameReady(GameBoard board);
     void reaskAssistant();
+    void pongServer();
     GameBoard getBoard();
     void setBoard(GameBoard board);
     Client getClient();

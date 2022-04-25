@@ -15,4 +15,9 @@ public class MoveStudentToIslandAction extends GameAction{
     public void perform(GameController controller) {
         controller.playerMoveStudentToIsland(playerName, studentIndex, islandIndex);
     }
+
+    @Override
+    public String toString() {
+        return "Move student from dining hall to island action. Student moved from entrance position with id : " + studentIndex + ", to the island with the id : " + islandIndex;
+    }
 }

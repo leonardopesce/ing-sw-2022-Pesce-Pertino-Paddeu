@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private static final int PORT = 12347;
     private final ServerSocket serverSocket;
     private final List<ClientConnection> waitingConnection = new ArrayList<>();
+    private final ExecutorService executor = Executors.newFixedThreadPool(128);
     private final List<Lobby> activeGames = new ArrayList<>();
 
     public Server() throws IOException {
@@ -58,7 +61,7 @@ public class Server {
                 Socket newSocket = serverSocket.accept();
                 connections++;
                 Logger.INFO("Ready for the new connection - " + connections);
-                new SocketClientConnection(newSocket, this);
+                executor.submit(new SocketClientConnection(newSocket, this));
             } catch (IOException e) {
                 running = false;
                 serverSocket.close();

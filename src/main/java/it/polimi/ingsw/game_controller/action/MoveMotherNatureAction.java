@@ -14,4 +14,9 @@ public class MoveMotherNatureAction extends GameAction{
     public void perform(GameController controller) {
         controller.moveMotherNatureOfSteps(playerName, steps);
     }
+
+    @Override
+    public String toString() {
+        return "Move mother nature action of steps : " + steps;
+    }
 }

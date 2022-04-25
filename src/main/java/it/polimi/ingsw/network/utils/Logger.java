@@ -17,4 +17,9 @@ public class Logger extends Printable {
         String toPrint = "[" + TEXT_ORANGE + "WARNING" + TEXT_RESET + "] " + msg;
         System.out.println(toPrint);
     }
+
+    public static void GAME_LOG(String msg, String connectionName) {
+        String toPrint = "[" + TEXT_PURPLE + "GAME LOG" + TEXT_RESET + "] " + TEXT_YELLOW + connectionName + TEXT_RESET + " : " + msg;
+        System.out.println(toPrint);
+    }
 }

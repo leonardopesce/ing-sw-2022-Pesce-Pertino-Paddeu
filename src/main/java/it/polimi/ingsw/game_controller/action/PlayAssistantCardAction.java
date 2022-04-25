@@ -14,4 +14,9 @@ public class PlayAssistantCardAction extends GameAction{
     public void perform(GameController controller) {
         controller.selectAssistantCard(playerName, assistantIndex);
     }
+
+    @Override
+    public String toString() {
+        return "Play assistant card action. Played assistant card of index: " + assistantIndex;
+    }
 }

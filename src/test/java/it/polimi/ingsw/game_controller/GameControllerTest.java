@@ -56,7 +56,9 @@ public class GameControllerTest {
         var firstPlayer = controller.getCurrentPlayer().getNickname();
         var assistantType = controller.getCurrentPlayer().getDeckAssistants().getAssistants().get(0);
 
-        new PlayAssistantCardAction(firstPlayer, 0).perform(controller);
+        var action = new PlayAssistantCardAction(firstPlayer, 0);
+        action.perform(controller);
+        System.out.println(action);
         Assertions.assertEquals(assistantType.getType(), game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(firstPlayer) ? pl1 : pl2).get().getDiscardedCard().getType());
 
     }
@@ -66,8 +68,12 @@ public class GameControllerTest {
     void playPlanningPhaseAndStartsActionPhaseTest(){
         initialization(2, false);
 
-        new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 0).perform(controller);
-        new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 1).perform(controller);
+        var action1 = new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 0);
+        action1.perform(controller);
+        System.out.println(action1);
+        var action2 = new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 1);
+        action2.perform(controller);
+        System.out.println(action2);
 
         Assertions.assertEquals(GamePhase.ACTION_PHASE_MOVING_STUDENTS, game.getGamePhase());
 
@@ -98,11 +104,17 @@ public class GameControllerTest {
 
         for(int i=0;i<2;i++) {
             for(int j=0;j<3;j++) {
-                new MoveStudentToDiningHallAction(controller.getCurrentPlayer().getNickname(), j).perform(controller);
+                var action = new MoveStudentToDiningHallAction(controller.getCurrentPlayer().getNickname(), j);
+                action.perform(controller);
+                System.out.println(action);
             }
 
-            new MoveMotherNatureAction(controller.getCurrentPlayer().getNickname(),1).perform(controller);
-            new ChooseCloudCardAction(controller.getCurrentPlayer().getNickname(), i).perform(controller);
+            var action1 = new MoveMotherNatureAction(controller.getCurrentPlayer().getNickname(),1);
+            action1.perform(controller);
+            System.out.println(action1);
+            var action2 = new ChooseCloudCardAction(controller.getCurrentPlayer().getNickname(), i);
+            action2.perform(controller);
+            System.out.println(action2);
         }
 
         Assertions.assertEquals(GamePhase.PLANNING_PHASE, game.getGamePhase());

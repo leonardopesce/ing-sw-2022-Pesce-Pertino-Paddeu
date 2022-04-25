@@ -5,6 +5,8 @@ import it.polimi.ingsw.game_controller.action.GameAction;
 import it.polimi.ingsw.game_model.MoveMessage;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
+import it.polimi.ingsw.network.server.SocketClientConnection;
+import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.network.server.ClientConnection;
@@ -27,7 +29,9 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
 
         @Override
         public void update(CommunicationMessage message) {
-            System.out.println("Received: " + message);
+            if(message.getID() != PONG) {
+                Logger.GAME_LOG("Received: " + message.getID().toString(), ((SocketClientConnection)clientConnection).getClientName());
+            }
             try{
                 if(message.getID() == GAME_ACTION) {
                     handleMove((GameAction) message.getMessage());
@@ -40,7 +44,7 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
     }
 
     void handleMove(GameAction action) {
-        System.out.println("from player: " + playerName + ", received game action: " + action.toString());
+        Logger.GAME_LOG("from player: " + playerName + ", received game action: " + action.toString(), ((SocketClientConnection)clientConnection).getClientName());
         notify(action);
     }
 

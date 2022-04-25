@@ -14,4 +14,9 @@ public class MoveStudentToDiningHallAction extends GameAction{
     public void perform(GameController controller) {
         controller.playerMoveStudentToDiningHall(playerName, studentIndex);
     }
+
+    @Override
+    public String toString() {
+        return "Move student to dining hall action. Moved student from entrance position of index : " + studentIndex;
+    }
 }

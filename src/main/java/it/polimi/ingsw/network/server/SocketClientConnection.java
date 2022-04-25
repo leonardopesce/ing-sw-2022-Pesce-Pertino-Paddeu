@@ -2,8 +2,9 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
-import it.polimi.ingsw.game_view.board.Printable;
+import it.polimi.ingsw.network.utils.ConnectionStatusHandler;
 import it.polimi.ingsw.network.utils.LobbyInfo;
+import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.IOException;
@@ -20,6 +21,8 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private ObjectInputStream in;
     private final Server server;
     private String clientName;
+    private final ConnectionStatusHandler connectionStatusHandler;
+    private final LinkedList<CommunicationMessage> incomingMessages = new LinkedList<>();
 
     public SocketClientConnection(Socket socket, Server server) {
         this.socket = socket;
@@ -30,6 +33,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         List<Lobby> lobbies = server.getActiveGames().stream().filter(lobby -> lobby.getConnectedPlayersToLobby().stream().anyMatch(player -> !player.isActive())).toList();
         for (Lobby lobby : lobbies) {
             lobby.closeLobby(lobby.getConnectedPlayersToLobby().stream().filter(connection -> !connection.isActive()).toList().get(0));
@@ -39,21 +43,18 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             try {
                 askName();
             } catch (Exception e) {
-                System.out.println("[" + Printable.TEXT_YELLOW + "ERROR: " + e.getMessage() + Printable.TEXT_RESET + "]:\n" + "Problem found in player setup.");
-                server.deregisterConnection(this);
+                Logger.ERROR("A problem was found during the player setup. Connection aborted.", e.getMessage());
                 close();
             }
         }).start();
+
+        this.connectionStatusHandler = new ConnectionStatusHandler(this);
+        this.addObserver(connectionStatusHandler);
+        connectionStatusHandler.start();
     }
 
     public synchronized boolean isActive() {
-        try{
-            send(new CommunicationMessage(PING, null));
-            return true;
-        } catch (IOException e) {
-            //e.printStackTrace();
-            return false;
-        }
+        return connectionStatusHandler.isConnectionActive();
     }
 
     public synchronized void send(CommunicationMessage message) throws IOException {
@@ -67,21 +68,24 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         try {
             send(new CommunicationMessage(ERROR, "Connection closed"));
         } catch (IOException e) {
-            System.out.println("Cannot send a message to " + clientName + " because his socket is already closed maybe due to a disconnection.");
+            Logger.WARNING("Cannot send a message to " + clientName + " because his socket is already closed maybe due to a disconnection.");
         }
 
         try {
             socket.close();
         } catch (IOException e) {
-            System.err.println("Error when closing socket!");
+            Logger.ERROR("Error when closing socket!", e.getMessage());
         }
     }
 
     public void close() {
-        closeConnection();
-        System.out.println("Unregistering client...");
-        server.deregisterConnection(this);
-        System.out.println("Done!");
+        if(isActive()) {
+            connectionStatusHandler.kill();
+            closeConnection();
+            Logger.INFO("Unregistering " + clientName + "'s connection...");
+            server.deregisterConnection(this);
+            Logger.INFO(clientName + " has successfully been unregistered.");
+        }
     }
 
     @Override
@@ -90,7 +94,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             try {
                 send(message);
             } catch (IOException e) {
-                server.deregisterConnection(this);
+                Logger.ERROR("Failed to async send the message..." + clientName + " will now be closed.", e.getMessage());
                 close();
             }
         }).start();
@@ -102,12 +106,16 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             while (isActive()) {
                 CommunicationMessage message = (CommunicationMessage) in.readObject();
                 notify(message);
+                if(message.getID() != PONG) {
+                    synchronized (incomingMessages) {
+                        incomingMessages.add(message);
+                    }
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Connection interrupted.");
-            e.printStackTrace();
+            Logger.ERROR(clientName + " connection with the remote host has been interrupted.", e.getMessage());
+            // e.printStackTrace();
         } finally {
-            server.deregisterConnection(this);
             close();
         }
     }
@@ -116,7 +124,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         int joiningActionChosen; // 0 for creating a new match | 1 for joining an existing one if present
 
         send(new CommunicationMessage(ASK_JOINING_ACTION, null));
-        joiningActionChosen = (int) ((CommunicationMessage) in.readObject()).getMessage();
+        joiningActionChosen = (int) getResponse().get().getMessage();
 
         if (joiningActionChosen == 0) {
             createNewGame();
@@ -128,7 +136,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     public int askGameNumberOfPlayer() throws IOException, ClassNotFoundException {
         int size = 0;
         send(new CommunicationMessage(ASK_PLAYER_NUMBER, null));
-        size = (int) ((CommunicationMessage) in.readObject()).getMessage();
+        size = (int) getResponse().get().getMessage();
 
         return size;
     }
@@ -136,7 +144,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     public boolean askGameType() throws IOException, ClassNotFoundException {
         boolean mode = false;
         send(new CommunicationMessage(ASK_GAME_TYPE, null));
-        mode = (boolean) ((CommunicationMessage) in.readObject()).getMessage();
+        mode = (boolean) getResponse().get().getMessage();
 
         return mode;
     }
@@ -151,7 +159,11 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
     private Optional<CommunicationMessage> getResponse() throws IOException, ClassNotFoundException {
         Optional<CommunicationMessage> message = Optional.empty();
-        message = Optional.of((CommunicationMessage) in.readObject());
+        do {
+            synchronized (incomingMessages) {
+                message = incomingMessages.size() > 0 ? Optional.of(incomingMessages.removeFirst()) : message;
+            }
+        } while (message.isEmpty());
         return message;
     }
 
@@ -159,10 +171,10 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         String name;
         send(new CommunicationMessage(ASK_NAME, null));
 
-        name = ((CommunicationMessage) in.readObject()).getMessage().toString();
+        name = (String)getResponse().get().getMessage();
         while (server.getConnectedPlayersName().contains(name)) {
             send(new CommunicationMessage(REASK_NAME, null));
-            name = ((CommunicationMessage) in.readObject()).getMessage().toString();
+            name = (String)getResponse().get().getMessage();
         }
 
         clientName = name;

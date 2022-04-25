@@ -8,19 +8,17 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_view.RemoteGameView;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
+import it.polimi.ingsw.network.utils.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.ERROR;
 
 public class Lobby implements Runnable {
     private final Server server;
     private final ClientConnection lobbyOwner;
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
     private final List<ClientConnection> connectedPlayersToLobby = new ArrayList<>();
     private final boolean expertMode;
     private final int numberOfPlayers;
@@ -110,7 +108,6 @@ public class Lobby implements Runnable {
                 RemoteGameView view = new RemoteGameView(player.getNickname(), connection);
                 game.addObserver(view);
                 view.addObserver(controller);
-                executor.submit(((SocketClientConnection) connection));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 closeLobby(connection);

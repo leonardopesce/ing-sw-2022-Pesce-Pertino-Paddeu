@@ -21,4 +21,9 @@ public class PlayAdvancedCardAction extends GameAction{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public String toString() {
+        return "Play advanced card action. Played advanced card : " + card.getType().toString();
+    }
 }
