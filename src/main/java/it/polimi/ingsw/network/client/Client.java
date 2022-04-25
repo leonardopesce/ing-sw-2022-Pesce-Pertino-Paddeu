@@ -50,7 +50,7 @@ public class Client extends Observable<CommunicationMessage> {
                 }
             } catch (Exception e){
                 setActive(false);
-                Logger.ERROR("Connection interrupted due to socket corruption. Exiting...", e.getMessage());
+                Logger.ERROR("Connection interrupted since the socket is now closed server side. Exiting...", e.getMessage());
                 //e.printStackTrace();
             }
         });
