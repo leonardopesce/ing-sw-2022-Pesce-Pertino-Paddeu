@@ -21,7 +21,9 @@ public class GameBoardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ImageView image = currentPlayerBoardController.getSchoolImage();
-        currentPlayerBoardController.getMainPane().prefWidthProperty().bind(grid.widthProperty().divide(2.3));
+        //currentPlayerBoardController.getMainPane().prefWidthProperty().bind(grid.getColumnConstraints().get(1).prefWidthProperty().multiply(0.5));
+        //currentPlayerBoardController.getMainPane().prefHeightProperty().bind(grid.getRowConstraints().get(2).prefHeightProperty().multiply(0.5));
+
+
     }
 }
