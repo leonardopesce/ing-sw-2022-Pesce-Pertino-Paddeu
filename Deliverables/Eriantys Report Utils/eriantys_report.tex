@@ -266,6 +266,8 @@
 	 
 	\begin{itemize}
 		\item \textbf{Disconnessioni del client:} abbiamo deciso di raggruppare il più possibile le eccezioni che potevano essere lanciate dal server (per quanto riguarda la parte del codice che si occupa di rispondere alle richieste del client) in modo da dover gestire le disconnessioni solo in due luoghi.
+		\item \textbf{Ping system:} per gestire l'eventualità in cui un giocatore perda la connessione, è stato introdotto un ping system lato server, il quale ogni 10 secondi invia per l'appunto un \textit{CommunicationMessage} di tipo ping. La risposta del client a questo genere di messaggi è generalmente immediata (in condizioni normali servono pochi millisecondi); tuttavia in caso di caduta di connessione se il server non riceve un \textit{CommunicationMessage} di tipo pong entro 10 secondi, chiude la connessione decretando l'effettiva perdita di collegamento con il client.
+		\item \textbf{Logger:} è stata implementata una classe \textit{Logger} che permette di mostrare in console messaggi formattati per avere un riscontro su ciò che sta accadendo \textit{'dietro le quinte'}. Al momento sono distinti le seguenti tipologie di messaggio: \textit{ERROR, INFO, GAME\_LOG, WARNING}.
 		\item \textbf{Completamento interfaccia CLI:} abbiamo completato l'interfaccia da linea di comando, tra le modifiche più essenziali risulta esserci quella della gestione del client con una macchina a stati, ciò ci permette di avere un unico punto in cui leggere i messaggi dal socket con il server. Così facendo quando il server risponde, che sia un aggiornamento della partita o un errore, siamo sicuri che la lettura avvenga una sola volta e che venga eseguita l'azione corretta.
 		\item \textbf{Implementazione GUI:} oltre al resto abbiamo cominciato a sviluppare la GUI, per fare ciò ed avere le stesse azioni della CLI (ma con implementazioni diverse) abbiamo creato un interfaccia. 
 		Per leggere i messaggi che arrivano al client è stata creata una classe che fa da Observer per i messaggi e poi chiama il metodo dell'interfaccia (interpellata sopra) in modo da poter aggiornare anche la CLI in una maniera che ci sembra più pulita e ordinata e permette un implementazione di nuove azioni in maniera facile e lineare sia per CLI sia per GUI. 
@@ -276,6 +278,9 @@
 			\caption{First GUI page :D}
 		\end{figure}
 	\end{itemize}
+	\paragraph{}
+	INSERIRE GRAFICO CLASS DIAGRAM
+	\newpage
 	\paragraph{}
 	Alleghiamo infine un \textit{sequence diagram} che riassume la fase di connessione di un player al server, dalla creazione del suo \textit{socket}, alla costruzione di una nuova partita o partecipazione ad una lobby già esistente, fino al momento di inizio effettivo della partita stessa:\\
 	\begin{figure}[h!]

@@ -42,7 +42,6 @@ public class Server {
         }
     }
 
-
     public void run() throws IOException {
         int connections = 0;
         boolean running = true;

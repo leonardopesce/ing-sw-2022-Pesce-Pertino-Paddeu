@@ -38,6 +38,7 @@ public class GameViewCLI implements GameViewClient{
         input = new Scanner(System.in);
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
+        askName();
     }
 
     @Override
