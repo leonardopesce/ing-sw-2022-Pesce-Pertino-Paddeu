@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.GameViewClient;
 import it.polimi.ingsw.game_view.board.GameBoard;
+import it.polimi.ingsw.game_view.board.Printable;
 import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observer;
 
@@ -19,6 +20,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
     }
 
     public void updateBoardMessage(GameBoard board){
+        Printable.clearScreen();
         view.setBoard(board);
         if(board.getCurrentlyPlaying().equals(view.getClient().getName())){
             view.updateBoard(board);

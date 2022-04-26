@@ -32,7 +32,7 @@ public class GameViewCLI implements GameViewClient{
             try {
                 client.run();
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.ERROR("Unable to connect to server. Exit...", e.getMessage());
             }
         }).start();
         input = new Scanner(System.in);
@@ -149,15 +149,15 @@ public class GameViewCLI implements GameViewClient{
             case PLANNING_PHASE_START -> {
                 rangeA = 0;
                 rangeB = playerDeck.getCards().size() - 1;
-                System.out.println("Select an assistant card to play (use value from 0 to " + rangeB
-                        + " to select the card):\n" + playerDeck);
+                System.out.println(playerDeck + "\nSelect an assistant card to play (use value from 0 to " + rangeB
+                        + " to select the card): ");
                 msgHandler.setState(SELECT_ASSISTANT_CARD_SEND_MESSAGE);
             }
             case MOVING_STUDENT_PHASE_START -> {
                 rangeA = 0;
                 rangeB = school.getEntrance().size() - 1;
                 System.out.println("Please select a student to move (use number from 0 to " + rangeB
-                        + " starting counting from left to right and top to bottom");
+                        + " starting counting from left to right and top to bottom)");
                 msgHandler.setState(MOVE_STUDENT_SEND_MESSAGE);
             }
             case MOVE_MOTHER_NATURE_START -> {
@@ -169,7 +169,7 @@ public class GameViewCLI implements GameViewClient{
             case CHOOSE_CLOUD_CARD_START -> {
                 rangeA = 0;
                 rangeB = board.getTerrain().getCloudCards().size() - 1;
-                System.out.println("Select a Cloud from where to pick student (use number from 0 to" + rangeB
+                System.out.println("Select a Cloud from where to pick student (use number from 0 to " + rangeB
                         + " to select the cloud):\n");
                 msgHandler.setState(CHOOSE_CLOUD_CARD_SEND_MESSAGE);
             }
