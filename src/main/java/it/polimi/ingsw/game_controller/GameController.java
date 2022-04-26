@@ -28,7 +28,6 @@ public class GameController implements Observer<GameAction> {
         actionOrder = new int[game.MAX_PLAYERS];
     }
 
-
     public Player createPlayer(String name, DeckType type){
         Player player = new Player(name, type);
         addPlayer(player);

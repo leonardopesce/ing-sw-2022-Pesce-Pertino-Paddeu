@@ -42,13 +42,6 @@ public class Server {
         }
     }
 
-    public synchronized void handleInactiveLobbies() {
-        for(Lobby lobby : activeGames) {
-            if(lobby.checkInactivityClients()) {
-                //lobby.closeLobby();
-            }
-        }
-    }
 
     public void run() throws IOException {
         int connections = 0;

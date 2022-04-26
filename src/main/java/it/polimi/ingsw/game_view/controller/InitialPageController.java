@@ -12,21 +12,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 import static javafx.scene.paint.Color.SKYBLUE;
-import static javafx.scene.paint.Color.gray;
 
 public class InitialPageController implements Initializable {
     private Client client;

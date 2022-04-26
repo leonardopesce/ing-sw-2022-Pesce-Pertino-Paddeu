@@ -1,8 +1,12 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.ClientApp;
+import it.polimi.ingsw.game_controller.GameController;
+import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_view.controller.GameBoardController;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
@@ -32,11 +36,10 @@ public class GameViewGUI extends Application implements GameViewClient{
     private InitialPageController controllerInitial;
     private Client client;
     private Stage stage;
-
-
+    private GameBoardController controllerGameBoard;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage){
         Parent root;
 
         try{
@@ -60,6 +63,8 @@ public class GameViewGUI extends Application implements GameViewClient{
             e.printStackTrace();
         }
 
+        testing();
+        /*
         client = new Client(ClientApp.IP, ClientApp.port);
         new Thread(() -> {
             try {
@@ -70,12 +75,20 @@ public class GameViewGUI extends Application implements GameViewClient{
         }).start();
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
-        this.controllerInitial.setClient(client);
+        this.controllerInitial.setClient(client);*/
     }
 
     @Override
     public void displayNotYourTurn() {
 
+    }
+
+    private void testing(){
+        Game game = new Game(2);
+        GameController gameController = new GameController(game);
+        gameController.createPlayer("Paolo", DeckType.ELDER);
+        gameController.createPlayer("leo", DeckType.KING);
+        gameReady(new GameBoard(game));
     }
 
     @Override
@@ -147,7 +160,25 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void gameReady(GameBoard board) {
+        Platform.runLater(() -> {
+            Parent root;
 
+            try{
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
+                root = loader.load();
+                this.controllerGameBoard = loader.getController();
+                this.stage.setScene(new Scene(root, 1920, 1080));
+                this.stage.setMaximized(true);
+                this.stage.setOnCloseRequest(windowEvent -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
+                this.stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
