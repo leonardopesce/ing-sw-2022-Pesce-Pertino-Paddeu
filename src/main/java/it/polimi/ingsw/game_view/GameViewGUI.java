@@ -178,6 +178,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            controllerGameBoard.updateBoard(board);
         });
     }
 

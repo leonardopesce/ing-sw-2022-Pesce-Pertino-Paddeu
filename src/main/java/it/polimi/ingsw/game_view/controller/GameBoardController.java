@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game_view.controller;
 
+import it.polimi.ingsw.game_view.board.GameBoard;
+import it.polimi.ingsw.game_view.board.SchoolBoard;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,5 +27,11 @@ public class GameBoardController implements Initializable {
         //currentPlayerBoardController.getMainPane().prefHeightProperty().bind(grid.getRowConstraints().get(2).prefHeightProperty().multiply(0.5));
 
 
+    }
+
+    public void updateBoard(GameBoard board){
+        SchoolBoard schoolBoard = board.getSchools().get(board.getNames().indexOf(board.getCurrentlyPlaying()));
+        currentPlayerBoardController.setEntranceStudents(schoolBoard.getEntrance());
+        currentPlayerBoardController.setTowersAvailable(schoolBoard.getTowers(), schoolBoard.getTowerColor());
     }
 }

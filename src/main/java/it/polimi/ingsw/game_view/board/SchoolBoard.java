@@ -35,6 +35,22 @@ public class SchoolBoard implements Serializable {
         return entrance;
     }
 
+    public List<ColorCharacter> getTeachers() {
+        return teachers;
+    }
+
+    public int[] getTables() {
+        return tables;
+    }
+
+    public int getTowers() {
+        return towers;
+    }
+
+    public ColorTower getTowerColor() {
+        return towerColor;
+    }
+
     private String addStudentEntrance(int index){
         return "\t" + (entrance.size() > index ? GameBoard.getColorString(entrance.get(index)) + Printable.STUDENT : " ") +
                 Printable.TEXT_RESET;
