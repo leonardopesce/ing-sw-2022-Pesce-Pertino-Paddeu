@@ -27,17 +27,17 @@ public class GameBoardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
-        rotate.setOnAction(ActionEvent -> {
-            RotateTransition rotate = new RotateTransition();
-
-            rotate.setAxis(Rotate.Z_AXIS);
-            rotate.setByAngle(90);
-            rotate.setCycleCount(1);
-            rotate.setDuration(Duration.millis(1500));
-            rotate.setAutoReverse(false);
-            rotate.setNode(rotatingBoardController.getPane());
-            rotate.play();
-
+        RotateTransition rotate = new RotateTransition();
+        this.rotate.setOnAction(ActionEvent -> {
+            synchronized (rotate) {
+                rotate.setAxis(Rotate.Z_AXIS);
+                rotate.setByAngle(90);
+                rotate.setCycleCount(1);
+                rotate.setDuration(Duration.millis(1500));
+                rotate.setAutoReverse(false);
+                rotate.setNode(rotatingBoardController.getPane());
+                rotate.play();
+            }
         });
     }
 
