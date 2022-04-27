@@ -41,7 +41,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
     @Override
     public void update(CommunicationMessage message) {
         switch (message.getID()){
-            case ASK_NAME   -> new Thread(view::askName).start();
+            //case ASK_NAME   -> new Thread(view::askName).start();
             case REASK_NAME -> new Thread(view::reaskName).start();
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASK_GAME_TYPE -> new Thread(view::askGameType).start();

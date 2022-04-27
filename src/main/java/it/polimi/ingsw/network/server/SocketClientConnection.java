@@ -168,13 +168,14 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     }
 
     private void askName() throws IOException, ClassNotFoundException {
-        String name;
-        send(new CommunicationMessage(ASK_NAME, null));
+        String name = null;
+        //send(new CommunicationMessage(ASK_NAME, null));
 
-        name = (String)getResponse().get().getMessage();
-        while (server.getConnectedPlayersName().contains(name)) {
+        var messageReceived = getResponse().get();
+        name = messageReceived.getMessage().toString();
+        while ((messageReceived.getID() != ASK_NAME && messageReceived.getID() != REASK_NAME) || server.getConnectedPlayersName().contains(name)) {
             send(new CommunicationMessage(REASK_NAME, null));
-            name = (String)getResponse().get().getMessage();
+            name = getResponse().get().getMessage().toString();
         }
 
         clientName = name;
