@@ -64,8 +64,8 @@ public class GameViewGUI extends Application implements GameViewClient{
         }
 
         testing();
-        /*
-        client = new Client(ClientApp.IP, ClientApp.port);
+
+        /*client = new Client(ClientApp.IP, ClientApp.port);
         new Thread(() -> {
             try {
                 client.run();
@@ -164,10 +164,12 @@ public class GameViewGUI extends Application implements GameViewClient{
             Parent root;
 
             try{
+                this.stage.close();
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
                 root = loader.load();
                 this.controllerGameBoard = loader.getController();
                 this.stage.setScene(new Scene(root, 1920, 1080));
+                this.stage.setResizable(true);
                 this.stage.setMaximized(true);
                 this.stage.setOnCloseRequest(windowEvent -> {
                     Platform.exit();

@@ -2,6 +2,8 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -41,7 +43,9 @@ public class SchoolController implements Initializable {
         entranceStudentsButton.addAll(Arrays.asList(st0, st1, st2, st3, st4, st5, st6, st7, st8));
 
         for (Button student: entranceStudentsButton){
-            student.setShape(new Circle(20));
+            Circle tmpCircle = new Circle(20);
+            tmpCircle.setFocusTraversable(true);
+            student.setShape(tmpCircle);
             student.setScaleShape(false);
             student.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         }
@@ -52,6 +56,8 @@ public class SchoolController implements Initializable {
         }
 
     }
+
+    public Button getSt1() { return st1; }
 
     public StackPane getMainPane() {
         return mainPane;
