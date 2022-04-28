@@ -120,33 +120,115 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
     }
 
+    private void askName() throws IOException, ClassNotFoundException {
+        String name = null;
+        //send(new CommunicationMessage(ASK_NAME, null));
+
+        CommunicationMessage messageReceived = getResponse().get();
+        name = messageReceived.getMessage().toString();
+        while ((messageReceived.getID() != NAME_MESSAGE) || server.getConnectedPlayersName().contains(name)) {
+            send(new CommunicationMessage(REASK_NAME, null));
+            name = getResponse().get().getMessage().toString();
+        }
+
+        send(new CommunicationMessage(NAME_CONFIRMED, null));
+        clientName = name;
+        server.newWaitingConnection(this);
+        askJoiningAction();
+    }
+
     public void askJoiningAction() throws IOException, ClassNotFoundException {
         int joiningActionChosen; // 0 for creating a new match | 1 for joining an existing one if present
 
-        send(new CommunicationMessage(ASK_JOINING_ACTION, null));
-        joiningActionChosen = (int) getResponse().get().getMessage();
+        CommunicationMessage messageReceived =  getResponse().get();
+        while (messageReceived.getID() != JOINING_ACTION_INFO) {
+            send(new CommunicationMessage(JOINING_ACTION_INFO, null));
+            messageReceived = getResponse().get();
+        }
+
+        joiningActionChosen = (int)messageReceived.getMessage();
 
         if (joiningActionChosen == 0) {
+            send(new CommunicationMessage(CREATE_LOBBY_ACTION_CONFIRMED, null));
             createNewGame();
         } else {
-            joinExistingGame();
+            if(server.getActiveGames().size() <= 0) {
+                send(new CommunicationMessage(ERROR, "No lobbies are available."));
+                send(new CommunicationMessage(JOINING_ACTION_INFO, null));
+                askJoiningAction();
+            } else {
+                send(new CommunicationMessage(JOIN_LOBBY_ACTION_CONFIRMED, fetchLobbyInfos()));
+                joinExistingGame();
+            }
         }
     }
 
-    public int askGameNumberOfPlayer() throws IOException, ClassNotFoundException {
-        int size = 0;
-        send(new CommunicationMessage(ASK_PLAYER_NUMBER, null));
-        size = (int) getResponse().get().getMessage();
 
+    private void createNewGame() throws IOException, ClassNotFoundException {
+        int numberOfPlayer = askGameNumberOfPlayer();
+        boolean expertMode = askGameType();
+        Lobby newLobby = new Lobby(server, this, numberOfPlayer, expertMode);
+        newLobby.registerClientToLobby(this);
+        server.addGameLobby(newLobby);
+        server.handleLobbyState(newLobby, this);
+    }
+
+    private int askGameNumberOfPlayer() throws IOException, ClassNotFoundException {
+        int size = 0;
+
+        CommunicationMessage messageReceived = getResponse().get();
+        while(messageReceived.getID() != NUMBER_OF_PLAYER_INFO) {
+            send(new CommunicationMessage(NUMBER_OF_PLAYER_INFO, null));
+            messageReceived = getResponse().get();
+        }
+        size = (int) messageReceived.getMessage();
+        send(new CommunicationMessage(NUMBER_OF_PLAYER_CONFIRMED, null));
         return size;
     }
 
-    public boolean askGameType() throws IOException, ClassNotFoundException {
+    private boolean askGameType() throws IOException, ClassNotFoundException {
         boolean mode = false;
-        send(new CommunicationMessage(ASK_GAME_TYPE, null));
-        mode = (boolean) getResponse().get().getMessage();
+
+        CommunicationMessage messageReceived = getResponse().get();
+        while(messageReceived.getID() != GAME_TYPE_INFO) {
+            send(new CommunicationMessage(GAME_TYPE_INFO, null));
+            messageReceived = getResponse().get();
+        }
+
+        mode = (boolean) messageReceived.getMessage();
+        send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, null));
 
         return mode;
+    }
+
+    private void joinExistingGame() throws IOException, ClassNotFoundException {
+        CommunicationMessage receivedMessage = getResponse().get();
+        while(receivedMessage.getID() != LOBBY_TO_JOIN_INFO) {
+            send(new CommunicationMessage(LOBBY_TO_JOIN_INFO, fetchLobbyInfos()));
+            receivedMessage = getResponse().get();
+        }
+
+        String lobbyChosen = receivedMessage.getMessage().toString();
+        Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
+        if (selectedLobby.isFull()) {
+            send(new CommunicationMessage(ERROR, "The lobby you selected is already full or got full while you were choosing."));
+            send(new CommunicationMessage(JOINING_ACTION_INFO, null));
+            askJoiningAction();
+        } else {
+            send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, null));
+            selectedLobby.registerClientToLobby(this);
+            server.handleLobbyState(selectedLobby, this);
+        }
+    }
+
+    private List<LobbyInfo> fetchLobbyInfos() {
+        List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
+        // Setting up the lobbies to a serializable version
+        for (Lobby lobby : server.getActiveGames()) {
+            lobbyInfosToSend.add(new LobbyInfo(lobby));
+        }
+
+        return lobbyInfosToSend;
     }
 
     protected DeckType askDeckType(List<DeckType> availableDecks) throws IOException, ClassNotFoundException {
@@ -167,60 +249,9 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return message;
     }
 
-    private void askName() throws IOException, ClassNotFoundException {
-        String name = null;
-        //send(new CommunicationMessage(ASK_NAME, null));
 
-        var messageReceived = getResponse().get();
-        name = messageReceived.getMessage().toString();
-        while ((messageReceived.getID() != ASK_NAME && messageReceived.getID() != REASK_NAME) || server.getConnectedPlayersName().contains(name)) {
-            send(new CommunicationMessage(REASK_NAME, null));
-            name = getResponse().get().getMessage().toString();
-        }
 
-        clientName = name;
-        server.newWaitingConnection(this);
-    }
 
-    private String askChoseLobby() throws IOException, ClassNotFoundException {
-        String chosenLobby;
-
-        List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
-        // Setting up the lobbies to a serializable version
-        for (Lobby lobby : server.getActiveGames()) {
-            lobbyInfosToSend.add(new LobbyInfo(lobby));
-        }
-        send(new CommunicationMessage(ASK_LOBBY_TO_JOIN, lobbyInfosToSend));
-        chosenLobby = (String) getResponse().get().getMessage();
-
-        return chosenLobby;
-    }
-
-    private void createNewGame() throws IOException, ClassNotFoundException {
-        int numberOfPlayer = askGameNumberOfPlayer();
-        boolean expertMode = askGameType();
-        Lobby newLobby = new Lobby(server, this, numberOfPlayer, expertMode);
-        newLobby.registerClientToLobby(this);
-        server.addGameLobby(newLobby);
-        server.handleLobbyState(newLobby, this);
-    }
-
-    private void joinExistingGame() throws IOException, ClassNotFoundException {
-        if (server.getActiveGames().size() <= 0) {
-            send(new CommunicationMessage(ERROR, "No lobbies are available."));
-            askJoiningAction();
-        } else {
-            String lobbyChosen = askChoseLobby();
-            Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
-            if (selectedLobby.isFull()) {
-                send(new CommunicationMessage(ERROR, "The lobby you selected is already full or got full while you were choosing."));
-                askJoiningAction();
-            } else {
-                selectedLobby.registerClientToLobby(this);
-                server.handleLobbyState(selectedLobby, this);
-            }
-        }
-    }
 
     public String getClientName() {
         return clientName;

@@ -5,12 +5,20 @@ import java.io.Serializable;
 public class CommunicationMessage implements Serializable{
     private static final long serialVersionUID = 1234567L;
     public enum MessageType {
-        ASK_NAME,
+        NAME_MESSAGE,
         REASK_NAME,
+        NAME_CONFIRMED,
+        JOINING_ACTION_INFO,
+        JOIN_LOBBY_ACTION_CONFIRMED,
+        CREATE_LOBBY_ACTION_CONFIRMED,
+        NUMBER_OF_PLAYER_INFO,
+        NUMBER_OF_PLAYER_CONFIRMED,
+        GAME_TYPE_INFO,
+        LOBBY_TO_JOIN_INFO,
+        LOBBY_JOINED_CONFIRMED,
+        DECK_TYPE_MESSAGE,
         ASK_DECK,
-        ASK_PLAYER_NUMBER,
         ASK_GAME_TYPE,
-        ASK_JOINING_ACTION,
         ASK_LOBBY_TO_JOIN,
         ASSISTANT_NOT_PLAYABLE,
         GAME_ACTION,

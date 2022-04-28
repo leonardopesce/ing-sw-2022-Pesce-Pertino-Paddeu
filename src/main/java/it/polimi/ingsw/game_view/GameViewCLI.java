@@ -38,43 +38,53 @@ public class GameViewCLI implements GameViewClient{
         input = new Scanner(System.in);
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
-        askName();
+        new Thread(this::askName).start();
     }
 
     @Override
     public void askName() {
         System.out.println(GameViewClient.ASK_NAME_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(ASK_NAME, client.setName(input.nextLine())));
+        client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, client.setName(input.nextLine())));
     }
 
     @Override
     public void reaskName() {
         System.out.println(GameViewClient.REASK_NAME_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(REASK_NAME, client.setName(input.nextLine())));
+        client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, client.setName(input.nextLine())));
     }
 
     @Override
-    public void askDeck(Object decksAvailable) {
-        System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
+    public void askJoiningAction() {
+        System.out.println(GameViewClient.ASK_JOINING_ACTION_QUESTION);
+        client.asyncWriteToSocket(new CommunicationMessage(JOINING_ACTION_INFO, whileInputNotIntegerInRange(0,1)));
+    }
+
+    @Override
+    public void askPlayerNumber() {
+        System.out.println(GameViewClient.ASK_PLAYER_NUMBER_QUESTION);
         client.asyncWriteToSocket(new CommunicationMessage(
-                ASK_DECK,
-                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size() - 1))
-        ));
+                NUMBER_OF_PLAYER_INFO,
+                whileInputNotIntegerInRange(2, 4)));
     }
 
     @Override
     public void askGameType() {
         System.out.println(GameViewClient.ASK_GAME_TYPE_QUESTION);
         client.asyncWriteToSocket(new CommunicationMessage(
-                ASK_GAME_TYPE,
+                GAME_TYPE_INFO,
                 whileInputNotContainedIn(Arrays.asList("e", "n")).equals("e")));
     }
 
     @Override
-    public void askJoiningAction() {
-        System.out.println(GameViewClient.ASK_JOINING_ACTION_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(ASK_JOINING_ACTION, whileInputNotIntegerInRange(0,1)));
+    public void askDeck(Object decksAvailable) {
+        System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
+        client.asyncWriteToSocket(new CommunicationMessage(
+                DECK_TYPE_MESSAGE,
+                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size() - 1))
+        ));
     }
+
+
 
     @Override
     public void askLobbyToJoin(Object listOfLobbyInfos) {
@@ -84,16 +94,9 @@ public class GameViewCLI implements GameViewClient{
             System.out.println(i + ". " + lobby);
             i++;
         }
-        client.asyncWriteToSocket(new CommunicationMessage(ASK_LOBBY_TO_JOIN, whileInputNotContainedIn(((List<LobbyInfo>)listOfLobbyInfos).stream().map(LobbyInfo::getLobbyName).toList())));
+        client.asyncWriteToSocket(new CommunicationMessage(LOBBY_TO_JOIN_INFO, whileInputNotContainedIn(((List<LobbyInfo>)listOfLobbyInfos).stream().map(LobbyInfo::getLobbyName).toList())));
     }
 
-    @Override
-    public void askPlayerNumber() {
-        System.out.println(GameViewClient.ASK_PLAYER_NUMBER_QUESTION);
-        client.asyncWriteToSocket(new CommunicationMessage(
-                ASK_GAME_TYPE,
-                whileInputNotIntegerInRange(2, 4)));
-    }
 
     @Override
     public void gameReady(GameBoard board){

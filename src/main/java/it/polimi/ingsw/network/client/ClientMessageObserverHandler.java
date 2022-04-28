@@ -41,13 +41,13 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
     @Override
     public void update(CommunicationMessage message) {
         switch (message.getID()){
-            //case ASK_NAME   -> new Thread(view::askName).start();
             case REASK_NAME -> new Thread(view::reaskName).start();
+            case NAME_CONFIRMED, JOINING_ACTION_INFO -> new Thread(view::askJoiningAction).start();
+            case JOIN_LOBBY_ACTION_CONFIRMED, LOBBY_TO_JOIN_INFO -> new Thread(() -> view.askLobbyToJoin(message.getMessage())).start();
+            case CREATE_LOBBY_ACTION_CONFIRMED, NUMBER_OF_PLAYER_INFO -> new Thread(view::askPlayerNumber).start();
+            case NUMBER_OF_PLAYER_CONFIRMED, GAME_TYPE_INFO -> new Thread(view::askGameType).start();
+            case LOBBY_JOINED_CONFIRMED -> {} // DO NOTHING - now the user will wait until the game starts.
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
-            case ASK_GAME_TYPE -> new Thread(view::askGameType).start();
-            case ASK_JOINING_ACTION -> new Thread(view::askJoiningAction).start();
-            case ASK_LOBBY_TO_JOIN -> new Thread(() -> view.askLobbyToJoin(message.getMessage())).start();
-            case ASK_PLAYER_NUMBER -> new Thread(view::askPlayerNumber).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();
             case ERROR -> Logger.INFO((String) message.getMessage());
             case GAME_READY -> new Thread(() -> view.gameReady((GameBoard) message.getMessage())).start();

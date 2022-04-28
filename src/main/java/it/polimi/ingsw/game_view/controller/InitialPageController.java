@@ -59,7 +59,7 @@ public class InitialPageController implements Initializable {
         Button send = new Button();
         send.setText("Choose name");
         send.setOnAction(actionEvent ->
-            client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_NAME, response.getText()))
+            client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, response.getText()))
         );
         currentBox.getChildren().add(send);
 
@@ -110,8 +110,8 @@ public class InitialPageController implements Initializable {
         Button createGame = new Button("Create a game");
         Button joinButton = new Button("Join a game");
 
-        createGame.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_JOINING_ACTION, 0)));
-        joinButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.ASK_JOINING_ACTION, 1)));
+        createGame.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.JOINING_ACTION_INFO, 0)));
+        joinButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.JOINING_ACTION_INFO, 1)));
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(createGame, joinButton);
@@ -148,7 +148,7 @@ public class InitialPageController implements Initializable {
             if(listView.getSelectionModel().getSelectedItems().size() == 1){
                 LobbyInfo selected = listView.getSelectionModel().getSelectedItems().get(0);
                 if(!selected.isFull()){
-                    client.asyncWriteToSocket(new CommunicationMessage(ASK_LOBBY_TO_JOIN, selected.getLobbyName()));
+                    client.asyncWriteToSocket(new CommunicationMessage(LOBBY_TO_JOIN_INFO, selected.getLobbyName()));
                 }
                 else{
                     errorTextField.setText("Lobby full choose another or go back");
@@ -176,9 +176,9 @@ public class InitialPageController implements Initializable {
         Button button3 = new Button("3");
         Button button4 = new Button("4");
 
-        button2.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, 2)));
-        button3.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, 3)));
-        button4.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, 4)));
+        button2.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(NUMBER_OF_PLAYER_INFO, 2)));
+        button3.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(NUMBER_OF_PLAYER_INFO, 3)));
+        button4.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(NUMBER_OF_PLAYER_INFO, 4)));
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(button2, button3, button4);
@@ -199,8 +199,8 @@ public class InitialPageController implements Initializable {
         Button yesButton = new Button("No");
         Button noButton = new Button("Yes");
 
-        noButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, false)));
-        yesButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_GAME_TYPE, true)));
+        noButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(GAME_TYPE_INFO, false)));
+        yesButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(GAME_TYPE_INFO, true)));
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(noButton, yesButton);

@@ -75,7 +75,8 @@ public class GameViewGUI extends Application implements GameViewClient{
         }).start();
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
-        this.controllerInitial.setClient(client);*/
+        this.controllerInitial.setClient(client);
+        askName();*/
     }
 
     @Override
