@@ -51,7 +51,6 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     @Override
     public void update(CommunicationMessage message) {
         if(message.getID() == PING) {
-            // Logger.INFO("Received ping from server, ponging back");
             clientHandled.asyncWriteToSocket(new CommunicationMessage(PONG, null));
             pingTimer.cancel();
             pingTimer = new Timer();

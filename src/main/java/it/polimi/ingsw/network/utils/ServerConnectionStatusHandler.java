@@ -25,7 +25,6 @@ public class ServerConnectionStatusHandler extends ConnectionStatusHandler imple
     public void run() {
         while (connectionActive) {
             try {
-                // Logger.INFO(connection.getClientName() + " : PINGING to client");
                 connection.send(new CommunicationMessage(PING, null));
                 pingTimer.schedule(new PingTimeoutExceededTask(this), PING_TIMEOUT_DELAY);
                 Thread.sleep(10000);
