@@ -18,10 +18,10 @@
       <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-      <fx:include fx:id="player3" rotate="180.0" source="PlayerBoard.fxml" GridPane.columnIndex="1" />
-      <fx:include fx:id="player1" source="PlayerBoard.fxml" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <fx:include fx:id="player2" source="PlayerBoardRotated.fxml" GridPane.rowIndex="1" />
-        <fx:include fx:id="player4" rotate="180.0" source="PlayerBoardRotated.fxml" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <fx:include fx:id="player3" rotate="180.0" scaleX="0.75" scaleY="0.75" source="PlayerBoard.fxml" GridPane.columnIndex="1" />
+      <fx:include fx:id="player1" scaleX="0.75" scaleY="0.75" source="PlayerBoard.fxml" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <fx:include fx:id="player2" scaleX="0.75" scaleY="0.75" source="PlayerBoardRotated.fxml" GridPane.rowIndex="1" />
+      <fx:include fx:id="player4" rotate="180.0" scaleX="0.75" scaleY="0.75" source="PlayerBoardRotated.fxml" GridPane.columnIndex="2" GridPane.rowIndex="1" />
     </children>
 </GridPane>
 </AnchorPane>

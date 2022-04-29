@@ -24,8 +24,10 @@ public class RotatingBoardController implements Initializable {
 
     public void update(GameBoard gameBoard){
         for(int i = 0; i < gameBoard.getNames().size(); i++){
+            //playersBoardController.get(i).bindDimension(pane.widthProperty(), pane.heightProperty());
             playersBoardController.get(i).setName(gameBoard.getNames().get(i));
             playersBoardController.get(i).setSchool(gameBoard.getSchools().get(i));
+
         }
     }
 
