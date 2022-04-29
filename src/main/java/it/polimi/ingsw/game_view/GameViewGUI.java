@@ -98,14 +98,13 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     @Override
-    public void pongServer() {
-        Logger.INFO("Pinged from server, pinging back.");
-        client.asyncWriteToSocket(new CommunicationMessage(PONG, null));
+    public void displayYourTurn() {
+
     }
 
     @Override
-    public void displayYourTurn() {
-
+    public void displayOtherPlayerTurn(String otherPlayerName) {
+        // TODO: display the currently playing nickname to all the players except the one which is playing.
     }
 
     @Override

@@ -84,8 +84,6 @@ public class GameViewCLI implements GameViewClient{
         ));
     }
 
-
-
     @Override
     public void askLobbyToJoin(Object listOfLobbyInfos) {
         System.out.println(GameViewClient.ASK_LOBBY_TO_JOIN_QUESTION);
@@ -110,18 +108,12 @@ public class GameViewCLI implements GameViewClient{
     public void reaskAssistant() {
         System.out.println("Assistant not playable pick another one");
         msgHandler.setState(PLANNING_PHASE_START);
-        msgHandler.setActionSent(true);
+        msgHandler.setActionSent(false);
     }
 
     @Override
     public void updateBoard(GameBoard board) {
         System.out.println(board);
-    }
-
-    @Override
-    public void pongServer() {
-        // Logger.INFO("Pinged from server, pinging back.");
-        client.asyncWriteToSocket(new CommunicationMessage(PONG, null));
     }
 
     public void asyncReadInput(){
@@ -134,7 +126,7 @@ public class GameViewCLI implements GameViewClient{
                             displayNotYourTurn();
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Logger.ERROR("Client input stream is not available anymore.", e.getMessage());
                     }
                 }
                 else if(!msgHandler.isActionSent()) {
@@ -240,22 +232,25 @@ public class GameViewCLI implements GameViewClient{
         }
     }
 
-
-
     @Override
     public void displayNotYourTurn(){
-        System.out.println("PLEASE WAIT FOR YOUR TURN");
+        Logger.ERROR("("+ board.getCurrentlyPlaying() + " is playing). Wait your turn to play.", "Other player turn");
     }
 
     @Override
     public void displayYourTurn() {
-        System.out.println("IT'S YOUR TURN!");
+        Logger.INFO("It's your turn now!");
+    }
+
+    @Override
+    public void displayOtherPlayerTurn(String otherPlayerName) {
+        Logger.INFO("It's " + otherPlayerName + "'s turn. Soon you will be able to play!");
     }
 
     @Override
     public void displayExpertMode() {
-        System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
         System.out.println(board.getTerrain().getAdvancedCard());
+        if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
     }
 
     private synchronized int whileInputNotIntegerInRange(int a, int b){

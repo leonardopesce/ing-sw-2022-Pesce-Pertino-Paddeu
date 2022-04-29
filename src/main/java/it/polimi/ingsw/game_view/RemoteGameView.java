@@ -63,7 +63,11 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
             );
         }
         else {
-            sendMessage(new CommunicationMessage(message.getType(), message.isExpertMode() ? new GameBoardAdvanced(message.getGame()) : new GameBoard(message.getGame())));
+            if(message.getType() == ASSISTANT_NOT_PLAYABLE) {
+                if(message.getGame().getCurrentlyPlayingPlayer().getNickname().equals(((SocketClientConnection)clientConnection).getClientName())) sendMessage(new CommunicationMessage(message.getType(), message.isExpertMode() ? new GameBoardAdvanced(message.getGame()) : new GameBoard(message.getGame())));
+            } else {
+                sendMessage(new CommunicationMessage(message.getType(), message.isExpertMode() ? new GameBoardAdvanced(message.getGame()) : new GameBoard(message.getGame())));
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.network.utils.ConnectionStatusHandler;
 import it.polimi.ingsw.network.utils.LobbyInfo;
 import it.polimi.ingsw.network.utils.Logger;
+import it.polimi.ingsw.network.utils.ServerConnectionStatusHandler;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private ObjectInputStream in;
     private final Server server;
     private String clientName;
-    private final ConnectionStatusHandler connectionStatusHandler;
+    private final ServerConnectionStatusHandler connectionStatusHandler;
     private final LinkedList<CommunicationMessage> incomingMessages = new LinkedList<>();
 
     public SocketClientConnection(Socket socket, Server server) {
@@ -48,8 +49,9 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             }
         }).start();
 
-        this.connectionStatusHandler = new ConnectionStatusHandler(this);
+        this.connectionStatusHandler = new ServerConnectionStatusHandler();
         this.addObserver(connectionStatusHandler);
+        connectionStatusHandler.setConnection(this);
         connectionStatusHandler.start();
     }
 
@@ -211,7 +213,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         String lobbyChosen = receivedMessage.getMessage().toString();
         Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
         if (selectedLobby.isFull()) {
-            send(new CommunicationMessage(ERROR, "The lobby you selected is already full or got full while you were choosing."));
+            send(new CommunicationMessage(INFO, "The lobby you selected is already full or got full while you were choosing."));
             send(new CommunicationMessage(JOINING_ACTION_INFO, null));
             askJoiningAction();
         } else {
@@ -232,11 +234,15 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     }
 
     protected DeckType askDeckType(List<DeckType> availableDecks) throws IOException, ClassNotFoundException {
-        DeckType type = null;
         send(new CommunicationMessage(ASK_DECK, availableDecks));
-        type = (DeckType) getResponse().get().getMessage();
 
-        return type;
+        CommunicationMessage messageReceived = getResponse().get();
+        while(messageReceived.getID() != DECK_TYPE_MESSAGE) {
+            send(new CommunicationMessage(DECK_TYPE_MESSAGE, availableDecks));
+            messageReceived = getResponse().get();
+        }
+
+        return (DeckType) messageReceived.getMessage();
     }
 
     private Optional<CommunicationMessage> getResponse() throws IOException, ClassNotFoundException {
@@ -248,10 +254,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         } while (message.isEmpty());
         return message;
     }
-
-
-
-
 
     public String getClientName() {
         return clientName;

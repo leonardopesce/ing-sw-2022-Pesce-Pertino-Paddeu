@@ -7,8 +7,6 @@ import it.polimi.ingsw.game_view.board.Printable;
 import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observer;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PONG;
-
 public class ClientMessageObserverHandler implements Observer<CommunicationMessage> {
     private final GameViewClient view;
     private GameViewClient.InputStateMachine state;
@@ -22,12 +20,12 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
     public void updateBoardMessage(GameBoard board){
         Printable.clearScreen();
         view.setBoard(board);
+        view.updateBoard(board);
+        if(board.isExpertMode()){
+            view.displayExpertMode();
+        }
         if(board.getCurrentlyPlaying().equals(view.getClient().getName())){
-            view.updateBoard(board);
             view.displayYourTurn();
-            if(board.isExpertMode()){
-                view.displayExpertMode();
-            }
             switch (board.getPhase()){
                 case PLANNING_PHASE -> state = GameViewClient.InputStateMachine.PLANNING_PHASE_START;
                 case ACTION_PHASE_CHOOSING_CLOUD -> state = GameViewClient.InputStateMachine.CHOOSE_CLOUD_CARD_START;
@@ -35,6 +33,8 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
                 case ACTION_PHASE_MOVING_MOTHER_NATURE -> state = GameViewClient.InputStateMachine.MOVE_MOTHER_NATURE_START;
             }
             actionSent = false;
+        } else {
+            view.displayOtherPlayerTurn(board.getCurrentlyPlaying());
         }
     }
 
@@ -49,12 +49,12 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case LOBBY_JOINED_CONFIRMED -> {} // DO NOTHING - now the user will wait until the game starts.
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();
-            case ERROR -> Logger.INFO((String) message.getMessage());
+            case INFO -> Logger.INFO((String) message.getMessage());
+            case ERROR -> Logger.ERROR((String) message.getMessage(), "General Error");
             case GAME_READY -> new Thread(() -> view.gameReady((GameBoard) message.getMessage())).start();
             case VIEW_UPDATE -> new Thread(() -> updateBoardMessage((GameBoard) message.getMessage())).start();
             case YOU_WIN -> Logger.INFO("You have won the match!");
             case YOU_LOSE -> Logger.INFO("You lost the match!");
-            case PING -> new Thread(view::pongServer).start();
         }
     }
 

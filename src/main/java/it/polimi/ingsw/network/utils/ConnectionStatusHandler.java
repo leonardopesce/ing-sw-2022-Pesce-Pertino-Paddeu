@@ -1,63 +1,20 @@
 package it.polimi.ingsw.network.utils;
 
-import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.network.server.SocketClientConnection;
-import it.polimi.ingsw.observer.Observer;
-
-import java.io.IOException;
 import java.util.Timer;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PING;
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PONG;
+public abstract class ConnectionStatusHandler extends Thread {
+    protected final int PING_TIMEOUT_DELAY = 10000;
+    protected boolean connectionActive;
+    protected Timer pingTimer = new Timer();
 
-public class ConnectionStatusHandler extends Thread implements Observer<CommunicationMessage> {
-    private final int PING_TIMEOUT_DELAY = 10000;
-    private final SocketClientConnection connection;
-    private boolean connectionActive;
-    private Timer pingTimer = new Timer();
-
-    public ConnectionStatusHandler(SocketClientConnection connectionToHandle) {
-        connection = connectionToHandle;
+    public ConnectionStatusHandler() {
         connectionActive = true;
     }
 
     @Override
-    public void run() {
-        while (connectionActive) {
-            try {
-                connection.send(new CommunicationMessage(PING, null));
-                pingTimer.schedule(new PingTimeoutExceededTask(this), PING_TIMEOUT_DELAY);
-                Thread.sleep(10000);
-            } catch (InterruptedException sleepError) {
-                Logger.ERROR("Connection handler failed to sleep...", sleepError.getMessage());
-                abortConnection();
-            } catch(IOException sendError) {
-                Logger.ERROR("Failed to send the ping message.", sendError.getMessage());
-                abortConnection();
-            }
-        }
-    }
+    public void run() {}
 
-    @Override
-    public void update(CommunicationMessage message) {
-        if(message.getID() == PONG) {
-            pingTimer.cancel();
-            pingTimer = new Timer();
-        }
-    }
-
-    public boolean isConnectionActive() {
-        return connectionActive;
-    }
-
-    public void kill() {
-        connectionActive = false;
-    }
-
-    public void abortConnection() {
-        Logger.ERROR(connection.getClientName() + "'s connection aborted due to max ping limit exceeded.", "Ping time limit exceeded");
-        Thread.currentThread().interrupt();
-        connection.close();
-        connectionActive = false;
-    }
+    public abstract void kill();
+    public abstract boolean isConnectionActive();
+    public abstract void abortConnection();
 }

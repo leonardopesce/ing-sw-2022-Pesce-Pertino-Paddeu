@@ -28,6 +28,7 @@ public interface GameViewClient{
     void displayNotYourTurn();
     void updateBoard(GameBoard board);
     void displayYourTurn();
+    void displayOtherPlayerTurn(String otherPlayerName);
     void displayExpertMode();
     void askName();
     void reaskName();
@@ -38,7 +39,6 @@ public interface GameViewClient{
     void askPlayerNumber();
     void gameReady(GameBoard board);
     void reaskAssistant();
-    void pongServer();
     GameBoard getBoard();
     void setBoard(GameBoard board);
     Client getClient();

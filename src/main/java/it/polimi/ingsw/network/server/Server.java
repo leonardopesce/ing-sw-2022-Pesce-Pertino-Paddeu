@@ -90,6 +90,5 @@ public class Server {
         synchronized (this) {
             waitingConnection.add(connection);
         }
-        ((SocketClientConnection)connection).askJoiningAction();
     }
 }

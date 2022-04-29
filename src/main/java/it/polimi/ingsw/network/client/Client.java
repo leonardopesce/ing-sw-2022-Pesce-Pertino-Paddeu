@@ -1,14 +1,9 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_view.GameViewCLI;
-import it.polimi.ingsw.game_view.GameViewClient;
-import it.polimi.ingsw.game_view.GameViewGUI;
+import it.polimi.ingsw.network.utils.ClientConnectionStatusHandler;
 import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observable;
-import it.polimi.ingsw.observer.Observer;
-import javafx.application.Application;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,6 +17,7 @@ public class Client extends Observable<CommunicationMessage> {
     private boolean active = true;
     private ObjectOutputStream socketOut;
     private String name;
+    private ClientConnectionStatusHandler connectionStatusHandler;
 
     public Client(String ip, int port){
         this.ip = ip;
@@ -29,7 +25,7 @@ public class Client extends Observable<CommunicationMessage> {
     }
 
     public synchronized boolean isActive(){
-        return active;
+        return connectionStatusHandler.isConnectionActive();
     }
 
     public synchronized void setActive(boolean active){
@@ -77,6 +73,10 @@ public class Client extends Observable<CommunicationMessage> {
         Logger.INFO("Connection established");
         ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
         socketOut = new ObjectOutputStream(socket.getOutputStream());
+        connectionStatusHandler = new ClientConnectionStatusHandler();
+        connectionStatusHandler.setClient(this);
+        this.addObserver(connectionStatusHandler);
+        connectionStatusHandler.start();
 
         try{
             Thread t0 = asyncReadFromSocket(socketIn);
@@ -84,6 +84,7 @@ public class Client extends Observable<CommunicationMessage> {
         } catch(InterruptedException | NoSuchElementException e){
             Logger.INFO("Connection closed from the client side");
         } finally {
+            connectionStatusHandler.kill();
             socketIn.close();
             socketOut.close();
             socket.close();
