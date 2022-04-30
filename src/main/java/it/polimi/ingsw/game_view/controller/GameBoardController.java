@@ -100,14 +100,16 @@ public class GameBoardController implements Initializable {
                     //playerBoardButtons.get(i).setText(board.getNames().get(i));
                     int finalI = i;
                     playerBoardButtons.get(i).setOnAction(ActionEvent -> {
-                        synchronized (rotateTransition){
-                            rotateTransition.setByAngle(getDegreeTurn(finalI));
-                            rotateTransition.play();
-                            playerBoardButtons.get(showedBoard).setDisable(false);
-                            showedBoard = finalI;
-                            playerBoardButtons.get(showedBoard).setDisable(true);
-                            playerBoardButtons.get(showedBoard).setDisable(true);
-                        }
+                        new Thread(() -> {
+                            synchronized (rotateTransition){
+                                rotateTransition.setByAngle(getDegreeTurn(finalI));
+                                rotateTransition.play();
+                                playerBoardButtons.get(showedBoard).setDisable(false);
+                                showedBoard = finalI;
+                                playerBoardButtons.get(showedBoard).setDisable(true);
+                                playerBoardButtons.get(showedBoard).setDisable(true);
+                            }
+                        }).start();
                     });
                 }
                 else {

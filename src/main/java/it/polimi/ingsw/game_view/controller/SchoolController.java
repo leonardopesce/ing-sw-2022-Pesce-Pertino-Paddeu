@@ -21,11 +21,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SchoolController implements Initializable {
-    private ArrayList<Button> entranceStudentsButton = new ArrayList<>();
+    private ArrayList<ImageView> entranceStudentsButton = new ArrayList<>();
     private ArrayList<Circle> towersAvailable = new ArrayList<>();
 
     @FXML
-    Button entranceButton, diningHallButton, entranceButton1, st0, st1, st2, st3, st4, st5, st6, st7, st8;
+    Button entranceButton, diningHallButton, entranceButton1;
+    @FXML
+    ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8;
     @FXML
     Circle t0, t1, t2, t3, t4, t5, t6, t7;
     @FXML
@@ -42,14 +44,6 @@ public class SchoolController implements Initializable {
         schoolImage.setPreserveRatio(false);
         entranceStudentsButton.addAll(Arrays.asList(st0, st1, st2, st3, st4, st5, st6, st7, st8));
 
-        for (Button student: entranceStudentsButton){
-            Circle tmpCircle = new Circle(20);
-            tmpCircle.setFocusTraversable(true);
-            student.setShape(tmpCircle);
-            student.setScaleShape(false);
-            student.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-        }
-
         towersAvailable.addAll(Arrays.asList(t0, t1, t2, t3, t4, t5, t6, t7));
         for(Circle tower: towersAvailable){
             tower.setFill(Color.TRANSPARENT);
@@ -57,7 +51,7 @@ public class SchoolController implements Initializable {
 
     }
 
-    public Button getSt1() { return st1; }
+    public ImageView getSt1() { return st1; }
 
     public StackPane getMainPane() {
         return mainPane;
@@ -69,7 +63,7 @@ public class SchoolController implements Initializable {
 
     public void setEntranceStudents(List<ColorCharacter> students){
         for(int i = 0; i < students.size(); i++){
-            entranceStudentsButton.get(i).setBackground(new Background(new BackgroundFill(ColorCharacter.getPaint(students.get(i)), CornerRadii.EMPTY, Insets.EMPTY)));
+            entranceStudentsButton.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
         }
     }
 
