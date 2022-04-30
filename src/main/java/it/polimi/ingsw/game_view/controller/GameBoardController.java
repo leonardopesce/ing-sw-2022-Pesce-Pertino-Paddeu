@@ -53,6 +53,7 @@ public class GameBoardController implements Initializable {
 
     private void setAssistantsAction(){
         final boolean[] isUp = {false, false, false, false, false, false, false, false, false, false};
+
         for(int i = 0; i < assistants.size(); i++){
             ImageView assistant = assistants.get(i);
             assistant.setTranslateY(assistant.getFitHeight() * 0.8);
@@ -62,17 +63,17 @@ public class GameBoardController implements Initializable {
                 synchronized (moveEffect){
                     if(!isUp[finalI]){
                         moveEffect.setByY(- assistant.getFitHeight() * 0.9);
+                        moveEffect.setDelay(Duration.millis(0));
                         moveEffect.play();
-                        moveEffect.setOnFinished(a -> isUp[finalI] = true);
-                    }
-                }
-            });
-            assistant.setOnMouseExited(ActionEvent -> {
-                synchronized (moveEffect){
-                    if(isUp[finalI]){
-                        moveEffect.setByY(assistant.getFitHeight() * 0.9);
-                        moveEffect.play();
-                        moveEffect.setOnFinished(a -> isUp[finalI] = false);
+                        moveEffect.setOnFinished(a -> {
+                            isUp[finalI] = true;
+                            if(isUp[finalI]){
+                                moveEffect.setDelay(Duration.millis(3000));
+                                moveEffect.setByY(assistant.getFitHeight() * 0.9);
+                                moveEffect.play();
+                                moveEffect.setOnFinished(b -> isUp[finalI] = false);
+                            }
+                        });
                     }
                 }
             });
