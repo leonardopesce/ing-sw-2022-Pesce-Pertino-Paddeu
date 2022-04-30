@@ -136,7 +136,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         askJoiningAction();
     }
 
-    public void askJoiningAction() throws IOException, ClassNotFoundException {
+    private void askJoiningAction() throws IOException, ClassNotFoundException {
         int joiningActionChosen; // 0 for creating a new match | 1 for joining an existing one if present
 
         CommunicationMessage messageReceived =  getResponse().get();
