@@ -123,13 +123,10 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     }
 
     private void askName() throws IOException, ClassNotFoundException {
-        String name = null;
-        //send(new CommunicationMessage(ASK_NAME, null));
-
         CommunicationMessage messageReceived = getResponse().get();
-        name = messageReceived.getMessage().toString();
+        String name = messageReceived.getMessage().toString();
         while ((messageReceived.getID() != NAME_MESSAGE) || server.getConnectedPlayersName().contains(name)) {
-            send(new CommunicationMessage(REASK_NAME, null));
+            send(new CommunicationMessage(NAME_MESSAGE, null));
             name = getResponse().get().getMessage().toString();
         }
 

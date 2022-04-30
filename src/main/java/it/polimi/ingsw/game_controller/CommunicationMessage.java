@@ -6,7 +6,6 @@ public class CommunicationMessage implements Serializable{
     private static final long serialVersionUID = 1234567L;
     public enum MessageType {
         NAME_MESSAGE,
-        REASK_NAME,
         NAME_CONFIRMED,
         JOINING_ACTION_INFO,
         JOIN_LOBBY_ACTION_CONFIRMED,

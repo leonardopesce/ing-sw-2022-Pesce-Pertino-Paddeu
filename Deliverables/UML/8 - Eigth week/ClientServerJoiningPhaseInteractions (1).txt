@@ -1,0 +1,66 @@
+title Client-Server Joining Phase Interactions
+participant Client
+participant SocketClientConnection
+participant Lobby
+participant Server
+
+activate Server
+activate Client
+Client->Server:connect()
+Server->SocketClientConnection:new SocketClientConnection(newSocket)
+activate SocketClientConnection
+Client<--Server:accept()
+
+
+loop nicknameAlreadyPresent || message.ID != NAME_MESSAGE
+Client-->SocketClientConnection:NAME_MESSAGE:<chosen_name_by_the_player>
+SocketClientConnection->Client: NAME_MESSAGE:null
+end
+
+SocketClientConnection->Client: NAME_CONFIRMED:null
+
+alt player wants to create a new game
+loop message.ID != JOINING_ACTION_INFO
+Client-->SocketClientConnection: JOINING_ACTION_INFO:<action_chosen_by_client>
+SocketClientConnection->Client: JOINING_ACTION_INFO:null
+end
+SocketClientConnection->Client:CREATE_LOBBY_ACTION_CONFIRMED:null
+loop message.ID != NUMBER_OF_PLAYER_INFO
+Client-->SocketClientConnection:NUMBER_OF_PLAYER_INFO:<number_of_player_client_choice>
+SocketClientConnection->Client:NUMBER_OF_PLAYER_INFO:null
+end
+Client<-SocketClientConnection:NUMBER_OF_PLAYER_CONFIRMED:null
+loop message.ID != GAME_TYPE_INFO
+Client-->SocketClientConnection:GAME_TYPE_INFO:<game_type_choice>
+Client<-SocketClientConnection:GAME_TYPE_INFO:null
+end 
+SocketClientConnection->Lobby: new Lobby(server, numberOfPlayers, gameType)
+activate Lobby
+Lobby->Server:addGameLobby(newLobby)
+Lobby->Server:handleLobbyState(newLobby, this)
+
+
+Client<-SocketClientConnection:LOBBY_JOINED_CONFIRMED:null
+
+else player wants to join an existing game
+alt No lobby available
+SocketClientConnection->Client:JOINING_ACTION_INFO:"no lobbies are available"
+else There are available lobbies
+Client-->SocketClientConnection: LOBBY_TO_JOIN_INFO:<chosen_lobby>
+alt The lobby is full
+SocketClientConnection->Client: JOINING_ACTION_INFO:"the lobby is full"
+else The lobby is not full
+SocketClientConnection->Lobby:registerClientToLobby(this)
+SocketClientConnection->Server:handleLobbyState(selectedLobby, this)
+Client<-SocketClientConnection:LOBBY_JOINED_CONFIRMED:null\n
+end 
+end 
+end 
+opt the lobby is full
+Server->Lobby:start()
+loop Each player connected to the lobby will do this 
+SocketClientConnection<-Lobby:askDeckType()
+SocketClientConnection<-Client:DECK_TYPE_MESSAGE:<chosen_deck_type>
+end 
+note over Client,Server:Now the game between the lobby's players will begin.\nIf a player disconnects, all his opponents will get notified\nand disconnected from the lobby and finally from the server.
+end 
