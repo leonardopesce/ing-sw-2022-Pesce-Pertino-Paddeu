@@ -45,15 +45,15 @@
                       <RowConstraints percentHeight="16.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <ImageView fx:id="st0" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
-                        <ImageView fx:id="st1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
-                        <ImageView fx:id="st2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <ImageView fx:id="st3" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
-                        <ImageView fx:id="st4" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <ImageView fx:id="st5" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3" />
-                        <ImageView fx:id="st6" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <ImageView fx:id="st7" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4" />
-                        <ImageView fx:id="st8" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Button fx:id="st0" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" />
+                        <Button fx:id="st1" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.rowIndex="1" />
+                        <Button fx:id="st2" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="st3" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.rowIndex="2" />
+                        <Button fx:id="st4" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button fx:id="st5" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.rowIndex="3" />
+                        <Button fx:id="st6" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button fx:id="st7" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.rowIndex="4" />
+                        <Button fx:id="st8" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
                   <Button fx:id="entranceButton" mnemonicParsing="false" opacity="0.0" prefHeight="346.0" prefWidth="200.0" />
