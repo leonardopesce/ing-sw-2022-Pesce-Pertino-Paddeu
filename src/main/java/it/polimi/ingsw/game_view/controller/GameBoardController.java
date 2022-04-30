@@ -33,7 +33,10 @@ public class GameBoardController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
+    private GridPane islandsGridPane;
+    @FXML
     private RotatingBoardController rotatingBoardController;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
