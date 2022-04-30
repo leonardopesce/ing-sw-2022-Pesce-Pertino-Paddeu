@@ -72,6 +72,7 @@
 	
 	\newpage
 	\section{Introduzione}
+	\subsection{Obiettivi}
 	\paragraph{}
 	La \textbf{Prova Finale di Ingegneria del Software} dell'anno scolastico 2021-2022 prevede lo sviluppo di una versione software del gioco da tavolo \emph{Eriantys}, un prodotto \emph{Cranio Creations}\cite{eriantys} che si ispira e tenta di rinnovare il già affermato \emph{Carolus Magnus}\cite{carolusMagnus}.
 	
@@ -271,23 +272,63 @@
 		\item \textbf{Completamento interfaccia CLI:} abbiamo completato l'interfaccia da linea di comando, tra le modifiche più essenziali risulta esserci quella della gestione del client con una macchina a stati, ciò ci permette di avere un unico punto in cui leggere i messaggi dal socket con il server. Così facendo quando il server risponde, che sia un aggiornamento della partita o un errore, siamo sicuri che la lettura avvenga una sola volta e che venga eseguita l'azione corretta.
 		\item \textbf{Implementazione GUI:} oltre al resto abbiamo cominciato a sviluppare la GUI, per fare ciò ed avere le stesse azioni della CLI (ma con implementazioni diverse) abbiamo creato un interfaccia. 
 		Per leggere i messaggi che arrivano al client è stata creata una classe che fa da Observer per i messaggi e poi chiama il metodo dell'interfaccia (interpellata sopra) in modo da poter aggiornare anche la CLI in una maniera che ci sembra più pulita e ordinata e permette un implementazione di nuove azioni in maniera facile e lineare sia per CLI sia per GUI. 
-		È stata stesa una prima pagina della GUI per la fase iniziale.
-		\begin{figure}[h!]
-			\centering
-			\includegraphics[scale=0.45]{first_GUI_page.png}
-			\caption{First GUI page :D}
-		\end{figure}
+		È stata stesa una prima pagina della GUI per la fase iniziale.\\
 	\end{itemize}
-	\paragraph{}
-	INSERIRE GRAFICO CLASS DIAGRAM
 	\newpage
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.45]{first_GUI_page.png}
+		\caption{First GUI page :D}
+	\end{figure}
+	Per completezza, riportiamo il Class Diagram aggiornato:\\
+	\begin{figure}[h!]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\resizebox{\linewidth}{!}{\input{{umlSeventhWeek.pdf_tex}}}
+		\caption{Class Diagram - Settima settimana}
+	\end{figure}\\
+	
 	\paragraph{}
 	Alleghiamo infine un \textit{sequence diagram} che riassume la fase di connessione di un player al server, dalla creazione del suo \textit{socket}, alla costruzione di una nuova partita o partecipazione ad una lobby già esistente, fino al momento di inizio effettivo della partita stessa:\\
+	\newpage
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[scale=0.33]{SequenceDiagramJoiningPhaseInteractions.png}
 		\caption{Sequence Diagram - Connessione al server e primi passi}
 	\end{figure}
+	
+	\newpage
+	% Week 8: enhanced gui, extended ping system, server passive
+	\subsection{Settimana 8: Miglioramenti CLI\&GUI, Ping System esteso, server passivo}
+	\paragraph{}
+	Nell'ottava settimana di sviluppo sono stati fatti significativi passi avanti per quanto riguarda il reparto grafico e di interfaccia utente. Inoltre è stato esteso il ping system lato client in modo tale che anche l'applicativo client-side possa accorgersi di eventuali cadute di connessione del server. Infine, sono stati analizzati i documenti in preparazione alla peer review sull'architettura di rete.
+	\paragraph{}
+	La struttura del network è stata consolidata; sia server sia client riescono a reagire ad eventuali perdite di connessione dell'una o dell'altra parte, terminando il loro processo come da specifica.\\
+	\begin{figure}[h!]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\resizebox{\linewidth}{!}{\input{{umlEightWeek.pdf_tex}}}
+		\caption{Class Diagram - Ottava settimana}
+	\end{figure}\\
+	\paragraph{}
+	Abbiamo inoltre modificato il comportamento del server in fase di setup di connessione. Nella settimana precedente, il server in tale frazione si comportava da componente attivo. Nel corso della settimana corrente è stata invertita la logica.
+	\paragraph{}
+	Riportiamo dunque alcuni sequence diagram che riteniamo significativi.
+	Il primo rappresenta la fase di connessione del client al server fino all'effettivo join di una lobby, che sia creata dal player stesso o che sia di un altro giocatore. Il secondo mostra il funzionamento del ping system, mentre l'ultimo illustra una generica azione di gioco.
+	
+	\newpage
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.27]{ClientServerJoiningPhaseInteraction1.png}
+		\caption{Sequence Diagram - Connessione al server aggiornato}
+	\end{figure}
+	\newpage
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.3]{PingingSystem.png}
+		\caption{Sequence Diagram - Ping Pong}
+	\end{figure}
+	
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}
