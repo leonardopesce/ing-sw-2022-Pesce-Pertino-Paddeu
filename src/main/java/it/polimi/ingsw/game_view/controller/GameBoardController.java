@@ -53,31 +53,38 @@ public class GameBoardController implements Initializable {
 
     private void setAssistantsAction(){
         final boolean[] isUp = {false, false, false, false, false, false, false, false, false, false};
+        final int ANIMATION_DURATION = 500;
 
         for(int i = 0; i < assistants.size(); i++){
             ImageView assistant = assistants.get(i);
             assistant.setTranslateY(assistant.getFitHeight() * 0.8);
-            TranslateTransition moveEffect = new TranslateTransition(Duration.millis(500), assistant);
+            TranslateTransition moveUpEffect = new TranslateTransition(Duration.millis(ANIMATION_DURATION), assistant);
+            TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(ANIMATION_DURATION), assistant);
             int finalI = i;
             assistant.setOnMouseEntered(ActionEvent -> {
-                synchronized (moveEffect){
+                new Thread(() -> {
                     if(!isUp[finalI]){
-                        moveEffect.setByY(- assistant.getFitHeight() * 0.9);
-                        moveEffect.setDelay(Duration.millis(0));
-                        moveEffect.play();
-                        moveEffect.setOnFinished(a -> {
-                            isUp[finalI] = true;
-                            if(isUp[finalI]){
-                                moveEffect.setDelay(Duration.millis(3000));
-                                moveEffect.setByY(assistant.getFitHeight() * 0.9);
-                                moveEffect.play();
-                                moveEffect.setOnFinished(b -> isUp[finalI] = false);
-                            }
-                        });
+                        moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
+                        moveUpEffect.play();
+                        moveUpEffect.setOnFinished(a -> isUp[finalI] = true);
                     }
-                }
+                }).start();
             });
-
+            assistant.setOnMouseExited(ActionEvent -> {
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(ANIMATION_DURATION);
+                    } catch (InterruptedException e) {
+                        // Impossible to reach since the animation duration is ALWAYS > 0
+                        e.printStackTrace();
+                    }
+                    if(isUp[finalI]){
+                        moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
+                        moveDownEffect.play();
+                        moveDownEffect.setOnFinished(a -> isUp[finalI] = false);
+                    }
+                }).start();
+            });
         }
     }
 
