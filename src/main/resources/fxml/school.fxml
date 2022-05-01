@@ -64,7 +64,6 @@
                   <Button fx:id="diningHallButton" mnemonicParsing="false" opacity="0.0" prefHeight="1354.0" prefWidth="2102.0" />
                   <GridPane alignment="CENTER">
                      <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
@@ -74,7 +73,8 @@
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="18.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="16.0" prefWidth="100.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" percentHeight="16.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -86,6 +86,158 @@
                      <StackPane.margin>
                         <Insets />
                      </StackPane.margin>
+                     <children>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="8">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="9">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="2">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="3">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="4">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="5">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="6">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="7">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="8">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="9">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="2">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="3">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="4">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="5">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="6">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="7">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="8">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="43.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" GridPane.columnIndex="9">
+                           <image>
+                              <Image url="@../img/wooden_pieces/mini_student_red.png" />
+                           </image>
+                        </ImageView>
+                     </children>
                   </GridPane>
                </children>
             </StackPane>
