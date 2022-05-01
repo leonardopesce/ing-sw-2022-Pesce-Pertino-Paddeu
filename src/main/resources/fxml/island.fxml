@@ -12,7 +12,7 @@
 
 <Group xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.IslandController">
    <children>
-      <ImageView fitHeight="200.0" fitWidth="244.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="island" fitHeight="200.0" fitWidth="244.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/wooden_pieces/island1.png" />
          </image>
@@ -29,19 +29,19 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fitHeight="56.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true" translateX="-5.0" translateY="-5.0">
+            <ImageView fx:id="motherNature" fitHeight="56.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true" translateX="-5.0" translateY="-5.0">
                <image>
                   <Image url="@../img/wooden_pieces/mother_nature.png" />
                </image>
             </ImageView>
             <StackPane prefHeight="150.0" prefWidth="200.0" translateX="25.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <ImageView fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="yellowStudent" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/wooden_pieces/student_yellow.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="25.0" prefWidth="11.0" text="?">
+                  <Label fx:id="studentsNumberYellow" prefHeight="25.0" prefWidth="11.0" text="?">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>
@@ -50,12 +50,12 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" translateX="15.0" GridPane.rowIndex="2">
                <children>
-                  <ImageView fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="pinkStudent" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/wooden_pieces/student_pink.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="25.0" prefWidth="11.0" text="?">
+                  <Label fx:id="studentsNumberPink" prefHeight="25.0" prefWidth="11.0" text="?">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>
@@ -64,12 +64,12 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <ImageView fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="redStudent" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/wooden_pieces/student_red.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="25.0" prefWidth="11.0" text="?">
+                  <Label fx:id="studentsNumberRed" prefHeight="25.0" prefWidth="11.0" text="?">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>
@@ -78,12 +78,12 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <ImageView fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="blueStudent" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/wooden_pieces/student_blue.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="25.0" prefWidth="11.0" text="?">
+                  <Label fx:id="studentsNumberBlue" prefHeight="25.0" prefWidth="11.0" text="?">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>
@@ -92,12 +92,12 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <ImageView fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="greenStudent" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/wooden_pieces/student_green.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="25.0" prefWidth="11.0" text="?">
+                  <Label fx:id="studentsNumberGreen" prefHeight="25.0" prefWidth="11.0" text="?">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>
@@ -106,12 +106,12 @@
             </StackPane>
             <StackPane prefHeight="56.0" prefWidth="35.0" translateX="-5.0" translateY="-5.0" GridPane.columnIndex="1">
                <children>
-                  <ImageView fitHeight="54.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="towerImage" fitHeight="54.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/wooden_pieces/black_tower.png" />
                      </image>
                   </ImageView>
-                  <Label prefHeight="52.0" prefWidth="15.0" text="?">
+                  <Label fx:id="towerNumber" prefHeight="52.0" prefWidth="15.0" text="?">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>

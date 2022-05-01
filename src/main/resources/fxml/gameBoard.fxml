@@ -112,20 +112,20 @@
          </GridPane>
           <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
               <children>
-                  <fx:include source="island.fxml" translateX="20" translateY="40.0" />
-                  <fx:include source="island.fxml" translateY="-20.0" />
-                  <fx:include source="island.fxml" translateY="-40.0" />
-                  <fx:include source="island.fxml" translateY="-20.0" />
-                  <fx:include source="island.fxml" translateX="-20" translateY="40.0"/>
+                  <fx:include fx:id="island0" source="island.fxml" translateX="20" translateY="40.0" />
+                  <fx:include fx:id="island1" source="island.fxml" translateY="-20.0" />
+                  <fx:include fx:id="island2" source="island.fxml" translateY="-40.0" />
+                  <fx:include fx:id="island3" source="island.fxml" translateY="-20.0" />
+                  <fx:include fx:id="island4" source="island.fxml" translateX="-20" translateY="40.0"/>
               </children>
           </HBox>
           <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
               <children>
-                  <fx:include source="island.fxml" translateX="20" translateY="-40.0"/>
-                  <fx:include source="island.fxml" translateY="20.0"/>
-                  <fx:include source="island.fxml" translateY="40.0"/>
-                  <fx:include source="island.fxml" translateY="20.0"/>
-                  <fx:include source="island.fxml" translateX="-20" translateY="-40.0"/>
+                  <fx:include fx:id="island10" source="island.fxml" translateX="20" translateY="-40.0"/>
+                  <fx:include fx:id="island9" source="island.fxml" translateY="20.0"/>
+                  <fx:include fx:id="island8" source="island.fxml" translateY="40.0"/>
+                  <fx:include fx:id="island7" source="island.fxml" translateY="20.0"/>
+                  <fx:include fx:id="island6" source="island.fxml" translateX="-20" translateY="-40.0"/>
               </children>
           </HBox>
          <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -139,8 +139,8 @@
            </rowConstraints>
             <children>
                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
-               <fx:include source="island.fxml" />
-               <fx:include source="island.fxml" GridPane.columnIndex="2" />
+               <fx:include fx:id="island11" source="island.fxml" />
+               <fx:include fx:id="island5" source="island.fxml" GridPane.columnIndex="2" />
             </children>
          </GridPane>
       </children>

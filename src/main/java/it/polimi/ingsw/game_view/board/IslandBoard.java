@@ -16,6 +16,7 @@ public class IslandBoard implements Serializable {
     private final ColorTower towerColor;
     private final int deniedCounter;
     private final boolean hasMotherNature;
+    private final int ID;
 
     public IslandBoard(Island island, boolean hasMotherNature, int islandIndex) {
         students = new ArrayList<>(island.getStudents().stream().map(BasicCharacter::getColor).toList());
@@ -24,6 +25,7 @@ public class IslandBoard implements Serializable {
         towerColor = island.getTowers().size() > 0 ? island.getTowers().get(0).getColor() : ColorTower.WHITE;
         deniedCounter = island.getIsBlocked().get();
         this.hasMotherNature = hasMotherNature;
+        this.ID = island.getId();
     }
     @Override
     public String toString(){
@@ -36,5 +38,33 @@ public class IslandBoard implements Serializable {
                 + towerNumber + "\t" : "  \t") +
                 Printable.V2_BAR + "\n" +
                 Printable.BL2_CORNER + Printable.H2_BAR.repeat(11) + Printable.BR2_CORNER + "\n";
+    }
+
+    public List<ColorCharacter> getStudents() {
+        return students;
+    }
+
+    public int getID(){
+        return ID;
+    }
+
+    public int getIslandIndex() {
+        return islandIndex;
+    }
+
+    public int getTowerNumber() {
+        return towerNumber;
+    }
+
+    public ColorTower getTowerColor() {
+        return towerColor;
+    }
+
+    public int getDeniedCounter() {
+        return deniedCounter;
+    }
+
+    public boolean hasMotherNature() {
+        return hasMotherNature;
     }
 }

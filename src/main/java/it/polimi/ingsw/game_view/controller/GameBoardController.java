@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_view.board.GameBoard;
+import it.polimi.ingsw.game_view.board.IslandBoard;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -26,6 +27,7 @@ public class GameBoardController implements Initializable {
     final RotateTransition rotateTransition = new RotateTransition();
     private List<Button> playerBoardButtons = new ArrayList<>();
     private List<ImageView> assistants = new ArrayList<>();
+    private List<IslandController> islands = new ArrayList<>();
     @FXML
     ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
@@ -33,7 +35,7 @@ public class GameBoardController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
-    private GridPane islandsGridPane;
+    private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
     @FXML
     private RotatingBoardController rotatingBoardController;
 
@@ -41,6 +43,7 @@ public class GameBoardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
+        islands.addAll(Arrays.asList(island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller));
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 
         assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
@@ -120,6 +123,14 @@ public class GameBoardController implements Initializable {
 
         }
         rotatingBoardController.update(board);
+        for (IslandController island: islands){
+            island.hide();
+        }
+
+        for(IslandBoard island: board.getTerrain().getIslands()){
+            islands.get(island.getID()).unHide();
+            islands.get(island.getID()).update(island);
+        }
     }
 
 
