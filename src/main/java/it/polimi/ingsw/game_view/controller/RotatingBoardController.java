@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class RotatingBoardController implements Initializable {
@@ -29,10 +30,21 @@ public class RotatingBoardController implements Initializable {
     public void update(GameBoard gameBoard){
         for(int i = 0; i < gameBoard.getNames().size(); i++){
             //playersBoardController.get(i).bindDimension(pane.widthProperty(), pane.heightProperty());
+            playersBoardController.get(i).setDeckBoard(gameBoard.getDecks().get(i));
             playersBoardController.get(i).setName(gameBoard.getNames().get(i));
             playersBoardController.get(i).setSchool(gameBoard.getSchools().get(i));
 
         }
+    }
+
+    public PlayerBoardController getBoardOfPlayerWithName(String name){
+        for (PlayerBoardController player: playersBoardController){
+            if(Objects.equals(player.getName().getText(), name)){
+                return player;
+            }
+        }
+        //not reachable
+        return null;
     }
 
     public AnchorPane getPane() {

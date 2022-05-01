@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_view.board.DeckBoard;
 import it.polimi.ingsw.game_view.board.SchoolBoard;
 import javafx.fxml.FXML;
 
@@ -26,8 +27,8 @@ public class PlayerBoardRotatedController extends PlayerBoardController{
     }
 
     @Override
-    public void setDeckType(DeckType deckType) {
-        playerBoardRotatedController.setDeckType(deckType);
+    public void setDeckBoard(DeckBoard deckBoard) {
+        playerBoardRotatedController.setDeckBoard(deckBoard);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PlayerBoardController implements Initializable {
-    private DeckType deckType;
+    private DeckBoard deckBoard;
     @FXML
     private Label nickName;
     @FXML
@@ -35,12 +35,12 @@ public class PlayerBoardController implements Initializable {
         playerBoard.setVisible(false);
     }
 
-    public DeckType getDeckType() {
-        return deckType;
+    public DeckBoard getDeckBoard() {
+        return deckBoard;
     }
 
-    public void setDeckType(DeckType deckType) {
-        this.deckType = deckType;
+    public void setDeckBoard(DeckBoard deckBoard) {
+        this.deckBoard = deckBoard;
     }
 
     public Label getName() {
