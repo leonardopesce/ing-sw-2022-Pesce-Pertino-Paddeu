@@ -23,7 +23,7 @@
        <RowConstraints minHeight="10.0" percentHeight="21.5" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-          <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
+          <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" translateY="10.0">
               <children>
                   <fx:include fx:id="island0" source="island.fxml" translateX="20" translateY="40.0" />
                   <fx:include fx:id="island1" source="island.fxml" translateY="-20.0" />
@@ -47,7 +47,7 @@
                <fx:include fx:id="island5" source="island.fxml" GridPane.columnIndex="2" />
             </children>
          </GridPane>
-          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" translateY="-10.0" GridPane.rowIndex="2">
               <children>
                   <fx:include fx:id="island10" source="island.fxml" translateX="20" translateY="-40.0" />
                   <fx:include fx:id="island9" source="island.fxml" translateY="20.0" />

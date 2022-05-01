@@ -23,6 +23,7 @@ public class IslandController implements Initializable {
     @FXML
     private Label studentsNumberRed, studentsNumberYellow, studentsNumberPink, studentsNumberGreen, studentsNumberBlue, towerNumber;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         studentImage.addAll(Arrays.asList(greenStudent, blueStudent, redStudent, pinkStudent, yellowStudent));
