@@ -56,4 +56,7 @@ public class PlayerBoardController implements Initializable {
         schoolController.setTowersAvailable(school.getTowers(), school.getTowerColor());
     }
 
+    public SchoolController getSchool() {
+        return schoolController;
+    }
 }

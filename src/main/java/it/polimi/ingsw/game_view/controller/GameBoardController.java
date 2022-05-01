@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_controller.action.GameAction;
 import it.polimi.ingsw.game_controller.action.PlayAssistantCardAction;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_view.board.GameBoard;
@@ -9,18 +8,19 @@ import it.polimi.ingsw.game_view.board.IslandBoard;
 import it.polimi.ingsw.network.client.Client;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
@@ -76,8 +76,10 @@ public class GameBoardController implements Initializable {
     }
 
     public void setClientName(String name){
+        //TODO delete, just for testing purpose
         this.clientName = name;
         showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
+
     }
 
     private void setUpDecks(int pos){
@@ -165,6 +167,8 @@ public class GameBoardController implements Initializable {
         }).start());
     }
 
+
+
     public void updateBoard(GameBoard board){
         rotatingBoardController.update(board);
         if(firstTime){
@@ -194,6 +198,8 @@ public class GameBoardController implements Initializable {
                 }
             }
             setUpDecks(showedBoard.get());
+            //TODO delete just for testing purpose
+            makeStudentEntranceSelectable();
         }
         for(int i = 0; i < board.getNames().size(); i++){
             if(playerBoardButtons.get(i).getText().equals(clientName)){
@@ -210,6 +216,34 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    public void makeStudentEntranceSelectable(){
+        List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
+        for(int i = 0; i < entranceStudents.size(); i++){
+            setHoverEffect(entranceStudents.get(i), entranceStudents.get(i).getFitHeight() / 2 + 5);
+            int finalI = i;
+            entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
+                for(int k = 0; k < entranceStudents.size(); k++) {
+                    resetHoverEffect(entranceStudents.get(k));
+                    if(finalI == k) {
+                        DropShadow shadow = new DropShadow();
+                        shadow.setColor(Color.YELLOW);
+                        shadow.setRadius(entranceStudents.get(k).getFitHeight() / 2 + 5);
+                        entranceStudents.get(k).setEffect(shadow);
+                    }
+                }
+                makeVisibleIslandsSelectable();
+            });
+        }
+    }
+
+    public void makeVisibleIslandsSelectable(){
+        for(int i = 0; i < islands.size(); i++){
+            if(islands.get(i).isVisible()){
+                setHoverEffect(islands.get(i).getIsland(), islands.get(i).getIsland().getFitWidth() / 2);
+            }
+        }
+    }
+
     private int getDegreeTurn(int finalPos){
         return Math.floorMod(finalPos - showedBoard.get(), 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard.get(), 4) == 2 ? 180 : Math.floorMod(finalPos - showedBoard.get(), 4) == 1 ? -90 : 0;
     }
@@ -218,5 +252,18 @@ public class GameBoardController implements Initializable {
         for(Button playerButton: playerBoardButtons){
             playerButton.setDisable(value);
         }
+    }
+
+    private void setHoverEffect(Node node, double radius){
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.YELLOW);
+        shadow.setRadius(radius);
+        node.setOnMouseEntered(ActionEvent -> node.setEffect(shadow));
+        node.setOnMouseExited(ActionEvent -> node.setEffect(null));
+    }
+
+    private void resetHoverEffect(Node node){
+        node.setOnMouseEntered(null);
+        node.setOnMouseExited(null);
     }
 }

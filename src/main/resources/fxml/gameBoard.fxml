@@ -29,7 +29,7 @@
                   <fx:include fx:id="island1" source="island.fxml" translateY="-20.0" />
                   <fx:include fx:id="island2" source="island.fxml" translateY="-40.0" />
                   <fx:include fx:id="island3" source="island.fxml" translateY="-20.0" />
-                  <fx:include fx:id="island4" source="island.fxml" translateX="-20" translateY="40.0" />
+                  <fx:include fx:id="island4" layoutY="40.0" source="island.fxml" translateX="-20" translateY="40.0" />
               </children>
           </HBox>
          <GridPane alignment="CENTER" GridPane.rowIndex="1">

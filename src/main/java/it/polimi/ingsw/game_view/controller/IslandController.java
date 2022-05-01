@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class IslandController implements Initializable {
-    private List<ImageView> studentImage = new ArrayList<>();
-    private List<Label> studentNumber = new ArrayList<>();
+    private final List<ImageView> studentImage = new ArrayList<>();
+    private final List<Label> studentNumber = new ArrayList<>();
     @FXML
     private ImageView island, motherNature, redStudent, yellowStudent, pinkStudent, greenStudent, blueStudent, towerImage;
     @FXML
@@ -38,8 +38,16 @@ public class IslandController implements Initializable {
         towerNumber.setVisible(false);
     }
 
+    public ImageView getIsland() {
+        return island;
+    }
+
     public void hide(){
         island.setVisible(false);
+    }
+
+    public boolean isVisible(){
+        return island.isVisible();
     }
 
     public void unHide(){

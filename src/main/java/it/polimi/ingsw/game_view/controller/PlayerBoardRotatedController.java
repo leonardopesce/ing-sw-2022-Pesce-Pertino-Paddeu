@@ -33,6 +33,11 @@ public class PlayerBoardRotatedController extends PlayerBoardController{
     }
 
     @Override
+    public SchoolController getSchool() {
+        return playerBoardRotatedController.getSchool();
+    }
+
+    @Override
     public void setName(String nickName) {
         playerBoardRotatedController.setName(nickName);
     }

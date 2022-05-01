@@ -2,13 +2,9 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -22,8 +18,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SchoolController implements Initializable {
-    private ArrayList<ImageView> entranceStudentsButton = new ArrayList<>();
-    private ArrayList<Circle> towersAvailable = new ArrayList<>();
+    private final ArrayList<ImageView> entranceStudents = new ArrayList<>();
+    private final ArrayList<Circle> towersAvailable = new ArrayList<>();
 
     @FXML
     Button diningHallButton, entranceButton1;
@@ -43,7 +39,7 @@ public class SchoolController implements Initializable {
         schoolImage.fitWidthProperty().bind(mainPane.widthProperty());
         schoolImage.fitHeightProperty().bind(mainPane.heightProperty());
         schoolImage.setPreserveRatio(false);
-        entranceStudentsButton.addAll(Arrays.asList(st0, st1, st2, st3, st4, st5, st6, st7, st8));
+        entranceStudents.addAll(Arrays.asList(st0, st1, st2, st3, st4, st5, st6, st7, st8));
 
         towersAvailable.addAll(Arrays.asList(t0, t1, t2, t3, t4, t5, t6, t7));
         for(Circle tower: towersAvailable){
@@ -64,22 +60,13 @@ public class SchoolController implements Initializable {
 
     public void setEntranceStudents(List<ColorCharacter> students){
         for(int i = 0; i < students.size(); i++){
-            entranceStudentsButton.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
-            entranceStudentsButton.get(i).toFront();
-            setStudentHoverEffect(entranceStudentsButton.get(i));
+            entranceStudents.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
         }
         System.out.println("adding hover effect");
     }
 
-    private void setStudentHoverEffect(ImageView student){
-        DropShadow shadow = new DropShadow();
-        shadow.setColor(Color.YELLOW);
-        shadow.setRadius(st0.getFitHeight()/2 + 5);
-        student.setOnMouseEntered(ActionEvent -> {
-            System.out.println("entered student");
-            student.setEffect(shadow);
-        });
-        student.setOnMouseExited(ActionEvent -> student.setEffect(null));
+    public ArrayList<ImageView> getEntranceStudents() {
+        return entranceStudents;
     }
 
     public void setTowersAvailable(int numOfTowers, ColorTower color){
