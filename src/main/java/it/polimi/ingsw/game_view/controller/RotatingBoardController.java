@@ -22,6 +22,10 @@ public class RotatingBoardController implements Initializable {
         playersBoardController.addAll(Arrays.asList(player1Controller, player2Controller, player3Controller, player4Controller));
     }
 
+    public PlayerBoardController getBoardX(int i){
+        return playersBoardController.get(i);
+    }
+
     public void update(GameBoard gameBoard){
         for(int i = 0; i < gameBoard.getNames().size(); i++){
             //playersBoardController.get(i).bindDimension(pane.widthProperty(), pane.heightProperty());

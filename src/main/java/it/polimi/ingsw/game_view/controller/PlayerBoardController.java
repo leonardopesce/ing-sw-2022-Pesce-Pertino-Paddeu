@@ -27,6 +27,10 @@ public class PlayerBoardController implements Initializable {
         playerBoard.scaleYProperty().bind(height.divide(1080));
     }
 
+    public void hide(){
+        playerBoard.setVisible(false);
+    }
+
     public void setName(String nickName) {
         this.nickName.setText(nickName);
     }

@@ -18,16 +18,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameBoardController implements Initializable {
     private String clientName;
     private boolean firstTime = true;
     private int showedBoard = 0;
     final RotateTransition rotateTransition = new RotateTransition();
-    private List<Button> playerBoardButtons = new ArrayList<>();
-    private List<ImageView> assistants = new ArrayList<>();
-    private List<IslandController> islands = new ArrayList<>();
+    private final List<Button> playerBoardButtons = new ArrayList<>();
+    private final List<ImageView> assistants = new ArrayList<>();
+    private final List<IslandController> islands = new ArrayList<>();
     @FXML
     ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
@@ -57,6 +56,10 @@ public class GameBoardController implements Initializable {
         rotateTransition.setNode(rotatingBoardController.getPane());
     }
 
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
     private void setAssistantsAction(){
         final boolean[] isUp = {false, false, false, false, false, false, false, false, false, false};
         final int ANIMATION_DURATION = 500;
@@ -67,6 +70,7 @@ public class GameBoardController implements Initializable {
             TranslateTransition moveUpEffect = new TranslateTransition(Duration.millis(ANIMATION_DURATION), assistant);
             TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(ANIMATION_DURATION), assistant);
             int finalI = i;
+
             assistant.setOnMouseEntered(ActionEvent -> {
                 new Thread(() -> {
                     if(!isUp[finalI]){
@@ -99,23 +103,26 @@ public class GameBoardController implements Initializable {
             firstTime = false;
             playerBoardButtons.get(showedBoard).setDisable(true);
             for(int i = 0; i < 4; i++){
-                if(i < board.getNames().size() + 4){
-                    //playerBoardButtons.get(i).setText(board.getNames().get(i));
+                if(i < board.getNames().size()){
+                    playerBoardButtons.get(i).setText(board.getNames().get(i));
                     int finalI = i;
                     playerBoardButtons.get(i).setOnAction(ActionEvent -> {
-                        new Thread(() -> {
-                            synchronized (rotateTransition){
-                                rotateTransition.setByAngle(getDegreeTurn(finalI));
-                                rotateTransition.play();
-                                playerBoardButtons.get(showedBoard).setDisable(false);
+                        synchronized (rotateTransition) {
+
+                            setRotatingButtonDisabled(true);
+                            rotateTransition.setByAngle(getDegreeTurn(finalI));
+                            rotateTransition.setOnFinished(a -> {
+                                setRotatingButtonDisabled(false);
                                 showedBoard = finalI;
                                 playerBoardButtons.get(showedBoard).setDisable(true);
                                 playerBoardButtons.get(showedBoard).setDisable(true);
-                            }
-                        }).start();
+                            });
+                            rotateTransition.play();
+                        }
                     });
                 }
                 else {
+                    rotatingBoardController.getBoardX(i).hide();
                     playerBoardButtons.get(i).setDisable(true);
                     playerBoardButtons.get(i).setVisible(false);
                 }
@@ -136,5 +143,11 @@ public class GameBoardController implements Initializable {
 
     private int getDegreeTurn(int finalPos){
         return Math.floorMod(finalPos - showedBoard, 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard, 4) == 2 ? 180 : -90;
+    }
+
+    private void setRotatingButtonDisabled(boolean value){
+        for(Button playerButton: playerBoardButtons){
+            playerButton.setDisable(value);
+        }
     }
 }

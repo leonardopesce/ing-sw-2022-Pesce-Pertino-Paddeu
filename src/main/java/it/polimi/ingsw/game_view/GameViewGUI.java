@@ -180,6 +180,9 @@ public class GameViewGUI extends Application implements GameViewClient{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            //controllerGameBoard.setClientName(client.getName());
+            // for testing
+            controllerGameBoard.setClientName("Paolo");
             controllerGameBoard.updateBoard(board);
         });
     }

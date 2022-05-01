@@ -16,6 +16,11 @@ public class PlayerBoardRotatedController extends PlayerBoardController{
     }
 
     @Override
+    public void hide(){
+        playerBoardRotatedController.hide();
+    }
+
+    @Override
     public void setName(String nickName) {
         playerBoardRotatedController.setName(nickName);
     }
