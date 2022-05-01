@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -25,7 +26,7 @@ public class SchoolController implements Initializable {
     private ArrayList<Circle> towersAvailable = new ArrayList<>();
 
     @FXML
-    Button entranceButton, diningHallButton, entranceButton1;
+    Button diningHallButton, entranceButton1;
     @FXML
     ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8;
     @FXML
@@ -48,8 +49,8 @@ public class SchoolController implements Initializable {
         for(Circle tower: towersAvailable){
             tower.setFill(Color.TRANSPARENT);
         }
-
     }
+
 
     public ImageView getSt1() { return st1; }
 
@@ -64,7 +65,21 @@ public class SchoolController implements Initializable {
     public void setEntranceStudents(List<ColorCharacter> students){
         for(int i = 0; i < students.size(); i++){
             entranceStudentsButton.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
+            entranceStudentsButton.get(i).toFront();
+            setStudentHoverEffect(entranceStudentsButton.get(i));
         }
+        System.out.println("adding hover effect");
+    }
+
+    private void setStudentHoverEffect(ImageView student){
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.YELLOW);
+        shadow.setRadius(st0.getFitHeight()/2 + 5);
+        student.setOnMouseEntered(ActionEvent -> {
+            System.out.println("entered student");
+            student.setEffect(shadow);
+        });
+        student.setOnMouseExited(ActionEvent -> student.setEffect(null));
     }
 
     public void setTowersAvailable(int numOfTowers, ColorTower color){

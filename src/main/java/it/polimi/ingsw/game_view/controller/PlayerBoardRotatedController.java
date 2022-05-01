@@ -15,7 +15,7 @@ public class PlayerBoardRotatedController extends PlayerBoardController{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        super.initialize(url, resourceBundle);
+
     }
 
     public PlayerBoardController getPlayerBoardRotatedController() {

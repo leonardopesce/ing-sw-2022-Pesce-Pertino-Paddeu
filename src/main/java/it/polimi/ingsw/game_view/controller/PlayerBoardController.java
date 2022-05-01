@@ -7,6 +7,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.net.URL;
@@ -20,7 +21,6 @@ public class PlayerBoardController implements Initializable {
     private Group playerBoard;
     @FXML
     private SchoolController schoolController;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

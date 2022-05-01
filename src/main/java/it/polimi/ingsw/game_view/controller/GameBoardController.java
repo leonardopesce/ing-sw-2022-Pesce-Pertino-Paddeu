@@ -1,8 +1,12 @@
 package it.polimi.ingsw.game_view.controller;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.game_controller.action.PlayAssistantCardAction;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
+import it.polimi.ingsw.network.client.Client;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class GameBoardController implements Initializable {
+    private Client client;
     private String clientName;
     private boolean firstTime = true;
     private final boolean[] isUp = {false, false, false, false, false, false, false, false, false, false};
@@ -42,10 +47,11 @@ public class GameBoardController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
+    private HBox cards;
+    @FXML
     private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
     @FXML
     private RotatingBoardController rotatingBoardController;
-
 
 
     @Override
@@ -63,8 +69,14 @@ public class GameBoardController implements Initializable {
         rotateTransition.setNode(rotatingBoardController.getPane());
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setClient(Client client) {
+        this.client = client;
+        clientName = client.getName();
+        showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
+    }
+
+    public void setClientName(String name){
+        this.clientName = name;
         showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
     }
 
@@ -80,18 +92,18 @@ public class GameBoardController implements Initializable {
     private void setAssistantsCardsRetro(Image image){
         for(int i = 0; i < assistants.size(); i++){
             assistants.get(i).setImage(image);
-            assistants.get(i).setTranslateY(assistants.get(i).getFitHeight() * 0.8);
+            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.8);
             setGoUpEffectOnAssistantCard(assistants.get(i), i);
             setGoDownEffectOnAssistantCard(assistants.get(i), i);
         }
     }
 
     private void setAssistantsCardsFront(){
-
+        cards.setTranslateY(assistants.get(0).getFitHeight() * 0.8);
         for(int i = 0; i < assistants.size(); i++){
             ImageView assistant = assistants.get(i);
             assistant.setImage(new Image("img/assistant/Assistente (" + (i + 1) + ").png"));
-            assistant.setTranslateY(assistant.getFitHeight() * 0.8);
+
             ColorAdjust ca = new ColorAdjust();
             if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(i + 1)){
                 ca.setBrightness(-0.5);
@@ -108,8 +120,21 @@ public class GameBoardController implements Initializable {
                 assistant.setEffect(ca);
                 setGoUpEffectOnAssistantCard(assistant, i);
                 setGoDownEffectOnAssistantCard(assistant, i);
+                int finalI = i;
+                assistant.setOnMouseClicked(ActionEvent -> client.asyncWriteToSocket(
+                        new CommunicationMessage(CommunicationMessage.MessageType.GAME_ACTION, new PlayAssistantCardAction(clientName, getAssistantTypeIndex(finalI)))));
             }
         }
+    }
+
+    private int getAssistantTypeIndex(int value){
+        for(int i = 0; i < rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().size(); i++){
+            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().get(i).getCardTurnValue() == value){
+                return i;
+            }
+        }
+        //not reachable the card clickable are also the card playable so the value will always be found in the array
+        return 0;
     }
 
     private void setGoUpEffectOnAssistantCard(ImageView assistant, int i){

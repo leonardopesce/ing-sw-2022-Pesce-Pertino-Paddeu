@@ -85,10 +85,13 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     private void testing(){
-        Game game = new Game(2);
+        Game game = new Game(4);
         GameController gameController = new GameController(game);
         gameController.createPlayer("Paolo", DeckType.ELDER);
         gameController.createPlayer("leo", DeckType.KING);
+        gameController.createPlayer("fra", DeckType.PIXIE);
+        gameController.createPlayer("bro", DeckType.SORCERER);
+
         gameReady(new GameBoard(game));
     }
 
@@ -180,7 +183,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //controllerGameBoard.setClientName(client.getName());
+            //controllerGameBoard.setClient(client);
             // for testing
             controllerGameBoard.setClientName("Paolo");
             controllerGameBoard.updateBoard(board);

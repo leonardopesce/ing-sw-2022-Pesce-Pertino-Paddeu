@@ -56,7 +56,6 @@
                         <ImageView fx:id="st8" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
-                  <Button fx:id="entranceButton" mnemonicParsing="false" opacity="0.0" prefHeight="346.0" prefWidth="200.0" />
                </children>
             </StackPane>
             <StackPane GridPane.columnIndex="1">
