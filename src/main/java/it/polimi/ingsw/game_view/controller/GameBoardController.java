@@ -4,6 +4,9 @@ import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -22,7 +25,7 @@ import java.util.ResourceBundle;
 public class GameBoardController implements Initializable {
     private String clientName;
     private boolean firstTime = true;
-    private int showedBoard = 0;
+    private final IntegerProperty showedBoard = new SimpleIntegerProperty(0);
     final RotateTransition rotateTransition = new RotateTransition();
     private final List<Button> playerBoardButtons = new ArrayList<>();
     private final List<ImageView> assistants = new ArrayList<>();
@@ -39,6 +42,7 @@ public class GameBoardController implements Initializable {
     private RotatingBoardController rotatingBoardController;
 
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
@@ -46,7 +50,6 @@ public class GameBoardController implements Initializable {
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 
         assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
-        setAssistantsAction();
 
 
         rotateTransition.setAxis(Rotate.Z_AXIS);
@@ -58,52 +61,68 @@ public class GameBoardController implements Initializable {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+        showedBoard.addListener((observable, oldValue, newValue) -> {
+            new Thread(() -> {
+                if(rotatingBoardController.getBoardX((Integer) newValue).getName().getText().equals(clientName)){
+                    setAssistantsCardsFront();
+                }
+                else {
+                    setAssistantsCardsRetro(new Image(rotatingBoardController.getBoardX((Integer) newValue).getDeckType().getPath()));
+                }
+            }).start();
+        });
     }
 
-    private void setAssistantsAction(){
+    private void setAssistantsCardsRetro(Image image){
+        for(ImageView card: assistants){
+            card.setImage(image);
+            card.setTranslateY(card.getFitHeight() * 0.8);
+        }
+    }
+
+    private void setAssistantsCardsFront(){
         final boolean[] isUp = {false, false, false, false, false, false, false, false, false, false};
         final int ANIMATION_DURATION = 500;
-
         for(int i = 0; i < assistants.size(); i++){
             ImageView assistant = assistants.get(i);
+            assistant.setImage(new Image("img/assistant/Assistente (" + (i + 1) + ").png"));
             assistant.setTranslateY(assistant.getFitHeight() * 0.8);
             TranslateTransition moveUpEffect = new TranslateTransition(Duration.millis(ANIMATION_DURATION), assistant);
             TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(ANIMATION_DURATION), assistant);
             int finalI = i;
 
-            assistant.setOnMouseEntered(ActionEvent -> {
-                new Thread(() -> {
-                    if(!isUp[finalI]){
-                        moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
-                        moveUpEffect.play();
-                        moveUpEffect.setOnFinished(a -> isUp[finalI] = true);
-                    }
-                }).start();
-            });
-            assistant.setOnMouseExited(ActionEvent -> {
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(ANIMATION_DURATION);
-                    } catch (InterruptedException e) {
-                        // Impossible to reach since the animation duration is ALWAYS > 0
-                        e.printStackTrace();
-                    }
-                    if(isUp[finalI]){
-                        moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
-                        moveDownEffect.play();
-                        moveDownEffect.setOnFinished(a -> isUp[finalI] = false);
-                    }
-                }).start();
-            });
+            assistant.setOnMouseEntered(ActionEvent -> new Thread(() -> {
+                if(!isUp[finalI]){
+                    moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
+                    moveUpEffect.play();
+                    moveUpEffect.setOnFinished(a -> isUp[finalI] = true);
+                }
+            }).start());
+
+            assistant.setOnMouseExited(ActionEvent -> new Thread(() -> {
+                try {
+                    Thread.sleep(ANIMATION_DURATION);
+                } catch (InterruptedException e) {
+                    // Impossible to reach since the animation duration is ALWAYS > 0
+                    e.printStackTrace();
+                }
+                if(isUp[finalI]){
+                    moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
+                    moveDownEffect.play();
+                    moveDownEffect.setOnFinished(a -> isUp[finalI] = false);
+                }
+            }).start());
         }
     }
 
     public void updateBoard(GameBoard board){
+        rotatingBoardController.update(board);
         if(firstTime){
             firstTime = false;
-            playerBoardButtons.get(showedBoard).setDisable(true);
+            playerBoardButtons.get(showedBoard.get()).setDisable(true);
             for(int i = 0; i < 4; i++){
                 if(i < board.getNames().size()){
+                    rotatingBoardController.getBoardX(i).setDeckType(board.getDecks().get(i).getDeckType());
                     playerBoardButtons.get(i).setText(board.getNames().get(i));
                     int finalI = i;
                     playerBoardButtons.get(i).setOnAction(ActionEvent -> {
@@ -111,11 +130,11 @@ public class GameBoardController implements Initializable {
 
                             setRotatingButtonDisabled(true);
                             rotateTransition.setByAngle(getDegreeTurn(finalI));
+                            showedBoard.set(finalI);
                             rotateTransition.setOnFinished(a -> {
                                 setRotatingButtonDisabled(false);
-                                showedBoard = finalI;
-                                playerBoardButtons.get(showedBoard).setDisable(true);
-                                playerBoardButtons.get(showedBoard).setDisable(true);
+                                playerBoardButtons.get(finalI).setDisable(true);
+                                playerBoardButtons.get(finalI).setDisable(true);
                             });
                             rotateTransition.play();
                         }
@@ -129,7 +148,7 @@ public class GameBoardController implements Initializable {
             }
 
         }
-        rotatingBoardController.update(board);
+
         for (IslandController island: islands){
             island.hide();
         }
@@ -142,7 +161,7 @@ public class GameBoardController implements Initializable {
 
 
     private int getDegreeTurn(int finalPos){
-        return Math.floorMod(finalPos - showedBoard, 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard, 4) == 2 ? 180 : -90;
+        return Math.floorMod(finalPos - showedBoard.get(), 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard.get(), 4) == 2 ? 180 : -90;
     }
 
     private void setRotatingButtonDisabled(boolean value){

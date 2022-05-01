@@ -1,5 +1,7 @@
 package it.polimi.ingsw.game_view.controller;
 
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_view.board.DeckBoard;
 import it.polimi.ingsw.game_view.board.SchoolBoard;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
@@ -11,12 +13,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PlayerBoardController implements Initializable {
+    private DeckType deckType;
     @FXML
     private Label nickName;
     @FXML
     private Group playerBoard;
     @FXML
     private SchoolController schoolController;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -29,6 +33,18 @@ public class PlayerBoardController implements Initializable {
 
     public void hide(){
         playerBoard.setVisible(false);
+    }
+
+    public DeckType getDeckType() {
+        return deckType;
+    }
+
+    public void setDeckType(DeckType deckType) {
+        this.deckType = deckType;
+    }
+
+    public Label getName() {
+        return nickName;
     }
 
     public void setName(String nickName) {

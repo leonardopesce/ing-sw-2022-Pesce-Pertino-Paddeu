@@ -3,20 +3,23 @@ package it.polimi.ingsw.game_view.board;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeckBoard implements Serializable {
-    List<AssistantType> cards = new ArrayList<>();
-    AssistantType discardedCard;
+    private final List<AssistantType> cards = new ArrayList<>();
+    private final AssistantType discardedCard;
+    private final DeckType deckType;
 
     public DeckBoard(Player player) {
         for(Assistant assistant: player.getDeckAssistants().getAssistants()){
             cards.add(assistant.getType());
         }
         discardedCard = player.getDiscardedCard() != null ? player.getDiscardedCard().getType() : null;
+        deckType = player.getDeckAssistants().getType();
     }
 
     public List<AssistantType> getCards() {
@@ -25,6 +28,10 @@ public class DeckBoard implements Serializable {
 
     public AssistantType getDiscardedCard() {
         return discardedCard;
+    }
+
+    public DeckType getDeckType() {
+        return deckType;
     }
 
     @Override

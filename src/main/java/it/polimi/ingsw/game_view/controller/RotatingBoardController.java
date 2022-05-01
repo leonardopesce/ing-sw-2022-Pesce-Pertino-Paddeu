@@ -23,7 +23,7 @@ public class RotatingBoardController implements Initializable {
     }
 
     public PlayerBoardController getBoardX(int i){
-        return playersBoardController.get(i);
+        return i % 2 == 0? playersBoardController.get(i) : ((PlayerBoardRotatedController)playersBoardController.get(i)).getPlayerBoardRotatedController();
     }
 
     public void update(GameBoard gameBoard){
