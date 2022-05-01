@@ -55,11 +55,6 @@ public class GameBoardController implements Initializable {
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 
         assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
-        for(int i = 0; i < assistants.size(); i++){
-            assistants.get(i).setTranslateY(assistants.get(i).getFitHeight() * 0.8);
-            setGoUpEffectOnAssistantCard(assistants.get(i), i);
-            setGoDownEffectOnAssistantCard(assistants.get(i), i);
-        }
 
         rotateTransition.setAxis(Rotate.Z_AXIS);
         rotateTransition.setCycleCount(1);
@@ -70,16 +65,16 @@ public class GameBoardController implements Initializable {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
-        showedBoard.addListener((observable, oldValue, newValue) -> {
-            new Thread(() -> {
-                if(rotatingBoardController.getBoardX((Integer) newValue).getName().getText().equals(clientName)){
-                    setAssistantsCardsFront();
-                }
-                else {
-                    setAssistantsCardsRetro(new Image(rotatingBoardController.getBoardX((Integer) newValue).getDeckBoard().getDeckType().getPath()));
-                }
-            }).start();
-        });
+        showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
+    }
+
+    private void setUpDecks(int pos){
+        if(rotatingBoardController.getBoardX(pos).getName().getText().equals(clientName)){
+            setAssistantsCardsFront();
+        }
+        else {
+            setAssistantsCardsRetro(new Image(rotatingBoardController.getBoardX(pos).getDeckBoard().getDeckType().getPath()));
+        }
     }
 
     private void setAssistantsCardsRetro(Image image){
@@ -173,7 +168,7 @@ public class GameBoardController implements Initializable {
                     playerBoardButtons.get(i).setVisible(false);
                 }
             }
-
+            setUpDecks(showedBoard.get());
         }
         for(int i = 0; i < board.getNames().size(); i++){
             if(playerBoardButtons.get(i).getText().equals(clientName)){
@@ -190,12 +185,9 @@ public class GameBoardController implements Initializable {
         }
     }
 
-
     private int getDegreeTurn(int finalPos){
         return Math.floorMod(finalPos - showedBoard.get(), 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard.get(), 4) == 2 ? 180 : Math.floorMod(finalPos - showedBoard.get(), 4) == 1 ? -90 : 0;
     }
-
-
 
     private void setRotatingButtonDisabled(boolean value){
         for(Button playerButton: playerBoardButtons){
