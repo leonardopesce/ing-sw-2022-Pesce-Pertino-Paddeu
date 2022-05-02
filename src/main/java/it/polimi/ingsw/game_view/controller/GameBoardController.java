@@ -3,11 +3,13 @@ package it.polimi.ingsw.game_view.controller;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
+import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
 import it.polimi.ingsw.network.client.Client;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -64,6 +66,11 @@ public class GameBoardController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
         islands.addAll(Arrays.asList(island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller));
+
+        for(int i = 0; i < islands.size(); i++){
+            islands.get(i).setID(i);
+        }
+
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 
         assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
@@ -106,52 +113,67 @@ public class GameBoardController implements Initializable {
     }
 
     public void updateBoard(GameBoard board){
-        gameBoard = board;
-        rotatingBoardController.update(board);
-        gamePhaseLabel.setText(board.getPhase().toString());
-        if(firstTime){
-            firstTime = false;
-            for(int i = 0; i < 4; i++){
-                if(i < board.getNames().size()){
-                    playerBoardButtons.get(i).setText(board.getNames().get(i));
-                    int finalI = i;
-                    playerBoardButtons.get(i).setOnAction(ActionEvent -> {
-                        synchronized (rotateTransition) {
-                            setRotatingButtonDisabled(true);
-                            rotateTransition.setByAngle(getDegreeTurn(finalI));
-                            showedBoard.set(finalI);
-                            rotateTransition.setOnFinished(a -> {
-                                setRotatingButtonDisabled(false);
-                                playerBoardButtons.get(finalI).setDisable(true);
-                                playerBoardButtons.get(finalI).setDisable(true);
-                            });
-                            rotateTransition.play();
-                        }
-                    });
-                }
-                else {
-                    rotatingBoardController.getBoardX(i).hide();
-                    playerBoardButtons.get(i).setDisable(true);
-                    playerBoardButtons.get(i).setVisible(false);
-                }
-            }
-            setUpDecks(showedBoard.get());
-            //TODO delete just for testing purpose
-            makeStudentEntranceSelectable();
-        }
-        for(int i = 0; i < board.getNames().size(); i++){
-            if(playerBoardButtons.get(i).getText().equals(clientName)){
-                playerBoardButtons.get(i).fire();
-            }
-        }
-        for (IslandController island: islands){
-            island.hide();
-        }
+        Platform.runLater(() -> {
 
-        for(IslandBoard island: board.getTerrain().getIslands()){
-            islands.get(island.getID()).unHide();
-            islands.get(island.getID()).update(island);
-        }
+
+            gameBoard = board;
+            rotatingBoardController.update(board);
+            gamePhaseLabel.setText(board.getPhase().toString());
+            if (firstTime) {
+                firstTime = false;
+                for (int i = 0; i < 4; i++) {
+                    if (i < board.getNames().size()) {
+                        playerBoardButtons.get(i).setText(board.getNames().get(i));
+                        int finalI = i;
+                        playerBoardButtons.get(i).setOnAction(ActionEvent -> {
+                            synchronized (rotateTransition) {
+                                setRotatingButtonDisabled(true);
+                                rotateTransition.setByAngle(getDegreeTurn(finalI));
+                                showedBoard.set(finalI);
+                                rotateTransition.setOnFinished(a -> {
+                                    setRotatingButtonDisabled(false);
+                                    playerBoardButtons.get(finalI).setDisable(true);
+                                    playerBoardButtons.get(finalI).setDisable(true);
+                                });
+                                rotateTransition.play();
+                            }
+                        });
+                    } else {
+                        rotatingBoardController.getBoardX(i).hide();
+                        playerBoardButtons.get(i).setDisable(true);
+                        playerBoardButtons.get(i).setVisible(false);
+                    }
+                }
+                setUpDecks(showedBoard.get());
+                //TODO delete just for testing purpose
+                //makeStudentEntranceSelectable();
+            }
+            for (int i = 0; i < board.getNames().size(); i++) {
+                if (playerBoardButtons.get(i).getText().equals(clientName)) {
+                    playerBoardButtons.get(i).fire();
+                }
+            }
+
+            for (IslandController island: islands) {
+                if(board.getTerrain().getIslands().stream().map(IslandBoard::getID).toList().contains(island.getID())){
+                    island.unHide();
+                    island.update(board.getTerrain().getIslandWithID(island.getID()));
+                }/*
+                else{
+                    island.hide();
+                }*/
+            }
+
+            if (board.getCurrentlyPlaying().equals(clientName)) {
+                if (board.getPhase().equals(GamePhase.PLANNING_PHASE)) {
+                    makeAssistantCardPlayable();
+                } else if (board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)) {
+                    makeStudentEntranceSelectable();
+                }
+            } else {
+                gamePhaseLabel.setText("NOT YOUR TURN");
+            }
+        });
     }
 
     private void setUpDecks(int pos){
@@ -194,9 +216,20 @@ public class GameBoardController implements Initializable {
                 assistant.setEffect(ca);
                 setGoUpEffectOnAssistantCard(assistant, i);
                 setGoDownEffectOnAssistantCard(assistant, i);
+            }
+        }
+    }
+
+    public void makeAssistantCardPlayable(){
+        for(int i = 0; i < assistants.size(); i++){
+            ImageView assistant = assistants.get(i);
+            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(i + 1)){
                 int finalI = i;
                 assistant.setOnMouseClicked(ActionEvent -> {
-                    actionValues.add(0, getAssistantTypeIndex(finalI));
+                    actionValues.add(0, getAssistantTypeIndex(finalI + 1));
+                    for(ImageView a: assistants){
+                        a.setOnMouseClicked(null);
+                    }
                     calculateNextAction();
                 });
             }
@@ -229,8 +262,10 @@ public class GameBoardController implements Initializable {
             rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
             actionValues.add(0, gameBoard.getTerrain().getIslands().size());
             for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                island.setEffect(null);
                 resetHoverEffect(island);
             }
+            diningHall.setStyle(null);
             resetHoverEffect(diningHall);
             calculateNextAction();
         });
@@ -243,10 +278,12 @@ public class GameBoardController implements Initializable {
                 int finalI = i;
                 islands.get(i).getIsland().setOnMouseClicked(a -> {
                     rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
-                    actionValues.push(finalI);
+                    actionValues.add(0, islands.get(finalI).getID());
                     for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                        island.setEffect(null);
                         resetHoverEffect(island);
                     }
+                    rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall().setStyle(null);
                     resetHoverEffect(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall());
                     calculateNextAction();
                 });
@@ -306,8 +343,9 @@ public class GameBoardController implements Initializable {
     }
 
     private int getAssistantTypeIndex(int value){
-        for(int i = 0; i < rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().size(); i++){
-            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().get(i).getCardTurnValue() == value){
+        List<AssistantType> assistantsCard = rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards();
+        for(int i = 0; i < assistantsCard.size(); i++){
+            if(assistantsCard.get(i).getCardTurnValue() == value){
                 return i;
             }
         }

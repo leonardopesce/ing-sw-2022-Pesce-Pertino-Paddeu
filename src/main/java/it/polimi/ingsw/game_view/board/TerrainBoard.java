@@ -29,6 +29,15 @@ public class TerrainBoard implements Serializable {
         }
     }
 
+    public IslandBoard getIslandWithID(int ID){
+        for (IslandBoard island : islands) {
+            if (island.getID() == ID) {
+                return island;
+            }
+        }
+        return null;
+    }
+
     public List<List<ColorCharacter>> getCloudCards() {
         return cloudCards;
     }

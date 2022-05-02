@@ -58,9 +58,10 @@ public class InitialPageController implements Initializable {
 
         Button send = new Button();
         send.setText("Choose name");
-        send.setOnAction(actionEvent ->
-            client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, response.getText()))
-        );
+        send.setOnAction(actionEvent -> {
+            client.setName(response.getText());
+            client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, response.getText()));
+        });
         currentBox.getChildren().add(send);
 
         mainPane.getChildren().add(currentBox);
@@ -92,7 +93,7 @@ public class InitialPageController implements Initializable {
             DeckType card = ((DeckType)((List<?>)listAvailableDeck).get(i));
             button.setPrefSize(mainPane.widthProperty().divide(7).get(), mainPane.heightProperty().divide(3).get());
             button.setStyle("-fx-background-radius: 10; -fx-background-image: url(" + card.getPath() + "); -fx-background-size: 100% 100%; -fx-background-position: center");
-            button.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(ASK_DECK, card)));
+            button.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, card)));
             cardSelectionPane.add(button, i < 2 ? i : i % 2, i < 2 ? 0 : 1);
         }
 

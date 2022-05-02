@@ -3,34 +3,24 @@ package it.polimi.ingsw.game_view;
 import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.Game;
-import it.polimi.ingsw.game_model.Player;
-import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.controller.GameBoardController;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.controller.InitialPageController;
-import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PONG;
-
 public class GameViewGUI extends Application implements GameViewClient{
-    private boolean testing = true;
+    private boolean testing = false;
 
 
     private static final String pathInitialPage = "fxml/initialPage.fxml";
@@ -79,9 +69,9 @@ public class GameViewGUI extends Application implements GameViewClient{
                     e.printStackTrace();
                 }
             }).start();
+            this.controllerInitial.setClient(client);
             msgHandler = new ClientMessageObserverHandler(this);
             client.addObserver(msgHandler);
-            this.controllerInitial.setClient(client);
             askName();
         }
 
@@ -105,7 +95,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void updateBoard(GameBoard board) {
-
+        controllerGameBoard.updateBoard(board);
     }
 
     @Override
@@ -133,6 +123,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     public void reaskName() {
         System.out.println("Reasking name");
         Platform.runLater(() -> controllerInitial.reaskNameView());
+
     }
 
     @Override
@@ -179,6 +170,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
                 root = loader.load();
                 this.controllerGameBoard = loader.getController();
+                controllerGameBoard.setClient(client);
                 this.stage.setScene(new Scene(root, 1920, 1080));
                 this.stage.setResizable(true);
                 this.stage.setMaximized(true);
@@ -204,7 +196,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void reaskAssistant() {
-
+        controllerGameBoard.makeAssistantCardPlayable();
     }
 
     @Override

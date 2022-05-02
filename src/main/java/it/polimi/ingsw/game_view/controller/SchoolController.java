@@ -50,10 +50,14 @@ public class SchoolController implements Initializable {
     }
 
     public void setEntranceStudents(List<ColorCharacter> students){
-        for(int i = 0; i < students.size(); i++){
-            entranceStudents.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
+        for(int i = 0; i < entranceStudents.size(); i++){
+            if(i < students.size()){
+                entranceStudents.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
+            }
+            else {
+                entranceStudents.get(i).setImage(null);
+            }
         }
-        System.out.println("adding hover effect");
     }
 
     public ArrayList<ImageView> getEntranceStudents() {
