@@ -1,0 +1,29 @@
+title Client-Server Pinging System
+participant SocketClientConnection
+participant ServerConnectionStatusHandler
+participant ClientConnectionStatusHandler
+participant Client
+
+activate SocketClientConnection
+activate Client
+
+note left of SocketClientConnection: on Client connection
+SocketClientConnection->ServerConnectionStatusHandler:new ServerConnectionStatusHandler()
+SocketClientConnection->ServerConnectionStatusHandler:setConnection(this)
+
+note right of Client: on Client connection
+Client->ClientConnectionStatusHandler:new ClientConnectionStatusHandler()
+Client->ClientConnectionStatusHandler:setClient
+
+alt both client and server are connected
+loop connection is active
+ServerConnectionStatusHandler-->ClientConnectionStatusHandler:PING
+ClientConnectionStatusHandler-->ServerConnectionStatusHandler:PONG
+end
+else the server disconnects
+note over SocketClientConnection,Client: server-side the socket will get corrupted, so the server will identify that and close its application. Client-side, ClientConnectionStatusHandler\nwill not receive any PING, so its timer, after 10 secs will trigger and close the client connection.
+else client disconnects
+note over SocketClientConnection,Client: client-side the socket will get corrupted, so the client will identify that and close its application. Server-side, ServerConnectionStatusHandler\nwill not receive any PONG, so its timer, after 10 secs will trigger and close the server socket and connection with that client. 
+end
+
+note over Client,SocketClientConnection:Both the Client and Server ConnectionStatusHandlers have a timer of 10 secs. Each time they respectively receive a PING or a PONG\ntheir timer resets. If they do not receive the PING/PONG their timer will trigger and it will abort the connection respectively client-side and server-side.

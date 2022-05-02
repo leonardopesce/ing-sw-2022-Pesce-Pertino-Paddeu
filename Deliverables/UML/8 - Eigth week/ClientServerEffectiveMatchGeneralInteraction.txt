@@ -1,0 +1,31 @@
+title Client-Server Effective Match General Interaction
+participant Client
+participant SocketClientConnection
+participant RemoteGameView
+participant Controller
+participant Model
+
+activate Client
+activate SocketClientConnection
+activate RemoteGameView
+activate Controller
+activate Model
+
+Client->SocketClientConnection:GAME_ACTION:<action type, parameters needed by the action>
+alt the message received is a GAME_ACTION
+SocketClientConnection->SocketClientConnection:handleMove(action)\nnotify(action)
+note over Controller:controller got notified by the RemoteGameView
+Controller->Controller:update(action)
+note over Controller,Model: the controller calls the model's function to handle the action.
+note over Model:Once the action has been done the model notify\nback the RemoteGameView to make the clients\nupdate their status.
+Model->Model:notify(new MoveMessage(type, game))
+note over RemoteGameView:RemoteGameView got notified by the model.
+RemoteGameView->RemoteGameView:update(message)
+RemoteGameView->SocketClientConnection:asyncSend(new CommunicationMessage(type, updatedBoard)
+SocketClientConnection->Client:CommunicationMessage(type, board)
+else the message received is not a GAME_ACTION
+note over Client,Model: If the during the game, the message received by the server is not a GAME_ACTION, the server simply ignores that message.
+
+end 
+
+
