@@ -30,6 +30,9 @@ import java.util.Objects;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PONG;
 
 public class GameViewGUI extends Application implements GameViewClient{
+    private boolean testing = true;
+
+
     private static final String pathInitialPage = "fxml/initialPage.fxml";
     private GameBoard board;
     private ClientMessageObserverHandler msgHandler;
@@ -37,6 +40,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     private Client client;
     private Stage stage;
     private GameBoardController controllerGameBoard;
+
 
     @Override
     public void start(Stage stage){
@@ -63,20 +67,24 @@ public class GameViewGUI extends Application implements GameViewClient{
             e.printStackTrace();
         }
 
-        testing();
+        if(testing){
+            testing();
+        }
+        else {
+            client = new Client(ClientApp.IP, ClientApp.port);
+            new Thread(() -> {
+                try {
+                    client.run();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            msgHandler = new ClientMessageObserverHandler(this);
+            client.addObserver(msgHandler);
+            this.controllerInitial.setClient(client);
+            askName();
+        }
 
-        /*client = new Client(ClientApp.IP, ClientApp.port);
-        new Thread(() -> {
-            try {
-                client.run();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        msgHandler = new ClientMessageObserverHandler(this);
-        client.addObserver(msgHandler);
-        this.controllerInitial.setClient(client);
-        askName();*/
     }
 
     @Override
@@ -183,9 +191,13 @@ public class GameViewGUI extends Application implements GameViewClient{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //controllerGameBoard.setClient(client);
-            // for testing
-            controllerGameBoard.setClientName("Paolo");
+            if(testing){
+                controllerGameBoard.setClientName("Paolo");
+            }
+            else {
+                controllerGameBoard.setClient(client);
+            }
+
             controllerGameBoard.updateBoard(board);
         });
     }

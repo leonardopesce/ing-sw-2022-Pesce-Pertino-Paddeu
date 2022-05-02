@@ -1,7 +1,7 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_controller.action.PlayAssistantCardAction;
+import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
@@ -26,10 +26,9 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_ACTION;
 
 public class GameBoardController implements Initializable {
     private Client client;
@@ -41,6 +40,8 @@ public class GameBoardController implements Initializable {
     private final List<Button> playerBoardButtons = new ArrayList<>();
     private final List<ImageView> assistants = new ArrayList<>();
     private final List<IslandController> islands = new ArrayList<>();
+    private GameBoard gameBoard;
+    private final Stack<Integer> actionValues = new Stack<>();
     @FXML
     ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
@@ -90,94 +91,22 @@ public class GameBoardController implements Initializable {
 
     }
 
-    private void setUpDecks(int pos){
-        if(rotatingBoardController.getBoardX(pos).getName().getText().equals(clientName)){
-            setAssistantsCardsFront();
-        }
-        else {
-            setAssistantsCardsRetro(new Image(rotatingBoardController.getBoardX(pos).getDeckBoard().getDeckType().getPath()));
-        }
+    private void calculateNextAction(){
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
+            switch (gameBoard.getPhase()){
+                case PLANNING_PHASE ->  new PlayAssistantCardAction(clientName, actionValues.pop());
+                case ACTION_PHASE_MOVING_STUDENTS -> actionValues.get(0) == gameBoard.getTerrain().getIslands().size() ?
+                        new MoveStudentToDiningHallAction(clientName, actionValues.pop()) :
+                        new MoveStudentToIslandAction(clientName, actionValues.pop(), actionValues.pop());
+                case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, actionValues.pop());
+                case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, actionValues.pop());
+                default -> throw new IllegalStateException("Unexpected value: " + gameBoard.getPhase());
+        }));
+        actionValues.clear();
     }
-
-    private void setAssistantsCardsRetro(Image image){
-        for(int i = 0; i < assistants.size(); i++){
-            assistants.get(i).setImage(image);
-            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.8);
-            setGoUpEffectOnAssistantCard(assistants.get(i), i);
-            setGoDownEffectOnAssistantCard(assistants.get(i), i);
-        }
-    }
-
-    private void setAssistantsCardsFront(){
-        cards.setTranslateY(assistants.get(0).getFitHeight() * 0.8);
-        for(int i = 0; i < assistants.size(); i++){
-            ImageView assistant = assistants.get(i);
-            assistant.setImage(new Image("img/assistant/Assistente (" + (i + 1) + ").png"));
-
-            ColorAdjust ca = new ColorAdjust();
-            if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(i + 1)){
-                ca.setBrightness(-0.5);
-                assistant.setEffect(ca);
-                if(assistant.getOnMouseEntered() != null){
-                    assistant.removeEventHandler(MouseEvent.MOUSE_ENTERED, assistant.getOnMouseEntered());
-                }
-                if(assistant.getOnMouseExited() != null){
-                    assistant.removeEventHandler(MouseEvent.MOUSE_EXITED, assistant.getOnMouseExited());
-                }
-            }
-            else{
-                ca.setBrightness(0);
-                assistant.setEffect(ca);
-                setGoUpEffectOnAssistantCard(assistant, i);
-                setGoDownEffectOnAssistantCard(assistant, i);
-                int finalI = i;
-                assistant.setOnMouseClicked(ActionEvent -> client.asyncWriteToSocket(
-                        new CommunicationMessage(CommunicationMessage.MessageType.GAME_ACTION, new PlayAssistantCardAction(clientName, getAssistantTypeIndex(finalI)))));
-            }
-        }
-    }
-
-    private int getAssistantTypeIndex(int value){
-        for(int i = 0; i < rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().size(); i++){
-            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().get(i).getCardTurnValue() == value){
-                return i;
-            }
-        }
-        //not reachable the card clickable are also the card playable so the value will always be found in the array
-        return 0;
-    }
-
-    private void setGoUpEffectOnAssistantCard(ImageView assistant, int i){
-        TranslateTransition moveUpEffect = new TranslateTransition(Duration.millis(500), assistant);
-        assistant.setOnMouseEntered(ActionEvent -> new Thread(() -> {
-            if(!isUp[i]){
-                moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
-                moveUpEffect.play();
-                moveUpEffect.setOnFinished(a -> isUp[i] = true);
-            }
-        }).start());
-    }
-
-    private void setGoDownEffectOnAssistantCard(ImageView assistant, int i){
-        TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(500), assistant);
-        assistant.setOnMouseExited(ActionEvent -> new Thread(() -> {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                // Impossible to reach since the animation duration is ALWAYS > 0
-                e.printStackTrace();
-            }
-            if(isUp[i]){
-                moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
-                moveDownEffect.play();
-                moveDownEffect.setOnFinished(a -> isUp[i] = false);
-            }
-        }).start());
-    }
-
-
 
     public void updateBoard(GameBoard board){
+        gameBoard = board;
         rotatingBoardController.update(board);
         gamePhaseLabel.setText(board.getPhase().toString());
         if(firstTime){
@@ -225,6 +154,56 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    private void setUpDecks(int pos){
+        if(rotatingBoardController.getBoardX(pos).getName().getText().equals(clientName)){
+            setAssistantsCardsFront();
+        }
+        else {
+            setAssistantsCardsRetro(new Image(rotatingBoardController.getBoardX(pos).getDeckBoard().getDeckType().getPath()));
+        }
+    }
+
+    private void setAssistantsCardsRetro(Image image){
+        for(int i = 0; i < assistants.size(); i++){
+            assistants.get(i).setImage(image);
+            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.8);
+            setGoUpEffectOnAssistantCard(assistants.get(i), i);
+            setGoDownEffectOnAssistantCard(assistants.get(i), i);
+        }
+    }
+
+    private void setAssistantsCardsFront(){
+        cards.setTranslateY(assistants.get(0).getFitHeight() * 0.8);
+        for(int i = 0; i < assistants.size(); i++){
+            ImageView assistant = assistants.get(i);
+            assistant.setImage(new Image("img/assistant/Assistente (" + (i + 1) + ").png"));
+
+            ColorAdjust ca = new ColorAdjust();
+            if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(i + 1)){
+                ca.setBrightness(-0.5);
+                assistant.setEffect(ca);
+                if(assistant.getOnMouseEntered() != null){
+                    assistant.removeEventHandler(MouseEvent.MOUSE_ENTERED, assistant.getOnMouseEntered());
+                }
+                if(assistant.getOnMouseExited() != null){
+                    assistant.removeEventHandler(MouseEvent.MOUSE_EXITED, assistant.getOnMouseExited());
+                }
+            }
+            else{
+                ca.setBrightness(0);
+                assistant.setEffect(ca);
+                setGoUpEffectOnAssistantCard(assistant, i);
+                setGoDownEffectOnAssistantCard(assistant, i);
+                int finalI = i;
+                assistant.setOnMouseClicked(ActionEvent -> {
+                    actionValues.add(0, getAssistantTypeIndex(finalI));
+                    calculateNextAction();
+                });
+            }
+        }
+    }
+
+
     public void makeStudentEntranceSelectable(){
         List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
         for(int i = 0; i < entranceStudents.size(); i++){
@@ -233,13 +212,9 @@ public class GameBoardController implements Initializable {
             entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
                 for(int k = 0; k < entranceStudents.size(); k++) {
                     resetHoverEffect(entranceStudents.get(k));
-                    if(finalI == k) {
-                        DropShadow shadow = new DropShadow();
-                        shadow.setColor(Color.YELLOW);
-                        shadow.setRadius(entranceStudents.get(k).getFitHeight() / 2 + 5);
-                        entranceStudents.get(k).setEffect(shadow);
-                    }
                 }
+                entranceStudents.get(finalI).setEffect(new Shadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
+                actionValues.add(0, finalI);
                 makeVisibleIslandsSelectable();
                 makeDiningHallSelectable();
             });
@@ -250,12 +225,31 @@ public class GameBoardController implements Initializable {
         GridPane diningHall = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall();
         diningHall.setOnMouseEntered(a -> diningHall.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
         diningHall.setOnMouseExited(a -> diningHall.setStyle(null));
+        diningHall.setOnMouseClicked(a -> {
+            rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
+            actionValues.add(0, gameBoard.getTerrain().getIslands().size());
+            for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                resetHoverEffect(island);
+            }
+            resetHoverEffect(diningHall);
+            calculateNextAction();
+        });
     }
 
     public void makeVisibleIslandsSelectable(){
-        for(int i = 0; i < islands.size(); i++){
-            if(islands.get(i).isVisible()){
+        for (int i = 0; i < islands.size(); i++) {
+            if (islands.get(i).isVisible()) {
                 setHoverEffect(islands.get(i).getIsland(), islands.get(i).getIsland().getFitWidth() / 2);
+                int finalI = i;
+                islands.get(i).getIsland().setOnMouseClicked(a -> {
+                    rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
+                    actionValues.push(finalI);
+                    for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                        resetHoverEffect(island);
+                    }
+                    resetHoverEffect(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall());
+                    calculateNextAction();
+                });
             }
         }
     }
@@ -282,4 +276,44 @@ public class GameBoardController implements Initializable {
         node.setOnMouseEntered(null);
         node.setOnMouseExited(null);
     }
+
+    private void setGoUpEffectOnAssistantCard(ImageView assistant, int i){
+        TranslateTransition moveUpEffect = new TranslateTransition(Duration.millis(500), assistant);
+        assistant.setOnMouseEntered(ActionEvent -> new Thread(() -> {
+            if(!isUp[i]){
+                moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
+                moveUpEffect.play();
+                moveUpEffect.setOnFinished(a -> isUp[i] = true);
+            }
+        }).start());
+    }
+
+    private void setGoDownEffectOnAssistantCard(ImageView assistant, int i){
+        TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(500), assistant);
+        assistant.setOnMouseExited(ActionEvent -> new Thread(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                // Impossible to reach since the animation duration is ALWAYS > 0
+                e.printStackTrace();
+            }
+            if(isUp[i]){
+                moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
+                moveDownEffect.play();
+                moveDownEffect.setOnFinished(a -> isUp[i] = false);
+            }
+        }).start());
+    }
+
+    private int getAssistantTypeIndex(int value){
+        for(int i = 0; i < rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().size(); i++){
+            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().get(i).getCardTurnValue() == value){
+                return i;
+            }
+        }
+        //not reachable the card clickable are also the card playable so the value will always be found in the array
+        return 0;
+    }
+
+
 }
