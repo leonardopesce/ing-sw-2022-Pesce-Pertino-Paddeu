@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private boolean testing = true;
+    private final boolean testing = false;
 
 
     private static final String pathInitialPage = "fxml/initialPage.fxml";
@@ -89,7 +89,6 @@ public class GameViewGUI extends Application implements GameViewClient{
         gameController.createPlayer("leo", DeckType.KING);
         gameController.createPlayer("fra", DeckType.PIXIE);
         gameController.createPlayer("bro", DeckType.SORCERER);
-
         gameReady(new GameBoard(game));
     }
 

@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
+import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
@@ -113,7 +114,7 @@ public class GameBoardController implements Initializable {
                         new MoveStudentToDiningHallAction(clientName, actionValues.pop()) :
                         new MoveStudentToIslandAction(clientName, actionValues.pop(), actionValues.pop());
                 case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, actionValues.pop());
-                case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, actionValues.pop());
+                case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, countStepFromMotherNatureToIslandWithID(actionValues.pop()));
                 default -> throw new IllegalStateException("Unexpected value: " + gameBoard.getPhase());
         }));
         actionValues.clear();
@@ -156,8 +157,6 @@ public class GameBoardController implements Initializable {
                     cloudHBox.getChildren().remove(i - 1);
                 }
 
-                //TODO delete just for testing purpose
-                //makeStudentEntranceSelectable();
             }
             for (int i = 0; i < board.getNames().size(); i++) {
                 if (playerBoardButtons.get(i).getText().equals(clientName)) {
@@ -187,7 +186,10 @@ public class GameBoardController implements Initializable {
                     makeStudentEntranceSelectable();
                 }
                 else if(board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)){
-                    makeVisibleIslandsSelectable();
+                    makeNextXIslandVisibleFromMotherNatureSelectable(board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getPossibleSteps());
+                }
+                else if(board.getPhase().equals(GamePhase.ACTION_PHASE_CHOOSING_CLOUD)){
+                    makeCloudSelectable();
                 }
             } else {
                 gamePhaseLabel.setText("NOT YOUR TURN");
@@ -267,8 +269,10 @@ public class GameBoardController implements Initializable {
                 }
                 entranceStudents.get(finalI).setEffect(new Shadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
                 actionValues.add(0, finalI);
+                System.out.println("YOU selected student number " + finalI + " color " + gameBoard.getSchools().get(gameBoard.getNames().indexOf(clientName)));
                 makeVisibleIslandsSelectable();
                 makeDiningHallSelectable();
+
             });
         }
     }
@@ -296,17 +300,54 @@ public class GameBoardController implements Initializable {
                 setHoverEffect(islands.get(i).getIsland(), islands.get(i).getIsland().getFitWidth() / 2);
                 int finalI = i;
                 islands.get(i).getIsland().setOnMouseClicked(a -> {
-                    rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
+                    if(gameBoard.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)){
+                        rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
+                        rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall().setStyle(null);
+                        resetHoverEffect(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall());
+                    }
                     actionValues.add(0, islands.get(finalI).getID());
                     for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
                         island.setEffect(null);
                         resetHoverEffect(island);
                     }
-                    rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall().setStyle(null);
-                    resetHoverEffect(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall());
                     calculateNextAction();
                 });
             }
+        }
+    }
+
+    public void makeNextXIslandVisibleFromMotherNatureSelectable(int x){
+        int startID = gameBoard.getTerrain().getIslands().stream().reduce((a, b) -> a.hasMotherNature() ? a : b).get().getID();
+        int countedIsland = 0;
+        for(int i = (startID + 1) % 11; countedIsland < x; i = (i + 1) % 11){
+            if(islands.get(i).isVisible()){
+                countedIsland++;
+                int finalI = i;
+                setHoverEffect(islands.get(i).getIsland(), islands.get(i).getIsland().getFitWidth() / 2 + 5);
+                islands.get(i).getIsland().setOnMouseClicked(a -> {
+                    actionValues.add(0, islands.get(finalI).getID());
+                    for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                        island.setEffect(null);
+                        resetHoverEffect(island);
+                    }
+                    calculateNextAction();
+                });
+            }
+        }
+    }
+
+    public void makeCloudSelectable(){
+        for(int i = 0; i < clouds.size(); i++){
+            setHoverEffect(clouds.get(i).getCloudImage(), clouds.get(i).getCloudImage().getFitWidth() / 2 + 5);
+            int finalI = i;
+            clouds.get(i).getCloudImage().setOnMouseClicked(a -> {
+                for (CloudController cloud : clouds) {
+                    resetHoverEffect(cloud.getCloudImage());
+                }
+                clouds.get(finalI).getCloudImage().setEffect(null);
+                actionValues.add(0, finalI);
+                calculateNextAction();
+            });
         }
     }
 
@@ -372,5 +413,12 @@ public class GameBoardController implements Initializable {
         return 0;
     }
 
-
+    private int countStepFromMotherNatureToIslandWithID(int endID){
+        int startID = gameBoard.getTerrain().getIslands().stream().reduce((a, b) -> a.hasMotherNature() ? a : b).get().getID();
+        int count = 1;
+        for(int i = (startID + 1) % 11; i != endID; i = (i + 1) % 11){
+            count += gameBoard.getTerrain().getIslandWithID(i) != null ? 1 : 0;
+        }
+        return count;
+    }
 }

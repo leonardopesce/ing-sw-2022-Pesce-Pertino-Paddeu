@@ -11,11 +11,11 @@ public class DiningHall {
     private final List<Teacher> teacherList = new ArrayList<>();
 
     public DiningHall() {
-        tables[ColorCharacter.GREEN.ordinal()] = new DiningTable(ColorCharacter.GREEN);
-        tables[ColorCharacter.BLUE.ordinal()] = new DiningTable(ColorCharacter.BLUE);
-        tables[ColorCharacter.RED.ordinal()] =  new DiningTable(ColorCharacter.RED);
-        tables[ColorCharacter.PINK.ordinal()] = new DiningTable(ColorCharacter.PINK);
-        tables[ColorCharacter.YELLOW.ordinal()] = new DiningTable(ColorCharacter.YELLOW);
+        tables[ColorCharacter.GREEN.getTableOrder()] = new DiningTable(ColorCharacter.GREEN);
+        tables[ColorCharacter.BLUE.getTableOrder()] = new DiningTable(ColorCharacter.BLUE);
+        tables[ColorCharacter.RED.getTableOrder()] =  new DiningTable(ColorCharacter.RED);
+        tables[ColorCharacter.PINK.getTableOrder()] = new DiningTable(ColorCharacter.PINK);
+        tables[ColorCharacter.YELLOW.getTableOrder()] = new DiningTable(ColorCharacter.YELLOW);
     }
 
     public DiningTable getTableOfColor(ColorCharacter color){

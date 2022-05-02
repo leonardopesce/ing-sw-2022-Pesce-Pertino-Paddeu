@@ -1,17 +1,10 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
-import it.polimi.ingsw.game_view.board.IslandBoard;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +14,7 @@ import java.util.ResourceBundle;
 public class CloudController implements Initializable {
     private final List<ImageView> students = new ArrayList<>();
     @FXML
-    ImageView st0, st1, st2, st3;
+    private ImageView st0, st1, st2, st3, cloudImage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -34,4 +27,7 @@ public class CloudController implements Initializable {
         }
     }
 
+    public ImageView getCloudImage() {
+        return cloudImage;
+    }
 }

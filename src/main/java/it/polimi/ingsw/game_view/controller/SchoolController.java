@@ -20,7 +20,9 @@ import java.util.ResourceBundle;
 public class SchoolController implements Initializable {
     private final ArrayList<ImageView> entranceStudents = new ArrayList<>();
     private final ArrayList<Circle> towersAvailable = new ArrayList<>();
-
+    private final ArrayList<HBox> tables = new ArrayList<>();
+    @FXML
+    HBox greenTable, redTable, yellowTable, pinkTable, blueTable;
     @FXML
     ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8;
     @FXML
@@ -34,6 +36,7 @@ public class SchoolController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        tables.addAll(Arrays.asList(greenTable, redTable, yellowTable, pinkTable, blueTable));
         schoolImage.fitWidthProperty().bind(mainPane.widthProperty());
         schoolImage.fitHeightProperty().bind(mainPane.heightProperty());
         schoolImage.setPreserveRatio(false);
@@ -58,6 +61,10 @@ public class SchoolController implements Initializable {
                 entranceStudents.get(i).setImage(null);
             }
         }
+    }
+
+    public ArrayList<HBox> getTables() {
+        return tables;
     }
 
     public ArrayList<ImageView> getEntranceStudents() {

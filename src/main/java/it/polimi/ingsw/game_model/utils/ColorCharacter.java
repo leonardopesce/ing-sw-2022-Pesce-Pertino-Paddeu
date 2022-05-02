@@ -4,21 +4,27 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public enum ColorCharacter {
-        GREEN("green"),
-        BLUE("blue"),
-        RED("red"),
-        PINK("pink"),
-        YELLOW("yellow");
+        GREEN("green", 0),
+        RED("red", 1),
+        YELLOW("yellow", 2),
+        PINK("pink", 3),
+        BLUE("blue", 4);
 
-        private String colorName;
+        private final String colorName;
+        private final int tableOrder;
 
-        ColorCharacter(String colorName) {
+        ColorCharacter(String colorName, int tableOrder) {
                 this.colorName = colorName;
+                this.tableOrder = tableOrder;
         }
 
         @Override
         public String toString() {
                 return colorName;
+        }
+
+        public int getTableOrder() {
+                return tableOrder;
         }
 
         public static Paint getPaint(ColorCharacter color){

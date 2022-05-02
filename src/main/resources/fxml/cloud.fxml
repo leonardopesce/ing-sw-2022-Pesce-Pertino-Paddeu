@@ -9,16 +9,16 @@
 
 <StackPane prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.CloudController">
    <children>
-      <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="cloudImage" fitHeight="300.0" fitWidth="300.0" preserveRatio="true">
          <image>
             <Image url="@../img/wooden_pieces/cloud_card.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="gifImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="gifImage" fitHeight="150.0" fitWidth="200.0" mouseTransparent="true" preserveRatio="true">
          <image>
             <Image url="@../img/easterEgg/bongoCat.gif" />
          </image></ImageView>
-      <GridPane alignment="CENTER">
+      <GridPane alignment="CENTER" mouseTransparent="true" pickOnBounds="false">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
