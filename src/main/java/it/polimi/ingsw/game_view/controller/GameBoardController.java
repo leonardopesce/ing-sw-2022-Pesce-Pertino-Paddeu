@@ -14,8 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -232,8 +231,15 @@ public class GameBoardController implements Initializable {
                     }
                 }
                 makeVisibleIslandsSelectable();
+                makeDiningHallSelectable();
             });
         }
+    }
+
+    public void makeDiningHallSelectable(){
+        GridPane diningHall = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall();
+        diningHall.setOnMouseEntered(a -> diningHall.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
+        diningHall.setOnMouseExited(a -> diningHall.setStyle(null));
     }
 
     public void makeVisibleIslandsSelectable(){
@@ -258,7 +264,10 @@ public class GameBoardController implements Initializable {
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.YELLOW);
         shadow.setRadius(radius);
-        node.setOnMouseEntered(ActionEvent -> node.setEffect(shadow));
+        node.setOnMouseEntered(ActionEvent -> {
+            System.out.println("entered");
+            node.setEffect(shadow);
+        });
         node.setOnMouseExited(ActionEvent -> node.setEffect(null));
     }
 

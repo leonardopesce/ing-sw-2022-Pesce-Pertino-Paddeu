@@ -22,8 +22,6 @@ public class SchoolController implements Initializable {
     private final ArrayList<Circle> towersAvailable = new ArrayList<>();
 
     @FXML
-    Button diningHallButton, entranceButton1;
-    @FXML
     ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8;
     @FXML
     Circle t0, t1, t2, t3, t4, t5, t6, t7;
@@ -32,7 +30,7 @@ public class SchoolController implements Initializable {
     @FXML
     StackPane mainPane;
     @FXML
-    GridPane entrance;
+    GridPane entrance, diningHall;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -47,15 +45,8 @@ public class SchoolController implements Initializable {
         }
     }
 
-
-    public ImageView getSt1() { return st1; }
-
-    public StackPane getMainPane() {
-        return mainPane;
-    }
-
-    public ImageView getSchoolImage() {
-        return schoolImage;
+    public GridPane getDiningHall() {
+        return diningHall;
     }
 
     public void setEntranceStudents(List<ColorCharacter> students){
