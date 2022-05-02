@@ -12,8 +12,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,9 +46,13 @@ public class GameBoardController implements Initializable {
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
+    private Label gamePhaseLabel;
+    @FXML
     private StackPane mainPane;
     @FXML
     private HBox cards;
+    @FXML
+    private GridPane infoBox;
     @FXML
     private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
     @FXML
@@ -66,6 +72,9 @@ public class GameBoardController implements Initializable {
         rotateTransition.setDuration(Duration.millis(1500));
         rotateTransition.setAutoReverse(false);
         rotateTransition.setNode(rotatingBoardController.getPane());
+
+        infoBox.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(0, 15, 0, 0, false), BorderStroke.THICK)));
+        infoBox.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(0, 15, 0, 0, false), Insets.EMPTY)));
     }
 
     public void setClient(Client client) {
@@ -170,6 +179,7 @@ public class GameBoardController implements Initializable {
 
     public void updateBoard(GameBoard board){
         rotatingBoardController.update(board);
+        gamePhaseLabel.setText(board.getPhase().toString());
         if(firstTime){
             firstTime = false;
             for(int i = 0; i < 4; i++){
@@ -264,10 +274,7 @@ public class GameBoardController implements Initializable {
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.YELLOW);
         shadow.setRadius(radius);
-        node.setOnMouseEntered(ActionEvent -> {
-            System.out.println("entered");
-            node.setEffect(shadow);
-        });
+        node.setOnMouseEntered(ActionEvent -> node.setEffect(shadow));
         node.setOnMouseExited(ActionEvent -> node.setEffect(null));
     }
 
