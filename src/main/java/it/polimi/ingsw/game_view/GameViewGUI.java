@@ -22,9 +22,7 @@ import java.util.Objects;
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
 
-
     private static final String pathInitialPage = "fxml/initialPage.fxml";
-    private GameBoard board;
     private ClientMessageObserverHandler msgHandler;
     private InitialPageController controllerInitial;
     private Client client;

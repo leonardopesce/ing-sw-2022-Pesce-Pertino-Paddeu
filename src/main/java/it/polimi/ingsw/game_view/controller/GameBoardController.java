@@ -113,8 +113,8 @@ public class GameBoardController implements Initializable {
                 case ACTION_PHASE_MOVING_STUDENTS -> actionValues.get(0) == gameBoard.getTerrain().getIslands().size() ?
                         new MoveStudentToDiningHallAction(clientName, actionValues.pop()) :
                         new MoveStudentToIslandAction(clientName, actionValues.pop(), actionValues.pop());
-                case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, actionValues.pop());
-                case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, countStepFromMotherNatureToIslandWithID(actionValues.pop()));
+                case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, countStepFromMotherNatureToIslandWithID(actionValues.pop()));
+                case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, actionValues.pop());
                 default -> throw new IllegalStateException("Unexpected value: " + gameBoard.getPhase());
         }));
         actionValues.clear();
@@ -319,7 +319,7 @@ public class GameBoardController implements Initializable {
     public void makeNextXIslandVisibleFromMotherNatureSelectable(int x){
         int startID = gameBoard.getTerrain().getIslands().stream().reduce((a, b) -> a.hasMotherNature() ? a : b).get().getID();
         int countedIsland = 0;
-        for(int i = (startID + 1) % 11; countedIsland < x; i = (i + 1) % 11){
+        for(int i = (startID + 1) % 12; countedIsland < x; i = (i + 1) % 12){
             if(islands.get(i).isVisible()){
                 countedIsland++;
                 int finalI = i;
@@ -416,7 +416,7 @@ public class GameBoardController implements Initializable {
     private int countStepFromMotherNatureToIslandWithID(int endID){
         int startID = gameBoard.getTerrain().getIslands().stream().reduce((a, b) -> a.hasMotherNature() ? a : b).get().getID();
         int count = 1;
-        for(int i = (startID + 1) % 11; i != endID; i = (i + 1) % 11){
+        for(int i = (startID + 1) % 12; i != endID; i = (i + 1) % 12){
             count += gameBoard.getTerrain().getIslandWithID(i) != null ? 1 : 0;
         }
         return count;

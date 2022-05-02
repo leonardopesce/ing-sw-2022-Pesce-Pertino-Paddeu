@@ -68,6 +68,9 @@ public class IslandController implements Initializable {
         if(islandBoard.hasMotherNature()){
             motherNature.setVisible(true);
         }
+        else {
+            motherNature.setVisible(false);
+        }
 
         //TODO add deny icon
 

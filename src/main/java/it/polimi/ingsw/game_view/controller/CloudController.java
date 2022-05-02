@@ -22,6 +22,9 @@ public class CloudController implements Initializable {
     }
 
     public void update(List<ColorCharacter> cloud){
+        for(ImageView student: students){
+            student.setImage(null);
+        }
         for(int i = 0; i < cloud.size(); i++){
             students.get(i).setImage(new Image("img/wooden_pieces/student_" + cloud.get(i).toString() + ".png"));
         }

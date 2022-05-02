@@ -75,6 +75,11 @@ public class SchoolController implements Initializable {
         for(int i = 0; i < towersAvailable.size(); i++){
             if(i < numOfTowers){
                 towersAvailable.get(i).setFill(ColorTower.getPaint(color));
+                towersAvailable.get(i).setStroke(Color.BLACK);
+            }
+            else {
+                towersAvailable.get(i).setFill(Color.TRANSPARENT);
+                towersAvailable.get(i).setStroke(Color.TRANSPARENT);
             }
         }
     }
