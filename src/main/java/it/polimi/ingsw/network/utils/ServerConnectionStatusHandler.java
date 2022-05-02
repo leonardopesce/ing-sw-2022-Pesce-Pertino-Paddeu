@@ -27,7 +27,7 @@ public class ServerConnectionStatusHandler extends ConnectionStatusHandler imple
             try {
                 connection.send(new CommunicationMessage(PING, null));
                 pingTimer.schedule(new PingTimeoutExceededTask(this), PING_TIMEOUT_DELAY);
-                Thread.sleep(10000);
+                Thread.sleep(PING_TIMEOUT_DELAY);
             } catch (InterruptedException sleepError) {
                 Logger.ERROR("Connection handler failed to sleep...", sleepError.getMessage());
                 abortConnection();
