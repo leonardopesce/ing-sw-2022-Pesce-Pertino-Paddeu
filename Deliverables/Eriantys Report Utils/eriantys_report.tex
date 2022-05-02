@@ -321,13 +321,71 @@
 		\centering
 		\includegraphics[scale=0.27]{ClientServerJoiningPhaseInteraction1.png}
 		\caption{Sequence Diagram - Connessione al server aggiornato}
+		\label{fig:sequence_join}
 	\end{figure}
 	\newpage
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[scale=0.3]{PingingSystem.png}
 		\caption{Sequence Diagram - Ping Pong}
+		\label{fig:sequence_pingpong}
 	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.25]{ClientServerEffectiveMatchGeneralInteraction.png}
+		\caption{Sequence Diagram - General Move Message}
+		\label{fig:sequence_generalmove}
+	\end{figure}
+
+	\newpage
+	\subsubsection{Peer Review - Network}
+	\paragraph{}
+	In vista dell'attività di \textbf{peer review} della nona settimana di sviluppo, riportiamo i componenti dell'ambiente di network.\\
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.45]{serverSideArch.png}
+		\caption{Architettura Server Side}
+	\end{figure}\\
+	\begin{itemize}
+		\item Alla connessione di un client, il server la accetta consolidando il socket per la comunicazione. Quest'ultimo verrà gestito dall'oggetto \textit{SocketClientConnection}.
+		\item Per implementare la funzionalità aggiuntiva \textit{Partite Multiple} abbiamo creato un sistema a lobby. Ogni oggetto \textit{Lobby} gestisce una singola partita. Un giocatore, una volta entrato nel server e settato il proprio nickname, può scegliere se creare una nuova lobby o entrare in una già esistente (se presente e non piena). Il giocatore che crea la lobby imposta in fase di creazione i parametri della partita stessa.
+		\item All'interno della \textit{SocketClientConnection} sono presenti tutte le funzioni che gestiscono le fasi che intercorrono dalla connessione del player al server fino al suo effettivo join in una partita. (settaggio nickname, creazione o join di una lobby, richiesta del tipo di deck da usare nella partita in fase di avvio (Mago, Saggio, Fata, Re)).
+		\item i nickname dei player sono unici per tutta la durata della connessione di un client al server. Pertanto anche tra partite differenti non sarà possibile avrà 2 giocatori con lo stesso nick.
+		\item il metodo deregister connection gestisce la disconnessione di un client al server. Se il client è parte di una lobby, quest'ultima viene chiusa e tutti i client al suo interno disconnessi.
+	\end{itemize}
+	
+	\newpage
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.45]{clientSideArch.png}
+		\caption{Architettura Client Side}
+	\end{figure}
+	\begin{itemize}
+		\item Il client non appena connesso, viene collegato ad un'istanza dell'oggetto \textit{Client} che gestisce la sua connessione e socket con il server.
+		\item L'oggetto \textit{ClientMessageObserverHandler} raggruppa la logica di ricezione dei messaggi (tranne i ping che sono gestiti separatamente). Alla ricezione di un messaggio, in base al suo tipo, un'azione sulla view verrà eseguita.
+	\end{itemize}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.7]{networkUtils.png}
+		\caption{Network utilities}
+	\end{figure}
+	\begin{itemize}
+		\item Quando una connessione avviene, come abbiamo detto precedentemente, \textit{SocketClientConnection} e \textit{Client} sono creati rispettivamente su Server e Client. Durante la creazione di questi ultimi, vengono istanziati due nuovi oggetti, rispettivamente \textit{ServerConnectionStatusHandler} e \textit{ClientConnectionStatusHandler}, che gestiscono la connettività ed eventuali problematiche ad essa correlate (perdite di connessione, ragequit, etc...). Il \textit{ServerConnectionStatusHandler} invia periodicamente (default ogni 10 secondi) un messaggio di \textit{PING} al \textit{ClientConnectionStatusHandler} il quale alla ricezione resetta il suo timer e risponde con un \textit{PONG}. Alla ricezione del \textit{PONG} il \textit{ServerConnectionStatusHandler} resetta a sua volta il timer. \cite{javaUtilTimer}
+		\item I due timer sono impostati a 10 secondi ciascuno (si ipotizza che in condizioni normali lo scambio ping/pong avvenga in pochi ms). In caso di scadenza di tale timer, viene invocata la task \textit{PingTimeoutExceededTask} che chiude la connessione.
+		\item La classe Logger formatta le stringhe e le stampa a schermo aggiungendo una tag colorata in base al tipo di messaggio.
+		\item LobbyInfo è un oggetto serializzabile contenente informazioni riguardo una lobby (nome, dimensione massima, dimensione corrente).
+	\end{itemize}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.7]{communicationMessage.png}
+		\caption{Messaggio di comunicazione}
+	\end{figure}
+	\begin{itemize}
+		\item Oggetto rappresentante i messaggi scambiati tra client e server.
+	\end{itemize}
+	\paragraph{}
+	Per ulteriori informazioni riguardo lo scambio di messaggi, osservare i diagrammi riportati nelle Figure [\ref{fig:sequence_join}][\ref{fig:sequence_pingpong}][\ref{fig:sequence_generalmove}].
 	
 	% Strumenti usati
 	\newpage
@@ -344,6 +402,7 @@
 		\item \emph{GitKraken} - Git GUI per visualizzare il workflow di sviluppo ed utilizzare efficientemente Git.
 		\item \emph{TEXStudio} - Gestione e aggiornamento del report.
 	\end{itemize}
+
 	% Bibliografia
 	\newpage
 	\begin{thebibliography}{99}
@@ -355,6 +414,9 @@
 		
 		\bibitem{circularDoublyLinkedList}
 		\href{https://www.softwaretestinghelp.com/doubly-linked-list-in-java/#Circular_Doubly_Linked_List_In_Java}{Circular Doubly Linked List}
+		
+		\bibitem{javaUtilTimer}
+		\href{https://docs.oracle.com/javase/7/docs/api/java/util/Timer.html}{Timer} - Documentazione Timer Java Util
 		
 	\end{thebibliography} 
 \end{document}         
