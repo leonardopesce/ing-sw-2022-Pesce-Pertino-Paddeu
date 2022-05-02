@@ -3,6 +3,7 @@ package it.polimi.ingsw.game_view.controller;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
@@ -27,6 +28,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -44,6 +47,7 @@ public class GameBoardController implements Initializable {
     private final List<IslandController> islands = new ArrayList<>();
     private GameBoard gameBoard;
     private final Stack<Integer> actionValues = new Stack<>();
+    private final List<CloudController> clouds = new ArrayList<>();
     @FXML
     ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
@@ -53,17 +57,20 @@ public class GameBoardController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
-    private HBox cards;
+    private HBox cards, cloudHBox;
     @FXML
     private GridPane infoBox;
     @FXML
     private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
     @FXML
     private RotatingBoardController rotatingBoardController;
+    @FXML
+    private CloudController cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        clouds.addAll(Arrays.asList(cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller));
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
         islands.addAll(Arrays.asList(island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller));
 
@@ -114,8 +121,6 @@ public class GameBoardController implements Initializable {
 
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
-
-
             gameBoard = board;
             rotatingBoardController.update(board);
             gamePhaseLabel.setText(board.getPhase().toString());
@@ -145,6 +150,12 @@ public class GameBoardController implements Initializable {
                     }
                 }
                 setUpDecks(showedBoard.get());
+
+                for(int i = 4; i > board.getTerrain().getCloudCards().size(); i--){
+                    clouds.remove(i - 1);
+                    cloudHBox.getChildren().remove(i - 1);
+                }
+
                 //TODO delete just for testing purpose
                 //makeStudentEntranceSelectable();
             }
@@ -164,11 +175,19 @@ public class GameBoardController implements Initializable {
                 }*/
             }
 
+            for(int i = 0; i < board.getTerrain().getCloudCards().size(); i++){
+                clouds.get(i).update(board.getTerrain().getCloudCards().get(i));
+            }
+
             if (board.getCurrentlyPlaying().equals(clientName)) {
                 if (board.getPhase().equals(GamePhase.PLANNING_PHASE)) {
                     makeAssistantCardPlayable();
-                } else if (board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)) {
+                }
+                else if (board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)) {
                     makeStudentEntranceSelectable();
+                }
+                else if(board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)){
+                    makeVisibleIslandsSelectable();
                 }
             } else {
                 gamePhaseLabel.setText("NOT YOUR TURN");

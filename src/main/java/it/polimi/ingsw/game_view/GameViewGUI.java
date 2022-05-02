@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private boolean testing = false;
+    private boolean testing = true;
 
 
     private static final String pathInitialPage = "fxml/initialPage.fxml";
@@ -170,7 +170,9 @@ public class GameViewGUI extends Application implements GameViewClient{
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
                 root = loader.load();
                 this.controllerGameBoard = loader.getController();
-                controllerGameBoard.setClient(client);
+                if(!testing){
+                    controllerGameBoard.setClient(client);
+                }
                 this.stage.setScene(new Scene(root, 1920, 1080));
                 this.stage.setResizable(true);
                 this.stage.setMaximized(true);
