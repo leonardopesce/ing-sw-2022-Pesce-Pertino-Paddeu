@@ -180,8 +180,7 @@ public class GameViewCLI implements GameViewClient{
             case PLAY_ADVANCED_CARD:
                 System.out.println("Select an advanced card " + board.getTerrain().getAdvancedCard());
                 int selectedCard = whileInputNotIntegerInRange(0, 2);
-                new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType());
-                client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType()).getCardInputs())));
+                //client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType(), this).getCardInputs())));
                 System.out.println("You played: " + board.getTerrain().getAdvancedCard().get(selectedCard));
                 break;
 
@@ -293,6 +292,10 @@ public class GameViewCLI implements GameViewClient{
 
     public GameBoard getBoard() {
         return board;
+    }
+
+    public Scanner getInput() {
+        return input;
     }
 
     public void setBoard(GameBoard board) {

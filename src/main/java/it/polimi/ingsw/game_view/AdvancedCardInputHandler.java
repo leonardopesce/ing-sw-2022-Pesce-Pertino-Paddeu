@@ -1,11 +1,18 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_view.board.GameBoard;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class AdvancedCardInputHandler {
+    private final GameViewCLI gameViewCli;
     private final AdvancedCharacterType characterToHandleType;
 
-    public AdvancedCardInputHandler(AdvancedCharacterType characterToHandle) {
+    public AdvancedCardInputHandler(AdvancedCharacterType characterToHandle, GameViewCLI cli) {
+        this.gameViewCli = cli;
         this.characterToHandleType = characterToHandle;
     }
 
@@ -28,9 +35,18 @@ public class AdvancedCardInputHandler {
     }
 
     private Object[] bard() {
+        int numberOfStudentSelected = 0;
+        int currentSelection = 0;
+        List<Integer> indexAlreadySelected = new ArrayList<>();
+
         Object[] toRet = new Object[characterToHandleType.getArgsLength()];
         System.out.println("You may exchange up to 2 students between your entrance and your dining room.");
-        System.out.println();
+
+        // Making the player chose the students
+        do {
+            System.out.println("Choose a student from your entrance. Use a number between (0," + gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size() + "): ");
+            //currentSelection = ;
+        } while(numberOfStudentSelected < 2 || currentSelection != -1);
         return toRet;
     }
 
