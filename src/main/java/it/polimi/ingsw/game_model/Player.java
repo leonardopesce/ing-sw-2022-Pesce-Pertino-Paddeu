@@ -164,7 +164,12 @@ public class Player {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return Objects.equals(nickname, player.nickname);
+        return money == player.money && playedSpecialCard == player.playedSpecialCard && movedStudents == player.movedStudents && nickname.equals(player.nickname) && color == player.color && school.equals(player.school) && deckAssistants.equals(player.deckAssistants) && discardedCard.equals(player.discardedCard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickname, color, school, deckAssistants, discardedCard, money, playedSpecialCard, movedStudents);
     }
 
     public void setMoney(int money) {

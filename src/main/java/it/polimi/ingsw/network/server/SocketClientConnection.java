@@ -261,6 +261,11 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SocketClientConnection that = (SocketClientConnection) o;
-        return Objects.equals(socket, that.socket) && Objects.equals(out, that.out) && Objects.equals(in, that.in) && Objects.equals(server, that.server) && Objects.equals(clientName, that.clientName);
+        return socket.equals(that.socket) && out.equals(that.out) && in.equals(that.in) && server.equals(that.server) && clientName.equals(that.clientName) && connectionStatusHandler.equals(that.connectionStatusHandler) && incomingMessages.equals(that.incomingMessages);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socket, out, in, server, clientName, connectionStatusHandler, incomingMessages);
     }
 }

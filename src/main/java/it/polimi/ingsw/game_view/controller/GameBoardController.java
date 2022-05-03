@@ -258,10 +258,13 @@ public class GameBoardController implements Initializable {
                 int finalI = i;
                 assistant.setOnMouseClicked(ActionEvent -> {
                     actionValues.add(0, getAssistantTypeIndex(finalI + 1));
-                    for(ImageView a: assistants){
-                        a.setOnMouseClicked(null);
-                    }
                     calculateNextAction();
+                    for(ImageView a: assistants){
+                        if(!a.equals(assistant)){
+                            a.setOnMouseClicked(null);
+                        }
+                    }
+                    assistant.setOnMouseClicked(null);
                 });
             }
         }
@@ -276,14 +279,17 @@ public class GameBoardController implements Initializable {
             entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
                 for(int k = 0; k < entranceStudents.size(); k++) {
                     resetHoverEffect(entranceStudents.get(k));
-
                 }
                 entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
                 actionValues.add(0, finalI);
-                System.out.println("YOU selected student number " + finalI + " color " + gameBoard.getSchools().get(gameBoard.getNames().indexOf(clientName)));
                 makeVisibleIslandsSelectable();
                 makeDiningHallSelectable();
-
+                for(ImageView entranceStudent: entranceStudents){
+                    if(!entranceStudent.equals(entranceStudents.get(finalI))){
+                        entranceStudent.setOnMouseClicked(null);
+                    }
+                }
+                entranceStudents.get(finalI).setOnMouseClicked(null);
             });
         }
     }
@@ -297,11 +303,13 @@ public class GameBoardController implements Initializable {
             actionValues.add(0, gameBoard.getTerrain().getIslands().size());
             for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
                 island.setEffect(null);
+                island.setOnMouseClicked(null);
                 resetHoverEffect(island);
             }
             diningHall.setStyle(null);
             resetHoverEffect(diningHall);
             calculateNextAction();
+            diningHall.setOnMouseClicked(null);
         });
     }
 
@@ -314,14 +322,22 @@ public class GameBoardController implements Initializable {
                     if(gameBoard.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)){
                         rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
                         rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall().setStyle(null);
+                        rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall().setOnMouseClicked(null);
                         resetHoverEffect(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall());
                     }
                     actionValues.add(0, islands.get(finalI).getID());
                     for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
-                        island.setEffect(null);
                         resetHoverEffect(island);
+                        island.setEffect(null);
                     }
                     calculateNextAction();
+
+                    for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                        if(!island.equals(islands.get(finalI).getIsland())) {
+                            island.setOnMouseClicked(null);
+                        }
+                    }
+                    islands.get(finalI).getIsland().setOnMouseClicked(null);
                 });
             }
         }
@@ -342,6 +358,9 @@ public class GameBoardController implements Initializable {
                         resetHoverEffect(island);
                     }
                     calculateNextAction();
+                    for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
+                        island.setOnMouseClicked(null);
+                    }
                 });
             }
         }
@@ -359,6 +378,12 @@ public class GameBoardController implements Initializable {
                     clouds.get(finalI).getCloudImage().setEffect(null);
                     actionValues.add(0, finalI);
                     calculateNextAction();
+                    for (CloudController cloud : clouds) {
+                        if(!cloud.getCloudImage().equals(clouds.get(finalI).getCloudImage())){
+                            cloud.getCloudImage().setOnMouseClicked(null);
+                        }
+                    }
+                    clouds.get(finalI).getCloudImage().setOnMouseClicked(null);
                 });
             }
         }

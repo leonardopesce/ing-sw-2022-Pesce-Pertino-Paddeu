@@ -17,6 +17,7 @@ public class AdvancedCardBoard implements Serializable {
     private final List<ColorCharacter> students = new ArrayList();
     private int denyCard = 0;
 
+
     public AdvancedCardBoard(AdvancedCharacter card) {
         this.name = card.getName();
         this.cost = card.getType().getCardCost();
