@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_view.board;
 
 import it.polimi.ingsw.game_model.character.advanced.*;
 import it.polimi.ingsw.game_model.character.basic.BasicCharacter;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import static it.polimi.ingsw.game_view.board.Printable.*;
 
 public class AdvancedCardBoard implements Serializable {
     private final String name;
+    private final AdvancedCharacterType type;
     private final int cost;
     private final List<ColorCharacter> students = new ArrayList();
     private int denyCard = 0;
@@ -20,6 +22,7 @@ public class AdvancedCardBoard implements Serializable {
 
     public AdvancedCardBoard(AdvancedCharacter card) {
         this.name = card.getName();
+        this.type = card.getType();
         this.cost = card.getType().getCardCost();
         if(card.getType() == MONK){
             students.addAll(((Monk)card).getStudentsOnCard().stream().map(BasicCharacter::getColor).toList());
@@ -33,6 +36,10 @@ public class AdvancedCardBoard implements Serializable {
         else if(card.getType() == HEALER){
             denyCard = ((Healer)card).getNumberOfDeniableIslands();
         }
+    }
+
+    public AdvancedCharacterType getType() {
+        return type;
     }
 
     @Override

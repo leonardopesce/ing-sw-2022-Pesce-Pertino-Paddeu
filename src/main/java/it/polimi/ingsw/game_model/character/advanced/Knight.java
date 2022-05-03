@@ -7,8 +7,6 @@ import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
 public class Knight extends AdvancedCharacter{
-
-
     public Knight(Game game){
         super(AdvancedCharacterType.KNIGHT, game);
     }
@@ -39,6 +37,6 @@ public class Knight extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... attributes) {
-        return attributes.length == 0;
+        return attributes.length == this.getType().getArgsLength();
     }
 }

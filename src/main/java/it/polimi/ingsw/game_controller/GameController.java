@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
@@ -275,8 +276,9 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
-    public void playAdvancedCard(String playerName, AdvancedCharacter card, Object... args) throws Exception{
+    public void playAdvancedCard(String playerName, AdvancedCharacterType cardType, Object... args) throws Exception{
         Player player = getPlayerFromName(playerName);
+        AdvancedCharacter card = game.getTerrain().getAdvancedCharacters().stream().filter(c -> c.getType().equals(cardType)).toList().get(0);
 
         if(player.equals(game.getCurrentlyPlayingPlayer()) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
             if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
@@ -292,7 +294,6 @@ public class GameController implements Observer<GameAction> {
             }
         }
     }
-
 
     private void refillClouds() {
         for(CloudCard cloudCard: game.getTerrain().getCloudCards()){

@@ -8,7 +8,6 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
 public class Centaurus extends AdvancedCharacter{
-
     public Centaurus(Game game) {
         super(AdvancedCharacterType.CENTAURUS, game);
     }
@@ -35,6 +34,6 @@ public class Centaurus extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... attributes) {
-        return attributes.length==0;
+        return attributes.length==this.getType().getArgsLength();
     }
 }

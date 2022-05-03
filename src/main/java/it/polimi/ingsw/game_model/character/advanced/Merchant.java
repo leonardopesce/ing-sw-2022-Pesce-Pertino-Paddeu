@@ -13,7 +13,6 @@ public class Merchant extends AdvancedCharacter{
     public Merchant(Game game) {
         super(AdvancedCharacterType.MERCHANT, game);
     }
-
     /**
      * Choose a type of student: every player (including yourself) must return 3 students of that type from their
      * dining room to the bag. If any player has fewer than 3 students of that type, return as many students as they have.
@@ -38,7 +37,7 @@ public class Merchant extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... args) {
-        if(args.length != 1){
+        if(args.length != this.getType().getArgsLength()){
             return false;
         }
         try {

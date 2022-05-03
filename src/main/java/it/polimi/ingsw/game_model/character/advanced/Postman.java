@@ -28,7 +28,7 @@ public class Postman extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... attributes) {
-        if(attributes.length != 1){
+        if(attributes.length != this.getType().getArgsLength()){
             return false;
         }
         try {
@@ -39,5 +39,4 @@ public class Postman extends AdvancedCharacter{
         }
         return true;
     }
-
 }

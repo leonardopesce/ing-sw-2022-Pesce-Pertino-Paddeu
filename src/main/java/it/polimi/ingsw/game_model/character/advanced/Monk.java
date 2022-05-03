@@ -59,7 +59,7 @@ public class Monk extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... args) {
-        if(args.length != 2) {
+        if(args.length != this.getType().getArgsLength()) {
             return false;
         }
         try {

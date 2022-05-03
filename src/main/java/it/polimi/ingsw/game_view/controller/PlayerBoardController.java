@@ -49,7 +49,7 @@ public class PlayerBoardController implements Initializable {
         this.deckBoard = deckBoard;
         if(deckBoard.getDiscardedCard() != null){
             lastPlayedCard.setImage(new Image("img/assistant/Assistente (" + (deckBoard.getDiscardedCard().getCardTurnValue()) + ").png"));
-        }leo
+        }
     }
 
     public Label getName() {

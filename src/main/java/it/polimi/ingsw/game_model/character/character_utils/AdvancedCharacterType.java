@@ -82,27 +82,33 @@ import static it.polimi.ingsw.game_view.board.Printable.*;
  * @see AdvancedCharacter
  */
 public enum AdvancedCharacterType {
-    MONK("monk", 1),
-    BARTENDER("bartender", 2),
-    FLAGMAN("flagman", 3),
-    POSTMAN("postman", 1),
-    HEALER("healer", 2),
-    CENTAURUS("centaurus", 3),
-    JESTER("jester", 1),
-    KNIGHT("knight", 2),
-    MERCHANT("merchant", 3),
-    BARD("bard", 1),
-    PRINCESS("princess", 2),
-    LANDLORD("landlord", 3),
-    NULL("null", 0);
+    MONK("monk", 1,2),
+    BARTENDER("bartender", 2, 0),
+    FLAGMAN("flagman", 3,1),
+    POSTMAN("postman", 1, 1),
+    HEALER("healer", 2, 1),
+    CENTAURUS("centaurus", 3, 0),
+    JESTER("jester", 1, 3),
+    KNIGHT("knight", 2, 0),
+    MERCHANT("merchant", 3, 1),
+    BARD("bard", 1, 3),
+    PRINCESS("princess", 2, 2),
+    LANDLORD("landlord", 3, 1),
+    NULL("null", 0, 0);
 
 
     private final String name;
     private int cardCost;
+    private final int argsLength;
 
-    AdvancedCharacterType(String name, int cardCost) {
+    AdvancedCharacterType(String name, int cardCost, int argsLen) {
         this.name = name;
         this.cardCost = cardCost;
+        this.argsLength = argsLen;
+    }
+
+    public int getArgsLength() {
+        return argsLength;
     }
 
     public String getCardName() {

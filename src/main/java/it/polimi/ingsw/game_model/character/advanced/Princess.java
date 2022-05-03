@@ -61,7 +61,7 @@ public class Princess extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... attributes) {
-        if(attributes.length != 2){
+        if(attributes.length != this.getType().getArgsLength()){
             return false;
         }
         try{

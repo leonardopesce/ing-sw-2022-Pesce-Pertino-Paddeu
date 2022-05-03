@@ -12,7 +12,6 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import java.util.List;
 
 public class Bard extends AdvancedCharacter{
-
     public Bard(Game game){
         super(AdvancedCharacterType.BARD, game);
     }
@@ -53,7 +52,7 @@ public class Bard extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... args) {
-        if(args.length != 3) {
+        if(args.length != this.getType().getArgsLength()) {
             return false;
         }
 

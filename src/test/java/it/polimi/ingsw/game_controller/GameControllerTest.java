@@ -1,8 +1,13 @@
 package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.game_controller.action.*;
+import it.polimi.ingsw.game_model.character.Assistant;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.character.advanced.Postman;
 import it.polimi.ingsw.game_model.character.basic.Student;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
@@ -118,13 +123,15 @@ public class GameControllerTest {
     @DisplayName("Play advanced card test")
     @Test
     void playAdvancedCardTest() throws Exception{
-        initialization(2, true);
+        do {
+            initialization(2, true);
+        } while(game.getTerrain().getAdvancedCharacters().stream().map(AdvancedCharacter::getType).filter(type -> type.equals(AdvancedCharacterType.POSTMAN)).toList().size() == 0);
 
         // Simple planning phase
         new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 0).perform(controller);
         new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 1).perform(controller);
 
-        new PlayAdvancedCardAction(controller.getCurrentPlayer().getNickname(), new Postman(game), controller.getCurrentPlayer().getNickname()).perform(controller);
+        new PlayAdvancedCardAction(controller.getCurrentPlayer().getNickname(), AdvancedCharacterType.POSTMAN, controller.getCurrentPlayer().getNickname()).perform(controller);
 
         Assertions.assertTrue(controller.getCurrentPlayer().hasPlayedSpecialCard());
         Assertions.assertEquals(controller.getCurrentPlayer().getDiscardedCard().getPossibleSteps(), controller.getCurrentPlayer().getDiscardedCard().getType().getPossibleSteps() + 2);

@@ -42,6 +42,6 @@ public class Bartender extends AdvancedCharacter{
 
     @Override
     protected boolean validateArgs(Object... args) {
-        return args.length == 0;
+        return args.length == this.getType().getArgsLength();
     }
 }

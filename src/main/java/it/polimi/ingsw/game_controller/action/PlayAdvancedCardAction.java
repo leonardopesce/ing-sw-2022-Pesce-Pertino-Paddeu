@@ -2,15 +2,16 @@ package it.polimi.ingsw.game_controller.action;
 
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.network.utils.Logger;
 
 public class PlayAdvancedCardAction extends GameAction{
-    private AdvancedCharacter card;
+    private AdvancedCharacterType card;
     private Object[] varArgs;
 
-    public PlayAdvancedCardAction(String playerName, AdvancedCharacter card, Object... varArgs) {
+    public PlayAdvancedCardAction(String playerName, AdvancedCharacterType cardSelected, Object... varArgs) {
         super(playerName);
-        this.card = card;
+        this.card = cardSelected;
         this.varArgs = varArgs;
     }
 
@@ -26,6 +27,6 @@ public class PlayAdvancedCardAction extends GameAction{
 
     @Override
     public String toString() {
-        return "Play advanced card action. Played advanced card : " + card.getType().toString();
+        return "Play advanced card action. Played advanced card : " + card.toString();
     }
 }
