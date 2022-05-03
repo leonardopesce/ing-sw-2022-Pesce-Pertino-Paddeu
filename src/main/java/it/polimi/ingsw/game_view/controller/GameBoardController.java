@@ -141,7 +141,7 @@ public class GameBoardController implements Initializable {
                                     playerBoardButtons.get(finalI).setDisable(true);
                                     playerBoardButtons.get(finalI).setDisable(true);
                                 });
-                                rotateTransition.play();
+                                Platform.runLater(rotateTransition::play);
                             }
                         });
                     } else {
@@ -160,7 +160,13 @@ public class GameBoardController implements Initializable {
             }
             for (int i = 0; i < board.getNames().size(); i++) {
                 if (playerBoardButtons.get(i).getText().equals(clientName)) {
-                    playerBoardButtons.get(i).setDisable(false);
+                    ColorAdjust ca = new ColorAdjust();
+                    for(int k = 0; k < assistants.size(); k++){
+                        if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(k + 1)) {
+                            ca.setBrightness(-0.5);
+                            assistants.get(k).setEffect(ca);
+                        }
+                    }
                     playerBoardButtons.get(i).fire();
                 }
             }
@@ -270,6 +276,7 @@ public class GameBoardController implements Initializable {
             entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
                 for(int k = 0; k < entranceStudents.size(); k++) {
                     resetHoverEffect(entranceStudents.get(k));
+
                 }
                 entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
                 actionValues.add(0, finalI);
@@ -386,7 +393,7 @@ public class GameBoardController implements Initializable {
             if(!isUp[i]){
                 moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
                 moveUpEffect.setOnFinished(a -> isUp[i] = true);
-                moveUpEffect.play();
+                Platform.runLater(moveUpEffect::play);
             }
         }).start());
     }
@@ -403,7 +410,7 @@ public class GameBoardController implements Initializable {
             if(isUp[i]){
                 moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
                 moveDownEffect.setOnFinished(a -> isUp[i] = false);
-                moveDownEffect.play();
+                Platform.runLater(moveDownEffect::play);
             }
         }).start());
     }
