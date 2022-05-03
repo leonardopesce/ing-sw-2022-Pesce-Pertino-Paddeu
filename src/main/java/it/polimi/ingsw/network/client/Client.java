@@ -24,6 +24,14 @@ public class Client extends Observable<CommunicationMessage> {
         this.port = port;
     }
 
+    public synchronized void close(){
+        try{
+            socketOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public synchronized boolean isActive(){
         return connectionStatusHandler.isConnectionActive();
     }

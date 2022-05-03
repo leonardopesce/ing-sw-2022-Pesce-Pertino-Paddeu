@@ -2,6 +2,8 @@ package it.polimi.ingsw.game_model.character;
 
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 
+import java.util.Objects;
+
 /**
  * Assistant models the concept of "assistant card" in the game, it is the card you play at the beginning of your turn,
  * its main attributes are cost and possible steps, in fact when you play an assistant its cost determines players turn's
@@ -40,7 +42,13 @@ public class Assistant extends Character{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Assistant assistant)) return false;
-        return name.equals(assistant.name) && cost == assistant.cost && possibleStep == assistant.possibleStep;
+        if (o == null || getClass() != o.getClass()) return false;
+        Assistant assistant = (Assistant) o;
+        return cost == assistant.cost && possibleStep == assistant.possibleStep && type == assistant.type && name.equals(assistant.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, cost, possibleStep);
     }
 }

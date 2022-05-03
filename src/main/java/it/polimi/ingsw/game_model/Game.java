@@ -26,13 +26,14 @@ public class Game extends Observable<MoveMessage> {
     protected final BagOfStudents bag = new BagOfStudents();
     protected final Terrain terrain = new Terrain();
     private Player currentlyPlaying;
+    private final Random random = new Random();
 
     /*
      * Placing mother nature on a random island between 0 and 11.
      * Each island is recognized by an id. Mother nature position is equal to
      * the id of the island she is currently on.
      */
-    protected final MotherNature motherNature = new MotherNature(new Random().nextInt(12));
+    protected final MotherNature motherNature = new MotherNature(random.nextInt(12));
     protected CalculatorInfluence influenceCalculator = new CalculatorInfluence();
     protected CalculatorTeacherOwnership teacherOwnershipCalculator = new CalculatorTeacherOwnership();
     protected GamePhase gamePhase;

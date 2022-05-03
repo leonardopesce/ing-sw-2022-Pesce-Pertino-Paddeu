@@ -18,6 +18,7 @@ import java.util.List;
  * </ul>
  */
 public class BagOfStudents extends Character{
+    private final Random random = new Random();
     private final List<Student> unpickedStudents;
 
     public BagOfStudents(){
@@ -66,9 +67,8 @@ public class BagOfStudents extends Character{
      * @see Student
      */
     public Student drawStudentFromBag() throws BagEmptyException {
-        Random randomPicker = new Random();
         if(!isEmpty()) {
-            return this.unpickedStudents.remove(randomPicker.nextInt(this.unpickedStudents.size()));
+            return this.unpickedStudents.remove(random.nextInt(this.unpickedStudents.size()));
         }
         else throw new BagEmptyException("The bag is empty");
     }

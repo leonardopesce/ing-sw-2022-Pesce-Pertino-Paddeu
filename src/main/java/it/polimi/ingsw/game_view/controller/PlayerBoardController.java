@@ -24,6 +24,8 @@ public class PlayerBoardController implements Initializable {
     @FXML
     private Group playerBoard;
     @FXML
+    private ImageView lastPlayedCard;
+    @FXML
     private SchoolController schoolController;
 
     @Override
@@ -45,6 +47,9 @@ public class PlayerBoardController implements Initializable {
 
     public void setDeckBoard(DeckBoard deckBoard) {
         this.deckBoard = deckBoard;
+        if(deckBoard.getDiscardedCard() != null){
+            lastPlayedCard.setImage(new Image("img/assistant/Assistente (" + (deckBoard.getDiscardedCard().getCardTurnValue()) + ").png"));
+        }leo
     }
 
     public Label getName() {
