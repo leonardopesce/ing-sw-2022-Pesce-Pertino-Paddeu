@@ -253,7 +253,7 @@ public class GameViewCLI implements GameViewClient{
         if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
     }
 
-    private synchronized int whileInputNotIntegerInRange(int a, int b){
+    protected synchronized int whileInputNotIntegerInRange(int a, int b){
         String read;
         boolean first = true;
         do{
