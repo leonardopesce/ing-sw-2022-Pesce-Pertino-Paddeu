@@ -4,7 +4,6 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -18,13 +17,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SchoolController implements Initializable {
-    private final ArrayList<ImageView> entranceStudents = new ArrayList<>();
-    private final ArrayList<Circle> towersAvailable = new ArrayList<>();
-    private final ArrayList<HBox> tables = new ArrayList<>();
+    private final List<ImageView> entranceStudents = new ArrayList<>();
+    private final List<ImageView> professorsImage = new ArrayList<>();
+    private final List<Circle> towersAvailable = new ArrayList<>();
+    private final List<HBox> tables = new ArrayList<>();
     @FXML
     HBox greenTable, redTable, yellowTable, pinkTable, blueTable;
     @FXML
-    ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8;
+    ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8, greenProfessor, redProfessor, yellowProfessor, pinkProfessor, blueProfessor;
     @FXML
     Circle t0, t1, t2, t3, t4, t5, t6, t7;
     @FXML
@@ -36,6 +36,7 @@ public class SchoolController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        professorsImage.addAll(Arrays.asList(greenProfessor, redProfessor, yellowProfessor, pinkProfessor, blueProfessor));
         tables.addAll(Arrays.asList(greenTable, redTable, yellowTable, pinkTable, blueTable));
         schoolImage.fitWidthProperty().bind(mainPane.widthProperty());
         schoolImage.fitHeightProperty().bind(mainPane.heightProperty());
@@ -63,12 +64,19 @@ public class SchoolController implements Initializable {
         }
     }
 
-    public ArrayList<HBox> getTables() {
+    public List<HBox> getTables() {
         return tables;
     }
 
-    public ArrayList<ImageView> getEntranceStudents() {
+    public List<ImageView> getEntranceStudents() {
         return entranceStudents;
+    }
+
+    public void setProfessorsImage(List<ColorCharacter> professors){
+        for(int i = 0; i < professorsImage.size(); i++){
+            int index = professors.stream().map(ColorCharacter::getTableOrder).toList().indexOf(i);
+            professorsImage.get(i).setImage(index == - 1 ? null : new Image("img/wooden_pieces/teacher_" + professors.get(index) + ".png"));
+        }
     }
 
     public void setTowersAvailable(int numOfTowers, ColorTower color){

@@ -2,9 +2,7 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
-import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
-import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
@@ -29,8 +27,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
