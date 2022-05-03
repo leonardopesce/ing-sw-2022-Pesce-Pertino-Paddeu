@@ -3,6 +3,9 @@ package it.polimi.ingsw.game_model.utils;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+/**
+ * Object to represent students color
+ */
 public enum ColorCharacter {
         GREEN("green", 0),
         RED("red", 1),

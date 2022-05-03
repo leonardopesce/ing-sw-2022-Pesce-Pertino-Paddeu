@@ -6,6 +6,10 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class to manage the group of dining tables the player has: each player has 5 tables and a list of teachers
+ */
+
 public class DiningHall {
     private final DiningTable[] tables = new DiningTable[5];
     private final List<Teacher> teacherList = new ArrayList<>();

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.game_model.utils;
 
+/**
+ * Enum object to represent game playing phases
+ */
 public enum GamePhase {
     GAME_PENDING,
     NEW_ROUND,

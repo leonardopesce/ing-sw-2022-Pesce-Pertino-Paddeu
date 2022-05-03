@@ -5,6 +5,13 @@ import it.polimi.ingsw.game_model.character.basic.Student;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>
+ * A class to model the entrance of the player's game board: a entrance contains a list of students, that can be
+ * received from a cloud card, and can be moved on islands or dining table
+ *
+ *
+ */
 public class Entrance {
     private final List<Student> students = new ArrayList<>();
 
@@ -19,10 +26,23 @@ public class Entrance {
         return students.get(indexOfStudent);
     }
 
+    /**
+     * Move a student from the entrance
+     * @param student
+     * @return a list of students without the moved ones.
+     * @see Student
+     * @see DiningTable
+     */
     public Student moveStudent(int student) {
         return students.remove(student);
     }
 
+    /**
+     * Useful method to add all students of a list on the dining table at once(list of students length must always be
+     * less long than the remaining dining table's cells)
+     * dining table
+     * @param students list of students to add
+     */
     public void addAllStudents(List<Student> students){
         //TODO does this rise a problem in case there are more than 9 students?
         if(this.students.size() + students.size() <= 9) this.students.addAll(students);

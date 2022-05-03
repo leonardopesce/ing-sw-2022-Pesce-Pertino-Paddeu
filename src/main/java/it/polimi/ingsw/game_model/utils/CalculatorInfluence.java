@@ -10,14 +10,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class used to calculate the player's influence on an island: influence
+ * is an integer which depends on towers on islands and students on
+ * island whose professor is in the player's game board.
+ */
 public class CalculatorInfluence {
 
     public CalculatorInfluence(){}
 
+    /**
+     * Sum tower influence and student influence of the player
+     * @param player player associated with influence
+     * @param island island where to calculate influence
+     * @return influence
+     */
     public int evaluateForPlayer(Player player, Island island){
         return playerTowerInfluence(player, island) + playerStudentInfluence(player, island);
     }
 
+    /**
+     * If the game's rules include teams of players this function evaluates team influence: at first it creates teams
+     * from the list of players; for each team(a list of
+     * players with the same color) it evaluates the team influence which will be the sum of each
+     * team member's influence; then it compares each team's influence, in case it founds a most influencing team,
+     * return the list of players of the most influencing team; in case of a draw(no team has a unique maximal value of
+     * influence), it frees the current island and returns an empty player list.
+     * @param players list of players in the game
+     * @param island island where to calculate influence
+     * @return list of player if not draw, else an empty players list
+     */
     public Optional<Player> evaluate(List<Player> players, Island island){
         // from the list of the player with the same color get the first player of the list with most influencing color
         if(!island.isBlocked()) {
@@ -74,6 +96,7 @@ public class CalculatorInfluence {
      *
      * @return the total influence brought by the students whose teachers are controlled by the specified player
      */
+
     protected int playerStudentInfluence(Player player, Island island){
         int influence = 0;
         for(Teacher t: player.getTeachers()){
@@ -86,6 +109,12 @@ public class CalculatorInfluence {
         return influence;
     }
 
+
+    /**
+     * Given a list of players, for each player in the list creates a group of players with the same tower color
+     * @param players list of total players
+     * @return a list of players with the same tower color
+     */
     private List<List<Player>> getListsOfPlayersWithSameColor(List<Player> players){
         List<List<Player>> tmp = new ArrayList<>();
         for(Player player: players){

@@ -2,6 +2,12 @@ package it.polimi.ingsw.game_model.character;
 
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 
+/**
+ * Assistant models the concept of "assistant card" in the game, it is the card you play at the beginning of your turn,
+ * its main attributes are cost and possible steps, in fact when you play an assistant its cost determines players turn's
+ * order, and possible steps determines the max number of steps you can move Mother nature on the islands.
+ *
+ */
 public class Assistant extends Character{
     private final AssistantType type;
     private final String name;

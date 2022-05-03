@@ -9,12 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
+/**
+ * An object to represent the game terrain, a terrain is made of islands, cloud cards and advanced characters
+ */
 public class Terrain {
     private final List<CloudCard> cloudCards;
     private final List<AdvancedCharacter> advancedCharacters;
     private final List<Island> islandsRing;
     private static final int MAX_ISLAND_NUMBER = 12;
 
+    /**
+     * Add islands to build the island ring
+     */
     public Terrain() {
         cloudCards = new ArrayList<>();
         islandsRing = new ArrayList<>();
@@ -37,6 +43,11 @@ public class Terrain {
         return islandsRing.get(Math.floorMod((islandsRing.indexOf(is) - 1), islandsRing.size()));
     }
 
+    /**
+     * Manage the merge of island: islands merge if each island has built a tower of the same color
+     * @param baseIsland base island
+     * @param islandToMerge island to merge
+     */
     public void mergeIsland(Island baseIsland, Island islandToMerge){
         baseIsland.incrementSize();
         baseIsland.addAllStudent(islandToMerge.getStudents());
@@ -53,10 +64,19 @@ public class Terrain {
     }
 
 
+    /**
+     * Add a cloud card on the game terrain
+     * @param cloudToAdd
+     */
     public void addCloudCard(CloudCard cloudToAdd) {
         this.cloudCards.add(cloudToAdd);
     }
 
+    /**
+     * Give each island an id, each island has unique id
+     * @param id
+     * @return island with id
+     */
     public Island getIslandWithId(int id) {
         Island is = islandsRing.get(0);
         for(int i = 1; i < islandsRing.size(); i++){
@@ -67,6 +87,10 @@ public class Terrain {
         return is;
     }
 
+    /**
+     * In expert mode, give an advanced card to a player, each player has different advanced cards
+     * @param game
+     */
     public void pickAdvancedCard(Game game){
         while(advancedCharacters.size() < GameExpertMode.NUMBER_OF_ADVANCED_CARD){
             AdvancedCharacter character = AdvancedCharacter.getRandomCard(game, advancedCharacters);

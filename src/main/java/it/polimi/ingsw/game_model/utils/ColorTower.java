@@ -3,6 +3,9 @@ package it.polimi.ingsw.game_model.utils;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+/**
+ * Object that represents towers possible colors
+ */
 public enum ColorTower {
     BLACK, WHITE, GREY;
 
