@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ public class IslandController implements Initializable {
     private final List<Label> studentNumber = new ArrayList<>();
     private int ID;
     @FXML
+    private StackPane mainPane;
+    @FXML
     private ImageView island, motherNature, redStudent, yellowStudent, pinkStudent, greenStudent, blueStudent, towerImage;
     @FXML
     private Label studentsNumberRed, studentsNumberYellow, studentsNumberPink, studentsNumberGreen, studentsNumberBlue, towerNumber;
@@ -27,8 +30,8 @@ public class IslandController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        studentImage.addAll(Arrays.asList(greenStudent, blueStudent, redStudent, pinkStudent, yellowStudent));
-        studentNumber.addAll(Arrays.asList(studentsNumberGreen, studentsNumberBlue, studentsNumberRed, studentsNumberPink, studentsNumberYellow));
+        studentImage.addAll(Arrays.asList(greenStudent, redStudent, yellowStudent, pinkStudent, blueStudent));
+        studentNumber.addAll(Arrays.asList(studentsNumberGreen, studentsNumberRed, studentsNumberYellow,  studentsNumberPink, studentsNumberBlue));
         motherNature.setVisible(false);
         for(ImageView student: studentImage){
             student.setVisible(false);
@@ -53,15 +56,15 @@ public class IslandController implements Initializable {
     }
 
     public void hide(){
-        island.setVisible(false);
+        mainPane.setVisible(false);
     }
 
     public boolean isVisible(){
-        return island.isVisible();
+        return mainPane.isVisible();
     }
 
     public void unHide(){
-        island.setVisible(true);
+        mainPane.setVisible(true);
     }
 
     public void update(IslandBoard islandBoard){
@@ -92,6 +95,7 @@ public class IslandController implements Initializable {
 
         for(int i = 0; i < students.length; i++){
             if(students[i] > 0){
+
                 studentImage.get(i).setVisible(true);
                 studentNumber.get(i).setVisible(true);
                 studentNumber.get(i).setText(String.valueOf(students[i]));

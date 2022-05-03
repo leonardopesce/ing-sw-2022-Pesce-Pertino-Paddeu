@@ -160,6 +160,7 @@ public class GameBoardController implements Initializable {
             }
             for (int i = 0; i < board.getNames().size(); i++) {
                 if (playerBoardButtons.get(i).getText().equals(clientName)) {
+                    playerBoardButtons.get(i).setDisable(false);
                     playerBoardButtons.get(i).fire();
                 }
             }
@@ -168,10 +169,10 @@ public class GameBoardController implements Initializable {
                 if(board.getTerrain().getIslands().stream().map(IslandBoard::getID).toList().contains(island.getID())){
                     island.unHide();
                     island.update(board.getTerrain().getIslandWithID(island.getID()));
-                }/*
+                }
                 else{
                     island.hide();
-                }*/
+                }
             }
 
             for(int i = 0; i < board.getTerrain().getCloudCards().size(); i++){
@@ -207,11 +208,14 @@ public class GameBoardController implements Initializable {
     }
 
     private void setAssistantsCardsRetro(Image image){
+        ColorAdjust ca = new ColorAdjust();
         for(int i = 0; i < assistants.size(); i++){
             assistants.get(i).setImage(image);
+            assistants.get(i).setEffect(ca);
             cards.setTranslateY(assistants.get(i).getFitHeight() * 0.8);
             setGoUpEffectOnAssistantCard(assistants.get(i), i);
             setGoDownEffectOnAssistantCard(assistants.get(i), i);
+
         }
     }
 
@@ -267,7 +271,7 @@ public class GameBoardController implements Initializable {
                 for(int k = 0; k < entranceStudents.size(); k++) {
                     resetHoverEffect(entranceStudents.get(k));
                 }
-                entranceStudents.get(finalI).setEffect(new Shadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
+                entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
                 actionValues.add(0, finalI);
                 System.out.println("YOU selected student number " + finalI + " color " + gameBoard.getSchools().get(gameBoard.getNames().indexOf(clientName)));
                 makeVisibleIslandsSelectable();
@@ -338,16 +342,18 @@ public class GameBoardController implements Initializable {
 
     public void makeCloudSelectable(){
         for(int i = 0; i < clouds.size(); i++){
-            setHoverEffect(clouds.get(i).getCloudImage(), clouds.get(i).getCloudImage().getFitWidth() / 2 + 5);
-            int finalI = i;
-            clouds.get(i).getCloudImage().setOnMouseClicked(a -> {
-                for (CloudController cloud : clouds) {
-                    resetHoverEffect(cloud.getCloudImage());
-                }
-                clouds.get(finalI).getCloudImage().setEffect(null);
-                actionValues.add(0, finalI);
-                calculateNextAction();
-            });
+            if(!gameBoard.getTerrain().getCloudCards().get(i).isEmpty()) {
+                setHoverEffect(clouds.get(i).getCloudImage(), clouds.get(i).getCloudImage().getFitWidth() / 2 + 5);
+                int finalI = i;
+                clouds.get(i).getCloudImage().setOnMouseClicked(a -> {
+                    for (CloudController cloud : clouds) {
+                        resetHoverEffect(cloud.getCloudImage());
+                    }
+                    clouds.get(finalI).getCloudImage().setEffect(null);
+                    actionValues.add(0, finalI);
+                    calculateNextAction();
+                });
+            }
         }
     }
 
@@ -379,8 +385,8 @@ public class GameBoardController implements Initializable {
         assistant.setOnMouseEntered(ActionEvent -> new Thread(() -> {
             if(!isUp[i]){
                 moveUpEffect.setByY(- assistant.getFitHeight() * 0.9);
-                moveUpEffect.play();
                 moveUpEffect.setOnFinished(a -> isUp[i] = true);
+                moveUpEffect.play();
             }
         }).start());
     }
@@ -396,8 +402,8 @@ public class GameBoardController implements Initializable {
             }
             if(isUp[i]){
                 moveDownEffect.setByY(assistant.getFitHeight() * 0.9);
-                moveDownEffect.play();
                 moveDownEffect.setOnFinished(a -> isUp[i] = false);
+                moveDownEffect.play();
             }
         }).start());
     }
