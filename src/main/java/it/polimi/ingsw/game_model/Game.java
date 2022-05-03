@@ -147,6 +147,7 @@ public class Game extends Observable<MoveMessage> {
     /**
      * Handles the win conditions logic.
      */
+    //TODO condition when all players finish their assistant card
     public String[] winner(){
         // First condition: a player has built all his towers in 4 players only the first two players have towers.
         for(int i = 0; i < players.size(); i++){
