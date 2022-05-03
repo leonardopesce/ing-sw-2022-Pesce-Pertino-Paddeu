@@ -245,6 +245,7 @@ public class Game extends Observable<MoveMessage> {
 
     public void moveStudentToDiningHall(Player player, ColorCharacter color) throws TooManyStudentsException{
         player.moveStudentToDiningHall(color);
+        updateTeacherOwnership(player, color);
     }
 
     public GamePhase getGamePhase() {

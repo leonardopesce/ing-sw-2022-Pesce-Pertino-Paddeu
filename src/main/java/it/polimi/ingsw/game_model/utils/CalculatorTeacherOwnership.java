@@ -21,8 +21,6 @@ public class CalculatorTeacherOwnership {
      * @param color teacher to evaluate 's color
      * @param players  Game players list
      */
-
-
     public void evaluate(Player player, ColorCharacter color, List<Player> players){
         this.players = players;
         addTeacherToPlayerWithHighestNumberOfStudentOfColor(

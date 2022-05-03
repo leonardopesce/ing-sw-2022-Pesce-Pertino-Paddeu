@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.util.ArrayList;
@@ -47,9 +48,9 @@ public class AdvancedCardInputHandler {
 
         // Making the player chose the students from his entrance
         do {
-            System.out.println("Choose a student from your entrance. Use a number between (0," + gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size() + "). Insert -1 if you want to stop: ");
-            currentSelection = gameViewCli.whileInputNotIntegerInRange(-1, gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
-            if(currentSelection == -1) {
+            System.out.println("Choose a student from your entrance. Use a number between (0," + (gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()-1) + "). Insert " + gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size() +  " if you want to stop: ");
+            currentSelection = gameViewCli.whileInputNotIntegerInRange(0, gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
+            if(currentSelection == gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()) {
                 if(numberOfStudentSelectedFromEntrance == 0) {
                     System.out.println("You must select at least 1 student.");
                     currentSelection = -2;
@@ -62,7 +63,7 @@ public class AdvancedCardInputHandler {
                     numberOfStudentSelectedFromEntrance++;
                 }
             }
-        } while(numberOfStudentSelectedFromEntrance < 2 || currentSelection != -1);
+        } while(numberOfStudentSelectedFromEntrance < 2 && currentSelection != gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
 
         // Fetching player current dining tables dimensions
         for(int i=0;i<5;i++) {
@@ -71,6 +72,7 @@ public class AdvancedCardInputHandler {
 
         // Making the player chose the students from his dining hall
         do {
+            System.out.println("Choose a dining table to take a student from there and place it in your entrance. Please use (0,4) to chose: ");
             currentSelection = gameViewCli.whileInputNotIntegerInRange(0,4);
             if(tablesDimensions[currentSelection] <= 0) {
                 System.out.println("The table you selected is empty.");
@@ -81,9 +83,11 @@ public class AdvancedCardInputHandler {
             }
         } while (numberOfStudentSelectedFromEntrance != numberOfStudentSelectedFromDiningHall);
 
+        List<ColorCharacter> tableColors = new ArrayList<>();
+        tableColors = indexSelectedFromDining.stream().map(enumInt -> ColorCharacter.values()[enumInt]).toList();
         toRet[0] = gameViewCli.getClient().getName();
         toRet[1] = indexSelectedFromEntrance;
-        toRet[2] = indexSelectedFromDining;
+        toRet[2] = tableColors;
         return toRet;
     }
 

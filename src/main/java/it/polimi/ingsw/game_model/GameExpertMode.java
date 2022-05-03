@@ -29,6 +29,7 @@ public class GameExpertMode extends Game {
     @Override
     public void moveStudentToDiningHall(Player player, ColorCharacter color){
         player.moveStudentToDiningHall(color);
+        updateTeacherOwnership(player,color);
         if(player.getSchool().getDiningHall().getTableOfColor(color).getNumberOfStudents() % 3 == 0){
             treasury = player.addMoney(treasury);
         }

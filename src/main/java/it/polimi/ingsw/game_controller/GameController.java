@@ -217,7 +217,6 @@ public class GameController implements Observer<GameAction> {
                 ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
                 game.moveStudentToDiningHall(player, diningHallColor);
                 player.incrementNumberOfMovedStudents();
-                game.updateTeacherOwnership(player, diningHallColor);
             } catch (TooManyStudentsException e) {
                 //TODO non puoi più aggiungere studenti a quel tavolo visto che è pieno
                 e.printStackTrace();
