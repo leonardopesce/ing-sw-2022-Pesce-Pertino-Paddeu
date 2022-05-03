@@ -1,7 +1,6 @@
 package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.BagEmptyException;
-import it.polimi.ingsw.custom_exceptions.NicknameAlreadyChosenException;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.character.Assistant;
@@ -15,19 +14,11 @@ import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import it.polimi.ingsw.game_model.world.Island;
-import it.polimi.ingsw.game_view.GameViewGUI;
-import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.game_view.board.IslandBoard;
-import it.polimi.ingsw.network.server.Server;
-import javafx.application.Application;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static it.polimi.ingsw.game_model.utils.ColorCharacter.*;

@@ -1,17 +1,12 @@
 package it.polimi.ingsw.game_controller;
 
-import it.polimi.ingsw.custom_exceptions.NicknameAlreadyChosenException;
 import it.polimi.ingsw.game_controller.action.*;
-import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.advanced.Postman;
 import it.polimi.ingsw.game_model.character.basic.Student;
-import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
-import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
