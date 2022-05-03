@@ -39,7 +39,8 @@ public class Princess extends AdvancedCharacter{
     public boolean playEffect(Object... attributes){
         if(!validateArgs(attributes)) return false;
 
-        Player player = (Player) attributes[0];
+        String playerNickname = (String) attributes[0];
+        Player player = game.getPlayers().stream().filter(pl -> pl.getNickname().equals(playerNickname)).toList().get(0);
         Integer studentFromCard = (Integer) attributes[1];
 
         try {
@@ -64,7 +65,7 @@ public class Princess extends AdvancedCharacter{
             return false;
         }
         try{
-            Player player = (Player) attributes[0];
+            String playerNickname = (String) attributes[0];
             Integer studentFromCard = (Integer) attributes[1];
 
         }catch (Exception e){

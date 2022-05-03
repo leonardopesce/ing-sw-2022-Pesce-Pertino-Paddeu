@@ -26,7 +26,9 @@ public class Bard extends AdvancedCharacter{
         if(!validateArgs(attributes)) {
             return false;
         }
-        Player player = (Player) attributes[0];
+
+        String playerNickname = (String) attributes[0];
+        Player player = game.getPlayers().stream().filter(pl -> pl.getNickname().equals(playerNickname)).toList().get(0);
         List<Integer> studentsFromEntrance = (List<Integer>) attributes[1];
         List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>) attributes[2];
 
@@ -56,7 +58,8 @@ public class Bard extends AdvancedCharacter{
         }
 
         try {
-            Player player = (Player) args[0];
+            String playerNickname = (String) args[0];
+            Player player = game.getPlayers().stream().filter(pl -> pl.getNickname().equals(playerNickname)).toList().get(0);
             List<Integer> studentsFromEntrance = (List<Integer>)args[1];
             List<ColorCharacter> studentsFromDiningHall = (List<ColorCharacter>)args[2];
             ColorCharacter color = player.getSchool().getEntrance().getStudent(studentsFromEntrance.get(0)).getColor();

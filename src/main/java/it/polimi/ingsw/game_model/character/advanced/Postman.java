@@ -18,7 +18,9 @@ public class Postman extends AdvancedCharacter{
         if(!validateArgs(attributes)){
             return false;
         }
-        Player player = (Player) attributes[0];
+
+        String playerNickname = (String) attributes[0];
+        Player player = game.getPlayers().stream().filter(pl -> pl.getNickname().equals(playerNickname)).toList().get(0);
 
         player.getDiscardedCard().setPossibleSteps(player.getDiscardedCard().getPossibleSteps() + 2);
         return true;
@@ -30,7 +32,7 @@ public class Postman extends AdvancedCharacter{
             return false;
         }
         try {
-            Player player = (Player) attributes[0];
+            String playerNickname = (String) attributes[0];
         }
         catch (Exception e){
             return false;

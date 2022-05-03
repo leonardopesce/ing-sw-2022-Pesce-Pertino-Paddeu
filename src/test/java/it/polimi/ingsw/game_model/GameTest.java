@@ -318,7 +318,7 @@ class GameTest {
         var card = new Healer(game);
         assertFalse(card.playEffect(0, 1));
         assertFalse(card.playEffect(RED));
-        card.playEffect(game.terrain.getIslandWithId(0));
+        card.playEffect(game.getTerrain().getIslands().indexOf(game.terrain.getIslandWithId(0)));
 
         game.terrain.getIslands().get(0).addAllTower(game.players.get(1).removeNTowers(1));
         game.terrain.getIslands().get(0).addStudent(new Student(RED));
@@ -411,7 +411,7 @@ class GameTest {
         exStudents.remove(0);
         Island island = game.terrain.getIslandWithId(0).getStudents().size() == 0 ? game.terrain.getIslandWithId(1) : game.terrain.getIslandWithId(0);
         var studentsOnCloud = new ArrayList<>(island.getStudents());
-        card.playEffect(island, 0);
+        card.playEffect(game.getTerrain().getIslands().indexOf(island), 0);
 
         assertSame(island.getStudents().get(0).getColor(), studentsOnCloud.get(0).getColor());
         assertSame(card.getStudentsOnCard().get(0).getColor(), exStudents.get(0).getColor());
@@ -434,7 +434,7 @@ class GameTest {
 
         assertFalse(card.playEffect(0));
         assertFalse(card.playEffect(new Island(100), RED));
-        card.playEffect(game.players.get(0), 0);
+        card.playEffect(game.players.get(0).getNickname(), 0);
 
 
         assertSame(card.getStudentsOnCard().get(0).getColor(), exStudents.get(0).getColor());
@@ -467,7 +467,7 @@ class GameTest {
 
 
 
-        card.playEffect(game.getPlayers().get(3), fromCardToEntrance, fromEntranceToCard);
+        card.playEffect(game.getPlayers().get(3).getNickname(), fromCardToEntrance, fromEntranceToCard);
         
         for(int i = 0; i<3; i++) {
             Assertions.assertEquals(playerEntrance.getStudent(1).getColor(), firstStudentFromCard.getColor());
@@ -488,7 +488,7 @@ class GameTest {
         assertFalse(card.playEffect(0, 1));
         assertFalse(card.playEffect(new Island(100)));
         game.players.get(0).playAssistant(new Assistant(AssistantType.DOG));
-        card.playEffect(game.players.get(0));
+        card.playEffect(game.players.get(0).getNickname());
 
         assertEquals(AssistantType.DOG.getPossibleSteps() + 2, game.players.get(0).getDiscardedCard().getPossibleSteps());
     }
@@ -661,7 +661,7 @@ class GameTest {
         assertFalse(card.playEffect(0, 1));
         assertFalse(card.playEffect(new Island(100), RED, PINK));
 
-        card.playEffect(game.getPlayers().get(0), fromEntranceToDiningRoom, fromDiningRoomToEntrance);
+        card.playEffect(game.getPlayers().get(0).getNickname(), fromEntranceToDiningRoom, fromDiningRoomToEntrance);
 
         var redInEntranceChosen = 0;
         var blueInEntranceChosen = 0;

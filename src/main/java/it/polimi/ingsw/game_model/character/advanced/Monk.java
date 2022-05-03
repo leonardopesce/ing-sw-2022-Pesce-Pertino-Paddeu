@@ -41,7 +41,8 @@ public class Monk extends AdvancedCharacter{
             return false;
         }
 
-        Island islandToPlaceStudentOn = (Island) attributes[0];
+        Integer islandToPlaceStudentOnIndex = (Integer) attributes[0];
+        Island islandToPlaceStudentOn = game.getTerrain().getIslands().get(islandToPlaceStudentOnIndex);
         Integer studentToPick = (Integer) attributes[1];
 
         // Adding the selected student to the selected island
@@ -62,7 +63,7 @@ public class Monk extends AdvancedCharacter{
             return false;
         }
         try {
-            Island islandToPlaceStudentOn = (Island) args[0];
+            Integer islandToPlaceStudentOnIndex = (Integer) args[0];
             Integer studentsToPick = (Integer) args[1];
         } catch(Exception ex) {
             return false;

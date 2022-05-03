@@ -42,7 +42,8 @@ public class Jester extends AdvancedCharacter{
             return false;
         }
 
-        Player player = (Player) attributes[0];
+        String playerNickname = (String) attributes[0];
+        Player player = game.getPlayers().stream().filter(pl -> pl.getNickname().equals(playerNickname)).toList().get(0);
         ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
         ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
 
@@ -61,7 +62,7 @@ public class Jester extends AdvancedCharacter{
             return false;
         }
         try {
-            Player player = (Player) attributes[0];
+            String playerNickname = (String) attributes[0];
             ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
             ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
 

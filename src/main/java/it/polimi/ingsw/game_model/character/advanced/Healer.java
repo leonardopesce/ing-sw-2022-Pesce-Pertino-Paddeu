@@ -25,7 +25,8 @@ public class Healer extends AdvancedCharacter{
         if(!validateArgs(attributes)){
             return false;
         }
-        Island islandToDeny = (Island) attributes[0];
+        Integer islandIdx = (Integer) attributes[0];
+        Island islandToDeny = game.getTerrain().getIslands().get(islandIdx);
 
         if(numberOfDeniableIslands > 0) {
             islandToDeny.denyIsland();
@@ -52,7 +53,7 @@ public class Healer extends AdvancedCharacter{
             return false;
         }
         try {
-            Island islandToDeny = (Island) attributes[0];
+            Integer islandIdx = (Integer) attributes[0];
         }
         catch (Exception e){
             return false;

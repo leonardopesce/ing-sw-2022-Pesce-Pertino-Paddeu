@@ -275,7 +275,6 @@ public class GameController implements Observer<GameAction> {
     }
 
     public void playAdvancedCard(String playerName, AdvancedCharacter card, Object... args) throws Exception{
-        //TODO check if game is advanced
         Player player = getPlayerFromName(playerName);
 
         if(player.equals(game.getCurrentlyPlayingPlayer()) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){

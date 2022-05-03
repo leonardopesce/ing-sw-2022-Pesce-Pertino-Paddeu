@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_controller.action;
 
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
+import it.polimi.ingsw.network.utils.Logger;
 
 public class PlayAdvancedCardAction extends GameAction{
     private AdvancedCharacter card;
@@ -18,7 +19,8 @@ public class PlayAdvancedCardAction extends GameAction{
         try {
             controller.playAdvancedCard(playerName, card, varArgs);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.ERROR("Invalid number or type of arguments for the specified card.", e.getMessage());
+            //TODO: mandare un messaggio di errore al client per notificare la mancata esecuzione dell'effetto della carta.
         }
     }
 

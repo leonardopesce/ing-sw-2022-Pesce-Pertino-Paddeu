@@ -129,7 +129,7 @@ public class GameControllerTest {
         new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 0).perform(controller);
         new PlayAssistantCardAction(controller.getCurrentPlayer().getNickname(), 1).perform(controller);
 
-        new PlayAdvancedCardAction(controller.getCurrentPlayer().getNickname(), new Postman(game), controller.getCurrentPlayer()).perform(controller);
+        new PlayAdvancedCardAction(controller.getCurrentPlayer().getNickname(), new Postman(game), controller.getCurrentPlayer().getNickname()).perform(controller);
 
         Assertions.assertTrue(controller.getCurrentPlayer().hasPlayedSpecialCard());
         Assertions.assertEquals(controller.getCurrentPlayer().getDiscardedCard().getPossibleSteps(), controller.getCurrentPlayer().getDiscardedCard().getType().getPossibleSteps() + 2);
