@@ -18,6 +18,7 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class GameController implements Observer<GameAction> {
+    private final Random random = new Random();
     private final Game game;
     private int turn = 0;
     private final int[] planningOrder, actionOrder;
@@ -55,7 +56,7 @@ public class GameController implements Observer<GameAction> {
     public final void start() {
         game.setUpGamePhase(GamePhase.GAME_PENDING);
         // at the beginning a random player is chosen
-        createNextPlanningOrder(new Random().nextInt(game.getNumberOfPlayers()));
+        createNextPlanningOrder(random.nextInt(game.getNumberOfPlayers()));
         game.setCurrentlyPlaying(planningOrder[0]);
         try {
             game.setupBoard();

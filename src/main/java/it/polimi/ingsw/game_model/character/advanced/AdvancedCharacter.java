@@ -15,6 +15,7 @@ import java.util.Random;
 public abstract class AdvancedCharacter extends Character {
     protected final AdvancedCharacterType type;
     protected final Game game;
+    private static final Random random = new Random();
 
     protected AdvancedCharacter(AdvancedCharacterType type, Game game){
         super();
@@ -31,10 +32,10 @@ public abstract class AdvancedCharacter extends Character {
     }
 
     public static AdvancedCharacter getRandomCard(Game game, List<AdvancedCharacter> alreadyPresent){
-        int value = new Random().nextInt(AdvancedCharacterType.values().length - 1);
+        int value = random.nextInt(AdvancedCharacterType.values().length - 1);
 
         while(alreadyPresent.stream().map(character -> character.getType().ordinal()).toList().contains(value)){
-            value = new Random().nextInt(AdvancedCharacterType.values().length - 1);
+            value = random.nextInt(AdvancedCharacterType.values().length - 1);
         }
 
         return switch (AdvancedCharacterType.values()[value]) {
