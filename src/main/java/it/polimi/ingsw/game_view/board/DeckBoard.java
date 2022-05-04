@@ -11,14 +11,14 @@ import java.util.List;
 
 public class DeckBoard implements Serializable {
     private final List<AssistantCardBoard> cards = new ArrayList<>();
-    private final AssistantType discardedCard;
+    private final AssistantCardBoard discardedCard;
     private final DeckType deckType;
 
     public DeckBoard(Player player) {
         for(Assistant assistant: player.getDeckAssistants().getAssistants()){
-            cards.add(new AssistantCardBoard(assistant.getType(), assistant.getPossibleSteps()));
+            cards.add(new AssistantCardBoard(assistant));
         }
-        discardedCard = player.getDiscardedCard() != null ? player.getDiscardedCard().getType() : null;
+        discardedCard = player.getDiscardedCard() != null ? new AssistantCardBoard(player.getDiscardedCard()) : null;
         deckType = player.getDeckAssistants().getType();
     }
 
@@ -26,7 +26,7 @@ public class DeckBoard implements Serializable {
         return cards;
     }
 
-    public AssistantType getDiscardedCard() {
+    public AssistantCardBoard getDiscardedCard() {
         return discardedCard;
     }
 

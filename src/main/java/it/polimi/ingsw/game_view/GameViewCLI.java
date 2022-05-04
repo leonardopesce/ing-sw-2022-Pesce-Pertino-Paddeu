@@ -158,7 +158,7 @@ public class GameViewCLI implements GameViewClient{
             }
             case MOVE_MOTHER_NATURE_START -> {
                 rangeA = 1;
-                rangeB = playerDeck.getDiscardedCard().getPossibleSteps();
+                rangeB = playerDeck.getDiscardedCard().getMaximumSteps();
                 System.out.println("How many step would you like to move mother nature (use a number between 1 and " + rangeB + ")");
                 msgHandler.setState(MOVE_MOTHER_NATURE_SEND_MESSAGE);
             }

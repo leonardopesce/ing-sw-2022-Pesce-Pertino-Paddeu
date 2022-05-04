@@ -190,7 +190,7 @@ public class GameBoardController implements Initializable {
                     makeStudentEntranceSelectable();
                 }
                 else if(board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)){
-                    makeNextXIslandVisibleFromMotherNatureSelectable(board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getPossibleSteps());
+                    makeNextXIslandVisibleFromMotherNatureSelectable(board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps());
                 }
                 else if(board.getPhase().equals(GamePhase.ACTION_PHASE_CHOOSING_CLOUD)){
                     makeCloudSelectable();
