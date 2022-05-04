@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeckBoard implements Serializable {
-    private final List<AssistantType> cards = new ArrayList<>();
+    private final List<AssistantCardBoard> cards = new ArrayList<>();
     private final AssistantType discardedCard;
     private final DeckType deckType;
 
     public DeckBoard(Player player) {
         for(Assistant assistant: player.getDeckAssistants().getAssistants()){
-            cards.add(assistant.getType());
+            cards.add(new AssistantCardBoard(assistant.getType(), assistant.getPossibleSteps()));
         }
         discardedCard = player.getDiscardedCard() != null ? player.getDiscardedCard().getType() : null;
         deckType = player.getDeckAssistants().getType();
     }
 
-    public List<AssistantType> getCards() {
+    public List<AssistantCardBoard> getCards() {
         return cards;
     }
 
@@ -59,13 +59,13 @@ public class DeckBoard implements Serializable {
     }
 
     private String getCard(int index){
-        AssistantType card = cards.get(index);
-        String name = card.getName() + " (" + index + ")";
+        AssistantCardBoard card = cards.get(index);
+        String name = card.getType().getName() + " (" + index + ")";
         return Printable.TL4_CORNER + Printable.H4_BAR.repeat(15) + Printable.TR4_CORNER + "\n" +
                 Printable.V4_BAR + " ".repeat((15 - name.length())/2 + (name.length() % 2 == 0 ? 1 : 0))
                 + name + " ".repeat((15 - name.length())/2) + Printable.V4_BAR + "\n" +
-                Printable.V4_BAR + "\tVALUE: " + card.getCardTurnValue() + "\t" + Printable.V4_BAR + "\n" +
-                Printable.V4_BAR + "\tSTEPS: " + card.getPossibleSteps() + "\t" + Printable.V4_BAR + "\n" +
+                Printable.V4_BAR + "\tVALUE: " + card.getType().getCardTurnValue() + "\t" + Printable.V4_BAR + "\n" +
+                Printable.V4_BAR + "\tSTEPS: " + card.getMaximumSteps() + "\t" + Printable.V4_BAR + "\n" +
                 Printable.BL4_CORNER + Printable.H4_BAR.repeat(15) + Printable.BR4_CORNER + "\n";
     }
 }

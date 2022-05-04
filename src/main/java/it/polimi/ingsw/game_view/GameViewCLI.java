@@ -185,7 +185,7 @@ public class GameViewCLI implements GameViewClient{
                 break;
 
             case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
-                System.out.println("You selected: " + playerDeck.getCards().get(selection).getName());
+                System.out.println("You selected: " + playerDeck.getCards().get(selection).getType().getName());
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selection)));
                 msgHandler.setActionSent(true);
                 break;

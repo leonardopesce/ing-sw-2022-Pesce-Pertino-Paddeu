@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_model.utils.GamePhase;
+import it.polimi.ingsw.game_view.board.AssistantCardBoard;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.IslandBoard;
 import it.polimi.ingsw.network.client.Client;
@@ -158,7 +159,7 @@ public class GameBoardController implements Initializable {
                 if (playerBoardButtons.get(i).getText().equals(clientName)) {
                     ColorAdjust ca = new ColorAdjust();
                     for(int k = 0; k < assistants.size(); k++){
-                        if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(k + 1)) {
+                        if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(a -> a.getType().getCardTurnValue()).toList().contains(k + 1)) {
                             ca.setBrightness(-0.5);
                             assistants.get(k).setEffect(ca);
                         }
@@ -228,7 +229,7 @@ public class GameBoardController implements Initializable {
             assistant.setImage(new Image("img/assistant/Assistente (" + (i + 1) + ").png"));
 
             ColorAdjust ca = new ColorAdjust();
-            if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(i + 1)){
+            if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(a -> a.getType().getCardTurnValue()).toList().contains(i + 1)){
                 ca.setBrightness(-0.5);
                 assistant.setEffect(ca);
                 if(assistant.getOnMouseEntered() != null){
@@ -250,7 +251,7 @@ public class GameBoardController implements Initializable {
     public void makeAssistantCardPlayable(){
         for(int i = 0; i < assistants.size(); i++){
             ImageView assistant = assistants.get(i);
-            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(AssistantType::getCardTurnValue).toList().contains(i + 1)){
+            if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(a -> a.getType().getCardTurnValue()).toList().contains(i + 1)){
                 int finalI = i;
                 assistant.setOnMouseClicked(ActionEvent -> {
                     actionValues.add(0, getAssistantTypeIndex(finalI + 1));
@@ -437,9 +438,9 @@ public class GameBoardController implements Initializable {
     }
 
     private int getAssistantTypeIndex(int value){
-        List<AssistantType> assistantsCard = rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards();
+        List<AssistantCardBoard> assistantsCard = rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards();
         for(int i = 0; i < assistantsCard.size(); i++){
-            if(assistantsCard.get(i).getCardTurnValue() == value){
+            if(assistantsCard.get(i).getMaximumSteps() == value){
                 return i;
             }
         }
