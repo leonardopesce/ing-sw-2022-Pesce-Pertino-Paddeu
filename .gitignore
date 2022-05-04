@@ -37,3 +37,6 @@ target/
 *.out
 *.synctex.gz
 *.toc
+
+# Sonar
+sonarCommand.txt
