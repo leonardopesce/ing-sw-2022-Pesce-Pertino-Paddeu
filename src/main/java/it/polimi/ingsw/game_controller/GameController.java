@@ -280,11 +280,11 @@ public class GameController implements Observer<GameAction> {
         AdvancedCharacter card = game.getTerrain().getAdvancedCharacters().stream().filter(c -> c.getType().equals(cardType)).toList().get(0);
 
         if(player.equals(game.getCurrentlyPlayingPlayer()) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
-            if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getType().getCardCost()){
+            if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getCardCost()){
                 if(card.playEffect(args)){
                     player.setPlayedSpecialCard();
-                    player.setMoney(player.getMoney() - card.getType().getCardCost());
-                    card.getType().incrementCardCost();
+                    player.setMoney(player.getMoney() - card.getCardCost());
+                    card.incrementCardCost();
                     game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
                 }
                 else {

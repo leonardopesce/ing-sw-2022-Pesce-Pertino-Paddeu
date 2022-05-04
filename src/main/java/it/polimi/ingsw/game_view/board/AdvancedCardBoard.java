@@ -23,7 +23,7 @@ public class AdvancedCardBoard implements Serializable {
     public AdvancedCardBoard(AdvancedCharacter card) {
         this.name = card.getName();
         this.type = card.getType();
-        this.cost = card.getType().getCardCost();
+        this.cost = card.getCardCost();
         if(card.getType() == MONK){
             students.addAll(((Monk)card).getStudentsOnCard().stream().map(BasicCharacter::getColor).toList());
         }

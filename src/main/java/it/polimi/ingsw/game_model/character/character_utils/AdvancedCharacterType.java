@@ -118,9 +118,4 @@ public enum AdvancedCharacterType {
     public int getCardCost() {
         return cardCost;
     }
-
-    public void incrementCardCost(){
-        //TODO do it only the first time
-        cardCost++;
-    }
 }

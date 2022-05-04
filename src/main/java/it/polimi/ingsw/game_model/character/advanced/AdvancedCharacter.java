@@ -15,12 +15,14 @@ import java.util.Random;
 public abstract class AdvancedCharacter extends Character {
     protected final AdvancedCharacterType type;
     protected final Game game;
+    protected int cardCost;
     private static final Random random = new Random();
 
     protected AdvancedCharacter(AdvancedCharacterType type, Game game){
         super();
         this.type = type;
         this.game = game;
+        this.cardCost = type.getCardCost();
     }
 
     public String getName(){
@@ -29,6 +31,14 @@ public abstract class AdvancedCharacter extends Character {
 
     public AdvancedCharacterType getType() {
         return type;
+    }
+
+    public int getCardCost() {
+        return cardCost;
+    }
+
+    public void incrementCardCost() {
+        if(cardCost == getType().getCardCost()) cardCost++;
     }
 
     public static AdvancedCharacter getRandomCard(Game game, List<AdvancedCharacter> alreadyPresent){
