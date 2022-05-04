@@ -476,6 +476,7 @@ class GameTest {
         initialization(2, true);
 
         var card = new Postman(game);
+        System.out.println(card.getType().getEffect());
         assertFalse(card.playEffect(0, 1));
         assertFalse(card.playEffect(new Island(100)));
         game.players.get(0).playAssistant(new Assistant(AssistantType.DOG));

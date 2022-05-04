@@ -12,8 +12,5 @@ public class GameBoardAdvanced extends GameBoard implements Serializable {
         super(game);
         setGameToExpertMode();
         setTreasury(((GameExpertMode)game).getTreasury());
-        for(Player player: game.getPlayers()){
-            bankAccounts.add(player.getMoney());
-        }
     }
 }

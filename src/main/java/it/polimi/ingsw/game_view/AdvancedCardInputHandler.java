@@ -5,6 +5,7 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -40,48 +41,53 @@ public class AdvancedCardInputHandler {
         int currentSelection = 0;
         int numberOfStudentSelectedFromDiningHall = 0;
         int[] tablesDimensions = new int[5];
+        int totalTablesDimension;
         List<Integer> indexSelectedFromEntrance = new ArrayList<>();
         List<Integer> indexSelectedFromDining = new ArrayList<>();
         Object[] toRet = new Object[characterToHandleType.getArgsLength()];
-
-        System.out.println("You may exchange up to 2 students between your entrance and your dining room.");
-
-        // Making the player chose the students from his entrance
-        do {
-            System.out.println("Choose a student from your entrance. Use a number between (0," + (gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()-1) + "). Insert " + gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size() +  " if you want to stop: ");
-            currentSelection = gameViewCli.whileInputNotIntegerInRange(0, gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
-            if(currentSelection == gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()) {
-                if(numberOfStudentSelectedFromEntrance == 0) {
-                    System.out.println("You must select at least 1 student.");
-                    currentSelection = -2;
-                }
-            } else {
-                if(indexSelectedFromEntrance.contains(currentSelection)) {
-                    System.out.println("You have already selected this student.");
-                } else {
-                    indexSelectedFromEntrance.add(currentSelection);
-                    numberOfStudentSelectedFromEntrance++;
-                }
-            }
-        } while(numberOfStudentSelectedFromEntrance < 2 && currentSelection != gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
 
         // Fetching player current dining tables dimensions
         for(int i=0;i<5;i++) {
             tablesDimensions[i] = gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getTables()[i];
         }
+        totalTablesDimension = Arrays.stream(tablesDimensions).sum();
 
-        // Making the player chose the students from his dining hall
-        do {
-            System.out.println("Choose a dining table to take a student from there and place it in your entrance. Please use (0,4) to chose: ");
-            currentSelection = gameViewCli.whileInputNotIntegerInRange(0,4);
-            if(tablesDimensions[currentSelection] <= 0) {
-                System.out.println("You cannot move students from that table.");
-            } else {
-                numberOfStudentSelectedFromDiningHall++;
-                tablesDimensions[currentSelection]--;
-                indexSelectedFromDining.add(currentSelection);
-            }
-        } while (numberOfStudentSelectedFromEntrance != numberOfStudentSelectedFromDiningHall);
+        // Making the player chose the students from his entrance
+        if(totalTablesDimension > 0) {
+            do {
+                System.out.println("Choose a student from your entrance. Use a number between (0," + (gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size() - 1) + "). Insert " + gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size() + " if you want to stop: ");
+                currentSelection = gameViewCli.whileInputNotIntegerInRange(0, gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
+                if (currentSelection == gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()) {
+                    if (numberOfStudentSelectedFromEntrance == 0) {
+                        System.out.println("You must select at least 1 student.");
+                        currentSelection = -2;
+                    }
+                } else {
+                    if (indexSelectedFromEntrance.contains(currentSelection)) {
+                        System.out.println("You have already selected this student.");
+                    } else {
+                        indexSelectedFromEntrance.add(currentSelection);
+                        numberOfStudentSelectedFromEntrance++;
+                    }
+                }
+            } while (numberOfStudentSelectedFromEntrance < totalTablesDimension && numberOfStudentSelectedFromEntrance < 2 && currentSelection != gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size());
+
+
+            // Making the player chose the students from his dining hall
+            do {
+                System.out.println("Choose a dining table to take a student from there and place it in your entrance. Please use (0,4) to chose: ");
+                currentSelection = gameViewCli.whileInputNotIntegerInRange(0, 4);
+                if (tablesDimensions[currentSelection] <= 0) {
+                    System.out.println("You cannot move students from that table.");
+                } else {
+                    numberOfStudentSelectedFromDiningHall++;
+                    tablesDimensions[currentSelection]--;
+                    indexSelectedFromDining.add(currentSelection);
+                }
+            } while (numberOfStudentSelectedFromEntrance != numberOfStudentSelectedFromDiningHall);
+        } else {
+            System.out.println("You cannot select any student since your tables are empty.");
+        }
 
         List<ColorCharacter> tableColors = indexSelectedFromDining.stream().map(enumInt -> ColorCharacter.values()[enumInt]).toList();
         toRet[0] = gameViewCli.getClient().getName();
@@ -125,8 +131,6 @@ public class AdvancedCardInputHandler {
         int numberOfStudentSelectedFromEntrance = 0;
         List<Integer> indexSelectedFromCard = new ArrayList<>();
         List<Integer> indexSelectedFromEntrance = new ArrayList<>();
-
-        System.out.println("You may take up to 3 students from this card and replace them with the same number of students from your Entrance.");
 
         // Making the player chose up to 3 students from the card
         do {

@@ -178,10 +178,19 @@ public class GameViewCLI implements GameViewClient{
         List<IslandBoard> islands = board.getTerrain().getIslands();
         switch(msgHandler.getState()) {
             case PLAY_ADVANCED_CARD:
-                System.out.println("Select an advanced card " + board.getTerrain().getAdvancedCard());
-                int selectedCard = whileInputNotIntegerInRange(0, 2);
+                System.out.println("Select an advanced card:");
+                for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
+                int selectedCard;
+                //TODO: da modificare in caso un giocatore voglia giocare una advanced card senza avere i soldi.
+                do {
+                    selectedCard = whileInputNotIntegerInRange(0, 2);
+                    if(board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName()))) {
+                        Logger.ERROR("You cannot play that card since you have not enough money.", "Insufficient money");
+                    }
+                } while (board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName())));
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType(), this).getCardInputs())));
-                System.out.println("You played: " + board.getTerrain().getAdvancedCard().get(selectedCard));
+                Logger.INFO("You played: " + Printable.TEXT_YELLOW + board.getTerrain().getAdvancedCard().get(selectedCard).getType().toString() + Printable.TEXT_RESET);
+                msgHandler.setActionSent(true);
                 break;
 
             case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
@@ -249,7 +258,7 @@ public class GameViewCLI implements GameViewClient{
 
     @Override
     public void displayExpertMode() {
-        System.out.println(board.getTerrain().getAdvancedCard());
+        for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
         if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
     }
 
@@ -264,7 +273,7 @@ public class GameViewCLI implements GameViewClient{
                 first = false;
             }
             read = input.nextLine();
-            if(gameStarted && board.isExpertMode() && read.equals("play")){
+            if(gameStarted && board.isExpertMode() && read.equals("play") && board.getPhase().toString().startsWith("ACTION_PHASE")){
                 msgHandler.setState(PLAY_ADVANCED_CARD);
                 return 0;
             }

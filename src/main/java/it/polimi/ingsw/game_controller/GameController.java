@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_controller;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.action.GameAction;
+import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
@@ -284,6 +285,7 @@ public class GameController implements Observer<GameAction> {
                 if(card.playEffect(args)){
                     player.setPlayedSpecialCard();
                     player.setMoney(player.getMoney() - card.getCardCost());
+                    ((GameExpertMode)game).addMoneyToTreasury(card.getCardCost());
                     card.incrementCardCost();
                     game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
                 }

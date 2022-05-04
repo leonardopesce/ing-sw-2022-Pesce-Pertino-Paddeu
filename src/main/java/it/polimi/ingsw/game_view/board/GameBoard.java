@@ -20,7 +20,6 @@ public class GameBoard implements Serializable{
     private final List<Integer> moneys = new ArrayList<>();
     private final List<String> names = new ArrayList<>();
     private int treasury;
-    protected List<Integer> bankAccounts = new ArrayList<>();
     private final GamePhase phase;
     private final String currentlyPlaying;
 
@@ -37,8 +36,6 @@ public class GameBoard implements Serializable{
         currentlyPlaying = game.getCurrentlyPlayingPlayer().getNickname();
 
     }
-
-
 
     protected void setGameToExpertMode() {
         this.expertMode = true;
@@ -76,6 +73,9 @@ public class GameBoard implements Serializable{
         return schools;
     }
 
+    public List<Integer> getMoneys() {
+        return moneys;
+    }
 
     public static String getColorString(ColorCharacter colorCharacter){
         if(colorCharacter == ColorCharacter.RED){
@@ -114,7 +114,7 @@ public class GameBoard implements Serializable{
             String name = names.get(i);
             String spaces = " ".repeat((LENGTH - name.length())  / 2 - 1 - (expertMode ? 1 : 0));
             board.append(NEW_LINE_HIGH).append(V_BAR).append(spaces).append(name).append(spaces)
-                    .append((expertMode ? bankAccounts.get(i) + DOLLAR + (bankAccounts.get(i) > 9 ? " " : "  ") : "  "))
+                    .append((expertMode ? moneys.get(i) + DOLLAR + (moneys.get(i) > 9 ? " " : "  ") : "  "))
                     .append(V_BAR).append("\n");
             board.append(schools.get(i));
         }

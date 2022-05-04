@@ -39,6 +39,8 @@ public class GameExpertMode extends Game {
         return treasury;
     }
 
+    public void addMoneyToTreasury(int moneyToAdd) { treasury += moneyToAdd; }
+
     @Override
     public void runNotify(CommunicationMessage.MessageType type){
         notify(new MoveMessage(this, type, true));
