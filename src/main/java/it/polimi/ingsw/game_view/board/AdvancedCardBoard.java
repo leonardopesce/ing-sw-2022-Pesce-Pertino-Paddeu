@@ -42,6 +42,10 @@ public class AdvancedCardBoard implements Serializable {
         return type;
     }
 
+    public int getStudentsSize() {
+        return students.size();
+    }
+
     @Override
     public String toString(){
         StringBuilder card = new StringBuilder();

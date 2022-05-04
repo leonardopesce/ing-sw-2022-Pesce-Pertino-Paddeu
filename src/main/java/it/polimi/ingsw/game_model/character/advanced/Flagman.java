@@ -12,14 +12,17 @@ public class Flagman extends AdvancedCharacter{
     /**
      * Chose an island and calculate the majority as if Mother Nature has stopped her movement there.<br>
      *  In this turn Mother Nature will move as usual and on the island she lands, the majority will normally be calculated.
-     * @param attributes
+     *
+     * @param attributes a list of parameters to make the card work. In this case it contains the island index selected by the user.
+     * @return true if the card got played successfully, false if not.
      */
     @Override
     public boolean playEffect(Object... attributes){
         if(!validateArgs(attributes)){
             return false;
         }
-        Integer islandID = (Integer) attributes[0];
+        Integer islandIdx = (Integer) attributes[0];
+        int islandID = game.getTerrain().getIslands().get(islandIdx).getId();
 
         game.evaluateInfluences(islandID);
         return true;
@@ -31,7 +34,7 @@ public class Flagman extends AdvancedCharacter{
             return false;
         }
         try {
-            Integer islandID = (Integer) attributes[0];
+            Integer islandIdx = (Integer) attributes[0];
         }
         catch (Exception e){
             return false;
