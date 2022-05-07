@@ -34,7 +34,11 @@ public class Flagman extends AdvancedCharacter{
             return false;
         }
         try {
+            // If the arg is not an integer, the card is not playable.
             Integer islandIdx = (Integer) attributes[0];
+
+            // If the island index is out of bound, the card is not playable.
+            if(islandIdx == null || islandIdx < 0 || islandIdx >= game.getTerrain().getIslands().size()) return false;
         }
         catch (Exception e){
             return false;

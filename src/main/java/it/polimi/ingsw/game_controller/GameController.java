@@ -109,27 +109,28 @@ public class GameController implements Observer<GameAction> {
      * @param assistantIndex the played assistant card.
      */
     public void selectAssistantCard(String playerName, int assistantIndex){
-        Player player = getPlayerFromName(playerName);
-        Assistant assistant = player.getDeckAssistants().getAssistants().get(assistantIndex);
-        if(game.getCurrentlyPlayingPlayer().equals(player)){
-            if(isAssistantCardPlayable(player, assistant)) {
-                game.getCurrentlyPlayingPlayer().playAssistant(assistant);
+        Optional<Player> player = getPlayerFromName(playerName);
+        if(player.isPresent()) {
+            Assistant assistant = player.get().getDeckAssistants().getAssistants().get(assistantIndex);
+            if (game.getCurrentlyPlayingPlayer().equals(player.get())) {
+                if (isAssistantCardPlayable(player.get(), assistant)) {
+                    game.getCurrentlyPlayingPlayer().playAssistant(assistant);
 
-                turn++;
-                nextPlanningPhase();
-                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                    turn++;
+                    nextPlanningPhase();
+                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                } else {
+                    game.runNotify(CommunicationMessage.MessageType.ASSISTANT_NOT_PLAYABLE);
+                }
+            } else {
+                Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+                game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
             }
-            else{
-                game.runNotify(CommunicationMessage.MessageType.ASSISTANT_NOT_PLAYABLE);
-            }
-        } else {
-            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
-            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
         }
     }
 
-    private Player getPlayerFromName(String playerName) {
-        return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2).orElse(null);
+    private Optional<Player> getPlayerFromName(String playerName) {
+        return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2);
     }
 
     /**
@@ -213,11 +214,11 @@ public class GameController implements Observer<GameAction> {
      */
     public void playerMoveStudentToIsland(String playerName, int student, int islandNumber){
         Player pl = game.getCurrentlyPlayingPlayer();
-        Player player = getPlayerFromName(playerName);
-        if(pl.equals(player)) {
+        Optional<Player> player = getPlayerFromName(playerName);
+        if(player.isPresent() && pl.equals(player.get())) {
             if(game.getGamePhase().toString().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS.toString())) {
-                game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
-                player.incrementNumberOfMovedStudents();
+                game.getTerrain().addStudentToIsland(player.get().getSchool().getEntrance().moveStudent(student), islandNumber);
+                player.get().incrementNumberOfMovedStudents();
 
                 moveStudentPhase(pl);
                 game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
@@ -232,18 +233,18 @@ public class GameController implements Observer<GameAction> {
 
     public void playerMoveStudentToDiningHall(String playerName, int student){
         Player pl = game.getCurrentlyPlayingPlayer();
-        Player player = getPlayerFromName(playerName);
-        if(pl.equals(player)) {
+        Optional<Player> player = getPlayerFromName(playerName);
+        if(player.isPresent() && pl.equals(player.get())) {
             if(game.getGamePhase().toString().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS.toString())) {
                 try {
-                    ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
-                    game.moveStudentToDiningHall(player, diningHallColor);
-                    player.incrementNumberOfMovedStudents();
+                    ColorCharacter diningHallColor = player.get().getSchool().getEntrance().moveStudent(student).getColor();
+                    game.moveStudentToDiningHall(player.get(), diningHallColor);
+                    player.get().incrementNumberOfMovedStudents();
                 } catch (TooManyStudentsException e) {
                     Logger.GAME_LOG("Tried to move a student on a full table, skipping...", playerName);
                     game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
                 }
-                moveStudentPhase(player);
+                moveStudentPhase(player.get());
                 game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
             } else {
                 game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
@@ -261,10 +262,10 @@ public class GameController implements Observer<GameAction> {
      * @param numberOfSteps : selected steps that mother nature has to perform
      */
     public void moveMotherNatureOfSteps(String playerName, int numberOfSteps){
-        Player player = getPlayerFromName(playerName);
+        Optional<Player> player = getPlayerFromName(playerName);
 
-        if(player.equals(game.getCurrentlyPlayingPlayer())){
-            if(1 <= numberOfSteps && numberOfSteps <= player.getDiscardedCard().getPossibleSteps()){
+        if(player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())){
+            if(1 <= numberOfSteps && numberOfSteps <= player.get().getDiscardedCard().getPossibleSteps()){
                 game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
 
                 game.evaluateInfluences(game.getMotherNature().getPosition());
@@ -293,14 +294,14 @@ public class GameController implements Observer<GameAction> {
     }
 
     public void choseCloud(String playerName, int cloudCardIndex){
-        Player player = getPlayerFromName(playerName);
-        if(player.equals(game.getCurrentlyPlayingPlayer())){
+        Optional<Player> player = getPlayerFromName(playerName);
+        if(player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())){
             if(game.getGamePhase().toString().startsWith("ACTION_PHASE")) {
                 if (!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
-                    player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
+                    player.get().getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
                     turn++;
                     // Resetting the normal values
-                    player.resetPlayedSpecialCard();
+                    player.get().resetPlayedSpecialCard();
                     game.setInfluenceCalculator(new CalculatorInfluence());
                     game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
@@ -319,17 +320,17 @@ public class GameController implements Observer<GameAction> {
     }
 
     public void playAdvancedCard(String playerName, AdvancedCharacterType cardType, Object... args) {
-        Player player = getPlayerFromName(playerName);
+        Optional<Player> player = getPlayerFromName(playerName);
         AdvancedCharacter card = game.getTerrain().getAdvancedCharacters().stream().filter(c -> c.getType().equals(cardType)).toList().get(0);
 
         if(game.isExpert()) {
-            if (player.equals(game.getCurrentlyPlayingPlayer())) {
+            if (player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())) {
                 if (game.getGamePhase().toString().startsWith("ACTION_PHASE")) {
-                    if (!player.hasPlayedSpecialCard()) {
-                        if (player.getMoney() >= card.getCardCost()) {
+                    if (!player.get().hasPlayedSpecialCard()) {
+                        if (player.get().getMoney() >= card.getCardCost()) {
                             if (card.playEffect(args)) {
-                                player.setPlayedSpecialCard();
-                                player.setMoney(player.getMoney() - card.getCardCost());
+                                player.get().setPlayedSpecialCard();
+                                player.get().setMoney(player.get().getMoney() - card.getCardCost());
                                 ((GameExpertMode) game).addMoneyToTreasury(card.getCardCost());
                                 card.incrementCardCost();
                                 game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);

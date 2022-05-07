@@ -32,7 +32,13 @@ public class Postman extends AdvancedCharacter{
             return false;
         }
         try {
+            // If the arg is not a player nickname the card cannot be played.
             String playerNickname = (String) attributes[0];
+
+            // Checking the name
+            if(playerNickname == null ||
+                    !game.getPlayers().stream().map(Player::getNickname).toList().contains(playerNickname)
+            ) return false;
         }
         catch (Exception e){
             return false;

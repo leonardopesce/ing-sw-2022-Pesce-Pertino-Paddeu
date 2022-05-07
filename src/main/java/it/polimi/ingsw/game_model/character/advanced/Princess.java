@@ -69,6 +69,12 @@ public class Princess extends AdvancedCharacter{
             String playerNickname = (String) attributes[0];
             Integer studentFromCard = (Integer) attributes[1];
 
+            if(studentFromCard == null ||
+                    playerNickname == null ||
+                    !game.getPlayers().stream().map(Player::getNickname).toList().contains(playerNickname) ||
+                    studentFromCard < 0 ||
+                    studentFromCard >= studentsOnCard.size()
+            ) return false;
         }catch (Exception e){
             return false;
         }

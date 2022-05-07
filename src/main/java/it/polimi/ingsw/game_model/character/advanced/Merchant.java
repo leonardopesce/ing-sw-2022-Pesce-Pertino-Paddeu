@@ -41,7 +41,11 @@ public class Merchant extends AdvancedCharacter{
             return false;
         }
         try {
+            // Verifying that the arg is effectively a color, otherwise the card is not playable.
             ColorCharacter color = (ColorCharacter) args[0];
+
+            // Verifying that the color is not null, otherwise the card is not playable.
+            if(color == null) return false;
         } catch (Exception ex) {
             return false;
         }

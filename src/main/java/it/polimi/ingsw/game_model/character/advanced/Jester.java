@@ -67,7 +67,21 @@ public class Jester extends AdvancedCharacter{
             ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
             ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
 
-            if(studentsFromCard.size() != studentsFromEntrance.size()) {
+            /* The card is not playable if:
+                (1) studentsFromCard and studentsFromEntrance are arrays with different size;
+                (2) studentsFromCard or studentsFromEntrance have duplicate indexes;
+                (3) studentsFromCard or studentsFromEntrance have indexes out of bound.
+            */
+            if(studentsFromCard.size() != studentsFromEntrance.size() ||
+                    studentsFromCard.contains(null) ||
+                    studentsFromEntrance.contains(null) ||
+                    playerNickname == null ||
+                    !game.getPlayers().stream().map(Player::getNickname).toList().contains(playerNickname) ||
+                    studentsFromEntrance.stream().distinct().toList().size() != studentsFromEntrance.size() ||
+                    studentsFromCard.stream().distinct().toList().size() != studentsFromCard.size() ||
+                    studentsFromEntrance.stream().filter(index -> index >= 0 && index < game.getINITIAL_NUMBER_OF_STUDENTS_TO_DRAW()).toList().size() != studentsFromEntrance.size() ||
+                    studentsFromCard.stream().filter(index -> index >= 0 && index < studentsOnCard.size()).toList().size() != studentsFromCard.size()
+            ) {
                 return false;
             }
         }

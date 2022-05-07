@@ -56,7 +56,11 @@ public class Landlord extends AdvancedCharacter{
             return false;
         }
         try {
+            // Verifying that tha arg is effectively a color, otherwise the card is not playable.
             ColorCharacter color = (ColorCharacter) attributes[0];
+
+            // Verifying that color is not null
+            if(color == null) return false;
         }
         catch (Exception e){
             return false;

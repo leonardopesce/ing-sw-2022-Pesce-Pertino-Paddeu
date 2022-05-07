@@ -237,7 +237,7 @@ public class Game extends Observable<MoveMessage> {
      *       </dd>
      * </dl>
      *
-     *
+     * @return an array of string representing the winner(s) nickname(s in case of 4 player match)
      */
     //TODO condition when all players finish their assistant card
     public String[] winner(){
@@ -373,6 +373,10 @@ public class Game extends Observable<MoveMessage> {
 
     public Player getCurrentlyPlayingPlayer() {
         return currentlyPlaying;
+    }
+
+    public int getINITIAL_NUMBER_OF_STUDENTS_TO_DRAW() {
+        return INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
     }
 
     public void setCurrentlyPlaying(int indexCurrentlyPlayingPlayer) {

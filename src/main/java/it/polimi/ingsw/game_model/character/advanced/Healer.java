@@ -28,21 +28,18 @@ public class Healer extends AdvancedCharacter{
         Integer islandIdx = (Integer) attributes[0];
         Island islandToDeny = game.getTerrain().getIslands().get(islandIdx);
 
-        if(numberOfDeniableIslands > 0) {
-            islandToDeny.denyIsland();
-            numberOfDeniableIslands--;
+        islandToDeny.denyIsland();
+        numberOfDeniableIslands--;
 
-            //TODO: controllare se funziona dovrebbe creare un listener al valore di deny tyle che ci sono sull'isola e viene eliminato nel caso calasse
-            islandToDeny.getIsBlocked().addListener(new ChangeListener<>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                    if((Integer) newValue < (Integer) oldValue) {
-                        numberOfDeniableIslands++;
-                        islandToDeny.getIsBlocked().removeListener(this);
-                    }
+        islandToDeny.getIsBlocked().addListener(new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+                if((Integer) newValue < (Integer) oldValue) {
+                    numberOfDeniableIslands++;
+                    islandToDeny.getIsBlocked().removeListener(this);
                 }
-            });
-        }
+            }
+        });
 
         return true;
     }
@@ -53,7 +50,14 @@ public class Healer extends AdvancedCharacter{
             return false;
         }
         try {
+            // If the arg passed is not an island index (integer) the card cannot be played.
             Integer islandIdx = (Integer) attributes[0];
+
+            // If the card has not enough deny-tiles on it, it cannot be played.
+            if(numberOfDeniableIslands == 0) return false;
+
+            //If the island idx is out of bound the card is not playable.
+            if(islandIdx == null || islandIdx < 0 || islandIdx >= game.getTerrain().getIslands().size()) return false;
         }
         catch (Exception e){
             return false;

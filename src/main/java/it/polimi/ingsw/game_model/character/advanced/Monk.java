@@ -64,8 +64,18 @@ public class Monk extends AdvancedCharacter{
             return false;
         }
         try {
+            // If the 2 args are not 2 integers tha card cannot be played
             Integer islandToPlaceStudentOnIndex = (Integer) args[0];
             Integer studentsToPick = (Integer) args[1];
+
+            // If the args are null or if they are indexes out of bound, the card cannot be played.
+            if(islandToPlaceStudentOnIndex == null ||
+                    studentsToPick == null ||
+                    islandToPlaceStudentOnIndex < 0 ||
+                    islandToPlaceStudentOnIndex >= game.getTerrain().getIslands().size() ||
+                    studentsToPick < 0 ||
+                    studentsToPick >= studentsOnCard.size()
+            ) return false;
         } catch(Exception ex) {
             return false;
         }
