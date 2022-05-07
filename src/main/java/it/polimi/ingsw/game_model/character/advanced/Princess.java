@@ -7,6 +7,7 @@ import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.school.DiningTable;
+import it.polimi.ingsw.network.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Princess extends AdvancedCharacter{
             studentsOnCard.addAll(game.getBag().drawNStudentFromBag(4));
         } catch (BagEmptyException e) {
             // Impossible to reach since the cards are eventually setup at the beginning of the match
-            e.printStackTrace();
+            Logger.ERROR("Unable to setup the Princess card.", e.getMessage());
         }
     }
 
@@ -54,7 +55,7 @@ public class Princess extends AdvancedCharacter{
         try {
             studentsOnCard.add(game.getBag().drawStudentFromBag());
         } catch (BagEmptyException e) {
-            e.printStackTrace();
+            Logger.WARNING("Unable to pickup a student from the bag to put it on the PRINCESS card since the bag is empty.");
         }
         return true;
     }

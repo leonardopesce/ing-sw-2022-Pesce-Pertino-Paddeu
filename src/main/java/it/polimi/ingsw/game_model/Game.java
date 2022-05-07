@@ -14,6 +14,7 @@ import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.game_model.world.Terrain;
 import it.polimi.ingsw.observer.Observable;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 public class Game extends Observable<MoveMessage> {
@@ -25,8 +26,9 @@ public class Game extends Observable<MoveMessage> {
     protected final List<Player> players = new ArrayList<>();
     protected final BagOfStudents bag = new BagOfStudents();
     protected final Terrain terrain = new Terrain();
+    protected boolean isExpert;
     private Player currentlyPlaying;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     /*
      * Placing mother nature on a random island between 0 and 11.
@@ -42,6 +44,7 @@ public class Game extends Observable<MoveMessage> {
         MAX_PLAYERS = playerNums;
         NUMBER_OF_CLOUDS = playerNums;
         gamePhase = GamePhase.GAME_PENDING;
+        isExpert = false;
 
         switch (playerNums) {
             case 2 -> {
@@ -252,6 +255,9 @@ public class Game extends Observable<MoveMessage> {
         return gamePhase;
     }
 
+    public boolean isExpert() {
+        return isExpert;
+    }
 
     public Player getCurrentlyPlayingPlayer() {
         return currentlyPlaying;

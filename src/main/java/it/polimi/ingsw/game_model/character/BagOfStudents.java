@@ -4,6 +4,7 @@ import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Collections;
@@ -18,7 +19,7 @@ import java.util.List;
  * </ul>
  */
 public class BagOfStudents extends Character{
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private final List<Student> unpickedStudents;
 
     public BagOfStudents(){

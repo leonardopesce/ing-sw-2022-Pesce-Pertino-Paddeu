@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_model.character.Character;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
@@ -16,7 +17,7 @@ public abstract class AdvancedCharacter extends Character {
     protected final AdvancedCharacterType type;
     protected final Game game;
     protected int cardCost;
-    private static final Random random = new Random();
+    private static final SecureRandom random = new SecureRandom();
 
     protected AdvancedCharacter(AdvancedCharacterType type, Game game){
         super();

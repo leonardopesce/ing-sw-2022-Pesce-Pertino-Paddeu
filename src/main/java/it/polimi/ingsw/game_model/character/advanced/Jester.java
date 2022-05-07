@@ -7,6 +7,7 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.school.Entrance;
 import it.polimi.ingsw.game_model.world.Island;
+import it.polimi.ingsw.network.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class Jester extends AdvancedCharacter{
             studentsOnCard.addAll(game.getBag().drawNStudentFromBag(6));
         } catch (BagEmptyException e) {
             // Impossible to reach since the cards are eventually setup at the beginning of the match
-            e.printStackTrace();
+            Logger.ERROR("Unable to setup the Jester card.", e.getMessage());
         }
     }
 

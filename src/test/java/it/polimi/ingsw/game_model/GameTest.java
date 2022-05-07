@@ -479,6 +479,7 @@ class GameTest {
         System.out.println(card.getType().getEffect());
         assertFalse(card.playEffect(0, 1));
         assertFalse(card.playEffect(new Island(100)));
+        Assertions.assertTrue(game.isExpert());
         game.players.get(0).playAssistant(new Assistant(AssistantType.DOG));
         card.playEffect(game.players.get(0).getNickname());
 

@@ -4,6 +4,7 @@ import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.action.GameAction;
 import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
@@ -17,10 +18,11 @@ import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_model.world.CloudCard;
 import javafx.util.Pair;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 public class GameController implements Observer<GameAction> {
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private final Game game;
     private int turn = 0;
     private final int[] planningOrder, actionOrder;
@@ -66,7 +68,7 @@ public class GameController implements Observer<GameAction> {
             playTurn();
         } catch (BagEmptyException | TooManyStudentsException e) {
             // impossible to reach
-            e.printStackTrace();
+            Logger.ERROR("Unable to setup the board.", e.getMessage());
         }
     }
 
@@ -119,6 +121,9 @@ public class GameController implements Observer<GameAction> {
             else{
                 game.runNotify(CommunicationMessage.MessageType.ASSISTANT_NOT_PLAYABLE);
             }
+        } else {
+            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
         }
     }
 
@@ -139,7 +144,6 @@ public class GameController implements Observer<GameAction> {
         for(int i = 0; i < turn; i++){
             playedAssistant.add(game.getPlayers().get(planningOrder[i]).getDiscardedCard());
         }
-
         return !playedAssistant.contains(assistant) || playedAssistant.containsAll(player.getDeckAssistants().getAssistants());
     }
 
@@ -197,7 +201,15 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
-    // view callback for moving students
+    /**
+     * Given the player name which made the move, the index of the student of his entrance he wants to move and
+     * the island index, it moves the selected student to the selected island if it's the player's turn, otherwise
+     * it sends a NOT_YOUR_TURN error message.
+     *
+     * @param playerName the nickname of the player who made the move.
+     * @param student the student index in the player's entrance which has to be moved.
+     * @param islandNumber the index of the island on which to move the student.
+     */
     public void playerMoveStudentToIsland(String playerName, int student, int islandNumber){
         Player pl = game.getCurrentlyPlayingPlayer();
         Player player = getPlayerFromName(playerName);
@@ -207,6 +219,9 @@ public class GameController implements Observer<GameAction> {
 
             moveStudentPhase(pl);
             game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+        } else {
+            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
         }
     }
 
@@ -219,11 +234,14 @@ public class GameController implements Observer<GameAction> {
                 game.moveStudentToDiningHall(player, diningHallColor);
                 player.incrementNumberOfMovedStudents();
             } catch (TooManyStudentsException e) {
-                //TODO non puoi più aggiungere studenti a quel tavolo visto che è pieno
-                e.printStackTrace();
+                Logger.GAME_LOG("Tried to move a student on a full table, skipping...", playerName);
+                game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
             }
             moveStudentPhase(player);
             game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+        } else {
+            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
         }
     }
 
@@ -252,8 +270,12 @@ public class GameController implements Observer<GameAction> {
                 game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
             }
             else{
-                //TODO non sei nel range di step valido
+                Logger.GAME_LOG("Tried to move mother nature of an invalid number of steps, skipping...", playerName);
+                game.runNotify(CommunicationMessage.MessageType.INVALID_MOTHER_NATURE_STEPS);
             }
+        } else {
+            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
         }
     }
 
@@ -264,35 +286,63 @@ public class GameController implements Observer<GameAction> {
     public void choseCloud(String playerName, int cloudCardIndex){
         Player player = getPlayerFromName(playerName);
         if(player.equals(game.getCurrentlyPlayingPlayer())){
-            player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
-            turn++;
-            //TODO reset
-            player.resetPlayedSpecialCard();
-            game.setInfluenceCalculator(new CalculatorInfluence());
-            game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
+            if(game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().size() > 0) {
+                player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
+                turn++;
+                // Resetting the normal values
+                player.resetPlayedSpecialCard();
+                game.setInfluenceCalculator(new CalculatorInfluence());
+                game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
-            nextActionPhase();
-            game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                nextActionPhase();
+                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+            } else {
+                game.runNotify(CommunicationMessage.MessageType.INVALID_CLOUD_CHOSEN);
+            }
+        } else {
+            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
         }
     }
 
-    public void playAdvancedCard(String playerName, AdvancedCharacterType cardType, Object... args) throws Exception{
+    public void playAdvancedCard(String playerName, AdvancedCharacterType cardType, Object... args) {
         Player player = getPlayerFromName(playerName);
         AdvancedCharacter card = game.getTerrain().getAdvancedCharacters().stream().filter(c -> c.getType().equals(cardType)).toList().get(0);
 
-        if(player.equals(game.getCurrentlyPlayingPlayer()) && game.getGamePhase().toString().startsWith("ACTION_PHASE")){
-            if(!player.hasPlayedSpecialCard() && player.getMoney() >= card.getCardCost()){
-                if(card.playEffect(args)){
-                    player.setPlayedSpecialCard();
-                    player.setMoney(player.getMoney() - card.getCardCost());
-                    ((GameExpertMode)game).addMoneyToTreasury(card.getCardCost());
-                    card.incrementCardCost();
-                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+        if(game.isExpert()) {
+            if (player.equals(game.getCurrentlyPlayingPlayer())) {
+                if (game.getGamePhase().toString().startsWith("ACTION_PHASE")) {
+                    if (!player.hasPlayedSpecialCard()) {
+                        if (player.getMoney() >= card.getCardCost()) {
+                            if (card.playEffect(args)) {
+                                player.setPlayedSpecialCard();
+                                player.setMoney(player.getMoney() - card.getCardCost());
+                                ((GameExpertMode) game).addMoneyToTreasury(card.getCardCost());
+                                card.incrementCardCost();
+                                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                            } else {
+                                Logger.GAME_LOG("Tried to play an advanced card with wrong arguments, skipping...", playerName);
+                                game.runNotify(CommunicationMessage.MessageType.ADVANCED_NOT_PLAYABLE);
+                            }
+                        } else {
+                            Logger.GAME_LOG("Tried to play an advanced without enough money, skipping...", playerName);
+                            game.runNotify(CommunicationMessage.MessageType.NOT_ENOUGH_MONEY);
+                        }
+                    } else {
+                        Logger.GAME_LOG("Tried to play an advanced card, but another one was played in the same turn by the player, skipping...", playerName);
+                        game.runNotify(CommunicationMessage.MessageType.ALREADY_PLAYED_ADVANCED);
+                    }
+                } else {
+                    Logger.GAME_LOG("Tried to play an advanced card in an invalid game phase, skipping...", playerName);
+                    game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
                 }
-                else {
-                    throw new Exception("Error on the number of arguments or type of arguments");
-                }
+            } else {
+                Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+                game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
             }
+        } else {
+            Logger.GAME_LOG("Tried to play a character card in a normal game. Is he cheating?", playerName);
+            game.runNotify(CommunicationMessage.MessageType.NOT_EXPERT_GAME);
         }
     }
 

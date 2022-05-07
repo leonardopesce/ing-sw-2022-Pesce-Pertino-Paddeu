@@ -11,6 +11,7 @@ public class GameExpertMode extends Game {
 
     public GameExpertMode(int playerNums) {
         super(playerNums);
+        isExpert = true;
     }
 
     private void setUpMoneyToPlayer(){
