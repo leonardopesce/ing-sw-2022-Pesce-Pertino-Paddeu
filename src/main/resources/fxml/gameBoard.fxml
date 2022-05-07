@@ -108,7 +108,7 @@
                      <Font name="System Bold Italic" size="18.0" />
                   </font>
                </Label>
-               <Label fx:id="comment" prefHeight="115.0" prefWidth="322.0" />
+               <Label fx:id="comment" prefHeight="115.0" prefWidth="322.0" text="asjkfvnoaibv arfnaoisndafo insf winfr aosinf oaisnoias biw rnoiasbhroafi bsn" textOverrun="CLIP" wrapText="true" />
             </children>
             <GridPane.margin>
                <Insets bottom="-15.0" left="-15.0" />

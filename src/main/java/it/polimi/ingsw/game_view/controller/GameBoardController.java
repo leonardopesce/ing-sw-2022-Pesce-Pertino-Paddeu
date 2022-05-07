@@ -2,7 +2,7 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
-import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.*;
 import it.polimi.ingsw.network.client.Client;
@@ -41,6 +41,7 @@ public class GameBoardController implements Initializable {
     private final List<Button> playerBoardButtons = new ArrayList<>();
     private final List<ImageView> assistants = new ArrayList<>();
     private final List<IslandController> islands = new ArrayList<>();
+    private int playingAdvancedCard = 0;
     private GameBoard gameBoard;
     private final Stack<Integer> actionValues = new Stack<>();
     private final List<CloudController> clouds = new ArrayList<>();
@@ -78,8 +79,6 @@ public class GameBoardController implements Initializable {
             islands.get(i).setID(i);
         }
 
-        comment.setText("This is a test\n does it work? \n \t we'll see");
-
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 
         assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
@@ -110,17 +109,22 @@ public class GameBoardController implements Initializable {
 
     }
 
-    private void calculateNextAction(){
-        client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
-            switch (gameBoard.getPhase()){
-                case PLANNING_PHASE ->  new PlayAssistantCardAction(clientName, actionValues.pop());
-                case ACTION_PHASE_MOVING_STUDENTS -> actionValues.get(0) == gameBoard.getTerrain().getIslands().size() ?
-                        new MoveStudentToDiningHallAction(clientName, actionValues.pop()) :
-                        new MoveStudentToIslandAction(clientName, actionValues.pop(), actionValues.pop());
-                case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, countStepFromMotherNatureToIslandWithID(actionValues.pop()));
-                case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, actionValues.pop());
-                default -> throw new IllegalStateException("Unexpected value: " + gameBoard.getPhase());
-        }));
+    protected void calculateNextAction(){
+        if(playingAdvancedCard == 0) {
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
+                    switch (gameBoard.getPhase()) {
+                        case PLANNING_PHASE -> new PlayAssistantCardAction(clientName, actionValues.pop());
+                        case ACTION_PHASE_MOVING_STUDENTS -> actionValues.get(0) == gameBoard.getTerrain().getIslands().size() ?
+                                new MoveStudentToDiningHallAction(clientName, actionValues.pop()) :
+                                new MoveStudentToIslandAction(clientName, actionValues.pop(), actionValues.pop());
+                        case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, countStepFromMotherNatureToIslandWithID(actionValues.pop()));
+                        case ACTION_PHASE_CHOOSING_CLOUD -> new ChooseCloudCardAction(clientName, actionValues.pop());
+                        default -> throw new IllegalStateException("Unexpected value: " + gameBoard.getPhase());
+                    }));
+        }
+        else if(playingAdvancedCard == 1){
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], actionValues.toArray())));
+        }
         actionValues.clear();
     }
 
@@ -211,6 +215,7 @@ public class GameBoardController implements Initializable {
                 for(int i = 0; i < advancedCards.size(); i++){
                     advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
                 }
+                makeAdvancedCardSelectable();
             }
             else{
                 advancedBoard.setVisible(false);
@@ -283,7 +288,6 @@ public class GameBoardController implements Initializable {
             }
         }
     }
-
 
     public void makeStudentEntranceSelectable(){
         List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
@@ -403,8 +407,50 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    private void makeAdvancedCardSelectable(){
+        for(AdvancedCardController card: advancedCards){
+            ImageView cardImage = card.getCardImage();
+            cardImage.setOnMouseEntered(a -> {
+                cardImage.setEffect(new Glow(0.5));
+                comment.setText("Mouse on Advanced Card " + card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
+            });
+            cardImage.setOnMouseExited(a -> {
+                cardImage.setEffect(new Glow(0));
+                comment.setText("");
+            });
+            cardImage.setOnMouseClicked(a -> {
+                addActionValue(card.getType().ordinal());
+                card.playEffect(this);
+
+                for(AdvancedCardController c: advancedCards){
+                    if(!c.getType().equals(card.getType())){
+                        c.getCardImage().setOnMouseClicked(null);
+                        c.getCardImage().setOnMouseExited(null);
+                        c.getCardImage().setOnMouseEntered(null);
+                    }
+                }
+                card.getCardImage().setOnMouseExited(null);
+                card.getCardImage().setOnMouseEntered(null);
+                card.getCardImage().setOnMouseClicked(null);
+            });
+
+        }
+    }
+
+    protected void setPlayingAdvancedCard(int value){
+        playingAdvancedCard = value;
+    }
+
+    protected void addActionValue(int value){
+        actionValues.add(0, value);
+    }
+
     private int getDegreeTurn(int finalPos){
         return Math.floorMod(finalPos - showedBoard.get(), 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard.get(), 4) == 2 ? 180 : Math.floorMod(finalPos - showedBoard.get(), 4) == 1 ? -90 : 0;
+    }
+
+    public Client getClient() {
+        return client;
     }
 
     private void setRotatingButtonDisabled(boolean value){
@@ -413,7 +459,7 @@ public class GameBoardController implements Initializable {
         }
     }
 
-    private void setHoverEffect(Node node, double radius){
+    protected void setHoverEffect(Node node, double radius){
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.YELLOW);
         shadow.setRadius(radius);
@@ -421,7 +467,7 @@ public class GameBoardController implements Initializable {
         node.setOnMouseExited(ActionEvent -> node.setEffect(null));
     }
 
-    private void resetHoverEffect(Node node){
+    protected void resetHoverEffect(Node node){
         node.setOnMouseEntered(null);
         node.setOnMouseExited(null);
     }

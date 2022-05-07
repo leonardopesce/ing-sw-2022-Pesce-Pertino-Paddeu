@@ -1,6 +1,9 @@
 package it.polimi.ingsw.game_view.controller;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_controller.action.PlayAdvancedCardAction;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_view.board.AdvancedCardBoard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,10 +38,19 @@ public class AdvancedCardController implements Initializable {
     public void update(AdvancedCardBoard card){
         type = card.getType();
         cardImage.setImage(new Image("/img/advanced/" + type.getCardName() + ".jpg"));
+        cardImage.setEffect(null);
         if(type == PRINCESS || type == MONK || type == JESTER){
             obj = card.getStudentsSize();
             for(int i = 0; i < obj; i++){
                 objects.get(i).setImage(new Image("img/wooden_pieces/student_" + card.getStudents().get(i) + ".png"));
+                objects.get(i).setEffect(null);
+            }
+        }
+        else if(type == MERCHANT || type == LANDLORD){
+            obj = 5;
+            for(int i = 0; i < obj; i++){
+                objects.get(i).setImage(new Image("img/wooden_pieces/student_" + ColorCharacter.values()[i] + ".png"));
+                objects.get(i).setEffect(null);
             }
         }
         else if(type == HEALER){
@@ -49,9 +61,14 @@ public class AdvancedCardController implements Initializable {
             }
         }
 
+
         coinLabel.setVisible(card.getCost() > card.getType().getCardCost());
 
 
+    }
+
+    public AdvancedCharacterType getType() {
+        return type;
     }
 
     public void hideObjects(){
@@ -60,4 +77,51 @@ public class AdvancedCardController implements Initializable {
         }
     }
 
+    public List<ImageView> getObjects() {
+        return objects;
+    }
+
+    public int getObj() {
+        return obj;
+    }
+
+    public ImageView getCardImage() {
+        return cardImage;
+    }
+
+    public void playEffect(GameBoardController gameBoard){
+        if(type == BARTENDER || type == POSTMAN || type == CENTAURUS || type == KNIGHT){
+            gameBoard.setPlayingAdvancedCard(1);
+            gameBoard.calculateNextAction();
+        }
+        else if(type == MONK || type == MERCHANT || type == LANDLORD || type == PRINCESS){
+            for(int i = 0; i < obj; i++){
+                gameBoard.setHoverEffect(objects.get(i), objects.get(i).getFitWidth());
+                int finalI = i;
+                objects.get(i).setOnMouseClicked(a -> {
+                    gameBoard.addActionValue(finalI);
+                    gameBoard.setPlayingAdvancedCard(1);
+                    if(type == MONK){
+                        gameBoard.makeVisibleIslandsSelectable();
+                    }
+                    else{
+                        gameBoard.calculateNextAction();
+                    }
+                    for(int  k= 0; k < obj; k++){
+                        if(k != finalI){
+                            gameBoard.resetHoverEffect(objects.get(k));
+                            objects.get(k).setOnMouseClicked(null);
+                        }
+                    }
+                    gameBoard.resetHoverEffect(objects.get(finalI));
+                    objects.get(finalI).setOnMouseClicked(null);
+                });
+            }
+        }
+        else if(type == FLAGMAN || type == HEALER){
+            gameBoard.setPlayingAdvancedCard(1);
+            gameBoard.makeVisibleIslandsSelectable();
+        }
+
+    }
 }

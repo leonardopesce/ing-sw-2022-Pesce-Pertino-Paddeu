@@ -19,7 +19,7 @@
                   <Image url="@../img/advanced/monk.jpg" />
                </image>
             </ImageView>
-            <GridPane alignment="TOP_CENTER">
+            <GridPane alignment="TOP_CENTER" pickOnBounds="false">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
