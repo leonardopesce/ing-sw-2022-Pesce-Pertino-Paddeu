@@ -50,15 +50,13 @@ public class GameBoardController implements Initializable {
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
-    private Label gamePhaseLabel;
+    private Label gamePhaseLabel, comment;
     @FXML
     private StackPane mainPane;
     @FXML
     private HBox cards, cloudHBox;
     @FXML
-    private VBox advancedBoard;
-    @FXML
-    private GridPane infoBox;
+    private VBox advancedBoard, infoBox;
     @FXML
     private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
     @FXML
@@ -79,6 +77,8 @@ public class GameBoardController implements Initializable {
         for(int i = 0; i < islands.size(); i++){
             islands.get(i).setID(i);
         }
+
+        comment.setText("This is a test\n does it work? \n \t we'll see");
 
         mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 

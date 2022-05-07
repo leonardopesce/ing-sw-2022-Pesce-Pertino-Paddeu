@@ -3,7 +3,9 @@ package it.polimi.ingsw.game_view;
 import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 import it.polimi.ingsw.game_view.controller.GameBoardController;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
@@ -82,13 +84,13 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     private void testing(){
-        Game game = new Game(4);
+        Game game = new GameExpertMode(4);
         GameController gameController = new GameController(game);
         gameController.createPlayer("Paolo", DeckType.ELDER);
         gameController.createPlayer("leo", DeckType.KING);
         gameController.createPlayer("fra", DeckType.PIXIE);
         gameController.createPlayer("bro", DeckType.SORCERER);
-        gameReady(new GameBoard(game));
+        gameReady(new GameBoardAdvanced(game));
     }
 
     @Override

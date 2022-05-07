@@ -75,79 +75,84 @@
          <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
       </rowConstraints>
       <children>
-         <GridPane fx:id="infoBox" pickOnBounds="false">
-            <columnConstraints>
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-            </rowConstraints>
+         <VBox fx:id="infoBox" alignment="TOP_CENTER">
             <children>
-               <Label text="Players">
-                  <font>
-                     <Font name="System Bold" size="18.0" />
-                  </font>
-               </Label>
-               <Label text="(click to show board)" GridPane.rowIndex="1" />
-               <Button fx:id="player1Board" mnemonicParsing="false" text="Button" GridPane.rowIndex="2" />
-               <Button fx:id="player2Board" mnemonicParsing="false" text="Button" GridPane.rowIndex="3" />
-               <Button fx:id="player3Board" mnemonicParsing="false" text="Button" GridPane.rowIndex="4" />
-               <Button fx:id="player4Board" mnemonicParsing="false" text="Button" GridPane.rowIndex="5" />
-               <Label fx:id="gamePhaseLabel" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <HBox spacing="10.0">
+                  <children>
+                     <VBox>
+                        <children>
+                           <Label text="Players">
+                              <font>
+                                 <Font name="System Bold" size="18.0" />
+                              </font>
+                           </Label>
+                           <Label text="click to show" />
+                        </children>
+                     </VBox>
+                     <VBox spacing="10.0">
+                        <children>
+                           <Button fx:id="player1Board" mnemonicParsing="false" prefWidth="100.0" text="Button" />
+                           <Button fx:id="player2Board" mnemonicParsing="false" prefWidth="100.0" text="Button" />
+                        </children>
+                     </VBox>
+                     <VBox spacing="10.0">
+                        <children>
+                           <Button fx:id="player3Board" mnemonicParsing="false" prefWidth="100.0" text="Button" />
+                           <Button fx:id="player4Board" mnemonicParsing="false" prefWidth="100.0" text="Button" />
+                        </children>
+                     </VBox>
+                  </children>
+               </HBox>
+               <Label fx:id="gamePhaseLabel">
                   <font>
                      <Font name="System Bold Italic" size="18.0" />
                   </font>
                </Label>
+               <Label fx:id="comment" prefHeight="115.0" prefWidth="322.0" />
             </children>
             <GridPane.margin>
                <Insets bottom="-15.0" left="-15.0" />
             </GridPane.margin>
             <padding>
-               <Insets bottom="25.0" left="25.0" />
+               <Insets bottom="25.0" left="25.0" right="10.0" top="10.0" />
             </padding>
-         </GridPane>
+         </VBox>
       </children>
    </GridPane>
-   <GridPane alignment="BOTTOM_RIGHT" pickOnBounds="false">
-      <columnConstraints>
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="18.0" />
-      </columnConstraints>
-      <rowConstraints>
-         <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
-      </rowConstraints>
-      <children>
-         <VBox fx:id="advancedBoard" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+    <GridPane alignment="BOTTOM_RIGHT" pickOnBounds="false">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="18.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <VBox fx:id="advancedBoard" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
             <children>
-               <Label text="Expert Mode Card">
-                  <font>
-                     <Font name="System Bold" size="18.0" />
-                  </font></Label>
+                <Label text="Expert Mode Card">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font></Label>
                 <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                     <children>
                         <fx:include fx:id="advancedCard0" source="advancedCard.fxml" />
                         <fx:include fx:id="advancedCard1" source="advancedCard.fxml" />
                         <fx:include fx:id="advancedCard2" source="advancedCard.fxml" />
                     </children>
-                  <padding>
-                     <Insets left="10.0" />
-                  </padding>
+                    <padding>
+                        <Insets left="10.0" />
+                    </padding>
                 </HBox>
             </children>
             <GridPane.margin>
-               <Insets bottom="-15.0" right="-15.0" />
+                <Insets bottom="-15.0" right="-15.0" />
             </GridPane.margin>
             <padding>
-               <Insets bottom="25.0" right="25.0" />
+                <Insets bottom="25.0" right="25.0" />
             </padding>
-         </VBox>
-      </children>
-   </GridPane>
+        </VBox>
+    </children>
+    </GridPane>
    <HBox fx:id="cards" alignment="BOTTOM_CENTER" pickOnBounds="false" prefWidth="1920.0" spacing="5.0" StackPane.alignment="BOTTOM_CENTER">
       <children>
          <ImageView fx:id="assistant1" fitHeight="150.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true">
