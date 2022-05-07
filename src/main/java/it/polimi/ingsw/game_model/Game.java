@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
@@ -17,6 +18,14 @@ import it.polimi.ingsw.observer.Observable;
 import java.security.SecureRandom;
 import java.util.*;
 
+/**
+ * <p>
+ * This object manage the creation and development of the game:
+ * </p>
+ * <p>
+ *     Set up the game board and handles the win condition logic
+ * </p>
+ */
 public class Game extends Observable<MoveMessage> {
     public final int NUMBER_OF_STUDENTS_ON_CLOUD;
     protected final int[] INITIAL_NUMBER_OF_TOWER;
@@ -40,6 +49,14 @@ public class Game extends Observable<MoveMessage> {
     protected CalculatorTeacherOwnership teacherOwnershipCalculator = new CalculatorTeacherOwnership();
     protected GamePhase gamePhase;
 
+    /**
+     * Given the number of players in the current game, set up the number of
+     * students on the cloud cards, the number of students to draw from the
+     * bag at the beginning of the game and the number of towers for each player.
+     * @param playerNums number of players in the current game
+     * @see CloudCard
+     * @see BagOfStudents
+     */
     public Game(int playerNums) {
         MAX_PLAYERS = playerNums;
         NUMBER_OF_CLOUDS = playerNums;
@@ -90,6 +107,13 @@ public class Game extends Observable<MoveMessage> {
         createCloudCards();
     }
 
+    /**
+     * For each player playing give the color and the number of towers, and the initial
+     * students.
+     * @throws BagEmptyException
+     * @see BagOfStudents
+     * @see it.polimi.ingsw.game_model.school.School
+     */
     private void setUpPlayersBoard() throws BagEmptyException{
         for (int i = 0; i < players.size(); i++) {
             players.get(i).initialSetup(
@@ -99,31 +123,65 @@ public class Game extends Observable<MoveMessage> {
         }
     }
 
+    /**
+     * Create cloud cards according to the max number of players
+     * @see CloudCard
+     */
     protected void createCloudCards() {
         for(int i = 0; i < NUMBER_OF_CLOUDS; i++){
             terrain.addCloudCard(new CloudCard());
         }
     }
 
+    /**
+     * Given a color evaluate teacher ownership for a given player in the current game
+     * @param player player to evaluate
+     * @param color teacher color
+     * @see it.polimi.ingsw.game_model.character.basic.Teacher
+     * @see CalculatorTeacherOwnership
+     */
     public void updateTeacherOwnership(Player player, ColorCharacter color){
         teacherOwnershipCalculator.evaluate(player, color, players);
     }
 
+    /**
+     * Set up the influence calculator
+     * @param calculator Influence calculator object
+     * @see CalculatorInfluence
+     */
     public void setInfluenceCalculator(CalculatorInfluence calculator) {
         this.influenceCalculator = calculator;
     }
 
+    /**
+     * Set the teacher ownership calculator
+      * @param newOwnershipCalculator
+     * @see CalculatorTeacherOwnership
+     */
     public void setTeacherOwnershipCalculator(CalculatorTeacherOwnership newOwnershipCalculator) { this.teacherOwnershipCalculator = newOwnershipCalculator; }
 
     public MotherNature getMotherNature() {
         return motherNature;
     }
 
+    /**
+     * Given an island calculate influence on that island, whether there is single players
+     * influence or teams influence
+     * @param islandID island to calculate influence
+     * @see Island
+     * @see CalculatorInfluence
+     */
     public void evaluateInfluences(int islandID) {
         Optional<Player> mostInfluencePlayer = influenceCalculator.evaluate(players, terrain.getIslandWithId(islandID));
         mostInfluencePlayer.ifPresent(player -> setUpIslandTower(terrain.getIslandWithId(islandID), player));
     }
 
+    /**
+     * Given an island and a player owner of a tower, set up that tower on the island
+     * @param island where to place the tower
+     * @param owner player owner of the tower
+     * @see Island
+     */
     private void setUpIslandTower(Island island, Player owner){
         //adds back tower to owner player
         for(Player pl: players){
@@ -141,6 +199,13 @@ public class Game extends Observable<MoveMessage> {
         checkMergeIsland(island, terrain.getPreviousIsland(island));
     }
 
+    /**
+     * Given two islands merge them if there is a tower of the same color on each island
+     * @param island1 first island to merge
+     * @param island2 second island to merge
+     * @see Terrain
+     * @see Island
+     */
     private void checkMergeIsland(Island island1, Island island2){
         if(!island2.getTowers().isEmpty() && island2.getTowers().get(0).getColor() == island1.getTowers().get(0).getColor()) {
             terrain.mergeIsland(island1, island2);
@@ -148,7 +213,31 @@ public class Game extends Observable<MoveMessage> {
     }
 
     /**
-     * Handles the win conditions logic.
+     * A method to handle game winning mechanics
+     * <dl>
+     *      <dt><b>First condition</b> - <b>Tower placement</b></dt>
+     *      <dd>
+     *       The game ends immediately when a player build their last tower. That player wins the game
+     *      </dd>
+     *      <dt><b>Second condition</b> - <b>Min groups of islands</b></dt>
+     *          <dd>
+     *             The game ends immediately when only three groups of islands remain on the table
+     *          </dd>
+     *      <dt><b>Third condition</b> - <b>End of the round</b></dt>
+     *       <dd>
+     *       The game ends at the end of the round where the last Student has
+     *       been drawn from the bag or should any player ever run out of Assistant
+     *       cards in their hand.
+     *
+     *       If there are not enough Students, players play
+     *       their turns without taking new Students from a Cloud tile.
+     *
+     *       The player who has built the most Towers on Islands wins the game.
+     *       In case of a tie, the player who controls the most Professors
+     *       </dd>
+     * </dl>
+     *
+     *
      */
     //TODO condition when all players finish their assistant card
     public String[] winner(){
@@ -238,6 +327,13 @@ public class Game extends Observable<MoveMessage> {
 
     public int getNumberOfPlayers() { return players.size(); }
 
+
+    /**
+     * Calculate students left to move for the current player
+     * @param player current player
+     * @return students left to move
+     * @see Player
+     */
     public int studentsLeftToMove(Player player) {
         return NUMBER_OF_STUDENTS_ON_CLOUD - player.getNumberOfMovedStudents();
     }
@@ -246,6 +342,18 @@ public class Game extends Observable<MoveMessage> {
         this.gamePhase = gamePhase;
     }
 
+    /**
+     * <p>
+     *  Move a student from the entrance or a cloud to the dining hall,
+     *  start <code>updateTeacherOwnership</code>  to see if the change
+     *  in the player's dining hall modify teacher ownerships
+     * </p>
+     *
+     *
+     * @param player current player moving student
+     * @param color color of student
+     * @throws TooManyStudentsException the dining hall of that color is full
+     */
     public void moveStudentToDiningHall(Player player, ColorCharacter color) throws TooManyStudentsException{
         player.moveStudentToDiningHall(color);
         updateTeacherOwnership(player, color);
@@ -255,6 +363,10 @@ public class Game extends Observable<MoveMessage> {
         return gamePhase;
     }
 
+    /**
+     * Check if the game is in expert mode
+     * @return true if expert mode
+     */
     public boolean isExpert() {
         return isExpert;
     }

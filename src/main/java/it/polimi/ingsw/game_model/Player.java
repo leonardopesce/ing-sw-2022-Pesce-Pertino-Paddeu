@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class to model the player in the game
+ */
 public class Player {
     //TODO sistemare questione torri in 4 giocatori
     private final String nickname;

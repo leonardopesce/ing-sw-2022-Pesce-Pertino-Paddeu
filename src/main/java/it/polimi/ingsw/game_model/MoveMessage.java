@@ -2,6 +2,9 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 
+/**
+ * Class to manage messages between model and controller
+ */
 public class MoveMessage {
     private final Player player;
     private final Game game;
