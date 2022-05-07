@@ -197,8 +197,8 @@ public class InitialPageController implements Initializable {
 
         currentBox.getChildren().add(createTextLabel("Do you want to play in expert mode?", FontWeight.BOLD, Color.BLACK, 20));
 
-        Button yesButton = new Button("No");
-        Button noButton = new Button("Yes");
+        Button yesButton = new Button("Yes");
+        Button noButton = new Button("No");
 
         noButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(GAME_TYPE_INFO, false)));
         yesButton.setOnAction(ActionEvent -> client.asyncWriteToSocket(new CommunicationMessage(GAME_TYPE_INFO, true)));

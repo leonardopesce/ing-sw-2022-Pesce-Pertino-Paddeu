@@ -4,9 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_model.utils.GamePhase;
-import it.polimi.ingsw.game_view.board.AssistantCardBoard;
-import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.game_view.board.IslandBoard;
+import it.polimi.ingsw.game_view.board.*;
 import it.polimi.ingsw.network.client.Client;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
@@ -46,6 +44,7 @@ public class GameBoardController implements Initializable {
     private GameBoard gameBoard;
     private final Stack<Integer> actionValues = new Stack<>();
     private final List<CloudController> clouds = new ArrayList<>();
+    private final List<AdvancedCardController> advancedCards = new ArrayList<>();
     @FXML
     ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
@@ -57,6 +56,8 @@ public class GameBoardController implements Initializable {
     @FXML
     private HBox cards, cloudHBox;
     @FXML
+    private VBox advancedBoard;
+    @FXML
     private GridPane infoBox;
     @FXML
     private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
@@ -64,10 +65,13 @@ public class GameBoardController implements Initializable {
     private RotatingBoardController rotatingBoardController;
     @FXML
     private CloudController cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller;
+    @FXML
+    private AdvancedCardController advancedCard0Controller, advancedCard1Controller, advancedCard2Controller;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        advancedCards.addAll(Arrays.asList(advancedCard0Controller, advancedCard1Controller, advancedCard2Controller));
         clouds.addAll(Arrays.asList(cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller));
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
         islands.addAll(Arrays.asList(island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller));
@@ -88,6 +92,9 @@ public class GameBoardController implements Initializable {
 
         infoBox.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(0, 15, 0, 0, false), BorderStroke.THICK)));
         infoBox.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(0, 15, 0, 0, false), Insets.EMPTY)));
+
+        advancedBoard.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(15, 0, 0, 0, false), BorderStroke.THICK)));
+        advancedBoard.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(15, 0, 0, 0, false), Insets.EMPTY)));
     }
 
     public void setClient(Client client) {
@@ -197,6 +204,16 @@ public class GameBoardController implements Initializable {
                 }
             } else {
                 gamePhaseLabel.setText("NOT YOUR TURN");
+            }
+
+            if(gameBoard.isExpertMode()){
+                advancedBoard.setVisible(true);
+                for(int i = 0; i < advancedCards.size(); i++){
+                    advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
+                }
+            }
+            else{
+                advancedBoard.setVisible(false);
             }
         });
     }

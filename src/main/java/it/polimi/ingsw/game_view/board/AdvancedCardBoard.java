@@ -16,7 +16,7 @@ public class AdvancedCardBoard implements Serializable {
     private final String name;
     private final AdvancedCharacterType type;
     private final int cost;
-    private final List<ColorCharacter> students = new ArrayList();
+    private final List<ColorCharacter> students = new ArrayList<>();
     private int denyCard = 0;
 
 
@@ -42,8 +42,16 @@ public class AdvancedCardBoard implements Serializable {
         return type;
     }
 
+    public List<ColorCharacter> getStudents() {
+        return students;
+    }
+
     public int getStudentsSize() {
         return students.size();
+    }
+
+    public int getDenyCard() {
+        return denyCard;
     }
 
     public int getCost() {

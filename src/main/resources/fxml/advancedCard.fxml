@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<Group xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.AdvancedCardController">
+   <children>
+      <StackPane>
+         <children>
+            <ImageView fx:id="cardImage" fitHeight="170.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/advanced/monk.jpg" />
+               </image>
+            </ImageView>
+            <GridPane alignment="TOP_CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="0.0" percentHeight="20.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="0.0" percentHeight="20.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="0.0" percentHeight="20.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="0.0" percentHeight="20.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="0.0" percentHeight="20.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <StackPane prefHeight="25.0" prefWidth="25.0" GridPane.columnIndex="1">
+                     <children>
+                        <ImageView fx:id="coinImage" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                        <Label fx:id="coinLabel" prefHeight="25.0" prefWidth="25.0" text="+1" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <ImageView fx:id="obj0" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ImageView fx:id="obj1" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <ImageView fx:id="obj2" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ImageView fx:id="obj3" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <ImageView fx:id="obj4" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <ImageView fx:id="obj5" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+               </children>
+            </GridPane>
+         </children>
+      </StackPane>
+   </children>
+</Group>
