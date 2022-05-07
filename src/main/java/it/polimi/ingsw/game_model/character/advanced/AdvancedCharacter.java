@@ -6,7 +6,6 @@ import it.polimi.ingsw.game_model.Game;
 
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 
 /**
  * An abstract class to represent all the 12 character cards.

@@ -25,7 +25,8 @@ public class GameController implements Observer<GameAction> {
     private final SecureRandom random = new SecureRandom();
     private final Game game;
     private int turn = 0;
-    private final int[] planningOrder, actionOrder;
+    private final int[] planningOrder;
+    private final int[] actionOrder;
 
     public GameController(Game game) {
         this.game = game;
@@ -128,7 +129,7 @@ public class GameController implements Observer<GameAction> {
     }
 
     private Player getPlayerFromName(String playerName) {
-        return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2).get();
+        return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2).orElse(null);
     }
 
     /**
@@ -286,7 +287,7 @@ public class GameController implements Observer<GameAction> {
     public void choseCloud(String playerName, int cloudCardIndex){
         Player player = getPlayerFromName(playerName);
         if(player.equals(game.getCurrentlyPlayingPlayer())){
-            if(game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().size() > 0) {
+            if(!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
                 player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
                 turn++;
                 // Resetting the normal values

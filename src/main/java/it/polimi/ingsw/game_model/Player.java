@@ -46,7 +46,6 @@ public class Player {
         return playedSpecialCard;
     }
 
-    //TODO to use when GameControllerAdvanced
     public void resetPlayedSpecialCard(){
         playedSpecialCard = false;
     }
@@ -93,7 +92,6 @@ public class Player {
     }
 
     public DiningTable getDiningTableWithColor(ColorCharacter color){
-        //TODO sistemare con un eccezione
         DiningTable t = school.getDiningHall().getTables()[0];
         for(DiningTable table: school.getDiningHall().getTables()){
             if(table.getColor() == color){
@@ -147,7 +145,7 @@ public class Player {
         this.movedStudents = 0;
     }
 
-    public void moveStudentToDiningHall(ColorCharacter color) {
+    public void moveStudentToDiningHall(ColorCharacter color) throws TooManyStudentsException {
         school.getDiningHall().getTableOfColor(color).addStudent();
     }
 

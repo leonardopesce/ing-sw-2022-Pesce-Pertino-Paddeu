@@ -5,7 +5,6 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.school.DiningHall;
-import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.game_model.school.Entrance;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
@@ -34,7 +33,6 @@ public class Bard extends AdvancedCharacter{
         Entrance playerEntrance = player.getSchool().getEntrance();
         DiningHall playerDiningHall = player.getSchool().getDiningHall();
 
-        //TODO è necessario controllare che la dimensione dei due array sia uguale?
         if(studentsFromEntrance.size() == studentsFromDiningHall.size()){
             for(int i = 0; i < studentsFromEntrance.size(); i++) {
                 try {

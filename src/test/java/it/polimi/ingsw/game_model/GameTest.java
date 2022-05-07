@@ -17,6 +17,7 @@ import it.polimi.ingsw.game_model.world.Island;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -363,7 +364,7 @@ class GameTest {
 
     @DisplayName("Merchant effect test")
     @Test
-    void merchantEffectTest(){
+    void merchantEffectTest() throws Exception {
         initialization(4, true);
 
         var card = new Merchant(game);

@@ -3,7 +3,8 @@ package it.polimi.ingsw.game_controller.action;
 import it.polimi.ingsw.game_controller.GameController;
 
 public class MoveStudentToIslandAction extends GameAction{
-    private int studentIndex, islandIndex;
+    private final int studentIndex;
+    private final int islandIndex;
 
     public MoveStudentToIslandAction(String playerName, int studentIndex, int islandIndex) {
         super(playerName);

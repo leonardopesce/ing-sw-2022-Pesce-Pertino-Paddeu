@@ -28,7 +28,7 @@ public class GameExpertMode extends Game {
     }
 
     @Override
-    public void moveStudentToDiningHall(Player player, ColorCharacter color){
+    public void moveStudentToDiningHall(Player player, ColorCharacter color) throws TooManyStudentsException {
         player.moveStudentToDiningHall(color);
         updateTeacherOwnership(player,color);
         if(player.getSchool().getDiningHall().getTableOfColor(color).getNumberOfStudents() % 3 == 0){

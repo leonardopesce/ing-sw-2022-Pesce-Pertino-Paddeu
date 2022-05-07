@@ -67,7 +67,7 @@ public class CalculatorTeacherOwnership {
      */
     protected Player getNewPlayerOwnerOfTeacherOfColor(Teacher t){
         return players.stream().reduce((a, b) -> a.getDiningTableWithColor(t.getColor()).getNumberOfStudents() >
-                b.getDiningTableWithColor(t.getColor()).getNumberOfStudents() ? a : b).get();
+                b.getDiningTableWithColor(t.getColor()).getNumberOfStudents() ? a : b).orElse(null);
     }
 
     /**

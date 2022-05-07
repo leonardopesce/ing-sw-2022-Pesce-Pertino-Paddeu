@@ -6,7 +6,6 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Collections;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class BagOfStudents extends Character{
      * @return a boolean value which indicates whether the bag is empty (bag size == 0) or not (bag size > 0).
      */
     public boolean isEmpty(){
-        return unpickedStudents.size() <= 0;
+        return unpickedStudents.isEmpty();
     }
 
     /**
