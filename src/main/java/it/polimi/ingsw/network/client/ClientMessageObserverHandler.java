@@ -49,6 +49,14 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case LOBBY_JOINED_CONFIRMED -> {} // DO NOTHING - now the user will wait until the game starts.
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();
+            case NOT_YOUR_TURN -> new Thread(view::displayNotYourTurn).start();
+            case MOVE_STUDENT_FAILED -> new Thread(view::displayFailedToMoveStudent).start();
+            case INVALID_MOTHER_NATURE_STEPS -> new Thread(view::displayInvalidMotherNatureSteps).start();
+            case INVALID_CLOUD_CHOSEN -> new Thread(view::displayInvalidCloudChosen).start();
+            case NOT_ACTION_PHASE -> new Thread(view::displayNotActionPhase).start();
+            case ADVANCED_NOT_PLAYABLE -> new Thread(view::displayAdvancedCardNotPlayable).start();
+            case ALREADY_PLAYED_ADVANCED -> new Thread(view::displayAlreadyPlayedAdvanced).start();
+            case NOT_EXPERT_GAME -> new Thread(view::displayNotExpertGame).start();
             case INFO -> Logger.INFO((String) message.getMessage());
             case ERROR -> Logger.ERROR((String) message.getMessage(), "General Error");
             case GAME_READY -> new Thread(() -> view.gameReady((GameBoard) message.getMessage())).start();

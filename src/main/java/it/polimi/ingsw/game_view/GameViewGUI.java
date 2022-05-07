@@ -104,6 +104,46 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     @Override
+    public void displayFailedToMoveStudent() {
+
+    }
+
+    @Override
+    public void displayInvalidMotherNatureSteps() {
+
+    }
+
+    @Override
+    public void displayInvalidCloudChosen() {
+
+    }
+
+    @Override
+    public void displayNotActionPhase() {
+
+    }
+
+    @Override
+    public void displayAdvancedCardNotPlayable() {
+
+    }
+
+    @Override
+    public void displayAlreadyPlayedAdvanced() {
+
+    }
+
+    @Override
+    public void displayNotExpertGame() {
+
+    }
+
+    @Override
+    public void displayNotEnoughMoney() {
+
+    }
+
+    @Override
     public void displayOtherPlayerTurn(String otherPlayerName) {
         // TODO: display the currently playing nickname to all the players except the one which is playing.
     }

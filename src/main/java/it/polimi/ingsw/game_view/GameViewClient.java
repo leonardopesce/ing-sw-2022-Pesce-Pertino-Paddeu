@@ -25,6 +25,14 @@ public interface GameViewClient{
         PLAY_ADVANCED_CARD
     }
 
+    void displayFailedToMoveStudent();
+    void displayInvalidMotherNatureSteps();
+    void displayInvalidCloudChosen();
+    void displayNotActionPhase();
+    void displayAdvancedCardNotPlayable();
+    void displayAlreadyPlayedAdvanced();
+    void displayNotExpertGame();
+    void displayNotEnoughMoney();
     void displayNotYourTurn();
     void updateBoard(GameBoard board);
     void displayYourTurn();

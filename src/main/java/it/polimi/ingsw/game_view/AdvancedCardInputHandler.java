@@ -2,12 +2,10 @@ package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
-import it.polimi.ingsw.game_view.board.GameBoard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class AdvancedCardInputHandler {
     private final GameViewCLI gameViewCli;

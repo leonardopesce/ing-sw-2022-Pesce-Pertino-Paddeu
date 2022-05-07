@@ -145,7 +145,7 @@ public class GameController implements Observer<GameAction> {
         for(int i = 0; i < turn; i++){
             playedAssistant.add(game.getPlayers().get(planningOrder[i]).getDiscardedCard());
         }
-        return !playedAssistant.contains(assistant) || playedAssistant.containsAll(player.getDeckAssistants().getAssistants());
+        return (!playedAssistant.contains(assistant) || playedAssistant.containsAll(player.getDeckAssistants().getAssistants())) && game.getGamePhase().equals(GamePhase.PLANNING_PHASE);
     }
 
     /**
@@ -215,11 +215,15 @@ public class GameController implements Observer<GameAction> {
         Player pl = game.getCurrentlyPlayingPlayer();
         Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
-            game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
-            player.incrementNumberOfMovedStudents();
+            if(game.getGamePhase().toString().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS.toString())) {
+                game.getTerrain().addStudentToIsland(player.getSchool().getEntrance().moveStudent(student), islandNumber);
+                player.incrementNumberOfMovedStudents();
 
-            moveStudentPhase(pl);
-            game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                moveStudentPhase(pl);
+                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+            } else {
+                game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
+            }
         } else {
             Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
             game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
@@ -230,16 +234,20 @@ public class GameController implements Observer<GameAction> {
         Player pl = game.getCurrentlyPlayingPlayer();
         Player player = getPlayerFromName(playerName);
         if(pl.equals(player)) {
-            try {
-                ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
-                game.moveStudentToDiningHall(player, diningHallColor);
-                player.incrementNumberOfMovedStudents();
-            } catch (TooManyStudentsException e) {
-                Logger.GAME_LOG("Tried to move a student on a full table, skipping...", playerName);
-                game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
+            if(game.getGamePhase().toString().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS.toString())) {
+                try {
+                    ColorCharacter diningHallColor = player.getSchool().getEntrance().moveStudent(student).getColor();
+                    game.moveStudentToDiningHall(player, diningHallColor);
+                    player.incrementNumberOfMovedStudents();
+                } catch (TooManyStudentsException e) {
+                    Logger.GAME_LOG("Tried to move a student on a full table, skipping...", playerName);
+                    game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
+                }
+                moveStudentPhase(player);
+                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+            } else {
+                game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
             }
-            moveStudentPhase(player);
-            game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
         } else {
             Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
             game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
@@ -287,18 +295,22 @@ public class GameController implements Observer<GameAction> {
     public void choseCloud(String playerName, int cloudCardIndex){
         Player player = getPlayerFromName(playerName);
         if(player.equals(game.getCurrentlyPlayingPlayer())){
-            if(!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
-                player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
-                turn++;
-                // Resetting the normal values
-                player.resetPlayedSpecialCard();
-                game.setInfluenceCalculator(new CalculatorInfluence());
-                game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
+            if(game.getGamePhase().toString().startsWith("ACTION_PHASE")) {
+                if (!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
+                    player.getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
+                    turn++;
+                    // Resetting the normal values
+                    player.resetPlayedSpecialCard();
+                    game.setInfluenceCalculator(new CalculatorInfluence());
+                    game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
-                nextActionPhase();
-                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                    nextActionPhase();
+                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                } else {
+                    game.runNotify(CommunicationMessage.MessageType.INVALID_CLOUD_CHOSEN);
+                }
             } else {
-                game.runNotify(CommunicationMessage.MessageType.INVALID_CLOUD_CHOSEN);
+                game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
             }
         } else {
             Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
