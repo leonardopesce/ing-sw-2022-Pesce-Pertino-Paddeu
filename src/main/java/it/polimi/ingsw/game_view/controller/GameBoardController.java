@@ -453,6 +453,10 @@ public class GameBoardController implements Initializable {
         return client;
     }
 
+    protected PlayerBoardController getThisPlayerBoardController(){
+        return rotatingBoardController.getBoardOfPlayerWithName(clientName);
+    }
+
     private void setRotatingButtonDisabled(boolean value){
         for(Button playerButton: playerBoardButtons){
             playerButton.setDisable(value);
