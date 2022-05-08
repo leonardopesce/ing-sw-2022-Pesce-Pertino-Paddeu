@@ -29,9 +29,5 @@ public abstract class GameAction implements Serializable {
         this.playerName = playerName;
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
     public abstract void perform(GameController controller);
 }

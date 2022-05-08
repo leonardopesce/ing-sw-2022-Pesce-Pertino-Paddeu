@@ -247,6 +247,7 @@ public class GameController implements Observer<GameAction> {
                 moveStudentPhase(player.get());
                 game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
             } else {
+                Logger.GAME_LOG("Tried to move student to dining hall in the wrong game phase.\nCurrent phase: " + game.getGamePhase().toString() + "\nRequired game phase: " + GamePhase.ACTION_PHASE_MOVING_STUDENTS, playerName);
                 game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
             }
         } else {
@@ -265,23 +266,26 @@ public class GameController implements Observer<GameAction> {
         Optional<Player> player = getPlayerFromName(playerName);
 
         if(player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())){
-            if(1 <= numberOfSteps && numberOfSteps <= player.get().getDiscardedCard().getPossibleSteps()){
-                game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
+            if(game.getGamePhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)) {
+                if (1 <= numberOfSteps && numberOfSteps <= player.get().getDiscardedCard().getPossibleSteps()) {
+                    game.getMotherNature().moveOfIslands(game.getTerrain(), numberOfSteps);
 
-                game.evaluateInfluences(game.getMotherNature().getPosition());
+                    game.evaluateInfluences(game.getMotherNature().getPosition());
 
-                if(game.winner().length == 0){
-                    game.setUpGamePhase(GamePhase.ACTION_PHASE_CHOOSING_CLOUD);
+                    if (game.winner().length == 0) {
+                        game.setUpGamePhase(GamePhase.ACTION_PHASE_CHOOSING_CLOUD);
+                    } else {
+                        game.setUpGamePhase(GamePhase.GAME_ENDED);
+                        endGame();
+                    }
+                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                } else {
+                    Logger.GAME_LOG("Tried to move mother nature of an invalid number of steps, skipping...", playerName);
+                    game.runNotify(CommunicationMessage.MessageType.INVALID_MOTHER_NATURE_STEPS);
                 }
-                else {
-                    game.setUpGamePhase(GamePhase.GAME_ENDED);
-                    endGame();
-                }
-                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
-            }
-            else{
-                Logger.GAME_LOG("Tried to move mother nature of an invalid number of steps, skipping...", playerName);
-                game.runNotify(CommunicationMessage.MessageType.INVALID_MOTHER_NATURE_STEPS);
+            } else {
+                Logger.GAME_LOG("Tried to move mother nature in a wrong game phase.\nCurrent game phase: " + game.getGamePhase().toString() + "\nRequired game phase: " + GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE, playerName);
+                game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
             }
         } else {
             Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
@@ -296,7 +300,7 @@ public class GameController implements Observer<GameAction> {
     public void choseCloud(String playerName, int cloudCardIndex){
         Optional<Player> player = getPlayerFromName(playerName);
         if(player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())){
-            if(game.getGamePhase().toString().startsWith("ACTION_PHASE")) {
+            if(game.getGamePhase().toString().equals("ACTION_PHASE_CHOOSING_CLOUD")) {
                 if (!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
                     player.get().getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
                     turn++;
@@ -308,9 +312,11 @@ public class GameController implements Observer<GameAction> {
                     nextActionPhase();
                     game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
                 } else {
+                    Logger.GAME_LOG("Selected an empty cloud, skipping...", playerName);
                     game.runNotify(CommunicationMessage.MessageType.INVALID_CLOUD_CHOSEN);
                 }
             } else {
+                Logger.GAME_LOG("Tried to pick a cloud card in a wrong game phase.\nCurrent game phase: " + game.getGamePhase().toString() + "\nRequired game phase: " + GamePhase.ACTION_PHASE_CHOOSING_CLOUD, playerName);
                 game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
             }
         } else {

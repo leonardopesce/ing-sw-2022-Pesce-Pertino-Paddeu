@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view;
 
 import it.polimi.ingsw.ClientApp;
+import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
@@ -278,7 +279,7 @@ public class GameViewCLI implements GameViewClient{
 
     @Override
     public void displayNotActionPhase() {
-        Logger.ERROR("The move you made is playable only in action phase.", "Action Phase only");
+        Logger.ERROR("The move you made is playable only in the correct action phase.\nCurrent phase: " + board.getPhase().toString() + "\nRequired phase:\n\t(1) " + GamePhase.ACTION_PHASE_MOVING_STUDENTS + " to move students;\n\t(2) " + GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE + " to move mother nature;\n\t(3) " + GamePhase.ACTION_PHASE_CHOOSING_CLOUD + " to pickup the content of a cloud card.", "Action Phase only");
     }
 
     @Override
