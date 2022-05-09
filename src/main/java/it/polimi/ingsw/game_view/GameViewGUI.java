@@ -45,9 +45,6 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage.setTitle("Eriantys");
             this.stage.setScene(new Scene(root, 450, 450));
             this.stage.setResizable(false);
-            this.stage.setMaximized(true);
-            this.stage.setFullScreen(true);
-            this.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
             this.stage.setWidth(630);
             this.stage.setHeight(630);
             this.stage.setOnCloseRequest(windowEvent -> {
@@ -220,6 +217,8 @@ public class GameViewGUI extends Application implements GameViewClient{
                 this.stage.setScene(new Scene(root, 1920, 1080));
                 this.stage.setResizable(true);
                 this.stage.setMaximized(true);
+                this.stage.setFullScreen(true);
+                this.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
                 this.stage.setOnCloseRequest(windowEvent -> {
                     Platform.exit();
                     System.exit(0);
