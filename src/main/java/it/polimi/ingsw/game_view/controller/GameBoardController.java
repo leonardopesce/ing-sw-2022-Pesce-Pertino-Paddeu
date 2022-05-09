@@ -295,8 +295,8 @@ public class GameBoardController implements Initializable {
             setHoverEffect(entranceStudents.get(i), entranceStudents.get(i).getFitHeight() / 2 + 5);
             int finalI = i;
             entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
-                for(int k = 0; k < entranceStudents.size(); k++) {
-                    resetHoverEffect(entranceStudents.get(k));
+                for (ImageView student : entranceStudents) {
+                    resetHoverEffect(student);
                 }
                 entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
                 actionValues.add(0, finalI);
@@ -491,7 +491,7 @@ public class GameBoardController implements Initializable {
         TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(500), assistant);
         assistant.setOnMouseExited(ActionEvent -> new Thread(() -> {
             try {
-                Thread.sleep(500);
+                Thread.sleep(600);
             } catch (InterruptedException e) {
                 // Impossible to reach since the animation duration is ALWAYS > 0
                 e.printStackTrace();
@@ -507,7 +507,7 @@ public class GameBoardController implements Initializable {
     private int getAssistantTypeIndex(int value){
         List<AssistantCardBoard> assistantsCard = rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards();
         for(int i = 0; i < assistantsCard.size(); i++){
-            if(assistantsCard.get(i).getMaximumSteps() == value){
+            if(assistantsCard.get(i).getType().getCardTurnValue() == value){
                 return i;
             }
         }
