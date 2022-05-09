@@ -395,6 +395,41 @@
 		\caption{GUI Game Board}
 	\end{figure}
 	
+	\newpage
+	\subsection{Settimana 9: Carte personaggio ed Input handling}
+	\paragraph{}
+	Nel corso della nona settimana di sviluppo è stata completata una prima versione del gioco. Sono infatti stati ultimate la gestione dell'azione di gioco relativa alle carte avanzate sia lato CLI sia GUI. Al momento \textbf{è} dunque \textbf{possibile effettuare} dall'inizio alla fine \textbf{una partita con regole per esperti per 2 o 3 giocatori}.\\
+	Abbiamo inoltre irrobustito la struttura del controller (quindi lato server) per gestire eventuali azioni affettuate da \textit{Malicious Clients}.
+	\paragraph{}
+	Nelle successive settimane il gruppo si focalizzerà nel testing delle partite a 4 giocatori per completare conseguire con successo il completamento dell'intero progetto con le 3 funzionalità aggiuntive previste.\\
+	Riportiamo di seguito due immagini rappresentanti la CLI e la GUI allo stato attuale:
+	\begin{figure}[!htb]
+		\begin{minipage}{0.495\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{cliWeek9.png}
+			\caption{CLI Player Board \& Islands}
+		\end{minipage}\hfill
+		\begin{minipage}{0.495\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{cli2Week9.png}
+			\caption{CLI Carte personaggio / assistente}
+		\end{minipage}
+	\end{figure}
+	\begin{figure}[!htb]
+		\begin{minipage}{0.495\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{gui2Week9.png}
+			\caption{GUI Scelta del Deck}
+		\end{minipage}\hfill
+		\begin{minipage}{0.495\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{guiWeek9.png}
+			\caption{GUI Board di gioco}
+		\end{minipage}
+	\end{figure}
+	\paragraph{}
+	La GUI è ancora in evoluzione. Nelle prossime settimane elaboreremo una nuova versione del client pre-partita.
+	
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}
@@ -406,7 +441,9 @@
 		\item \emph{IntelliJ IDEA Ultimate 2021.3.2} - Principale IDE utilizzato.
 		\item \emph{Maven} - Gestione dello sviluppo del progetto software e di tutte le sue fasi.
 		\item \emph{JUnit} - Framework principale di unit testing.
-		\item \emph{AstahUML} - Creazione di diagrammi UML.
+		\item \emph{SonarQube} - Analisi della qualità del codice.
+		\item \emph{AstahUML} - Creazione di class diagram UML.
+		\item \emph{sequencediagram.org} - Creazione di sequence diagram UML.
 		\item \emph{GitKraken} - Git GUI per visualizzare il workflow di sviluppo ed utilizzare efficientemente Git.
 		\item \emph{TEXStudio} - Gestione e aggiornamento del report.
 	\end{itemize}
@@ -418,7 +455,7 @@
 		\href{https://www.craniocreations.it/prodotto/eriantys/}{Eriantys, Cranio Creations}
 		
 		\bibitem{carolusMagnus}
-		\href{https://www.goblins.net/giochi/carolus-magnus-5071}{Carolvs Magnvs, Winning Moves}
+		\href{https://www.goblins.net/giochi/carolus-magnus-5071}{Carolvs Magnvs, Winning Moves} 
 		
 		\bibitem{circularDoublyLinkedList}
 		\href{https://www.softwaretestinghelp.com/doubly-linked-list-in-java/#Circular_Doubly_Linked_List_In_Java}{Circular Doubly Linked List}

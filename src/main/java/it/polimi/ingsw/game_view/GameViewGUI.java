@@ -172,6 +172,8 @@ public class GameViewGUI extends Application implements GameViewClient{
         Platform.runLater(() -> {
             stage.setResizable(true);
             stage.setMaximized(true);
+            stage.setFullScreen(true);
+            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
             controllerInitial.setBackgroundColor();
             controllerInitial.askDeckView(availableDecks);
         });
