@@ -99,8 +99,6 @@ public class AdvancedCardController implements Initializable {
         return cardImage;
     }
 
-
-    //TODO: succedono cose strane quando si cerca di giocare una carta (se una carta non viene giocata perchè costa troppo il client manda una carta casuale al server)
     public void playEffect(GameBoardController gameBoard){
         if(type == BARTENDER || type == POSTMAN || type == CENTAURUS || type == KNIGHT){
             gameBoard.setPlayingAdvancedCard(1);
