@@ -67,7 +67,7 @@ public class GameController implements Observer<GameAction> {
             game.setupBoard();
             game.setUpGamePhase(GamePhase.NEW_ROUND);
             playTurn();
-        } catch (BagEmptyException | TooManyStudentsException e) {
+        } catch (BagEmptyException e) {
             // impossible to reach
             Logger.ERROR("Unable to setup the board.", e.getMessage());
         }
