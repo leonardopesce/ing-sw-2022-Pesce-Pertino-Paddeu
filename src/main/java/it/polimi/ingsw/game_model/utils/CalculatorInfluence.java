@@ -3,7 +3,6 @@ package it.polimi.ingsw.game_model.utils;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
-import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
 import java.util.ArrayList;
@@ -17,7 +16,9 @@ import java.util.Optional;
  */
 public class CalculatorInfluence {
 
-    public CalculatorInfluence(){}
+    public CalculatorInfluence(){
+        // No need to build anything. There are no parameters to init either.
+    }
 
     /**
      * Sum tower influence and student influence of the player

@@ -1,7 +1,5 @@
 package it.polimi.ingsw.game_model.world;
 
-import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
-import it.polimi.ingsw.game_model.character.advanced.Healer;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.basic.Tower;
 import javafx.beans.property.IntegerProperty;
@@ -9,7 +7,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Class that represents the island piece in the game: islands are the places where mother nature can move and students

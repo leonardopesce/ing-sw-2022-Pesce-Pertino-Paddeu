@@ -6,11 +6,9 @@ import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.school.Entrance;
-import it.polimi.ingsw.game_model.world.Island;
 import it.polimi.ingsw.network.utils.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Jester extends AdvancedCharacter{

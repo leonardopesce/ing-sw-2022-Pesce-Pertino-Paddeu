@@ -22,7 +22,6 @@ public class CloudCard {
      * @return
      */
     public List<Student> removeStudentsOnCloud() {
-        //TODO checl if it empties the island
         List<Student> tmp = studentsOnCloud.stream().toList();
         studentsOnCloud.clear();
         return tmp;

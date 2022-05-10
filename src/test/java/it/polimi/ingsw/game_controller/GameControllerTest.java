@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GameControllerTest {
+class GameControllerTest {
     Game game;
     GameExpertMode gameExpert;
     GameController controller;
@@ -76,7 +76,7 @@ public class GameControllerTest {
         action.perform(controller);
 
         Assertions.assertEquals(actualFirstPlayerNickname, controller.getCurrentPlayer());
-        Assertions.assertEquals(game.getGamePhase(), GamePhase.PLANNING_PHASE);
+        Assertions.assertEquals(GamePhase.PLANNING_PHASE, game.getGamePhase());
     }
 
     @DisplayName("Play planning phase and starts action phase")
@@ -194,7 +194,7 @@ public class GameControllerTest {
 
         // Checking that all the tables have exactly 10 students.
         for(DiningTable table : controller.getCurrentPlayer().getSchool().getDiningHall().getTables()) {
-            Assertions.assertEquals(table.getNumberOfStudents(), DiningTable.MAX_POSITIONS);
+            Assertions.assertEquals(DiningTable.MAX_POSITIONS, table.getNumberOfStudents());
         }
     }
 

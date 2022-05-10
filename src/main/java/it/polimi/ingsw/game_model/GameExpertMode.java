@@ -26,7 +26,7 @@ public class GameExpertMode extends Game {
     }
 
     @Override
-    public void setupBoard() throws BagEmptyException, TooManyStudentsException{
+    public void setupBoard() throws BagEmptyException {
         super.setupBoard();
         terrain.pickAdvancedCard(this);
         setUpMoneyToPlayer();

@@ -7,7 +7,6 @@ import it.polimi.ingsw.game_model.GameExpertMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.Math;
 
 /**
  * An object to represent the game terrain, a terrain is made of islands, cloud cards and advanced characters

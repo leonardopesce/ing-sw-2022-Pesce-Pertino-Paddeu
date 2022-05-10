@@ -16,6 +16,7 @@ public class Entrance {
     private final List<Student> students = new ArrayList<>();
 
     public Entrance() {
+        // No need to build anything.
     }
 
     public List<Student> getStudents() {
@@ -44,7 +45,6 @@ public class Entrance {
      * @param students list of students to add
      */
     public void addAllStudents(List<Student> students){
-        //TODO does this rise a problem in case there are more than 9 students?
         if(this.students.size() + students.size() <= 9) this.students.addAll(students);
     }
 }

@@ -5,7 +5,6 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
-import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 public class Bartender extends AdvancedCharacter{
     public Bartender(Game game){

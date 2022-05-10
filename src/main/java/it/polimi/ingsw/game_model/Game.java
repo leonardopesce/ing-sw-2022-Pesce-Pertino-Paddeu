@@ -2,7 +2,6 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.*;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter;
 import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.CalculatorTeacherOwnership;
 import it.polimi.ingsw.game_model.character.BagOfStudents;
@@ -86,7 +85,7 @@ public class Game extends Observable<MoveMessage> {
     /**
      * Set up the game board by randomly adding the students to the islands and instantiating the cloud cards.
      */
-    public void setupBoard() throws BagEmptyException, TooManyStudentsException{
+    public void setupBoard() throws BagEmptyException {
         /* Filling the bag with 10 students to set up the board. (2 students foreach color). */
         bag.addStudentsFirstPhase();
 

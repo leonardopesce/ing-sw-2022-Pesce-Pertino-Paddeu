@@ -6,14 +6,13 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.basic.Student;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
-import it.polimi.ingsw.game_model.school.DiningTable;
 import it.polimi.ingsw.network.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Princess extends AdvancedCharacter{
-    private List<Student> studentsOnCard;
+    private final List<Student> studentsOnCard;
 
     public Princess(Game game){
         super(AdvancedCharacterType.PRINCESS, game);
