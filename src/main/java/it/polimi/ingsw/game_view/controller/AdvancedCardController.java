@@ -1,7 +1,5 @@
 package it.polimi.ingsw.game_view.controller;
 
-import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_controller.action.PlayAdvancedCardAction;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_view.board.AdvancedCardBoard;
@@ -23,6 +21,7 @@ import static it.polimi.ingsw.game_model.character.character_utils.AdvancedChara
 public class AdvancedCardController implements Initializable {
     private final List<ImageView> objects = new ArrayList<>();
     private AdvancedCharacterType type;
+    private int cost = 0;
     private int obj = 0;
     private
     @FXML
@@ -57,12 +56,18 @@ public class AdvancedCardController implements Initializable {
         else if(type == HEALER){
             obj = card.getDenyCard();
             Image img = new Image("img/wooden_pieces/deny_island_icon.png");
-            for(int i = 0; i < obj; i++){
-                objects.get(i).setImage(img);
+            for(int i = 0; i < objects.size(); i++){
+                if(i < obj) {
+                    objects.get(i).setImage(img);
+                }
+                else {
+                    objects.get(i).setImage(null);
+                }
             }
+
         }
 
-
+        cost = card.getCost();
         coinLabel.setVisible(card.getCost() > card.getType().getCardCost());
 
 
@@ -70,6 +75,10 @@ public class AdvancedCardController implements Initializable {
 
     public AdvancedCharacterType getType() {
         return type;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     public void hideObjects(){

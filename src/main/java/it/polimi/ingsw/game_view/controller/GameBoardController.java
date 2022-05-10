@@ -216,7 +216,7 @@ public class GameBoardController implements Initializable {
                 for(int i = 0; i < advancedCards.size(); i++){
                     advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
                 }
-                if (board.getCurrentlyPlaying().equals(clientName)) {
+                if (board.getPhase() != GamePhase.PLANNING_PHASE && board.getCurrentlyPlaying().equals(clientName)) {
                     makeAdvancedCardSelectable();
                 }
                 else{
@@ -419,7 +419,7 @@ public class GameBoardController implements Initializable {
     }
 
     private void makeAdvancedCardSelectable(){
-        for(AdvancedCardController card: advancedCards){
+        for(AdvancedCardController card: advancedCards.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()){
             ImageView cardImage = card.getCardImage();
             cardImage.setOnMouseEntered(a -> {
                 cardImage.setEffect(new Glow(0.5));

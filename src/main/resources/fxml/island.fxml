@@ -33,6 +33,20 @@
                   <Image url="@../img/wooden_pieces/mother_nature.png" />
                </image>
             </ImageView>
+            <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2">
+               <children>
+                  <ImageView fx:id="denyImage" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/wooden_pieces/deny_island_icon.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="denyLabel" prefHeight="25.0" prefWidth="11.0" text="?">
+                     <font>
+                        <Font name="System Bold" size="32.0" />
+                     </font>
+                  </Label>
+               </children>
+            </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" translateX="25.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
                   <ImageView fx:id="yellowStudent" fitHeight="39.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">

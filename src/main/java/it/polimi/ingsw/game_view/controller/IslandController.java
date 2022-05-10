@@ -23,9 +23,9 @@ public class IslandController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
-    private ImageView island, motherNature, redStudent, yellowStudent, pinkStudent, greenStudent, blueStudent, towerImage;
+    private ImageView island, motherNature, redStudent, yellowStudent, pinkStudent, greenStudent, blueStudent, towerImage, denyImage;
     @FXML
-    private Label studentsNumberRed, studentsNumberYellow, studentsNumberPink, studentsNumberGreen, studentsNumberBlue, towerNumber;
+    private Label studentsNumberRed, studentsNumberYellow, studentsNumberPink, studentsNumberGreen, studentsNumberBlue, towerNumber, denyLabel;
 
 
     @Override
@@ -86,6 +86,16 @@ public class IslandController implements Initializable {
         else {
             towerImage.setVisible(false);
             towerNumber.setVisible(false);
+        }
+
+        if(islandBoard.getDeniedCounter() > 0){
+            denyLabel.setText(String.valueOf(islandBoard.getDeniedCounter()));
+            denyImage.setVisible(true);
+            denyLabel.setVisible(true);
+        }
+        else {
+            denyImage.setVisible(false);
+            denyLabel.setVisible(false);
         }
 
         int[] students = {0, 0, 0, 0, 0};

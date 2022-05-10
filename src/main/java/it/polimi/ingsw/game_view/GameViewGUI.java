@@ -81,7 +81,9 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void displayNotYourTurn() {
-
+        Platform.runLater(() -> {
+            controllerGameBoard.setComment("NOT YOUR TURN");
+        });
     }
 
     private void testing(){
@@ -97,8 +99,10 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
         Platform.runLater(() -> {
-            controllerGameBoard.updateBoard(boardToUpdate);
-            controllerGameBoard.setComment(errorMsg);
+            if(client.getName().equals(boardToUpdate.getCurrentlyPlaying())) {
+                controllerGameBoard.updateBoard(boardToUpdate);
+                controllerGameBoard.setComment(errorMsg);
+            }
         });
     }
 
@@ -132,7 +136,6 @@ public class GameViewGUI extends Application implements GameViewClient{
     public void reaskName() {
         System.out.println("Reasking name");
         Platform.runLater(() -> controllerInitial.reaskNameView());
-
     }
 
     @Override
