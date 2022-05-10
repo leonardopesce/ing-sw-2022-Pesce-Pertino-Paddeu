@@ -7,6 +7,8 @@ import it.polimi.ingsw.game_view.board.Printable;
 import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observer;
 
+import static it.polimi.ingsw.game_view.GameViewClient.*;
+
 public class ClientMessageObserverHandler implements Observer<CommunicationMessage> {
     private final GameViewClient view;
     private GameViewClient.InputStateMachine state;
@@ -50,13 +52,13 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();
             case NOT_YOUR_TURN -> new Thread(view::displayNotYourTurn).start();
-            case MOVE_STUDENT_FAILED -> new Thread(view::displayFailedToMoveStudent).start();
-            case INVALID_MOTHER_NATURE_STEPS -> new Thread(view::displayInvalidMotherNatureSteps).start();
-            case INVALID_CLOUD_CHOSEN -> new Thread(view::displayInvalidCloudChosen).start();
-            case NOT_ACTION_PHASE -> new Thread(view::displayNotActionPhase).start();
-            case ADVANCED_NOT_PLAYABLE -> new Thread(view::displayAdvancedCardNotPlayable).start();
-            case ALREADY_PLAYED_ADVANCED -> new Thread(view::displayAlreadyPlayedAdvanced).start();
-            case NOT_EXPERT_GAME -> new Thread(view::displayNotExpertGame).start();
+            case MOVE_STUDENT_FAILED -> new Thread(() -> view.displayErrorMessage(FAILED_TO_MOVE_STUDENT_TO_TABLE, FAILED_TO_MOVE_STUDENT_TO_TABLE_ERROR, (GameBoard) message.getMessage())).start();
+            case INVALID_MOTHER_NATURE_STEPS -> new Thread(() -> view.displayErrorMessage(FAILED_TO_MOVE_MOTHER_NATURE, FAILED_TO_MOVE_MOTHER_NATURE_ERROR, (GameBoard) message.getMessage())).start();
+            case INVALID_CLOUD_CHOSEN -> new Thread(() -> view.displayErrorMessage(INVALID_CLOUD_CHOSEN, INVALID_CLOUD_CHOSEN_ERROR, (GameBoard) message.getMessage())).start();
+            case NOT_ACTION_PHASE -> new Thread(() -> view.displayErrorMessage(INVALID_ACTION, INVALID_ACTION_ERROR, (GameBoard) message.getMessage())).start();
+            case ADVANCED_NOT_PLAYABLE -> new Thread(() -> view.displayErrorMessage(ADVANCED_CARD_NOT_PLAYABLE, ADVANCED_CARD_NOT_PLAYABLE_ERROR, (GameBoard) message.getMessage())).start();
+            case ALREADY_PLAYED_ADVANCED -> new Thread(() -> view.displayErrorMessage(ADVANCED_CARD_ALREADY_PLAYED_IN_TURN, ADVANCED_CARD_ALREADY_PLAYED_IN_TURN_ERROR, (GameBoard) message.getMessage())).start();
+            case NOT_EXPERT_GAME -> new Thread(() -> view.displayErrorMessage(NOT_EXPERT_MODE_GAME, NOT_EXPERT_MODE_GAME_ERROR, (GameBoard) message.getMessage())).start();
             case INFO -> Logger.INFO((String) message.getMessage());
             case ERROR -> Logger.ERROR((String) message.getMessage(), "General Error");
             case GAME_READY -> new Thread(() -> view.gameReady((GameBoard) message.getMessage())).start();

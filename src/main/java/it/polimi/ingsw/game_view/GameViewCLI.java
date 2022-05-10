@@ -185,7 +185,7 @@ public class GameViewCLI implements GameViewClient{
                 do {
                     selectedCard = whileInputNotIntegerInRange(0, 2);
                     if(board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName()))) {
-                        displayNotEnoughMoney();
+                        displayErrorMessage(NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD, NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD_ERROR, board);
                     }
                 } while (board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName())));
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType(), this).getCardInputs())));
@@ -232,13 +232,19 @@ public class GameViewCLI implements GameViewClient{
 
             case CHOOSE_CLOUD_CARD_SEND_MESSAGE:
                 if(board.getTerrain().getCloudCards().get(selection).isEmpty()){
-                    displayInvalidCloudChosen();
+                    displayErrorMessage(INVALID_CLOUD_CHOSEN, INVALID_CLOUD_CHOSEN_ERROR, board);
                 }
                 else {
                     client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new ChooseCloudCardAction(client.getName(), selection)));
                     msgHandler.setActionSent(true);
                 }
         }
+    }
+
+    @Override
+    public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
+        updateBoard(boardToUpdate);
+        Logger.ERROR(errorMsg, errorType);
     }
 
     @Override
@@ -260,46 +266,6 @@ public class GameViewCLI implements GameViewClient{
     public void displayExpertMode() {
         for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
         if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
-    }
-
-    @Override
-    public void displayFailedToMoveStudent() {
-        Logger.ERROR("Failed to move the student on that table since it's full.", "Table full");
-    }
-
-    @Override
-    public void displayInvalidMotherNatureSteps() {
-        Logger.ERROR("Failed to move mother nature of the given steps since they are too many.", "Too many steps");
-    }
-
-    @Override
-    public void displayInvalidCloudChosen() {
-        Logger.ERROR("You cannot pick up that cloud since it's empty.", "Empty cloud chosen");
-    }
-
-    @Override
-    public void displayNotActionPhase() {
-        Logger.ERROR("The move you made is playable only in the correct action phase.\nCurrent phase: " + board.getPhase().toString() + "\nRequired phase:\n\t(1) " + GamePhase.ACTION_PHASE_MOVING_STUDENTS + " to move students;\n\t(2) " + GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE + " to move mother nature;\n\t(3) " + GamePhase.ACTION_PHASE_CHOOSING_CLOUD + " to pickup the content of a cloud card.", "Action Phase only");
-    }
-
-    @Override
-    public void displayAdvancedCardNotPlayable() {
-        Logger.ERROR("The advanced card is not playable with the given params.", "Invalid params");
-    }
-
-    @Override
-    public void displayAlreadyPlayedAdvanced() {
-        Logger.ERROR("You have already played an advanced card this turn.", "One advanced card per turn");
-    }
-
-    @Override
-    public void displayNotExpertGame() {
-        Logger.ERROR("The game is not in expert mode, so you cannot play any character card.", "Normal game, not advanced");
-    }
-
-    @Override
-    public void displayNotEnoughMoney() {
-        Logger.ERROR("You haven't got enough money to play that card.", "Not enough money");
     }
 
     protected synchronized int whileInputNotIntegerInRange(int a, int b){

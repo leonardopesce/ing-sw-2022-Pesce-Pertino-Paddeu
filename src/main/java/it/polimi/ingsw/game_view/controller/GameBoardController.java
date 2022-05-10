@@ -131,6 +131,7 @@ public class GameBoardController implements Initializable {
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
             gameBoard = board;
+            playingAdvancedCard = 0;
             rotatingBoardController.update(board);
             gamePhaseLabel.setText(board.getPhase().toString());
             if (firstTime) {
@@ -215,7 +216,17 @@ public class GameBoardController implements Initializable {
                 for(int i = 0; i < advancedCards.size(); i++){
                     advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
                 }
-                makeAdvancedCardSelectable();
+                if (board.getCurrentlyPlaying().equals(clientName)) {
+                    makeAdvancedCardSelectable();
+                }
+                else{
+                    for (AdvancedCardController advancedCard : advancedCards) {
+                        advancedCard.getCardImage().setEffect(null);
+                        advancedCard.getCardImage().setOnMouseEntered(null);
+                        advancedCard.getCardImage().setOnMouseExited(null);
+                        advancedCard.getCardImage().setOnMouseClicked(null);
+                    }
+                }
             }
             else{
                 advancedBoard.setVisible(false);
@@ -522,5 +533,8 @@ public class GameBoardController implements Initializable {
             count += gameBoard.getTerrain().getIslandWithID(i) != null ? 1 : 0;
         }
         return count;
+    }
+    public void setComment(String message){
+        comment.setText(message);
     }
 }

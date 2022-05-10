@@ -95,52 +95,20 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     @Override
+    public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
+        Platform.runLater(() -> {
+            controllerGameBoard.updateBoard(boardToUpdate);
+            controllerGameBoard.setComment(errorMsg);
+        });
+    }
+
+    @Override
     public void updateBoard(GameBoard board) {
         controllerGameBoard.updateBoard(board);
     }
 
     @Override
     public void displayYourTurn() {
-
-    }
-
-    @Override
-    public void displayFailedToMoveStudent() {
-
-    }
-
-    @Override
-    public void displayInvalidMotherNatureSteps() {
-
-    }
-
-    @Override
-    public void displayInvalidCloudChosen() {
-
-    }
-
-    @Override
-    public void displayNotActionPhase() {
-
-    }
-
-    @Override
-    public void displayAdvancedCardNotPlayable() {
-
-    }
-
-    @Override
-    public void displayAlreadyPlayedAdvanced() {
-
-    }
-
-    @Override
-    public void displayNotExpertGame() {
-
-    }
-
-    @Override
-    public void displayNotEnoughMoney() {
 
     }
 
@@ -221,6 +189,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 this.stage.setMaximized(true);
                 this.stage.setFullScreen(true);
                 this.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+                this.stage.sizeToScene();
                 this.stage.setOnCloseRequest(windowEvent -> {
                     Platform.exit();
                     System.exit(0);

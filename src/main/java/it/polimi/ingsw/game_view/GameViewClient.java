@@ -11,6 +11,22 @@ public interface GameViewClient{
     String ASK_JOINING_ACTION_QUESTION = "Would you like to create a new match or joining an existing one?\n0. Create a new game\n1. Join a game";
     String ASK_LOBBY_TO_JOIN_QUESTION = "Select the lobby you want to join by entering the lobby owner name:";
     String ASK_PLAYER_NUMBER_QUESTION = "You are the first player! Choose the number of player in the game (2, 3 or 4)";
+    String FAILED_TO_MOVE_STUDENT_TO_TABLE = "Failed to move the student on that table since it's full.";
+    String FAILED_TO_MOVE_STUDENT_TO_TABLE_ERROR = "Table full";
+    String FAILED_TO_MOVE_MOTHER_NATURE = "Failed to move mother nature of the given steps since they are too many.";
+    String FAILED_TO_MOVE_MOTHER_NATURE_ERROR = "Too many steps";
+    String INVALID_CLOUD_CHOSEN = "You cannot pick up that cloud since it's empty.";
+    String INVALID_CLOUD_CHOSEN_ERROR = "Empty cloud chosen";
+    String INVALID_ACTION = "The move you made is playable only in the correct action phase";
+    String INVALID_ACTION_ERROR = "Action Phase only";
+    String ADVANCED_CARD_NOT_PLAYABLE = "The advanced card is not playable with the given params.";
+    String ADVANCED_CARD_NOT_PLAYABLE_ERROR = "Invalid params";
+    String ADVANCED_CARD_ALREADY_PLAYED_IN_TURN = "You have already played an advanced card this turn.";
+    String ADVANCED_CARD_ALREADY_PLAYED_IN_TURN_ERROR = "One advanced card per turn";
+    String NOT_EXPERT_MODE_GAME = "The game is not in expert mode, so you cannot play any character card.";
+    String NOT_EXPERT_MODE_GAME_ERROR = "Normal game, not advanced";
+    String NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD = "You haven't got enough money to play that card.";
+    String NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD_ERROR = "Not enough money";
 
     enum InputStateMachine {
         PLANNING_PHASE_START,
@@ -25,17 +41,10 @@ public interface GameViewClient{
         PLAY_ADVANCED_CARD
     }
 
-    void displayFailedToMoveStudent();
-    void displayInvalidMotherNatureSteps();
-    void displayInvalidCloudChosen();
-    void displayNotActionPhase();
-    void displayAdvancedCardNotPlayable();
-    void displayAlreadyPlayedAdvanced();
-    void displayNotExpertGame();
-    void displayNotEnoughMoney();
-    void displayNotYourTurn();
+    void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate);
     void updateBoard(GameBoard board);
     void displayYourTurn();
+    void displayNotYourTurn();
     void displayOtherPlayerTurn(String otherPlayerName);
     void displayExpertMode();
     void askName();
