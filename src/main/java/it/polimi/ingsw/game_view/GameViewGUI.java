@@ -7,10 +7,12 @@ import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
 import it.polimi.ingsw.game_view.controller.GameBoardController;
+import it.polimi.ingsw.game_view.controller.LoginController;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.controller.InitialPageController;
+import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,9 +28,9 @@ import java.util.Objects;
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
 
-    private static final String pathInitialPage = "fxml/initialPage.fxml";
+    private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
-    private InitialPageController controllerInitial;
+    private LoginController controllerInitial;
     private Client client;
     private Stage stage;
     private GameBoardController controllerGameBoard;
@@ -42,11 +45,12 @@ public class GameViewGUI extends Application implements GameViewClient{
             root = loader.load();
             this.controllerInitial = loader.getController();
             this.stage = new Stage();
+            this.stage.initStyle(StageStyle.UNDECORATED);
             this.stage.setTitle("Eriantys");
-            this.stage.setScene(new Scene(root, 450, 450));
+            this.stage.setScene(new Scene(root));
             this.stage.setResizable(false);
-            this.stage.setWidth(630);
-            this.stage.setHeight(630);
+            this.stage.setWidth(900);
+            this.stage.setHeight(550);
             this.stage.setOnCloseRequest(windowEvent -> {
                 Platform.exit();
                 client.close();
@@ -128,7 +132,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askName() {
-        System.out.println("Asking name");
+        Logger.INFO("Asking name");
         Platform.runLater(() -> controllerInitial.askNameView());
     }
 
