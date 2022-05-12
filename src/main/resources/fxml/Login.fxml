@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="parent" prefHeight="550.0" prefWidth="900.0" styleClass="parent" stylesheets="@../css/Stylesheet.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.LoginController">
+<AnchorPane fx:id="parent" prefHeight="550.0" prefWidth="900.0" styleClass="parent" stylesheets="@../css/Stylesheet.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/" fx:controller="it.polimi.ingsw.game_view.controller.LoginController">
    <children>
       <Pane fx:id="content" prefHeight="550.0" prefWidth="900.0">
          <children>
@@ -59,20 +59,20 @@
             </Label>
             <HBox alignment="CENTER" layoutX="581.0" layoutY="200.0" prefHeight="37.0" prefWidth="281.0" style="-fx-border-color: #E1E1E1; -fx-background-color: transparent; -fx-border-radius: 50px;">
                <children>
-                  <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="253.0" promptText="Inserisci il tuo nickname" style="-fx-background-color: transparent;" />
+                  <TextField fx:id="nicknameTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="253.0" promptText="Inserisci il tuo nickname" style="-fx-background-color: transparent;" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="581.0" layoutY="256.0" prefHeight="37.0" prefWidth="184.0" style="-fx-border-color: #E1E1E1; -fx-background-color: transparent; -fx-border-radius: 50px;">
                <children>
-                  <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="151.0" promptText="IP del Server" style="-fx-background-color: transparent;" />
+                  <TextField fx:id="serverIpTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="151.0" promptText="IP del Server" style="-fx-background-color: transparent;" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="770.0" layoutY="256.0" prefHeight="37.0" prefWidth="92.0" style="-fx-border-color: #E1E1E1; -fx-background-color: transparent; -fx-border-radius: 50px;">
                <children>
-                  <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="59.0" promptText="Porta" style="-fx-background-color: transparent;" />
+                  <TextField fx:id="serverPortTextField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="59.0" promptText="Porta" style="-fx-background-color: transparent;" />
                </children>
             </HBox>
-            <Button layoutX="581.0" layoutY="325.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="281.0" style="-fx-background-color: #9a365b; -fx-background-radius: 50px;" text="Accedi" textAlignment="CENTER">
+            <Button fx:id="loginButton" layoutX="581.0" layoutY="325.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="281.0" style="-fx-background-color: #9a365b; -fx-background-radius: 50px;" text="Accedi" textAlignment="CENTER">
                <font>
                   <Font name="Berlin Sans FB" size="14.0" />
                </font>

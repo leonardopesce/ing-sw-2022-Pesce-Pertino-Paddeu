@@ -14,7 +14,6 @@ import java.util.NoSuchElementException;
 public class Client extends Observable<CommunicationMessage> {
     private final String ip;
     private final int port;
-    private boolean active = true;
     private ObjectOutputStream socketOut;
     private String name;
     private ClientConnectionStatusHandler connectionStatusHandler;
@@ -36,10 +35,6 @@ public class Client extends Observable<CommunicationMessage> {
         return connectionStatusHandler.isConnectionActive();
     }
 
-    public synchronized void setActive(boolean active){
-        this.active = active;
-    }
-
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){
         Thread t = new Thread(() -> {
             try {
@@ -53,7 +48,7 @@ public class Client extends Observable<CommunicationMessage> {
                     }
                 }
             } catch (Exception e){
-                setActive(false);
+                connectionStatusHandler.kill();
                 Logger.ERROR("Connection interrupted since the socket is now closed server side. Exiting...", e.getMessage());
                 //e.printStackTrace();
             }
@@ -71,7 +66,7 @@ public class Client extends Observable<CommunicationMessage> {
                     socketOut.reset();
                 }
             }catch(Exception e){
-                setActive(false);
+                connectionStatusHandler.kill();
             }
         }).start();
     }

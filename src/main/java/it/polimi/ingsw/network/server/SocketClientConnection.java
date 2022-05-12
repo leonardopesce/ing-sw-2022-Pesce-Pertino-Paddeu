@@ -25,19 +25,14 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private final ServerConnectionStatusHandler connectionStatusHandler;
     private final LinkedList<CommunicationMessage> incomingMessages = new LinkedList<>();
 
-    public SocketClientConnection(Socket socket, Server server) {
+    public SocketClientConnection(Socket socket, Server server) throws IOException {
         this.socket = socket;
         this.server = server;
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        List<Lobby> lobbies = server.getActiveGames().stream().filter(lobby -> lobby.getConnectedPlayersToLobby().stream().anyMatch(player -> !player.isActive())).toList();
-        for (Lobby lobby : lobbies) {
-            lobby.closeLobby(lobby.getConnectedPlayersToLobby().stream().filter(connection -> !connection.isActive()).toList().get(0));
+            Logger.ERROR("Failed to setup input and output socket on SocketClientConnection.", e.getMessage());
         }
 
         new Thread(() -> {
@@ -53,6 +48,9 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         this.addObserver(connectionStatusHandler);
         connectionStatusHandler.setConnection(this);
         connectionStatusHandler.start();
+        out.reset();
+        out.writeObject(new CommunicationMessage(CONNECTION_CONFIRMED, null));
+        out.flush();
     }
 
     public synchronized boolean isActive() {

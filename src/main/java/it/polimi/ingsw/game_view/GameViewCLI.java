@@ -26,8 +26,8 @@ public class GameViewCLI implements GameViewClient{
     private final Client client;
     private boolean gameStarted = false;
 
-    public GameViewCLI() {
-        client = new Client(ClientApp.IP, ClientApp.port);
+    public GameViewCLI(String ip, int port) {
+        client = new Client(ip, port);
         new Thread(() -> {
             try {
                 client.run();
@@ -38,7 +38,6 @@ public class GameViewCLI implements GameViewClient{
         input = new Scanner(System.in);
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
-        new Thread(this::askName).start();
     }
 
     @Override

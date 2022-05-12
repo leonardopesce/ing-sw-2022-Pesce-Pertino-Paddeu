@@ -1,45 +1,58 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
-import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.utils.LobbyInfo;
+import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.FontWeight;
 
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_TYPE_INFO;
-import static javafx.scene.paint.Color.SKYBLUE;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.NAME_MESSAGE;
 
 public class LoginController implements Initializable {
     private Client client;
+    private ClientMessageObserverHandler messageHandler;
     @FXML
     private AnchorPane parent;
     @FXML
     private Pane content;
+    @FXML
+    private TextField nicknameTextField;
+    @FXML
+    private TextField serverIpTextField;
+    @FXML
+    private TextField serverPortTextField;
+    @FXML
+    private Button loginButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Logger.INFO("Launcher inizializzato");
+
+        loginButton.setOnAction(actionEvent -> {
+            Logger.INFO("Loggin In");
+            client = new Client(serverIpTextField.getText(), Integer.parseInt(serverPortTextField.getText()));
+            client.setName(nicknameTextField.getText());
+            new Thread(() -> {
+                try {
+                    client.run();
+                } catch (IOException e) {
+                    Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
+                }
+            }).start();
+            client.addObserver(messageHandler);
+        });
     }
 
     @FXML
@@ -60,6 +73,7 @@ public class LoginController implements Initializable {
 
     public void askNameView(){
         Logger.INFO("Asking name");
+        client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, nicknameTextField.getText()));
     }
 
     public void reaskNameView(){
@@ -88,5 +102,9 @@ public class LoginController implements Initializable {
 
     public void askGameTypeView(){
         Logger.INFO("Asking game type");
+    }
+
+    public void setMessageHandler(ClientMessageObserverHandler messageHandler) {
+        this.messageHandler = messageHandler;
     }
 }

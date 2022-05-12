@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class CommunicationMessage implements Serializable{
     private static final long serialVersionUID = 1234567L;
     public enum MessageType {
+        CONNECTION_CONFIRMED,
         NAME_MESSAGE,
         NAME_CONFIRMED,
         JOINING_ACTION_INFO,

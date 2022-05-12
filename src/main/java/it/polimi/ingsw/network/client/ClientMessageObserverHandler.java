@@ -43,6 +43,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
     @Override
     public void update(CommunicationMessage message) {
         switch (message.getID()){
+            case CONNECTION_CONFIRMED -> new Thread(view::askName).start();
             case NAME_MESSAGE -> new Thread(view::reaskName).start();
             case NAME_CONFIRMED, JOINING_ACTION_INFO -> new Thread(view::askJoiningAction).start();
             case JOIN_LOBBY_ACTION_CONFIRMED, LOBBY_TO_JOIN_INFO -> new Thread(() -> view.askLobbyToJoin(message.getMessage())).start();

@@ -67,20 +67,9 @@ public class GameViewGUI extends Application implements GameViewClient{
             testing();
         }
         else {
-            client = new Client(ClientApp.IP, ClientApp.port);
-            new Thread(() -> {
-                try {
-                    client.run();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-            this.controllerInitial.setClient(client);
             msgHandler = new ClientMessageObserverHandler(this);
-            client.addObserver(msgHandler);
-            askName();
+            controllerInitial.setMessageHandler(msgHandler);
         }
-
     }
 
     @Override
@@ -204,7 +193,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 this.stage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.ERROR("Error while opening the game window.", e.getMessage());
             }
             if(testing){
                 controllerGameBoard.setClientName("Paolo");
@@ -237,4 +226,7 @@ public class GameViewGUI extends Application implements GameViewClient{
         return client;
     }
 
+    public ClientMessageObserverHandler getMsgHandler() {
+        return msgHandler;
+    }
 }
