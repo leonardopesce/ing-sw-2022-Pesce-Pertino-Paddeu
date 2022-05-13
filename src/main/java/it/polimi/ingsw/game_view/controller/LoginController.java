@@ -9,13 +9,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import javafx.event.ActionEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.NAME_MESSAGE;
@@ -23,42 +27,74 @@ import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.N
 public class LoginController implements Initializable {
     private Client client;
     private ClientMessageObserverHandler messageHandler;
+    private double xOffset = 0;
+    private double yOffset = 0;
     @FXML
     private AnchorPane parent;
     @FXML
     private Pane content;
     @FXML
-    private TextField nicknameTextField;
-    @FXML
-    private TextField serverIpTextField;
-    @FXML
-    private TextField serverPortTextField;
+    private TextField nicknameTextField, serverIpTextField, serverPortTextField;
     @FXML
     private Button loginButton;
+    @FXML
+    private Text loginErrorMessage;
+    @FXML
+    private ImageView errorLogo;
+    @FXML
+    private HBox errorBox;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Logger.INFO("Launcher inizializzato");
+        loginErrorMessage.setText("");
+        errorLogo.setImage(null);
+        errorBox.setVisible(false);
+        parent.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+
+        parent.setOnMouseDragged(event -> {
+            content.getScene().getWindow().setX(event.getScreenX() - xOffset);
+            content.getScene().getWindow().setY(event.getScreenY() - yOffset);
+        });
 
         loginButton.setOnAction(actionEvent -> {
-            Logger.INFO("Loggin In");
-            client = new Client(serverIpTextField.getText(), Integer.parseInt(serverPortTextField.getText()));
-            client.setName(nicknameTextField.getText());
-            new Thread(() -> {
-                try {
-                    client.run();
-                } catch (IOException e) {
-                    Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
-                }
-            }).start();
-            client.addObserver(messageHandler);
+            errorBox.setVisible(false);
+            Logger.INFO("Loggin In...");
+            if(!serverPortTextField.getText().equals("") && !serverIpTextField.getText().equals("") && !nicknameTextField.getText().equals("")) {
+                client = new Client(serverIpTextField.getText(), Integer.parseInt(serverPortTextField.getText()));
+                client.addObserver(messageHandler);
+                client.setName(nicknameTextField.getText());
+                new Thread(() -> {
+                    try {
+                        client.run();
+                    } catch (IOException e) {
+                        Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
+                        loginErrorMessage.setText("Failed to connect to the server with the given ip and port.");
+                        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.png"))));
+                        errorBox.setVisible(true);
+                        client = null;
+                    }
+                }).start();
+            } else {
+                errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.png"))));
+                loginErrorMessage.setText("Please, fill all the slots above.");
+                errorBox.setVisible(true);
+            }
         });
+
+        Logger.INFO("Launcher inizializzato");
     }
 
     @FXML
     public void exitFromApp(ActionEvent mouseClick) {
         Platform.exit();
-        client.close();
+        try {
+            client.close();
+        } catch (Exception ex) {
+            Logger.INFO("The client was not created yet, skipping...");
+        }
         System.exit(0);
     }
 
@@ -73,11 +109,21 @@ public class LoginController implements Initializable {
 
     public void askNameView(){
         Logger.INFO("Asking name");
-        client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, nicknameTextField.getText()));
+        client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, client.getName()));
     }
 
     public void reaskNameView(){
         Logger.INFO("Reasking name");
+        serverIpTextField.getParent().setVisible(false);
+        serverPortTextField.getParent().setVisible(false);
+        loginErrorMessage.setText("the nickname you have chosen is already taken");
+        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/nicknameAlreadyTakenError.png"))));
+        errorBox.setVisible(true);
+        loginButton.setOnAction(actionEvent -> {
+            client.setName(nicknameTextField.getText());
+            client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, client.getName()));
+            errorBox.setVisible(false);
+        });
     }
 
     public void setBackgroundColor(){

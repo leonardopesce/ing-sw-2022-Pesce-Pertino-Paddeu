@@ -121,13 +121,11 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askName() {
-        Logger.INFO("Asking name");
         Platform.runLater(() -> controllerInitial.askNameView());
     }
 
     @Override
     public void reaskName() {
-        System.out.println("Reasking name");
         Platform.runLater(() -> controllerInitial.reaskNameView());
     }
 

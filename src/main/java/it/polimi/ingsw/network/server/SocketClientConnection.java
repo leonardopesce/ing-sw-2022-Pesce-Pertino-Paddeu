@@ -35,6 +35,14 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             Logger.ERROR("Failed to setup input and output socket on SocketClientConnection.", e.getMessage());
         }
 
+        out.reset();
+        out.writeObject(new CommunicationMessage(CONNECTION_CONFIRMED, null));
+        out.flush();
+        this.connectionStatusHandler = new ServerConnectionStatusHandler();
+        this.addObserver(connectionStatusHandler);
+        connectionStatusHandler.setConnection(this);
+        connectionStatusHandler.start();
+
         new Thread(() -> {
             try {
                 askName();
@@ -44,13 +52,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             }
         }).start();
 
-        this.connectionStatusHandler = new ServerConnectionStatusHandler();
-        this.addObserver(connectionStatusHandler);
-        connectionStatusHandler.setConnection(this);
-        connectionStatusHandler.start();
-        out.reset();
-        out.writeObject(new CommunicationMessage(CONNECTION_CONFIRMED, null));
-        out.flush();
     }
 
     public synchronized boolean isActive() {

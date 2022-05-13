@@ -25,7 +25,7 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
         while (connectionActive) {
             try {
                 pingTimer.schedule(new PingTimeoutExceededTask(this), PING_TIMEOUT_DELAY);
-                Thread.sleep(PING_TIMEOUT_DELAY);
+                Thread.sleep(2*PING_TIMEOUT_DELAY);
             } catch (InterruptedException sleepError) {
                 Logger.ERROR("Connection handler failed to sleep...", sleepError.getMessage());
                 abortConnection();
@@ -51,7 +51,11 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     public void update(CommunicationMessage message) {
         if(message.getID() == PING) {
             clientHandled.asyncWriteToSocket(new CommunicationMessage(PONG, null));
-            pingTimer.cancel();
+            try {
+                pingTimer.cancel();
+            } catch (Exception ex) {
+                // If the task has already been cancelled, it's fine anyways.
+            }
             pingTimer = new Timer();
         }
     }
