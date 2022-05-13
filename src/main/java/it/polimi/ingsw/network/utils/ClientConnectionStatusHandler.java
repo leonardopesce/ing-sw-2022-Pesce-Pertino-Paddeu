@@ -51,11 +51,7 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     public void update(CommunicationMessage message) {
         if(message.getID() == PING) {
             clientHandled.asyncWriteToSocket(new CommunicationMessage(PONG, null));
-            try {
-                pingTimer.cancel();
-            } catch (Exception ex) {
-                // If the task has already been cancelled, it's fine anyways.
-            }
+            pingTimer.cancel();
             pingTimer = new Timer();
         }
     }

@@ -59,11 +59,7 @@ public class ServerConnectionStatusHandler extends ConnectionStatusHandler imple
     @Override
     public void update(CommunicationMessage message) {
         if(message.getID() == PONG) {
-            try {
-                pingTimer.cancel();
-            } catch (Exception ex) {
-                // If the task has already been canceled it's fine anyway.
-            }
+            pingTimer.cancel();
             pingTimer = new Timer();
         }
     }
