@@ -35,9 +35,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             Logger.ERROR("Failed to setup input and output socket on SocketClientConnection.", e.getMessage());
         }
 
-        out.reset();
-        out.writeObject(new CommunicationMessage(CONNECTION_CONFIRMED, null));
-        out.flush();
         this.connectionStatusHandler = new ServerConnectionStatusHandler();
         this.addObserver(connectionStatusHandler);
         connectionStatusHandler.setConnection(this);
@@ -103,6 +100,11 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
     @Override
     public void run() {
+        try {
+            send(new CommunicationMessage(CONNECTION_CONFIRMED, null));
+        } catch (IOException e) {
+            Logger.ERROR("Error in enstablishing the connection with the client.", e.getMessage());
+        }
         try {
             while (isActive()) {
                 CommunicationMessage message = (CommunicationMessage) in.readObject();
