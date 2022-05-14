@@ -15,10 +15,13 @@ import it.polimi.ingsw.game_view.controller.InitialPageController;
 import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -29,20 +32,21 @@ public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
 
     private static final String pathInitialPage = "fxml/Login.fxml";
+    private static final String joiningActionPage = "fxml/Menu.fxml";
     private ClientMessageObserverHandler msgHandler;
     private LoginController controllerInitial;
     private Client client;
     private Stage stage;
     private GameBoardController controllerGameBoard;
+    Parent root;
 
 
     @Override
     public void start(Stage stage){
-        Parent root;
-
         try{
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
             root = loader.load();
+            System.out.println(root);
             this.controllerInitial = loader.getController();
             this.stage = new Stage();
             this.stage.initStyle(StageStyle.UNDECORATED);
@@ -53,7 +57,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage.setHeight(550);
             this.stage.setOnCloseRequest(windowEvent -> {
                 Platform.exit();
-                client.close();
+                //client.close();
                 System.exit(0);
             });
             this.stage.show();
@@ -130,6 +134,12 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     @Override
+    public void askJoiningAction() {
+        System.out.println("Asking join");
+        Platform.runLater(() -> controllerInitial.askJoiningActionView());
+    }
+
+    @Override
     public void askDeck(Object availableDecks) {
         Platform.runLater(() -> {
             stage.setResizable(true);
@@ -147,11 +157,6 @@ public class GameViewGUI extends Application implements GameViewClient{
         Platform.runLater(() -> controllerInitial.askGameTypeView());
     }
 
-    @Override
-    public void askJoiningAction() {
-        System.out.println("Asking join");
-        Platform.runLater(() -> controllerInitial.askJoiningActionView());
-    }
 
     @Override
     public void askLobbyToJoin(Object listOfLobbyInfos) {

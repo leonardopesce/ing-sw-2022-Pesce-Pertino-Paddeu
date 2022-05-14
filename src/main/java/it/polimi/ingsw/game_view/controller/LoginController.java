@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 
 import javafx.event.ActionEvent;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -32,11 +33,11 @@ public class LoginController implements Initializable {
     @FXML
     private AnchorPane parent;
     @FXML
-    private Pane content;
+    private Pane launcherFullPagePaneContent, contentPane;
     @FXML
     private TextField nicknameTextField, serverIpTextField, serverPortTextField;
     @FXML
-    private Button loginButton;
+    private Button loginButton, createLobbyButton, joinLobbyButton;
     @FXML
     private Text loginErrorMessage;
     @FXML
@@ -55,8 +56,8 @@ public class LoginController implements Initializable {
         });
 
         parent.setOnMouseDragged(event -> {
-            content.getScene().getWindow().setX(event.getScreenX() - xOffset);
-            content.getScene().getWindow().setY(event.getScreenY() - yOffset);
+            launcherFullPagePaneContent.getScene().getWindow().setX(event.getScreenX() - xOffset);
+            launcherFullPagePaneContent.getScene().getWindow().setY(event.getScreenY() - yOffset);
         });
 
         loginButton.setOnAction(actionEvent -> {
@@ -100,7 +101,7 @@ public class LoginController implements Initializable {
 
     @FXML
     public void minimizeWindow(ActionEvent mouseClick) {
-        ((Stage)content.getScene().getWindow()).setIconified(true);
+        ((Stage)launcherFullPagePaneContent.getScene().getWindow()).setIconified(true);
     }
 
     public void setClient(Client client) {
@@ -126,6 +127,43 @@ public class LoginController implements Initializable {
         });
     }
 
+    public void askJoiningActionView(){
+        Logger.INFO("Asking joining action");
+        contentPane.getChildren().clear();
+        ImageView backgroundImg = new ImageView();
+        Button createLobbyButton = new Button();
+        Button joinLobbyButton = new Button();
+        backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoPixie.png"))));
+        backgroundImg.setFitHeight(755.0);
+        backgroundImg.setFitWidth(539.0);
+        backgroundImg.setLayoutX(-60.0);
+        backgroundImg.setLayoutY(-46.0);
+        backgroundImg.setOpacity(0.19);
+        backgroundImg.setPreserveRatio(true);
+        backgroundImg.setPickOnBounds(true);
+        createLobbyButton.setLayoutX(20.0);
+        createLobbyButton.setLayoutY(305.0);
+        createLobbyButton.setMnemonicParsing(false);
+        createLobbyButton.setPrefWidth(281.0);
+        createLobbyButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
+        createLobbyButton.setText("Crea una partita");
+        createLobbyButton.setTextAlignment(TextAlignment.CENTER);
+        joinLobbyButton.setLayoutX(20.0);
+        joinLobbyButton.setLayoutY(350.0);
+        joinLobbyButton.setMnemonicParsing(false);
+        joinLobbyButton.setPrefWidth(281.0);
+        joinLobbyButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
+        joinLobbyButton.setText("Entra in una partita");
+        joinLobbyButton.setTextAlignment(TextAlignment.CENTER);
+
+        createLobbyButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.JOINING_ACTION_INFO, 0)));
+        joinLobbyButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.JOINING_ACTION_INFO, 1)));
+
+        contentPane.getChildren().add(backgroundImg);
+        contentPane.getChildren().add(createLobbyButton);
+        contentPane.getChildren().add(joinLobbyButton);
+    }
+
     public void setBackgroundColor(){
         Logger.INFO("Setting bg-color");
     }
@@ -134,9 +172,6 @@ public class LoginController implements Initializable {
         Logger.INFO("Asking deck");
     }
 
-    public void askJoiningActionView(){
-        Logger.INFO("asking joining action");
-    }
 
     public void askLobbyToJoinView(Object listOfLobbyInfos){
         Logger.INFO("Asking lobby to join");

@@ -1,14 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="it.polimi.ingsw.game_view.controller.MenuController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane fx:id="parent" prefHeight="550.0" prefWidth="900.0" styleClass="parent" stylesheets="@../css/Stylesheet.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.LoginController">
+    <children>
+        <Pane fx:id="launcherFullPagePaneContent" prefHeight="550.0" prefWidth="900.0">
+            <children>
+                <ImageView fitHeight="657.0" fitWidth="823.0" layoutX="243.0" layoutY="-100.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/login/kingBg.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="129.0" fitWidth="327.0" layoutX="558.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/login/eriantysTextLogo.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="550.0" fitWidth="553.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../img/login/loginBanner1.png" />
+                    </image>
+                </ImageView>
+                <Label layoutX="564.0" layoutY="125.0" text="GC3 - Alberto Paddeu, Leonardo Pesce, Paolo Pertino" textFill="#e1e1e1">
+                    <font>
+                        <Font name="Berlin Sans FB" size="14.0" />
+                    </font>
+                </Label>
+                <Button layoutX="848.0" layoutY="2.0" minWidth="53.0" mnemonicParsing="false" onAction="#exitFromApp" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;">
+                    <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="23.0" onMouseClicked="#exitFromApp" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../img/login/logoutIcon.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button layoutX="789.0" layoutY="5.0" minWidth="53.0" mnemonicParsing="false" onAction="#minimizeWindow" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;">
+                    <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="25.0" onMouseDragged="#minimizeWindow" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../img/login/minimizeIcon.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
 
+            </children>
+        </Pane>
+    </children>
 </AnchorPane>
+
+
+<Pane fx:id="contentPane" layoutX="564.0" layoutY="31.0" prefHeight="509.0" prefWidth="321.0">
+<children>
+    <ImageView fitHeight="755.0" fitWidth="539.0" layoutX="-60.0" layoutY="-46.0" opacity="0.19" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@../img/menu/launcherSplashLogoPixie.png" />
+        </image>
+    </ImageView>
+    <Button fx:id="createLobbyButton" layoutX="20.0" layoutY="305.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="281.0" style="-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;" text="Crea una partita" textAlignment="CENTER">
+        <font>
+            <Font name="Berlin Sans FB" size="14.0" />
+        </font>
+    </Button>
+    <Button fx:id="joinLobbyButton" layoutX="20.0" layoutY="350.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="281.0" style="-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;" text="Entra in una partita" textAlignment="CENTER">
+        <font>
+            <Font name="Berlin Sans FB" size="14.0" />
+        </font>
+    </Button>
+</children>
+</Pane>
