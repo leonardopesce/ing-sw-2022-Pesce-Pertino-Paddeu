@@ -133,11 +133,10 @@ public class AdvancedCardController implements Initializable {
             gameBoard.makeVisibleIslandsSelectable();
         }
         else if(type == BARD){
-            List<HBox> tables = gameBoard.getThisPlayerBoardController().getSchool().getTables();
-            for(HBox table: tables){
-                table.setOnMouseEntered(a -> table.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
-                table.setOnMouseExited(a -> table.setStyle(null));
-            }
+            gameBoard.setPlayingAdvancedCard(BARD.ordinal());
+            gameBoard.setComment("Select 1 or 2 student from your entrance and select 1 or 2 table to exchange them with (player and table must be in the same number, first select all the student from the entrance, then select the tables)");
+            gameBoard.makeStudentEntranceSelectable();
+
         }
 
     }

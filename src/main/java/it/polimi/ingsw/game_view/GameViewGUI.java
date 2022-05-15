@@ -56,7 +56,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage.setHeight(550);
             this.stage.setOnCloseRequest(windowEvent -> {
                 Platform.exit();
-                //client.close();
+                client.close();
                 System.exit(0);
             });
             this.stage.show();
@@ -89,6 +89,7 @@ public class GameViewGUI extends Application implements GameViewClient{
         gameController.createPlayer("leo", DeckType.KING);
         gameController.createPlayer("fra", DeckType.PIXIE);
         gameController.createPlayer("bro", DeckType.SORCERER);
+
         gameReady(new GameBoardAdvanced(game));
     }
 
@@ -186,11 +187,11 @@ public class GameViewGUI extends Application implements GameViewClient{
                     controllerGameBoard.setClient(client);
                 }
                 this.stage.setScene(new Scene(root, 1920, 1080));
-                this.stage.setResizable(true);
+                //this.stage.setResizable(true);
                 this.stage.setMaximized(true);
-                this.stage.setFullScreen(true);
-                this.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-                this.stage.sizeToScene();
+                //this.stage.setFullScreen(true);
+                //this.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+                //this.stage.sizeToScene();
                 this.stage.setOnCloseRequest(windowEvent -> {
                     Platform.exit();
                     System.exit(0);
