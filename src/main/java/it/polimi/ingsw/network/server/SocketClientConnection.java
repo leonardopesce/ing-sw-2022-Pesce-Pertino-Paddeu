@@ -153,7 +153,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             createNewGame();
         } else {
             if(server.getActiveGames().size() <= 0) {
-                send(new CommunicationMessage(ERROR, "No lobbies are available."));
+                send(new CommunicationMessage(NO_LOBBIES_AVAILABLE, "No lobbies are available."));
                 send(new CommunicationMessage(JOINING_ACTION_INFO, null));
                 askJoiningAction();
             } else {

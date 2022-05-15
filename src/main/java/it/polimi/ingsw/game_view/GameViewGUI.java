@@ -46,7 +46,6 @@ public class GameViewGUI extends Application implements GameViewClient{
         try{
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
             root = loader.load();
-            System.out.println(root);
             this.controllerInitial = loader.getController();
             this.stage = new Stage();
             this.stage.initStyle(StageStyle.UNDECORATED);
@@ -135,8 +134,12 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askJoiningAction() {
-        System.out.println("Asking join");
         Platform.runLater(() -> controllerInitial.askJoiningActionView());
+    }
+
+    @Override
+    public void displayNoLobbiesAvailable() {
+        Platform.runLater(() -> controllerInitial.displayNoLobbiesAvailable());
     }
 
     @Override
@@ -166,7 +169,6 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askPlayerNumber() {
-        System.out.println("Asking number of player");
         Platform.runLater(() -> controllerInitial.askNumberOfPlayerView());
     }
 

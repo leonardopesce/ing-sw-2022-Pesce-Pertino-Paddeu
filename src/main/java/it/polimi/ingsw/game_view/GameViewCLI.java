@@ -59,6 +59,11 @@ public class GameViewCLI implements GameViewClient{
     }
 
     @Override
+    public void displayNoLobbiesAvailable() {
+        Logger.INFO("There are no lobbies available. Please, chose another option.");
+    }
+
+    @Override
     public void askPlayerNumber() {
         System.out.println(GameViewClient.ASK_PLAYER_NUMBER_QUESTION);
         client.asyncWriteToSocket(new CommunicationMessage(

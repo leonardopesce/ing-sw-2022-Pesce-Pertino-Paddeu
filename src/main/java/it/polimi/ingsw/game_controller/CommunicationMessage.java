@@ -16,6 +16,8 @@ public class CommunicationMessage implements Serializable{
         GAME_TYPE_INFO,
         LOBBY_TO_JOIN_INFO,
         LOBBY_JOINED_CONFIRMED,
+        NO_LOBBIES_AVAILABLE,
+        PLAYER_JOINED_YOUR_LOBBY,
         DECK_TYPE_MESSAGE,
         ASK_DECK,
         ASSISTANT_NOT_PLAYABLE,

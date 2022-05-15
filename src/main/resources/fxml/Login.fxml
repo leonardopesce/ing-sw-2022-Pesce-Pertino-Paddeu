@@ -36,25 +36,7 @@
                   <Font name="Berlin Sans FB" size="14.0" />
                </font>
             </Label>
-            <Button layoutX="848.0" layoutY="2.0" minWidth="53.0" mnemonicParsing="false" onAction="#exitFromApp" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;">
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="23.0" onMouseClicked="#exitFromApp" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/login/logoutIcon.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button layoutX="789.0" layoutY="5.0" minWidth="53.0" mnemonicParsing="false" onAction="#minimizeWindow" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="25.0" onMouseDragged="#minimizeWindow" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/login/minimizeIcon.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Pane fx:id="contentPane" layoutX="564.0" layoutY="31.0" prefHeight="509.0" prefWidth="321.0">
+            <Pane fx:id="contentPane" layoutX="564.0" layoutY="31.0" prefHeight="404.0" prefWidth="321.0">
                <children>
                   <ImageView fitHeight="584.0" fitWidth="460.0" layoutX="-10.0" layoutY="58.0" opacity="0.19" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -81,22 +63,40 @@
                         <Font name="Berlin Sans FB" size="14.0" />
                      </font>
                   </Button>
-                  <HBox fx:id="errorBox" layoutX="31.0" layoutY="402.0">
-                     <children>
-                        <ImageView fx:id="errorLogo" fitHeight="37.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                        </ImageView>
-                        <Text fx:id="loginErrorMessage" fill="#9a365b" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="209.0">
-                           <font>
-                              <Font name="Berlin Sans FB" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </HBox>
                </children>
             </Pane>
+            <HBox fx:id="errorBox" layoutX="595.0" layoutY="435.0">
+               <children>
+                  <ImageView fx:id="errorLogo" fitHeight="37.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <Text fx:id="loginErrorMessage" fill="#9a365b" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="209.0">
+                     <font>
+                        <Font name="Berlin Sans FB" size="14.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <Button layoutX="789.0" layoutY="5.0" minWidth="53.0" mnemonicParsing="false" onAction="#minimizeWindow" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="25.0" onMouseDragged="#minimizeWindow" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/login/minimizeIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button layoutX="848.0" layoutY="2.0" minWidth="53.0" mnemonicParsing="false" onAction="#exitFromApp" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="23.0" onMouseClicked="#exitFromApp" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/login/logoutIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </Pane>
    </children>

@@ -52,6 +52,7 @@ public interface GameViewClient{
     void askDeck(Object decksAvailable);
     void askGameType();
     void askJoiningAction();
+    void displayNoLobbiesAvailable();
     void askLobbyToJoin(Object listOfLobbyInfos);
     void askPlayerNumber();
     void gameReady(GameBoard board);
