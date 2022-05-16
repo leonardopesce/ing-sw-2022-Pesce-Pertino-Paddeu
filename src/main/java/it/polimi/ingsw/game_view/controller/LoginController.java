@@ -32,10 +32,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
@@ -48,6 +45,7 @@ public class LoginController implements Initializable {
     private double xOffset = 0;
     private double yOffset = 0;
     private boolean isExpertGame = false;
+    private Optional<DeckType> deckTypeChosen = Optional.empty();
 
     @FXML
     private AnchorPane parent;
@@ -511,13 +509,52 @@ public class LoginController implements Initializable {
         backgroundImg.setPickOnBounds(true);
         backgroundImg.setMouseTransparent(true);
 
+        contentPane.getChildren().add(backgroundImg);
+
+        if(deckTypeChosen.isPresent()) {
+            ImageView deckTypeChosenImage = new ImageView();
+            Text deckTypeName = new Text(this.deckTypeChosen.get().getName());
+            Text deckTypeSignatureText = new Text(switch (deckTypeChosen.get()) {
+                case KING -> "\"Che ora è?\"\n\"Sì.\"";
+                case PIXIE -> "\"Facciamo un esempietto\"";
+                case ELDER -> "\"Siccome che mi hai scelto, vinceremo questa partita!\"";
+                case SORCERER -> "\"Se vinciamo la partita, potrò permettermi il Colosseo della Lego.\"";
+            });
+            deckTypeChosenImage.setFitHeight(204.0);
+            deckTypeChosenImage.setFitWidth(167.0);
+            deckTypeChosenImage.setLayoutX(88.0);
+            deckTypeChosenImage.setLayoutY(140.0);
+            deckTypeChosenImage.setPickOnBounds(true);
+            deckTypeChosenImage.setPreserveRatio(true);
+            deckTypeChosenImage.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(switch (deckTypeChosen.get()) {
+                case KING -> "/img/login/launcherSplashLogo.png";
+                case PIXIE -> "/img/menu/launcherSplashLogoPixie.png";
+                case SORCERER -> "/img/menu/launcherSplashLogoWizard.png";
+                case ELDER -> "/img/menu/launcherSplashLogoSorcerer.png";
+            }))));
+            deckTypeName.setFill(Color.rgb(154,54,91));
+            deckTypeName.setLayoutY(368.0);
+            deckTypeName.setStrokeType(StrokeType.OUTSIDE);
+            deckTypeName.setStrokeWidth(0.0);
+            deckTypeName.setWrappingWidth(321.0);
+            deckTypeName.setTextAlignment(TextAlignment.CENTER);
+            deckTypeName.setFont(new Font(LOGIN_FONT, 36.0));
+            deckTypeSignatureText.setFill(Color.rgb(225,225,225));
+            deckTypeSignatureText.setTextAlignment(TextAlignment.CENTER);
+            deckTypeSignatureText.setWrappingWidth(321.0);
+            deckTypeSignatureText.setLayoutY(394.0);
+            deckTypeSignatureText.setStrokeType(StrokeType.OUTSIDE);
+            deckTypeSignatureText.setStrokeWidth(0.0);
+            deckTypeSignatureText.setFont(new Font(LOGIN_FONT, 21.0));
+
+            contentPane.getChildren().add(deckTypeChosenImage);
+            contentPane.getChildren().add(deckTypeName);
+            contentPane.getChildren().add(deckTypeSignatureText);
+        }
+
         errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/loading.gif"))));
         loginErrorMessage.setText("La partita è iniziata e " + otherPlayerName + " sta scelgiendo il suo personaggio. Tra pochi istanti sarà il tuo turno.");
         errorBox.setVisible(true);
-    }
-
-    public void setBackgroundColor(){
-        Logger.INFO("Setting bg-color");
     }
 
     public void askDeckView(List<DeckType> listAvailableDeck){
@@ -567,7 +604,10 @@ public class LoginController implements Initializable {
             colorAdjust.setInput(imageBlur);
             kingRetro.setEffect(colorAdjust);
         } else {
-            kingRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.KING)));
+            kingRetro.setOnMouseClicked(click -> {
+                client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.KING));
+                deckTypeChosen = Optional.of(DeckType.KING);
+            });
         }
         cardGridPane.add(kingRetro, 0, 0);
         pixieRetro.setFitHeight(150.0);
@@ -582,7 +622,10 @@ public class LoginController implements Initializable {
             colorAdjust.setInput(imageBlur);
             pixieRetro.setEffect(colorAdjust);
         } else {
-            pixieRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.PIXIE)));
+            pixieRetro.setOnMouseClicked(click -> {
+                client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.PIXIE));
+                deckTypeChosen = Optional.of(DeckType.PIXIE);
+            });
         }
         cardGridPane.add(pixieRetro, 0, 1);
         sorcererRetro.setFitHeight(150.0);
@@ -597,7 +640,10 @@ public class LoginController implements Initializable {
             colorAdjust.setInput(imageBlur);
             sorcererRetro.setEffect(colorAdjust);
         } else {
-            sorcererRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.ELDER)));
+            sorcererRetro.setOnMouseClicked(click -> {
+                client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.ELDER));
+                deckTypeChosen = Optional.of(DeckType.ELDER);
+            });
         }
         cardGridPane.add(sorcererRetro, 1, 0);
         wizardRetro.setFitHeight(150.0);
@@ -612,7 +658,10 @@ public class LoginController implements Initializable {
             colorAdjust.setInput(imageBlur);
             wizardRetro.setEffect(colorAdjust);
         } else {
-            wizardRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.SORCERER)));
+            wizardRetro.setOnMouseClicked(click -> {
+                client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.SORCERER));
+                deckTypeChosen = Optional.of(DeckType.SORCERER);
+            });
         }
         cardGridPane.add(wizardRetro, 1, 1);
 
