@@ -54,6 +54,7 @@ public interface GameViewClient{
     void askJoiningAction();
     void displayNoLobbiesAvailable();
     void askLobbyToJoin(Object listOfLobbyInfos);
+    void displayLobbyJoined(Object LobbyInfos);
     void askPlayerNumber();
     void gameReady(GameBoard board);
     void reaskAssistant();

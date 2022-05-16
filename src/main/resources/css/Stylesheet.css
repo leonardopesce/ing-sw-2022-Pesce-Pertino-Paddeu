@@ -1,3 +1,20 @@
 .parent {
     background-color: #fff;
 }
+
+.list-cell {
+    -fx-text-fill: #e1e1e1;
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: linear-gradient(rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 100%);
+}
+
+.list-view .scroll-bar:horizontal {
+    -fx-scale-x: 0;
+}
+
+.list-view .scroll-bar:vertical {
+    -fx-scale-x: 0;
+}

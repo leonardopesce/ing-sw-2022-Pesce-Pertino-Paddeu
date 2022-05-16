@@ -49,7 +49,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case JOIN_LOBBY_ACTION_CONFIRMED, LOBBY_TO_JOIN_INFO -> new Thread(() -> view.askLobbyToJoin(message.getMessage())).start();
             case CREATE_LOBBY_ACTION_CONFIRMED, NUMBER_OF_PLAYER_INFO -> new Thread(view::askPlayerNumber).start();
             case NUMBER_OF_PLAYER_CONFIRMED, GAME_TYPE_INFO -> new Thread(view::askGameType).start();
-            case LOBBY_JOINED_CONFIRMED -> {} // DO NOTHING - now the user will wait until the game starts.
+            case LOBBY_JOINED_CONFIRMED -> new Thread(() -> view.displayLobbyJoined(message.getMessage())).start();
             case NO_LOBBIES_AVAILABLE -> new Thread(view::displayNoLobbiesAvailable).start();
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();

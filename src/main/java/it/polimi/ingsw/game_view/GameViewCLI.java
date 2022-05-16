@@ -80,6 +80,16 @@ public class GameViewCLI implements GameViewClient{
     }
 
     @Override
+    public void displayLobbyJoined(Object lobbyInfos) {
+        Logger.INFO("Current members:");
+        for(String memberName : ((LobbyInfo)lobbyInfos).getLobbyMembers()) {
+            if(memberName.equals(((LobbyInfo)lobbyInfos).getLobbyName())) Logger.INFO("\uD83D\uDC51" + " " + memberName);
+            else Logger.INFO(memberName);
+
+        }
+    }
+
+    @Override
     public void askDeck(Object decksAvailable) {
         System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
         client.asyncWriteToSocket(new CommunicationMessage(

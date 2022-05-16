@@ -8,6 +8,7 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_view.RemoteGameView;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.board.GameBoardAdvanced;
+import it.polimi.ingsw.network.utils.LobbyInfo;
 import it.polimi.ingsw.network.utils.Logger;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class Lobby implements Runnable {
 
         // Notify all the lobby participants that a new player has joined
         for(ClientConnection lobbyParticipant : connectedPlayersToLobby) {
-            ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(INFO, getLastJoined() + " has joined the lobby."));
+            if(!(((SocketClientConnection)lobbyParticipant).getClientName().equals(((SocketClientConnection)newClient).getClientName()))) ((SocketClientConnection)lobbyParticipant).send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, new LobbyInfo(this)));
         }
     }
 

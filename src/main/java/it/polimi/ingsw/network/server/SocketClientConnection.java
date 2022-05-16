@@ -126,7 +126,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private void askName() throws IOException, ClassNotFoundException {
         CommunicationMessage messageReceived = getResponse().get();
         String name = messageReceived.getMessage().toString();
-        while ((messageReceived.getID() != NAME_MESSAGE) || server.getConnectedPlayersName().contains(name)) {
+        while ((messageReceived.getID() != NAME_MESSAGE) || server.getConnectedPlayersName().contains(name) || Arrays.asList(server.getBannedNicks()).contains(name)) {
             send(new CommunicationMessage(NAME_MESSAGE, null));
             name = getResponse().get().getMessage().toString();
         }
@@ -169,6 +169,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         boolean expertMode = askGameType();
         Lobby newLobby = new Lobby(server, this, numberOfPlayer, expertMode);
         newLobby.registerClientToLobby(this);
+        send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, new LobbyInfo(newLobby)));
         server.addGameLobby(newLobby);
         server.handleLobbyState(newLobby, this);
     }
@@ -196,7 +197,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
 
         mode = (boolean) messageReceived.getMessage();
-        send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, null));
 
         return mode;
     }
@@ -209,15 +209,22 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
 
         String lobbyChosen = receivedMessage.getMessage().toString();
-        Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
-        if (selectedLobby.isFull()) {
-            send(new CommunicationMessage(INFO, "The lobby you selected is already full or got full while you were choosing."));
+
+        if(Arrays.asList(server.getBannedNicks()).contains(lobbyChosen)) {
+            send(new CommunicationMessage(INFO, "Back to chosing the joining action."));
             send(new CommunicationMessage(JOINING_ACTION_INFO, null));
             askJoiningAction();
         } else {
-            send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, null));
-            selectedLobby.registerClientToLobby(this);
-            server.handleLobbyState(selectedLobby, this);
+            Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
+            if (selectedLobby.isFull()) {
+                send(new CommunicationMessage(INFO, "The lobby you selected is already full or got full while you were choosing."));
+                send(new CommunicationMessage(JOINING_ACTION_INFO, null));
+                askJoiningAction();
+            } else {
+                selectedLobby.registerClientToLobby(this);
+                send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, new LobbyInfo(selectedLobby)));
+                server.handleLobbyState(selectedLobby, this);
+            }
         }
     }
 

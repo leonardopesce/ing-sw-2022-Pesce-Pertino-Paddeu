@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
 import it.polimi.ingsw.game_view.controller.InitialPageController;
+import it.polimi.ingsw.network.utils.LobbyInfo;
 import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -157,20 +158,23 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askGameType() {
-        System.out.println("Asking Game mode");
         Platform.runLater(() -> controllerInitial.askGameTypeView());
     }
 
 
     @Override
     public void askLobbyToJoin(Object listOfLobbyInfos) {
-        System.out.println("Asking lobby to join");
         Platform.runLater(() -> controllerInitial.askLobbyToJoinView(listOfLobbyInfos));
     }
 
     @Override
     public void askPlayerNumber() {
         Platform.runLater(() -> controllerInitial.askNumberOfPlayerView());
+    }
+
+    @Override
+    public void displayLobbyJoined(Object lobbyInfos) {
+        Platform.runLater(() -> controllerInitial.displayLobbyJoined((LobbyInfo) lobbyInfos));
     }
 
     @Override

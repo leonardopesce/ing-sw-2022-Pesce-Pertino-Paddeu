@@ -4,12 +4,16 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_view.controller.custom_gui.CustomSwitch;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
+import it.polimi.ingsw.network.utils.LobbyInfo;
 import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,11 +29,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.NAME_MESSAGE;
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.NUMBER_OF_PLAYER_INFO;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
 public class LoginController implements Initializable {
     private static final String LOGIN_FONT = "Berlin Sans FB";
@@ -40,6 +45,7 @@ public class LoginController implements Initializable {
     private double xOffset = 0;
     private double yOffset = 0;
     private boolean isExpertGame = false;
+
     @FXML
     private AnchorPane parent;
     @FXML
@@ -283,6 +289,213 @@ public class LoginController implements Initializable {
 
     public void askGameTypeView(){
         Logger.INFO("Asking game type");
+        client.asyncWriteToSocket(new CommunicationMessage(GAME_TYPE_INFO, isExpertGame));
+    }
+
+    public void displayLobbyJoined(LobbyInfo lobbyInfos) {
+        Logger.INFO("Succesfully joined a lobby.");
+        errorBox.setVisible(false);
+        contentPane.getChildren().clear();
+        ListView<HBox> lobbyMembers = new ListView<>();
+        ImageView backgroundImg = new ImageView();
+        Text lobbyText = new Text("Giocatori");
+
+        backgroundImg.setFitHeight(633.0);
+        backgroundImg.setFitWidth(438.0);
+        backgroundImg.setLayoutX(-20.0);
+        backgroundImg.setLayoutY(9.0);
+        backgroundImg.setOpacity(0.19);
+        backgroundImg.setPickOnBounds(true);
+        backgroundImg.setPreserveRatio(true);
+        backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoWizard.png"))));
+
+        lobbyText.setFill(Color.rgb(225,225,225));
+        lobbyText.setLayoutY(222.0);
+        lobbyText.setStrokeType(StrokeType.OUTSIDE);
+        lobbyText.setStrokeWidth(0.0);
+        lobbyText.setWrappingWidth(321.0);
+        lobbyText.setTextAlignment(TextAlignment.CENTER);
+        lobbyText.setFont(new Font(LOGIN_FONT, 24.0));
+
+        lobbyMembers.setStyle("-fx-background-color: transparent");
+        lobbyMembers.setLayoutX(9.0);
+        lobbyMembers.setLayoutY(232.0);
+        lobbyMembers.setPrefHeight(223.0);
+        lobbyMembers.setPrefWidth(303.0);
+        List<HBox> lobbyMembersObjects = populateLobbyMembersObjectsArray(lobbyInfos);
+        lobbyMembers.getItems().addAll(lobbyMembersObjects);
+
+        contentPane.getChildren().add(backgroundImg);
+        contentPane.getChildren().add(lobbyText);
+        contentPane.getChildren().add(lobbyMembers);
+    }
+
+    private List<HBox> populateLobbyMembersObjectsArray(LobbyInfo lobbyInfo) {
+        List<HBox> compiledLobbyMembersList = new ArrayList<>();
+
+        for(String lobbyMember : lobbyInfo.getLobbyMembers()) {
+            HBox memberBox = new HBox();
+            ImageView ownerIcon = new ImageView();
+            Text memberText = new Text(lobbyMember);
+            memberBox.setAlignment(Pos.CENTER_LEFT);
+            memberBox.setPrefHeight(37.0);
+            memberBox.setPrefWidth(292.0);
+            ownerIcon.setFitWidth(35.0);
+            ownerIcon.setFitHeight(37.0);
+            ownerIcon.setPickOnBounds(true);
+            ownerIcon.setPreserveRatio(true);
+            if(lobbyMember.equals(lobbyInfo.getLobbyName())) {
+                ownerIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/lobbyOwner.png"))));
+            }
+            memberText.setStrokeType(StrokeType.OUTSIDE);
+            memberText.setStrokeWidth(0.0);
+            memberText.setFont(new Font(LOGIN_FONT, 18.0));
+            memberText.setFill(Color.rgb(225,225,225));
+
+            memberBox.getChildren().add(ownerIcon);
+            memberBox.getChildren().add(memberText);
+            memberBox.setSpacing(10.0);
+            compiledLobbyMembersList.add(memberBox);
+        }
+
+        return compiledLobbyMembersList;
+    }
+
+    public void askLobbyToJoinView(Object listOfLobbyInfos){
+        Logger.INFO("Asking lobby to join");
+        errorBox.setVisible(false);
+        contentPane.getChildren().clear();
+        ListView<HBox> listOfLobbies = new ListView<>();
+        ImageView backgroundImg = new ImageView();
+        HBox listViewHeader = new HBox();
+        Text listViewHeaderTitle = new Text("Lista di lobby");
+        Separator listViewHeaderVerticalSeparator = new Separator();
+        Button listViewHeaderGoBackButton = new Button();
+        ImageView listViewHeaderGoBackButtonIcon = new ImageView();
+        List<HBox> availableLobbies = populateListOfLobbiesArrayObject((List<LobbyInfo>) listOfLobbyInfos);
+
+        backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoSorcerer.png"))));
+        backgroundImg.setFitHeight(749.0);
+        backgroundImg.setFitWidth(521.0);
+        backgroundImg.setLayoutX(-37.0);
+        backgroundImg.setLayoutY(13.0);
+        backgroundImg.setOpacity(0.19);
+        backgroundImg.setPreserveRatio(true);
+        backgroundImg.setPickOnBounds(true);
+        backgroundImg.setMouseTransparent(true);
+
+        listViewHeader.setAlignment(Pos.CENTER_LEFT);
+        listViewHeader.setLayoutX(4.0);
+        listViewHeader.setLayoutY(183.0);
+        listViewHeader.setPrefWidth(303.0);
+        listViewHeader.setPrefHeight(32.0);
+        listViewHeaderTitle.setStrokeType(StrokeType.OUTSIDE);
+        listViewHeaderTitle.setFill(Color.rgb(225,225,225));
+        listViewHeaderTitle.setStrokeWidth(0.0);
+        listViewHeaderTitle.setTextAlignment(TextAlignment.CENTER);
+        listViewHeaderTitle.setWrappingWidth(155.0);
+        listViewHeaderTitle.setFont(new Font(LOGIN_FONT, 24.0));
+        listViewHeaderVerticalSeparator.setOrientation(Orientation.VERTICAL);
+        listViewHeaderVerticalSeparator.setPrefHeight(32.0);
+        listViewHeaderVerticalSeparator.setPrefWidth(127.0);
+        listViewHeaderVerticalSeparator.setVisible(false);
+        listViewHeaderGoBackButton.setMnemonicParsing(false);
+        listViewHeaderGoBackButton.setPrefHeight(32.0);
+        listViewHeaderGoBackButton.setPrefWidth(28.0);
+        listViewHeaderGoBackButton.setStyle("-fx-background-color: transparent");
+        listViewHeaderGoBackButtonIcon.setFitHeight(22.0);
+        listViewHeaderGoBackButtonIcon.setFitWidth(45.0);
+        listViewHeaderGoBackButtonIcon.setPickOnBounds(true);
+        listViewHeaderGoBackButtonIcon.setPreserveRatio(true);
+        listViewHeaderGoBackButtonIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/goBackButton.png"))));
+        listViewHeaderGoBackButton.setGraphic(listViewHeaderGoBackButtonIcon);
+        listViewHeaderGoBackButton.setOnAction(event -> goBackCallback());
+        listViewHeader.getChildren().add(listViewHeaderTitle);
+        listViewHeader.getChildren().add(listViewHeaderVerticalSeparator);
+        listViewHeader.getChildren().add(listViewHeaderGoBackButton);
+
+        listOfLobbies.setLayoutX(9.0);
+        listOfLobbies.setLayoutY(232.0);
+        listOfLobbies.setPrefWidth(303.0);
+        listOfLobbies.setPrefHeight(223.0);
+        listOfLobbies.setStyle("-fx-background-color: transparent;");
+        listOfLobbies.getItems().addAll(availableLobbies);
+        contentPane.getChildren().add(backgroundImg);
+        contentPane.getChildren().add(listViewHeader);
+        contentPane.getChildren().add(listOfLobbies);
+    }
+
+    private void goBackCallback() {
+        Logger.INFO("Going back to joining action.");
+        client.asyncWriteToSocket(new CommunicationMessage(LOBBY_TO_JOIN_INFO, "GO_BACK_TO_JOIN_ACTION"));
+    }
+
+    private List<HBox> populateListOfLobbiesArrayObject(List<LobbyInfo> lobbiesInfos) {
+        List<HBox> compiledLobbiesInfos = new ArrayList<>();
+
+        for(LobbyInfo lobby : lobbiesInfos) {
+            HBox lobbyObject = new HBox();
+            ImageView gameTypeIcon = new ImageView();
+            VBox lobbyObjectContent = new VBox();
+            Text lobbyName = new Text("Lobby di " + lobby.getLobbyName());
+            Text lobbySize = new Text();
+            Separator lobbyContentSeparator = new Separator();
+            Button accessLobbyButton = new Button();
+
+            lobbyObject.setAlignment(Pos.CENTER_LEFT);
+            lobbyObject.setMinWidth(0.0);
+            lobbyObject.setPrefHeight(37.0);
+            lobbyObject.setPrefWidth(289.0);
+            gameTypeIcon.setFitHeight(37.0);
+            gameTypeIcon.setFitWidth(35.0);
+            gameTypeIcon.setPickOnBounds(true);
+            gameTypeIcon.setPreserveRatio(true);
+            if(lobby.isLobbyExpert()) {
+                gameTypeIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/expertGame.png"))));
+            } else {
+                gameTypeIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/normalGame.png"))));
+            }
+            lobbyObjectContent.setAlignment(Pos.CENTER_LEFT);
+            lobbyObjectContent.setMinWidth(0.0);
+            lobbyObjectContent.setPrefHeight(37.0);
+            lobbyObjectContent.setPrefWidth(179.0);
+            lobbyName.setStrokeType(StrokeType.OUTSIDE);
+            lobbyName.setStrokeWidth(0.0);
+            lobbyName.setFont(new Font(LOGIN_FONT, 18.0));
+            lobbyName.setFill(Color.rgb(225,225,225));
+            lobbySize.setStrokeType(StrokeType.OUTSIDE);
+            lobbySize.setStrokeWidth(0.0);
+            lobbySize.setFont(new Font(LOGIN_FONT, 16.0));
+            lobbySize.setText(lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize());
+            if(lobby.isFull()) {
+                lobbySize.setFill(Color.rgb(154,54,91));
+                accessLobbyButton.setDisable(true);
+                accessLobbyButton.setVisible(false);
+            } else {
+                lobbySize.setFill(Color.rgb(0, 189, 14));
+                accessLobbyButton.setDisable(false);
+                accessLobbyButton.setVisible(true);
+            }
+            lobbyObjectContent.getChildren().add(lobbyName);
+            lobbyObjectContent.getChildren().add(lobbySize);
+            lobbyContentSeparator.setOrientation(Orientation.VERTICAL);
+            lobbyContentSeparator.setPrefHeight(37.0);
+            lobbyContentSeparator.setPrefWidth(17.0);
+            lobbyContentSeparator.setVisible(false);
+            accessLobbyButton.setMnemonicParsing(false);
+            accessLobbyButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
+            accessLobbyButton.setText("Accedi");
+            accessLobbyButton.setOnAction(event -> client.asyncWriteToSocket(new CommunicationMessage(LOBBY_TO_JOIN_INFO, lobby.getLobbyName())));
+
+            lobbyObject.getChildren().add(gameTypeIcon);
+            lobbyObject.getChildren().add(lobbyObjectContent);
+            lobbyObject.getChildren().add(lobbyContentSeparator);
+            lobbyObject.getChildren().add(accessLobbyButton);
+
+            compiledLobbiesInfos.add(lobbyObject);
+        }
+
+        return compiledLobbiesInfos;
     }
 
     public void setBackgroundColor(){
@@ -292,12 +505,6 @@ public class LoginController implements Initializable {
     public void askDeckView(Object listAvailableDeck){
         Logger.INFO("Asking deck");
     }
-
-
-    public void askLobbyToJoinView(Object listOfLobbyInfos){
-        Logger.INFO("Asking lobby to join");
-    }
-
 
 
     public void setMessageHandler(ClientMessageObserverHandler messageHandler) {
