@@ -51,6 +51,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case NUMBER_OF_PLAYER_CONFIRMED, GAME_TYPE_INFO -> new Thread(view::askGameType).start();
             case LOBBY_JOINED_CONFIRMED -> new Thread(() -> view.displayLobbyJoined(message.getMessage())).start();
             case NO_LOBBIES_AVAILABLE -> new Thread(view::displayNoLobbiesAvailable).start();
+            case IS_CHOSING_DECK_TYPE -> new Thread(() -> view.displayIsChoosingDeckType(message.getMessage())).start();
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();
             case NOT_YOUR_TURN -> new Thread(view::displayNotYourTurn).start();

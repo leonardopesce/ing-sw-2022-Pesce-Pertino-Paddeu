@@ -4,8 +4,6 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.observer.Observer;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Timer;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.PING;

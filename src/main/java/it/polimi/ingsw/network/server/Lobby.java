@@ -105,7 +105,7 @@ public class Lobby implements Runnable {
 
         for(ClientConnection connection : connectedPlayersToLobby){
             try {
-                broadcastMessage(INFO, ((SocketClientConnection)connection).getClientName() + " is choosing the deck type...", new ArrayList<>(List.of(connection)));
+                broadcastMessage(IS_CHOSING_DECK_TYPE, ((SocketClientConnection)connection).getClientName(), new ArrayList<>(List.of(connection)));
                 Player player = controller.createPlayer(
                         ((SocketClientConnection) connection).getClientName(),
                         ((SocketClientConnection) connection).askDeckType(controller.getAvailableDeckType()));

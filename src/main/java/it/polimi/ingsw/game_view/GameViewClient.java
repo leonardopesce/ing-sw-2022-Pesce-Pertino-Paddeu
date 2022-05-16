@@ -49,6 +49,7 @@ public interface GameViewClient{
     void displayExpertMode();
     void askName();
     void reaskName();
+    void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck);
     void askDeck(Object decksAvailable);
     void askGameType();
     void askJoiningAction();

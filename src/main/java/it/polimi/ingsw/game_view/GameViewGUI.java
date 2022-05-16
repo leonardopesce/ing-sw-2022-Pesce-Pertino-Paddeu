@@ -27,16 +27,15 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
 
     private static final String pathInitialPage = "fxml/Login.fxml";
-    private static final String joiningActionPage = "fxml/Menu.fxml";
     private ClientMessageObserverHandler msgHandler;
     private LoginController controllerInitial;
-    private Client client;
     private Stage stage;
     private GameBoardController controllerGameBoard;
     Parent root;
@@ -57,7 +56,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage.setHeight(550);
             this.stage.setOnCloseRequest(windowEvent -> {
                 Platform.exit();
-                client.close();
+                controllerInitial.getClient().close();
                 System.exit(0);
             });
             this.stage.show();
@@ -97,7 +96,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
         Platform.runLater(() -> {
-            if(client.getName().equals(boardToUpdate.getCurrentlyPlaying())) {
+            if(controllerInitial.getClient().getName().equals(boardToUpdate.getCurrentlyPlaying())) {
                 controllerGameBoard.updateBoard(boardToUpdate);
                 controllerGameBoard.setComment(errorMsg);
             }
@@ -145,15 +144,13 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     @Override
+    public void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck) {
+        Platform.runLater(() -> controllerInitial.displayOtherPlayerIsChoosingHisDeckType((String) playerNameWhoIsChosingTheDeck));
+    }
+
+    @Override
     public void askDeck(Object availableDecks) {
-        Platform.runLater(() -> {
-            stage.setResizable(true);
-            stage.setMaximized(true);
-            stage.setFullScreen(true);
-            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-            controllerInitial.setBackgroundColor();
-            controllerInitial.askDeckView(availableDecks);
-        });
+        Platform.runLater(() -> { controllerInitial.askDeckView((List<DeckType>) availableDecks); });
     }
 
     @Override
@@ -188,7 +185,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 root = loader.load();
                 this.controllerGameBoard = loader.getController();
                 if(!testing){
-                    controllerGameBoard.setClient(client);
+                    controllerGameBoard.setClient(controllerInitial.getClient());
                 }
                 this.stage.setScene(new Scene(root, 1920, 1080));
                 //this.stage.setResizable(true);
@@ -209,7 +206,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 controllerGameBoard.setClientName("Paolo");
             }
             else {
-                controllerGameBoard.setClient(client);
+                controllerGameBoard.setClient(controllerInitial.getClient());
             }
 
             controllerGameBoard.updateBoard(board);
@@ -233,7 +230,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public Client getClient() {
-        return client;
+        return controllerInitial.getClient();
     }
 
     public ClientMessageObserverHandler getMsgHandler() {

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_view;
 
-import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
@@ -87,6 +86,11 @@ public class GameViewCLI implements GameViewClient{
             else Logger.INFO(memberName);
 
         }
+    }
+
+    @Override
+    public void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck) {
+        Logger.INFO(playerNameWhoIsChosingTheDeck + " is choosing the deck type.");
     }
 
     @Override

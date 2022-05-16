@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
+import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 import it.polimi.ingsw.game_view.controller.custom_gui.CustomSwitch;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
@@ -15,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -89,13 +92,13 @@ public class LoginController implements Initializable {
                     } catch (IOException e) {
                         Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
                         loginErrorMessage.setText("Impossibile connettersi al server con indirizzo IP e porta indicati.");
-                        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.png"))));
+                        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
                         errorBox.setVisible(true);
                         client = null;
                     }
                 }).start();
             } else {
-                errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.png"))));
+                errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.gif"))));
                 loginErrorMessage.setText("Per favore, completa tutti i campi prima di continuare.");
                 errorBox.setVisible(true);
             }
@@ -134,7 +137,7 @@ public class LoginController implements Initializable {
         serverIpTextField.getParent().setVisible(false);
         serverPortTextField.getParent().setVisible(false);
         loginErrorMessage.setText("Il nickname che hai scelto è già stato preso");
-        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/nicknameAlreadyTakenError.png"))));
+        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/nicknameAlreadyTakenError.gif"))));
         errorBox.setVisible(true);
         loginButton.setOnAction(actionEvent -> {
             client.setName(nicknameTextField.getText());
@@ -185,7 +188,7 @@ public class LoginController implements Initializable {
     public void displayNoLobbiesAvailable() {
         Logger.INFO("No lobbies are available. Please chose another option.");
         loginErrorMessage.setText("Non ci sono lobby aperte al momento. Per favore, scegli un'altra opzione.");
-        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/noLobbiesAvailableError.png"))));
+        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/noLobbiesAvailableError.gif"))));
         errorBox.setVisible(true);
     }
 
@@ -298,7 +301,7 @@ public class LoginController implements Initializable {
         contentPane.getChildren().clear();
         ListView<HBox> lobbyMembers = new ListView<>();
         ImageView backgroundImg = new ImageView();
-        Text lobbyText = new Text("Giocatori");
+        Text lobbyText = new Text("Giocatori" + " ~ " + lobbyInfos.getCurrentLobbySize() + "/" + lobbyInfos.getLobbyMaxSize());
 
         backgroundImg.setFitHeight(633.0);
         backgroundImg.setFitWidth(438.0);
@@ -345,7 +348,7 @@ public class LoginController implements Initializable {
             ownerIcon.setPickOnBounds(true);
             ownerIcon.setPreserveRatio(true);
             if(lobbyMember.equals(lobbyInfo.getLobbyName())) {
-                ownerIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/lobbyOwner.png"))));
+                ownerIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/lobbyOwner.gif"))));
             }
             memberText.setStrokeType(StrokeType.OUTSIDE);
             memberText.setStrokeWidth(0.0);
@@ -436,18 +439,18 @@ public class LoginController implements Initializable {
         for(LobbyInfo lobby : lobbiesInfos) {
             HBox lobbyObject = new HBox();
             ImageView gameTypeIcon = new ImageView();
-            VBox lobbyObjectContent = new VBox();
+            HBox lobbyObjectContent = new HBox();
             Text lobbyName = new Text("Lobby di " + lobby.getLobbyName());
             Text lobbySize = new Text();
-            Separator lobbyContentSeparator = new Separator();
             Button accessLobbyButton = new Button();
 
             lobbyObject.setAlignment(Pos.CENTER_LEFT);
+            lobbyObject.setSpacing(5.0);
             lobbyObject.setMinWidth(0.0);
             lobbyObject.setPrefHeight(37.0);
             lobbyObject.setPrefWidth(289.0);
-            gameTypeIcon.setFitHeight(37.0);
-            gameTypeIcon.setFitWidth(35.0);
+            gameTypeIcon.setFitHeight(45.0);
+            gameTypeIcon.setFitWidth(45.0);
             gameTypeIcon.setPickOnBounds(true);
             gameTypeIcon.setPreserveRatio(true);
             if(lobby.isLobbyExpert()) {
@@ -456,6 +459,7 @@ public class LoginController implements Initializable {
                 gameTypeIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/normalGame.png"))));
             }
             lobbyObjectContent.setAlignment(Pos.CENTER_LEFT);
+            lobbyObjectContent.setSpacing(7.0);
             lobbyObjectContent.setMinWidth(0.0);
             lobbyObjectContent.setPrefHeight(37.0);
             lobbyObjectContent.setPrefWidth(179.0);
@@ -465,23 +469,19 @@ public class LoginController implements Initializable {
             lobbyName.setFill(Color.rgb(225,225,225));
             lobbySize.setStrokeType(StrokeType.OUTSIDE);
             lobbySize.setStrokeWidth(0.0);
-            lobbySize.setFont(new Font(LOGIN_FONT, 16.0));
+            lobbySize.setFont(new Font(LOGIN_FONT, 22.0));
             lobbySize.setText(lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize());
             if(lobby.isFull()) {
                 lobbySize.setFill(Color.rgb(154,54,91));
                 accessLobbyButton.setDisable(true);
                 accessLobbyButton.setVisible(false);
             } else {
-                lobbySize.setFill(Color.rgb(0, 189, 14));
+                lobbySize.setFill(Color.rgb(7, 94, 84));
                 accessLobbyButton.setDisable(false);
                 accessLobbyButton.setVisible(true);
             }
             lobbyObjectContent.getChildren().add(lobbyName);
             lobbyObjectContent.getChildren().add(lobbySize);
-            lobbyContentSeparator.setOrientation(Orientation.VERTICAL);
-            lobbyContentSeparator.setPrefHeight(37.0);
-            lobbyContentSeparator.setPrefWidth(17.0);
-            lobbyContentSeparator.setVisible(false);
             accessLobbyButton.setMnemonicParsing(false);
             accessLobbyButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
             accessLobbyButton.setText("Accedi");
@@ -489,7 +489,6 @@ public class LoginController implements Initializable {
 
             lobbyObject.getChildren().add(gameTypeIcon);
             lobbyObject.getChildren().add(lobbyObjectContent);
-            lobbyObject.getChildren().add(lobbyContentSeparator);
             lobbyObject.getChildren().add(accessLobbyButton);
 
             compiledLobbiesInfos.add(lobbyObject);
@@ -498,14 +497,145 @@ public class LoginController implements Initializable {
         return compiledLobbiesInfos;
     }
 
+    public void displayOtherPlayerIsChoosingHisDeckType(String otherPlayerName) {
+        contentPane.getChildren().clear();
+        ImageView backgroundImg = new ImageView();
+
+        backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoMotherNature.png"))));
+        backgroundImg.setFitHeight(633.0);
+        backgroundImg.setFitWidth(438.0);
+        backgroundImg.setLayoutX(-53.0);
+        backgroundImg.setLayoutY(-54.0);
+        backgroundImg.setOpacity(0.19);
+        backgroundImg.setPreserveRatio(true);
+        backgroundImg.setPickOnBounds(true);
+        backgroundImg.setMouseTransparent(true);
+
+        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/loading.gif"))));
+        loginErrorMessage.setText("La partita è iniziata e " + otherPlayerName + " sta scelgiendo il suo personaggio. Tra pochi istanti sarà il tuo turno.");
+        errorBox.setVisible(true);
+    }
+
     public void setBackgroundColor(){
         Logger.INFO("Setting bg-color");
     }
 
-    public void askDeckView(Object listAvailableDeck){
+    public void askDeckView(List<DeckType> listAvailableDeck){
         Logger.INFO("Asking deck");
+        errorBox.setVisible(false);
+        contentPane.getChildren().clear();
+        ImageView backgroundImg = new ImageView();
+        GridPane cardGridPane = new GridPane();
+        ColumnConstraints column1 = new ColumnConstraints();
+        ColumnConstraints column2 = new ColumnConstraints();
+        RowConstraints row1 = new RowConstraints();
+        RowConstraints row2 = new RowConstraints();
+        ImageView kingRetro = new ImageView();
+        ImageView pixieRetro = new ImageView();
+        ImageView sorcererRetro = new ImageView();
+        ImageView wizardRetro = new ImageView();
+
+
+        column1.setHgrow(Priority.SOMETIMES);
+        column1.setMinWidth(10.0);
+        column1.setPrefWidth(100.0);
+        column2.setHgrow(Priority.SOMETIMES);
+        column2.setMinWidth(10.0);
+        row1.setMinHeight(10.0);
+        row1.setVgrow(Priority.SOMETIMES);
+        row2.setMinHeight(10.0);
+        row2.setVgrow(Priority.SOMETIMES);
+        column2.setPrefWidth(100.0);
+        cardGridPane.setHgap(20.0);
+        cardGridPane.setVgap(20.0);
+        cardGridPane.setLayoutX(58.0);
+        cardGridPane.setLayoutY(133.0);
+        cardGridPane.setPrefWidth(200.0);
+        cardGridPane.getColumnConstraints().add(column1);
+        cardGridPane.getColumnConstraints().add(column2);
+        cardGridPane.getRowConstraints().add(row1);
+        cardGridPane.getRowConstraints().add(row2);
+        kingRetro.setFitHeight(150.0);
+        kingRetro.setFitWidth(200.0);
+        kingRetro.setPickOnBounds(true);
+        kingRetro.setPreserveRatio(true);
+        kingRetro.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/kingRetroClipped.png"))));
+        if(!listAvailableDeck.contains(DeckType.KING)) {
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(-0.5);
+            GaussianBlur imageBlur = new GaussianBlur();
+            colorAdjust.setInput(imageBlur);
+            kingRetro.setEffect(colorAdjust);
+        } else {
+            kingRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.KING)));
+        }
+        cardGridPane.add(kingRetro, 0, 0);
+        pixieRetro.setFitHeight(150.0);
+        pixieRetro.setFitWidth(200.0);
+        pixieRetro.setPickOnBounds(true);
+        pixieRetro.setPreserveRatio(true);
+        pixieRetro.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/pixieRetroClipped.png"))));
+        if(!listAvailableDeck.contains(DeckType.PIXIE)) {
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(-0.5);
+            GaussianBlur imageBlur = new GaussianBlur();
+            colorAdjust.setInput(imageBlur);
+            pixieRetro.setEffect(colorAdjust);
+        } else {
+            pixieRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.PIXIE)));
+        }
+        cardGridPane.add(pixieRetro, 0, 1);
+        sorcererRetro.setFitHeight(150.0);
+        sorcererRetro.setFitWidth(200.0);
+        sorcererRetro.setPickOnBounds(true);
+        sorcererRetro.setPreserveRatio(true);
+        sorcererRetro.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/sorcererRetroClipped.png"))));
+        if(!listAvailableDeck.contains(DeckType.ELDER)) {
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(-0.5);
+            GaussianBlur imageBlur = new GaussianBlur();
+            colorAdjust.setInput(imageBlur);
+            sorcererRetro.setEffect(colorAdjust);
+        } else {
+            sorcererRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.ELDER)));
+        }
+        cardGridPane.add(sorcererRetro, 1, 0);
+        wizardRetro.setFitHeight(150.0);
+        wizardRetro.setFitWidth(200.0);
+        wizardRetro.setPickOnBounds(true);
+        wizardRetro.setPreserveRatio(true);
+        wizardRetro.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/wizardRetroClipped.png"))));
+        if(!listAvailableDeck.contains(DeckType.SORCERER)) {
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(-0.5);
+            GaussianBlur imageBlur = new GaussianBlur();
+            colorAdjust.setInput(imageBlur);
+            wizardRetro.setEffect(colorAdjust);
+        } else {
+            wizardRetro.setOnMouseClicked(click -> client.asyncWriteToSocket(new CommunicationMessage(DECK_TYPE_MESSAGE, DeckType.SORCERER)));
+        }
+        cardGridPane.add(wizardRetro, 1, 1);
+
+        backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoMotherNature.png"))));
+        backgroundImg.setFitHeight(633.0);
+        backgroundImg.setFitWidth(438.0);
+        backgroundImg.setLayoutX(-53.0);
+        backgroundImg.setLayoutY(-54.0);
+        backgroundImg.setOpacity(0.19);
+        backgroundImg.setPreserveRatio(true);
+        backgroundImg.setPickOnBounds(true);
+        backgroundImg.setMouseTransparent(true);
+
+        contentPane.getChildren().add(backgroundImg);
+        contentPane.getChildren().add(cardGridPane);
+        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/yourTurn.gif"))));
+        loginErrorMessage.setText("É il tuo turno! Scegli il tuo mago.");
+        errorBox.setVisible(true);
     }
 
+    public Client getClient() {
+        return client;
+    }
 
     public void setMessageHandler(ClientMessageObserverHandler messageHandler) {
         this.messageHandler = messageHandler;
