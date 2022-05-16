@@ -49,7 +49,7 @@ public class GameBoardController implements Initializable {
     private final List<CloudController> clouds = new ArrayList<>();
     private final List<AdvancedCardController> advancedCards = new ArrayList<>();
     @FXML
-    ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
+    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
@@ -131,6 +131,12 @@ public class GameBoardController implements Initializable {
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()],
                     actionValues.size() == 2 ? List.of(actionValues.pop()) : List.of(actionValues.pop(), actionValues.pop()),
                     actionValues.size() == 1 ? List.of(ColorCharacter.values()[actionValues.pop()]) : List.of(ColorCharacter.values()[actionValues.pop()], ColorCharacter.values()[actionValues.pop()]))));
+        }
+        else if(playingAdvancedCard == JESTER.ordinal()){
+            System.out.println(actionValues);
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()],
+                    actionValues.size() == 2 ? List.of(actionValues.pop()) : actionValues.size() == 4 ? List.of(actionValues.pop(), actionValues.pop()) : List.of(actionValues.pop(), actionValues.pop(), actionValues.pop()),
+                    actionValues.size() == 1 ? List.of(actionValues.pop()) : actionValues.size() == 2 ? List.of(actionValues.pop(), actionValues.pop()) : List.of(actionValues.pop(), actionValues.pop(), actionValues.pop()))));
         }
         actionValues.clear();
     }
@@ -234,6 +240,7 @@ public class GameBoardController implements Initializable {
                         advancedCard.getCardImage().setOnMouseClicked(null);
                     }
                 }
+                makeAdvancedCardSelectable();
             }
             else{
                 advancedBoard.setVisible(false);
@@ -330,6 +337,20 @@ public class GameBoardController implements Initializable {
                             makeStudentEntranceSelectable();
                         }
                         makeDiningTablesSelectable();
+                    }
+                    else if(playingAdvancedCard == JESTER.ordinal()){
+                        AdvancedCardController jester = advancedCards.stream().filter(a -> a.getType().equals(JESTER)).toList().get(0);
+                        for(int k = 0; k < jester.getObj(); k++){
+                            resetHoverEffect(jester.getObjects().get(k));
+                            jester.getObjects().get(k).setOnMouseClicked(null);
+                        }
+                        if(actionValues.size() - 1 < jester.getSelectedItem() * 2){
+                            makeStudentEntranceSelectable();
+                        }
+                        else {
+                            calculateNextAction();
+                        }
+
                     }
                     else{
                         makeVisibleIslandsSelectable();
@@ -439,7 +460,7 @@ public class GameBoardController implements Initializable {
     private void makeAdvancedCardSelectable(){
         //TODO readd filter for money
         /*.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()*/
-        for(AdvancedCardController card : advancedCards) {
+        for(AdvancedCardController card : advancedCards.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()) {
             ImageView cardImage = card.getCardImage();
 
             cardImage.setOnMouseEntered(a -> {
@@ -523,6 +544,10 @@ public class GameBoardController implements Initializable {
 
     public Client getClient() {
         return client;
+    }
+
+    public Stack<Integer> getActionValues() {
+        return actionValues;
     }
 
     protected PlayerBoardController getThisPlayerBoardController(){
