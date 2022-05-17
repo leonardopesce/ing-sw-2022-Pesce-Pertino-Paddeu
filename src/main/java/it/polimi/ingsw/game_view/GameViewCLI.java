@@ -278,10 +278,8 @@ public class GameViewCLI implements GameViewClient{
 
     @Override
     public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
-        updateBoard(boardToUpdate);
-        if(boardToUpdate.isExpertMode()) displayExpertMode();
         Logger.ERROR(errorMsg, errorType);
-        printStateMachine();
+        msgHandler.updateBoardMessage(board);
     }
 
     @Override
@@ -356,9 +354,5 @@ public class GameViewCLI implements GameViewClient{
 
     public Client getClient() {
         return client;
-    }
-
-    public InputStateMachine getPreviousStateBeforeAdvancedCardPlayed() {
-        return previousStateBeforeAdvancedCardPlayed;
     }
 }

@@ -16,7 +16,6 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
 
     public ClientMessageObserverHandler(GameViewClient view){
         this.view = view;
-
     }
 
     public void updateBoardMessage(GameBoard board){
