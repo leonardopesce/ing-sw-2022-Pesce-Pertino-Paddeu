@@ -12,6 +12,7 @@ public class ClientApp{
 
     public static void main(String[] args){
         if(gui){
+            System.setProperty("prism.allowhidpi", "false");
             Application.launch(GameViewGUI.class);
         }
         else {
