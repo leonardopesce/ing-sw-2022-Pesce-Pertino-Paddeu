@@ -320,8 +320,17 @@ public class GameController implements Observer<GameAction> {
      * Given the player who made the move and index of the cloud card, move students on the cloud card
      * to the player's entrance.
      *
-     * @param playerName
-     * @param cloudCardIndex
+     * <ul>
+     *     the controller notify to the view if
+     *     <li>the player try to make the move not in their turn</li>
+     *     <li>player try to make the move not in action phase</li>
+     *     <li>player try to select an empty cloud card</li>
+     * </ul>
+     *
+     * @param playerName player who made the move
+     * @param cloudCardIndex cloud card selected by the player
+     * @see CloudCard
+     * @see Player
      */
     public void choseCloud(String playerName, int cloudCardIndex){
         Optional<Player> player = getPlayerFromName(playerName);
@@ -351,6 +360,13 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
+    /**
+     * Given a player who wants to play an advanced card, check if the player match all the conditions
+     * to play the selected card, notify if any condition is missing, then play the card.
+     * @param playerName Player who made the move
+     * @param cardType selected advanced card
+     * @param args args of the selected advanced card to play
+     */
     public void playAdvancedCard(String playerName, AdvancedCharacterType cardType, Object... args) {
         Optional<Player> player = getPlayerFromName(playerName);
         AdvancedCharacter card = game.getTerrain().getAdvancedCharacters().stream().filter(c -> c.getType().equals(cardType)).toList().get(0);
@@ -392,6 +408,9 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
+    /**
+     * At the start of the turn, refill every cloud card with students drawn from the bag.
+     */
     private void refillClouds() {
         for(CloudCard cloudCard: game.getTerrain().getCloudCards()){
             try {
@@ -410,7 +429,7 @@ public class GameController implements Observer<GameAction> {
 
     /**
      * Creates the planning order of the next turn.
-     * The player which played the assistant card with the lowest value will start the Planning Phase of the next turn.
+     * The player who played the assistant card with the lowest value will start the Planning Phase of the next turn.
      */
     private void createNextPlanningOrder(int firstPlayerPlanningOrder){
         planningOrder[0] = firstPlayerPlanningOrder;
