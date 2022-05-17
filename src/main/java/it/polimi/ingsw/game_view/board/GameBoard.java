@@ -27,7 +27,7 @@ public class GameBoard implements Serializable{
 
     public GameBoard(Game game) {
         for(Player player: game.getPlayers()){
-            schools.add(new SchoolBoard(player.getSchool(), player.getColor()));
+            schools.add(new SchoolBoard(player.getSchool(), player.getColor(), player.hasPlayedSpecialCard()));
             decks.add(new DeckBoard(player));
             moneys.add(player.getMoney());
             names.add(player.getNickname());
