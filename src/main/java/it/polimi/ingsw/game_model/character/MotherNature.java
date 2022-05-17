@@ -5,9 +5,12 @@ import it.polimi.ingsw.game_model.world.Terrain;
 
 /**
  * MotherNature models the Mother nature piece in the game: its function is to determine the island where influence is
- * calculated: its main attributes are:
- * position: current island where mother nature is standing
- *
+ * calculated
+ * <p>
+ *      <ul>
+ *     <strong>position</strong>: current island where mother nature is standing
+ *      </ul>
+ * </p>
 
  */
 public class MotherNature extends Character {

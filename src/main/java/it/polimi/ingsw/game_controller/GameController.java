@@ -129,6 +129,7 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
+
     private Optional<Player> getPlayerFromName(String playerName) {
         return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2);
     }
@@ -231,6 +232,21 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
+    /**
+     * Given the player who made the move and the student to move on the dining hall
+     <p>
+     * <ul>
+     * if:
+     *<li>It's the player's turn</li>
+     *<li>The game is in ACTION phase</li>
+     * <li>Student's dining hall isn't full</li>
+     * moves selected student to dining hall
+     * </ul>
+     </p>
+     * <ul>Otherwise notify what condition of the above is missing</ul>
+     * @param playerName name of player who made the move
+     * @param student student to move on dining hall
+     */
     public void playerMoveStudentToDiningHall(String playerName, int student){
         Player pl = game.getCurrentlyPlayingPlayer();
         Optional<Player> player = getPlayerFromName(playerName);
@@ -293,10 +309,20 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
+    /**
+     * Notify finish of the game
+     */
     private void endGame(){
         game.runNotify(CommunicationMessage.MessageType.GAME_ACTION);
     }
 
+    /**
+     * Given the player who made the move and index of the cloud card, move students on the cloud card
+     * to the player's entrance.
+     *
+     * @param playerName
+     * @param cloudCardIndex
+     */
     public void choseCloud(String playerName, int cloudCardIndex){
         Optional<Player> player = getPlayerFromName(playerName);
         if(player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())){
