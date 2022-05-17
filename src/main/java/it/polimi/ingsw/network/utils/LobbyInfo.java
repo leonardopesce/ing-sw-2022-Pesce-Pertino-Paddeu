@@ -6,6 +6,9 @@ import it.polimi.ingsw.game_view.board.Printable;
 
 import java.io.Serializable;
 
+/**
+ * Class to make the lobbies serializable
+ */
 public class LobbyInfo implements Serializable {
     private static final long serialVersionUID = 3753L;
 

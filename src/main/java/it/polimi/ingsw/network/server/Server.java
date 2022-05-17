@@ -20,6 +20,11 @@ public class Server {
         this.serverSocket = new ServerSocket(PORT);
     }
 
+    /**
+     * given a client connection, remove all the players in the same lobby of the client connection, then close
+     * the lobby
+     * @param c client connection
+     */
     public synchronized void deregisterConnection(ClientConnection c) {
         if(waitingConnection.contains(c)){
             waitingConnection.remove(c);
@@ -33,6 +38,12 @@ public class Server {
         }
     }
 
+    /**
+     * Manage a given lobby: if the number of players in the lobby is acceptable, the game starts.<br>
+     * Remove the connection which joined the lobby from the server waining connection list.
+     * @param lobbyToHandle
+     * @param connectionToMove connection on the server waiting connection list
+     */
     //Wait for other players
     public synchronized void handleLobbyState(Lobby lobbyToHandle, ClientConnection connectionToMove){
         waitingConnection.remove(connectionToMove);
@@ -42,6 +53,10 @@ public class Server {
         }
     }
 
+    /**
+     * Run the server, create new server client connections.
+     * @throws IOException
+     */
     public void run() throws IOException {
         int connections = 0;
         boolean running = true;
@@ -62,6 +77,11 @@ public class Server {
         }
     }
 
+    /**
+     * Get each player nickname, whether the player is on the server waiting connection list, whether a player
+     * is on a lobby.
+     * @return a set of strings containing players nicknames
+     */
     public synchronized Set<String> getConnectedPlayersName() {
         Set<String> currentlyPlayingNicknames = new HashSet<>();
 

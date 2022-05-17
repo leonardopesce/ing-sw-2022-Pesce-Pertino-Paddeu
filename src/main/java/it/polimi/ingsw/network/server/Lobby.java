@@ -16,6 +16,9 @@ import java.util.List;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
+/**
+ * Class to model the lobby of the network
+ */
 public class Lobby implements Runnable {
     private final Server server;
     private final ClientConnection lobbyOwner;
@@ -65,6 +68,10 @@ public class Lobby implements Runnable {
         }
     }
 
+    /**
+     * Close the lobby if a player is disconnected
+     * @param connectionWhoMadeTheLobbyClose client who is disconnected and made the lobby close
+     */
     public synchronized void closeLobby(ClientConnection connectionWhoMadeTheLobbyClose) {
         server.getActiveGames().remove(this);
 
@@ -82,6 +89,12 @@ public class Lobby implements Runnable {
         connectedPlayersToLobby.clear();
     }
 
+    /**
+     * Send a message to all the client except the excluded ones.
+     * @param messageType
+     * @param messageContent
+     * @param excludedClients
+     */
     private synchronized void broadcastMessage(CommunicationMessage.MessageType messageType, Object messageContent, List<ClientConnection> excludedClients) {
         for(ClientConnection connection : connectedPlayersToLobby) {
             if(excludedClients == null || !excludedClients.contains(connection)) {
@@ -95,6 +108,9 @@ public class Lobby implements Runnable {
         }
     }
 
+    /**
+     * override of the method <code>run</code> for games with expert mode rules
+     */
     @Override
     public void run() {
         Game game = isExpertMode() ? new GameExpertMode(numberOfPlayers) : new Game(numberOfPlayers);

@@ -16,6 +16,9 @@ import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
+/**
+ * class to manage connection between client and server
+ */
 public class SocketClientConnection extends Observable<CommunicationMessage> implements ClientConnection, Runnable {
     private final Socket socket;
     private ObjectOutputStream out;
@@ -24,6 +27,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private String clientName;
     private final ServerConnectionStatusHandler connectionStatusHandler;
     private final LinkedList<CommunicationMessage> incomingMessages = new LinkedList<>();
+
 
     public SocketClientConnection(Socket socket, Server server) {
         this.socket = socket;
@@ -122,6 +126,11 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
     }
 
+    /**
+     * Server ask name to client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void askName() throws IOException, ClassNotFoundException {
         CommunicationMessage messageReceived = getResponse().get();
         String name = messageReceived.getMessage().toString();
@@ -136,6 +145,15 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         askJoiningAction();
     }
 
+    /**
+     * Ask player if they want to create a game or join an existing one, if the player
+     * choose to create a game, server create a new lobby;<br>
+     * if a player decide to join an existing game, server check if there are lobby available,
+     * if not ask again the player a joining action;<br>
+     * otherwise let the player join an existing lobby.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void askJoiningAction() throws IOException, ClassNotFoundException {
         int joiningActionChosen; // 0 for creating a new match | 1 for joining an existing one if present
 
@@ -163,6 +181,11 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     }
 
 
+    /**
+     * create a new lobby asking player the game rules.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void createNewGame() throws IOException, ClassNotFoundException {
         int numberOfPlayer = askGameNumberOfPlayer();
         boolean expertMode = askGameType();
@@ -172,6 +195,12 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         server.handleLobbyState(newLobby, this);
     }
 
+    /**
+     * ask the number of players for the creation of a new game
+     * @return number of players chosen
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private int askGameNumberOfPlayer() throws IOException, ClassNotFoundException {
         int size = 0;
 
@@ -185,6 +214,12 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return size;
     }
 
+    /**
+     * Ask the game type of the current game
+     * @return game type
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private boolean askGameType() throws IOException, ClassNotFoundException {
         boolean mode = false;
 
@@ -200,6 +235,12 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return mode;
     }
 
+    /**
+     * When a player choose a lobby where to play, if the lobby isn't full, let the player join the lobby.<br>
+     * If the lobby is full, notify player and ask another joining action.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void joinExistingGame() throws IOException, ClassNotFoundException {
         CommunicationMessage receivedMessage = getResponse().get();
         while(receivedMessage.getID() != LOBBY_TO_JOIN_INFO) {
@@ -220,6 +261,10 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
     }
 
+    /**
+     * Let the lobbies be serializable
+     * @return lobby's info to send
+     */
     private List<LobbyInfo> fetchLobbyInfos() {
         List<LobbyInfo> lobbyInfosToSend = new ArrayList<>();
         // Setting up the lobbies to a serializable version
@@ -230,6 +275,13 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         return lobbyInfosToSend;
     }
 
+    /**
+     * Given the available decks, let the player choose one of them
+     * @param availableDecks list of available decks
+     * @return the message with the chosen deck type
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     protected DeckType askDeckType(List<DeckType> availableDecks) throws IOException, ClassNotFoundException {
         send(new CommunicationMessage(ASK_DECK, availableDecks));
 
@@ -241,6 +293,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
 
         return (DeckType) messageReceived.getMessage();
     }
+
 
     private Optional<CommunicationMessage> getResponse() throws IOException, ClassNotFoundException {
         Optional<CommunicationMessage> message = Optional.empty();
