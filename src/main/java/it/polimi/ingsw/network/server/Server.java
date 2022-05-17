@@ -15,6 +15,7 @@ public class Server {
     private final List<ClientConnection> waitingConnection = new ArrayList<>();
     private final ExecutorService executor = Executors.newFixedThreadPool(128);
     private final List<Lobby> activeGames = new ArrayList<>();
+    private final String[] bannedNicks = {"GO_BACK_TO_JOIN_ACTION"};
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
@@ -110,5 +111,9 @@ public class Server {
         synchronized (this) {
             waitingConnection.add(connection);
         }
+    }
+
+    public String[] getBannedNicks() {
+        return bannedNicks;
     }
 }

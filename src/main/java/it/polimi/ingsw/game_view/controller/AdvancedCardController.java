@@ -8,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -95,6 +94,10 @@ public class AdvancedCardController implements Initializable {
         return obj;
     }
 
+    public int getSelectedItem(){
+        return (int) objects.stream().filter(image -> image.getEffect() != null).count();
+    }
+
     public ImageView getCardImage() {
         return cardImage;
     }
@@ -102,6 +105,9 @@ public class AdvancedCardController implements Initializable {
     public void playEffect(GameBoardController gameBoard){
         if(type == BARTENDER || type == POSTMAN || type == CENTAURUS || type == KNIGHT){
             gameBoard.setPlayingAdvancedCard(1);
+            if(type == POSTMAN){
+                gameBoard.setPlayingAdvancedCard(POSTMAN.ordinal());
+            }
             gameBoard.calculateNextAction();
         }
         else if(type == MONK || type == MERCHANT || type == LANDLORD || type == PRINCESS){
@@ -111,6 +117,9 @@ public class AdvancedCardController implements Initializable {
                 objects.get(i).setOnMouseClicked(a -> {
                     gameBoard.addActionValue(finalI);
                     gameBoard.setPlayingAdvancedCard(1);
+                    if(type == PRINCESS){
+                        gameBoard.setPlayingAdvancedCard(PRINCESS.ordinal());
+                    }
                     if(type == MONK){
                         gameBoard.makeVisibleIslandsSelectable();
                     }
@@ -133,10 +142,36 @@ public class AdvancedCardController implements Initializable {
             gameBoard.makeVisibleIslandsSelectable();
         }
         else if(type == BARD){
-            List<HBox> tables = gameBoard.getThisPlayerBoardController().getSchool().getTables();
-            for(HBox table: tables){
-                table.setOnMouseEntered(a -> table.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
-                table.setOnMouseExited(a -> table.setStyle(null));
+            gameBoard.setPlayingAdvancedCard(BARD.ordinal());
+            gameBoard.setComment("Select 1 or 2 student from your entrance and select 1 or 2 table to exchange them with (player and table must be in the same number, first select all the student from the entrance, then select the tables)");
+            gameBoard.makeStudentEntranceSelectable();
+
+        }
+        else if(type == JESTER){
+            gameBoard.setPlayingAdvancedCard(JESTER.ordinal());
+            gameBoard.setComment("Select up to 1, 2 or 3 student from this card and replace them with the same number of student from your entrance (first select the student from the card then the student in your entrance)");
+            for(int i = 0; i < obj; i++) {
+                if(objects.get(i).getEffect() == null && gameBoard.getActionValues().size() < 4) {
+                    gameBoard.setHoverEffect(objects.get(i), objects.get(i).getFitWidth());
+                    int finalI = i;
+                    objects.get(i).setOnMouseClicked(a -> {
+                        gameBoard.addActionValue(finalI);
+                        if(gameBoard.getActionValues().size() >= 2){
+                            gameBoard.makeStudentEntranceSelectable();
+                        }
+                        for(ImageView image: objects){
+                            if(!objects.get(finalI).equals(image)){
+                                gameBoard.resetHoverEffect(image);
+                                image.setOnMouseClicked(null);
+
+                            }
+                        }
+                        gameBoard.resetHoverEffect(objects.get(finalI));
+                        playEffect(gameBoard);
+                        objects.get(finalI).setOnMouseClicked(null);
+
+                    });
+                }
             }
         }
 

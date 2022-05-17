@@ -28,21 +28,20 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private final ServerConnectionStatusHandler connectionStatusHandler;
     private final LinkedList<CommunicationMessage> incomingMessages = new LinkedList<>();
 
-
-    public SocketClientConnection(Socket socket, Server server) {
+    public SocketClientConnection(Socket socket, Server server) throws IOException {
         this.socket = socket;
         this.server = server;
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.ERROR("Failed to setup input and output socket on SocketClientConnection.", e.getMessage());
         }
 
-        List<Lobby> lobbies = server.getActiveGames().stream().filter(lobby -> lobby.getConnectedPlayersToLobby().stream().anyMatch(player -> !player.isActive())).toList();
-        for (Lobby lobby : lobbies) {
-            lobby.closeLobby(lobby.getConnectedPlayersToLobby().stream().filter(connection -> !connection.isActive()).toList().get(0));
-        }
+        this.connectionStatusHandler = new ServerConnectionStatusHandler();
+        this.addObserver(connectionStatusHandler);
+        connectionStatusHandler.setConnection(this);
+        connectionStatusHandler.start();
 
         new Thread(() -> {
             try {
@@ -53,10 +52,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             }
         }).start();
 
-        this.connectionStatusHandler = new ServerConnectionStatusHandler();
-        this.addObserver(connectionStatusHandler);
-        connectionStatusHandler.setConnection(this);
-        connectionStatusHandler.start();
     }
 
     public synchronized boolean isActive() {
@@ -109,6 +104,11 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     @Override
     public void run() {
         try {
+            send(new CommunicationMessage(CONNECTION_CONFIRMED, null));
+        } catch (IOException e) {
+            Logger.ERROR("Error in enstablishing the connection with the client.", e.getMessage());
+        }
+        try {
             while (isActive()) {
                 CommunicationMessage message = (CommunicationMessage) in.readObject();
                 notify(message);
@@ -134,7 +134,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     private void askName() throws IOException, ClassNotFoundException {
         CommunicationMessage messageReceived = getResponse().get();
         String name = messageReceived.getMessage().toString();
-        while ((messageReceived.getID() != NAME_MESSAGE) || server.getConnectedPlayersName().contains(name)) {
+        while ((messageReceived.getID() != NAME_MESSAGE) || server.getConnectedPlayersName().contains(name) || Arrays.asList(server.getBannedNicks()).contains(name)) {
             send(new CommunicationMessage(NAME_MESSAGE, null));
             name = getResponse().get().getMessage().toString();
         }
@@ -170,7 +170,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             createNewGame();
         } else {
             if(server.getActiveGames().size() <= 0) {
-                send(new CommunicationMessage(ERROR, "No lobbies are available."));
+                send(new CommunicationMessage(NO_LOBBIES_AVAILABLE, "No lobbies are available."));
                 send(new CommunicationMessage(JOINING_ACTION_INFO, null));
                 askJoiningAction();
             } else {
@@ -191,6 +191,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         boolean expertMode = askGameType();
         Lobby newLobby = new Lobby(server, this, numberOfPlayer, expertMode);
         newLobby.registerClientToLobby(this);
+        send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, new LobbyInfo(newLobby)));
         server.addGameLobby(newLobby);
         server.handleLobbyState(newLobby, this);
     }
@@ -230,7 +231,6 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
 
         mode = (boolean) messageReceived.getMessage();
-        send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, null));
 
         return mode;
     }
@@ -249,15 +249,22 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
         }
 
         String lobbyChosen = receivedMessage.getMessage().toString();
-        Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
-        if (selectedLobby.isFull()) {
-            send(new CommunicationMessage(INFO, "The lobby you selected is already full or got full while you were choosing."));
+
+        if(Arrays.asList(server.getBannedNicks()).contains(lobbyChosen)) {
+            send(new CommunicationMessage(INFO, "Back to chosing the joining action."));
             send(new CommunicationMessage(JOINING_ACTION_INFO, null));
             askJoiningAction();
         } else {
-            send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, null));
-            selectedLobby.registerClientToLobby(this);
-            server.handleLobbyState(selectedLobby, this);
+            Lobby selectedLobby = server.getActiveGames().stream().filter(lobby -> lobby.getLobbyName().equals(lobbyChosen)).toList().get(0);
+            if (selectedLobby.isFull()) {
+                send(new CommunicationMessage(INFO, "The lobby you selected is already full or got full while you were choosing."));
+                send(new CommunicationMessage(JOINING_ACTION_INFO, null));
+                askJoiningAction();
+            } else {
+                selectedLobby.registerClientToLobby(this);
+                send(new CommunicationMessage(LOBBY_JOINED_CONFIRMED, new LobbyInfo(selectedLobby)));
+                server.handleLobbyState(selectedLobby, this);
+            }
         }
     }
 

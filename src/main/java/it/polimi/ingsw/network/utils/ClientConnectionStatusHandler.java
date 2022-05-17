@@ -24,8 +24,8 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     public void run() {
         while (connectionActive) {
             try {
-                pingTimer.schedule(new PingTimeoutExceededTask(this), PING_TIMEOUT_DELAY);
-                Thread.sleep(PING_TIMEOUT_DELAY);
+                pingTimer.schedule(new PingTimeoutExceededTask(this), 2*PING_TIMEOUT_DELAY);
+                Thread.sleep(2*PING_TIMEOUT_DELAY);
             } catch (InterruptedException sleepError) {
                 Logger.ERROR("Connection handler failed to sleep...", sleepError.getMessage());
                 abortConnection();
@@ -50,6 +50,7 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     @Override
     public void update(CommunicationMessage message) {
         if(message.getID() == PING) {
+            //Logger.INFO(new Timestamp(new Date().getTime()) + " - Received ping from server");
             clientHandled.asyncWriteToSocket(new CommunicationMessage(PONG, null));
             pingTimer.cancel();
             pingTimer = new Timer();

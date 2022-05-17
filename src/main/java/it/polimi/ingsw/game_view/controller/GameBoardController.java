@@ -3,6 +3,7 @@ package it.polimi.ingsw.game_view.controller;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
+import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.*;
 import it.polimi.ingsw.network.client.Client;
@@ -30,6 +31,7 @@ import java.net.URL;
 import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_ACTION;
+import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
 public class GameBoardController implements Initializable {
     private Client client;
@@ -41,13 +43,13 @@ public class GameBoardController implements Initializable {
     private final List<Button> playerBoardButtons = new ArrayList<>();
     private final List<ImageView> assistants = new ArrayList<>();
     private final List<IslandController> islands = new ArrayList<>();
-    private int playingAdvancedCard = 0;
+    private int playingAdvancedCard = -1;
     private GameBoard gameBoard;
     private final Stack<Integer> actionValues = new Stack<>();
     private final List<CloudController> clouds = new ArrayList<>();
     private final List<AdvancedCardController> advancedCards = new ArrayList<>();
     @FXML
-    ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
+    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
@@ -110,7 +112,7 @@ public class GameBoardController implements Initializable {
     }
 
     protected void calculateNextAction(){
-        if(playingAdvancedCard == 0) {
+        if(playingAdvancedCard == -1) {
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
                     switch (gameBoard.getPhase()) {
                         case PLANNING_PHASE -> new PlayAssistantCardAction(clientName, actionValues.pop());
@@ -123,7 +125,21 @@ public class GameBoardController implements Initializable {
                     }));
         }
         else if(playingAdvancedCard == 1){
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], actionValues.toArray())));
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], actionValues.toArray())));
+        }
+        else if(playingAdvancedCard == POSTMAN.ordinal() || playingAdvancedCard == PRINCESS.ordinal()){
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName, actionValues.toArray())));
+        }
+        else if(playingAdvancedCard == BARD.ordinal()){
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName,
+                    actionValues.size() == 2 ? Arrays.asList(actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop()),
+                    actionValues.size() == 1 ? Arrays.asList(ColorCharacter.values()[actionValues.pop()]) : Arrays.asList(ColorCharacter.values()[actionValues.pop()], ColorCharacter.values()[actionValues.pop()]))));
+        }
+        else if(playingAdvancedCard == JESTER.ordinal()){
+            System.out.println(actionValues);
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName,
+                    actionValues.size() == 2 ? Arrays.asList(actionValues.pop()) : actionValues.size() == 4 ? Arrays.asList(actionValues.pop(), actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop(), actionValues.pop()),
+                    actionValues.size() == 1 ? Arrays.asList(actionValues.pop()) : actionValues.size() == 2 ? Arrays.asList(actionValues.pop(), actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop(), actionValues.pop()))));
         }
         actionValues.clear();
     }
@@ -131,7 +147,7 @@ public class GameBoardController implements Initializable {
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
             gameBoard = board;
-            playingAdvancedCard = 0;
+            playingAdvancedCard = -1;
             rotatingBoardController.update(board);
             gamePhaseLabel.setText(board.getPhase().toString());
             if (firstTime) {
@@ -211,12 +227,12 @@ public class GameBoardController implements Initializable {
                 gamePhaseLabel.setText("NOT YOUR TURN");
             }
 
-            if(gameBoard.isExpertMode()){
+            if(clientName.equals(gameBoard.getCurrentlyPlaying()) && gameBoard.isExpertMode()){
                 advancedBoard.setVisible(true);
                 for(int i = 0; i < advancedCards.size(); i++){
                     advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
                 }
-                if (board.getPhase() != GamePhase.PLANNING_PHASE && board.getCurrentlyPlaying().equals(clientName)) {
+                if (board.getPhase() != GamePhase.PLANNING_PHASE && !gameBoard.isHasPlayedSpecialCard()) {
                     makeAdvancedCardSelectable();
                 }
                 else{
@@ -227,6 +243,7 @@ public class GameBoardController implements Initializable {
                         advancedCard.getCardImage().setOnMouseClicked(null);
                     }
                 }
+                makeAdvancedCardSelectable();
             }
             else{
                 advancedBoard.setVisible(false);
@@ -303,23 +320,48 @@ public class GameBoardController implements Initializable {
     public void makeStudentEntranceSelectable(){
         List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
         for(int i = 0; i < entranceStudents.size(); i++){
-            setHoverEffect(entranceStudents.get(i), entranceStudents.get(i).getFitHeight() / 2 + 5);
-            int finalI = i;
-            entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
-                for (ImageView student : entranceStudents) {
-                    resetHoverEffect(student);
-                }
-                entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
-                actionValues.add(0, finalI);
-                makeVisibleIslandsSelectable();
-                makeDiningHallSelectable();
-                for(ImageView entranceStudent: entranceStudents){
-                    if(!entranceStudent.equals(entranceStudents.get(finalI))){
-                        entranceStudent.setOnMouseClicked(null);
+            if(entranceStudents.get(i).getEffect() == null) {
+                setHoverEffect(entranceStudents.get(i), entranceStudents.get(i).getFitHeight() / 2 + 5);
+                int finalI = i;
+                entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
+                    for (ImageView student : entranceStudents) {
+                        resetHoverEffect(student);
                     }
-                }
-                entranceStudents.get(finalI).setOnMouseClicked(null);
-            });
+                    entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
+                    actionValues.add(0, finalI);
+
+                    for (ImageView entranceStudent : entranceStudents) {
+                        if (!entranceStudent.equals(entranceStudents.get(finalI))) {
+                            entranceStudent.setOnMouseClicked(null);
+                        }
+                    }
+                    if(playingAdvancedCard == BARD.ordinal()) {
+                        if(actionValues.size() < 3){
+                            makeStudentEntranceSelectable();
+                        }
+                        makeDiningTablesSelectable();
+                    }
+                    else if(playingAdvancedCard == JESTER.ordinal()){
+                        AdvancedCardController jester = advancedCards.stream().filter(a -> a.getType().equals(JESTER)).toList().get(0);
+                        for(int k = 0; k < jester.getObj(); k++){
+                            resetHoverEffect(jester.getObjects().get(k));
+                            jester.getObjects().get(k).setOnMouseClicked(null);
+                        }
+                        if(actionValues.size() - 1 < jester.getSelectedItem() * 2){
+                            makeStudentEntranceSelectable();
+                        }
+                        else {
+                            calculateNextAction();
+                        }
+
+                    }
+                    else{
+                        makeVisibleIslandsSelectable();
+                        makeDiningHallSelectable();
+                    }
+                    entranceStudents.get(finalI).setOnMouseClicked(null);
+                });
+            }
         }
     }
 
@@ -419,8 +461,11 @@ public class GameBoardController implements Initializable {
     }
 
     private void makeAdvancedCardSelectable(){
-        for(AdvancedCardController card: advancedCards.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()){
+        //TODO readd filter for money
+        /*.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()*/
+        for(AdvancedCardController card : advancedCards.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()) {
             ImageView cardImage = card.getCardImage();
+
             cardImage.setOnMouseEntered(a -> {
                 cardImage.setEffect(new Glow(0.5));
                 comment.setText("Mouse on Advanced Card " + card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
@@ -433,8 +478,8 @@ public class GameBoardController implements Initializable {
                 addActionValue(card.getType().ordinal());
                 card.playEffect(this);
 
-                for(AdvancedCardController c: advancedCards){
-                    if(!c.getType().equals(card.getType())){
+                for (AdvancedCardController c : advancedCards) {
+                    if (!c.getType().equals(card.getType())) {
                         c.getCardImage().setOnMouseClicked(null);
                         c.getCardImage().setOnMouseExited(null);
                         c.getCardImage().setOnMouseEntered(null);
@@ -444,7 +489,47 @@ public class GameBoardController implements Initializable {
                 card.getCardImage().setOnMouseEntered(null);
                 card.getCardImage().setOnMouseClicked(null);
             });
+        }
+    }
 
+    protected void makeDiningTablesSelectable(){
+        List<HBox> tables = getThisPlayerBoardController().getSchool().getTables();
+
+        for (int i = 0; i < tables.size(); i++) {
+            HBox table = tables.get(i);
+            int finalI = i;
+            table.setOnMouseEntered(a -> table.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
+            table.setOnMouseExited(a -> table.setStyle(null));
+            table.setOnMouseClicked(a -> {
+                addActionValue(finalI);
+                List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
+                for (ImageView entranceStudent : entranceStudents) {
+                    entranceStudent.setOnMouseClicked(null);
+                    entranceStudent.setOnMouseEntered(null);
+                    entranceStudent.setOnMouseExited(null);
+                }
+                if(actionValues.size() == 3 || actionValues.size() == 5) {
+                    for(ImageView entranceStudent : entranceStudents){
+                        entranceStudent.setEffect(null);
+                    }
+                    for(HBox tb: tables){
+                        if(!tb.equals(table)){
+                            tb.setOnMouseClicked(null);
+                            tb.setOnMouseEntered(null);
+                            tb.setOnMouseExited(null);
+                            tb.setEffect(null);
+                        }
+                    }
+                    table.setOnMouseEntered(null);
+                    table.setOnMouseExited(null);
+                    table.setEffect(null);
+                    calculateNextAction();
+                    table.setOnMouseClicked(null);
+                }
+                else{
+                    makeDiningTablesSelectable();
+                }
+            });
         }
     }
 
@@ -462,6 +547,10 @@ public class GameBoardController implements Initializable {
 
     public Client getClient() {
         return client;
+    }
+
+    public Stack<Integer> getActionValues() {
+        return actionValues;
     }
 
     protected PlayerBoardController getThisPlayerBoardController(){

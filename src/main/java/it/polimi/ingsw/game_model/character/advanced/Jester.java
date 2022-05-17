@@ -37,14 +37,15 @@ public class Jester extends AdvancedCharacter{
      */
     @Override
     public boolean playEffect(Object... attributes){
+
         if(!validateArgs(attributes)){
             return false;
         }
 
         String playerNickname = (String) attributes[0];
         Player player = game.getPlayers().stream().filter(pl -> pl.getNickname().equals(playerNickname)).toList().get(0);
-        ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
-        ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
+        List<Integer> studentsFromCard = (List<Integer>) attributes[1];
+        List<Integer> studentsFromEntrance = (List<Integer>) attributes[2];
 
         Entrance playerEntrance = player.getSchool().getEntrance();
 
@@ -62,8 +63,8 @@ public class Jester extends AdvancedCharacter{
         }
         try {
             String playerNickname = (String) attributes[0];
-            ArrayList<Integer> studentsFromCard = (ArrayList<Integer>) attributes[1];
-            ArrayList<Integer> studentsFromEntrance = (ArrayList<Integer>) attributes[2];
+            List<Integer> studentsFromCard = (List<Integer>) attributes[1];
+            List<Integer> studentsFromEntrance = (List<Integer>) attributes[2];
 
             /* The card is not playable if:
                 (1) studentsFromCard and studentsFromEntrance are arrays with different size;

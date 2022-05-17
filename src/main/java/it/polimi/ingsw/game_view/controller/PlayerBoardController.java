@@ -73,8 +73,6 @@ public class PlayerBoardController implements Initializable {
             }
         }
 
-        //TODO add teacher
-
     }
 
     public SchoolController getSchool() {

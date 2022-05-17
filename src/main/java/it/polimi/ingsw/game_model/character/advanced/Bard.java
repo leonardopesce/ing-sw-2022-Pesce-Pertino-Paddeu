@@ -39,7 +39,7 @@ public class Bard extends AdvancedCharacter{
                 try {
                     game.moveStudentToDiningHall(player, playerEntrance.moveStudent(studentsFromEntrance.get(i)).getColor());
                 } catch (TooManyStudentsException e) {
-                    // Impossible to reach since we make a control in the validate args function
+                    // Impossible to reach since we make a control in the validateArgs function
                     return false;
                 }
                 playerEntrance.getStudents().add(

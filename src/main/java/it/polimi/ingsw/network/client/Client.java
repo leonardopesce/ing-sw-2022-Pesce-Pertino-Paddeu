@@ -12,9 +12,8 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 
 public class Client extends Observable<CommunicationMessage> {
-    private final String ip;
-    private final int port;
-    private boolean active = true;
+    private String ip;
+    private int port;
     private ObjectOutputStream socketOut;
     private String name;
     private ClientConnectionStatusHandler connectionStatusHandler;
@@ -36,10 +35,6 @@ public class Client extends Observable<CommunicationMessage> {
         return connectionStatusHandler.isConnectionActive();
     }
 
-    public synchronized void setActive(boolean active){
-        this.active = active;
-    }
-
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){
         Thread t = new Thread(() -> {
             try {
@@ -53,7 +48,7 @@ public class Client extends Observable<CommunicationMessage> {
                     }
                 }
             } catch (Exception e){
-                setActive(false);
+                connectionStatusHandler.kill();
                 Logger.ERROR("Connection interrupted since the socket is now closed server side. Exiting...", e.getMessage());
                 //e.printStackTrace();
             }
@@ -62,7 +57,7 @@ public class Client extends Observable<CommunicationMessage> {
         return t;
     }
 
-    public void asyncWriteToSocket(CommunicationMessage message){
+    public synchronized void asyncWriteToSocket(CommunicationMessage message){
         new Thread(() -> {
             try {
                 if (isActive()) {
@@ -71,7 +66,7 @@ public class Client extends Observable<CommunicationMessage> {
                     socketOut.reset();
                 }
             }catch(Exception e){
-                setActive(false);
+                connectionStatusHandler.kill();
             }
         }).start();
     }
@@ -106,5 +101,13 @@ public class Client extends Observable<CommunicationMessage> {
 
     public String getName() {
         return name;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

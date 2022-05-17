@@ -16,8 +16,9 @@ public class SchoolBoard implements Serializable {
     int[] tables = new int[5];
     int towers;
     ColorTower towerColor;
+    boolean advancedAlreadyPlayedThisTurn = false;
 
-    public SchoolBoard(School school, ColorTower colorTower) {
+    public SchoolBoard(School school, ColorTower colorTower, boolean hasPlayerAlreadyPlayedAdvancedCards) {
         for(Student student: school.getEntrance().getStudents()){
             entrance.add(student.getColor());
         }
@@ -29,6 +30,7 @@ public class SchoolBoard implements Serializable {
         }
         towers = school.getTowersAvailable();
         towerColor = colorTower;
+        advancedAlreadyPlayedThisTurn = hasPlayerAlreadyPlayedAdvancedCards;
     }
 
     public List<ColorCharacter> getEntrance() {
@@ -70,6 +72,10 @@ public class SchoolBoard implements Serializable {
         temp.append(teachers.contains(ColorCharacter.values()[index]) ? GameBoard.getColorString(ColorCharacter.values()[index]) + Printable.TEACHER : " ").append(Printable.TEXT_RESET);
         temp.append("\t").append(" ").append(Printable.V_BAR);
         return temp.toString();
+    }
+
+    public boolean isAdvancedAlreadyPlayedThisTurn() {
+        return advancedAlreadyPlayedThisTurn;
     }
 
     @Override

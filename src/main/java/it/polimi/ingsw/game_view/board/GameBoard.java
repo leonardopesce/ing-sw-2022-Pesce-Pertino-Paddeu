@@ -1,6 +1,7 @@
 package it.polimi.ingsw.game_view.board;
 
 import it.polimi.ingsw.game_model.Game;
+import it.polimi.ingsw.game_model.GameExpertMode;
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
@@ -22,13 +23,18 @@ public class GameBoard implements Serializable{
     private int treasury;
     private final GamePhase phase;
     private final String currentlyPlaying;
+    private boolean hasPlayedSpecialCard = false;
 
     public GameBoard(Game game) {
         for(Player player: game.getPlayers()){
-            schools.add(new SchoolBoard(player.getSchool(), player.getColor()));
+            schools.add(new SchoolBoard(player.getSchool(), player.getColor(), player.hasPlayedSpecialCard()));
             decks.add(new DeckBoard(player));
             moneys.add(player.getMoney());
             names.add(player.getNickname());
+        }
+
+        if(isExpertMode()){
+            hasPlayedSpecialCard = game.getCurrentlyPlayingPlayer().hasPlayedSpecialCard();
         }
         terrain = new TerrainBoard(game.getTerrain(), game.getMotherNature().getPosition());
         treasury = 0;
@@ -131,4 +137,7 @@ public class GameBoard implements Serializable{
         return board.toString();
     }
 
+    public boolean isHasPlayedSpecialCard() {
+        return hasPlayedSpecialCard;
+    }
 }

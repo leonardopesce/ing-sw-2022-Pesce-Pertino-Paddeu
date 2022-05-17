@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_view;
 
-import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_controller.CommunicationMessage;
@@ -22,12 +21,13 @@ public class GameViewCLI implements GameViewClient{
     private final Scanner input;
     private int rangeA, rangeB;
     private ClientMessageObserverHandler msgHandler;
+    private InputStateMachine previousStateBeforeAdvancedCardPlayed;
     private GameBoard board;
     private final Client client;
     private boolean gameStarted = false;
 
-    public GameViewCLI() {
-        client = new Client(ClientApp.IP, ClientApp.port);
+    public GameViewCLI(String ip, int port) {
+        client = new Client(ip, port);
         new Thread(() -> {
             try {
                 client.run();
@@ -38,7 +38,6 @@ public class GameViewCLI implements GameViewClient{
         input = new Scanner(System.in);
         msgHandler = new ClientMessageObserverHandler(this);
         client.addObserver(msgHandler);
-        new Thread(this::askName).start();
     }
 
     @Override
@@ -60,6 +59,11 @@ public class GameViewCLI implements GameViewClient{
     }
 
     @Override
+    public void displayNoLobbiesAvailable() {
+        Logger.INFO("There are no lobbies available. Please, chose another option.");
+    }
+
+    @Override
     public void askPlayerNumber() {
         System.out.println(GameViewClient.ASK_PLAYER_NUMBER_QUESTION);
         client.asyncWriteToSocket(new CommunicationMessage(
@@ -73,6 +77,21 @@ public class GameViewCLI implements GameViewClient{
         client.asyncWriteToSocket(new CommunicationMessage(
                 GAME_TYPE_INFO,
                 whileInputNotContainedIn(Arrays.asList("e", "n")).equals("e")));
+    }
+
+    @Override
+    public void displayLobbyJoined(Object lobbyInfos) {
+        Logger.INFO("Current members:");
+        for(String memberName : ((LobbyInfo)lobbyInfos).getLobbyMembers()) {
+            if(memberName.equals(((LobbyInfo)lobbyInfos).getLobbyName())) Logger.INFO("\uD83D\uDC51" + " " + memberName);
+            else Logger.INFO(memberName);
+
+        }
+    }
+
+    @Override
+    public void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck) {
+        Logger.INFO(playerNameWhoIsChosingTheDeck + " is choosing the deck type.");
     }
 
     @Override
@@ -154,12 +173,14 @@ public class GameViewCLI implements GameViewClient{
                 rangeB = school.getEntrance().size() - 1;
                 System.out.println("Please select a student to move (use number from 0 to " + rangeB
                         + " starting counting from left to right and top to bottom)");
+                previousStateBeforeAdvancedCardPlayed = msgHandler.getState();
                 msgHandler.setState(MOVE_STUDENT_SEND_MESSAGE);
             }
             case MOVE_MOTHER_NATURE_START -> {
                 rangeA = 1;
                 rangeB = playerDeck.getDiscardedCard().getMaximumSteps();
                 System.out.println("How many step would you like to move mother nature (use a number between 1 and " + rangeB + ")");
+                previousStateBeforeAdvancedCardPlayed = msgHandler.getState();
                 msgHandler.setState(MOVE_MOTHER_NATURE_SEND_MESSAGE);
             }
             case CHOOSE_CLOUD_CARD_START -> {
@@ -167,29 +188,44 @@ public class GameViewCLI implements GameViewClient{
                 rangeB = board.getTerrain().getCloudCards().size() - 1;
                 System.out.println("Select a Cloud from where to pick student (use number from 0 to " + rangeB
                         + " to select the cloud):\n");
+                previousStateBeforeAdvancedCardPlayed = msgHandler.getState();
                 msgHandler.setState(CHOOSE_CLOUD_CARD_SEND_MESSAGE);
             }
         }
     }
 
     protected void actionStateMachine(int selection){
+        boolean playable = true;
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
         List<IslandBoard> islands = board.getTerrain().getIslands();
         switch(msgHandler.getState()) {
             case PLAY_ADVANCED_CARD:
-                System.out.println("Select an advanced card:");
+                System.out.println("Select an advanced card (use a number from 0 to 2):");
                 for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
                 int selectedCard;
+
                 do {
                     selectedCard = whileInputNotIntegerInRange(0, 2);
-                    if(board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName()))) {
+                    if (board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName()))) {
+                        msgHandler.setState(previousStateBeforeAdvancedCardPlayed);
                         displayErrorMessage(NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD, NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD_ERROR, board);
+                        playable = false;
+                        break;
+                    }
+                    if(school.isAdvancedAlreadyPlayedThisTurn()) {
+                        playable = false;
+                        msgHandler.setState(previousStateBeforeAdvancedCardPlayed);
+                        displayErrorMessage(ADVANCED_CARD_ALREADY_PLAYED_IN_TURN, ADVANCED_CARD_ALREADY_PLAYED_IN_TURN_ERROR, board);
+                        break;
                     }
                 } while (board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName())));
-                client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType(), this).getCardInputs())));
-                Logger.INFO("You played: " + Printable.TEXT_YELLOW + board.getTerrain().getAdvancedCard().get(selectedCard).getType().toString() + Printable.TEXT_RESET);
-                msgHandler.setActionSent(true);
+
+                if(playable) {
+                    client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType(), this).getCardInputs())));
+                    Logger.INFO("You played: " + Printable.TEXT_YELLOW + board.getTerrain().getAdvancedCard().get(selectedCard).getType().toString() + Printable.TEXT_RESET);
+                    msgHandler.setActionSent(true);
+                }
                 break;
 
             case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
@@ -243,7 +279,9 @@ public class GameViewCLI implements GameViewClient{
     @Override
     public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
         updateBoard(boardToUpdate);
+        if(boardToUpdate.isExpertMode()) displayExpertMode();
         Logger.ERROR(errorMsg, errorType);
+        printStateMachine();
     }
 
     @Override
@@ -320,4 +358,7 @@ public class GameViewCLI implements GameViewClient{
         return client;
     }
 
+    public InputStateMachine getPreviousStateBeforeAdvancedCardPlayed() {
+        return previousStateBeforeAdvancedCardPlayed;
+    }
 }

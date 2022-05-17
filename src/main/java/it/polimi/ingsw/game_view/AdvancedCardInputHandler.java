@@ -153,8 +153,12 @@ public class AdvancedCardInputHandler {
         do {
             System.out.println("Choose a student in your entrance. Please use (0," + (gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()-1) + ") to chose: ");
             currentSelection = gameViewCli.whileInputNotIntegerInRange(0,gameViewCli.getBoard().getSchools().get(gameViewCli.getBoard().getNames().indexOf(gameViewCli.getBoard().getCurrentlyPlaying())).getEntrance().size()-1);
-            numberOfStudentSelectedFromEntrance++;
-            indexSelectedFromEntrance.add(currentSelection);
+            if(indexSelectedFromEntrance.contains(currentSelection)) {
+                System.out.println("You have already selected this student.");
+            } else {
+                numberOfStudentSelectedFromEntrance++;
+                indexSelectedFromEntrance.add(currentSelection);
+            }
         } while (numberOfStudentSelectedFromCard != numberOfStudentSelectedFromEntrance);
 
         toRet[0] = gameViewCli.getClient().getName();
