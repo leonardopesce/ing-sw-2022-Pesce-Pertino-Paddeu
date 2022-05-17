@@ -2,6 +2,9 @@ package it.polimi.ingsw.game_controller;
 
 import java.io.Serializable;
 
+/**
+ * Enumeration to manage messages that are changed between controller and view
+ */
 public class CommunicationMessage implements Serializable{
     private static final long serialVersionUID = 1234567L;
     public enum MessageType {

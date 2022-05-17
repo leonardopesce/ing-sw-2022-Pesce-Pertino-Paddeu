@@ -25,9 +25,14 @@ public abstract class GameAction implements Serializable {
      * @param playerName
      */
 
+
     public GameAction(String playerName) {
         this.playerName = playerName;
     }
 
+    /**
+     * Abstract class to create the base for controller actions
+     * @param controller
+     */
     public abstract void perform(GameController controller);
 }

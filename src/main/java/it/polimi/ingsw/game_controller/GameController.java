@@ -21,6 +21,9 @@ import javafx.util.Pair;
 import java.security.SecureRandom;
 import java.util.*;
 
+/**
+ * Class to model the controller
+ */
 public class GameController implements Observer<GameAction> {
     private final SecureRandom random = new SecureRandom();
     private final Game game;
