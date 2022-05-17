@@ -43,7 +43,7 @@ public class GameBoardController implements Initializable {
     private final List<Button> playerBoardButtons = new ArrayList<>();
     private final List<ImageView> assistants = new ArrayList<>();
     private final List<IslandController> islands = new ArrayList<>();
-    private int playingAdvancedCard = 0;
+    private int playingAdvancedCard = -1;
     private GameBoard gameBoard;
     private final Stack<Integer> actionValues = new Stack<>();
     private final List<CloudController> clouds = new ArrayList<>();
@@ -112,7 +112,7 @@ public class GameBoardController implements Initializable {
     }
 
     protected void calculateNextAction(){
-        if(playingAdvancedCard == 0) {
+        if(playingAdvancedCard == -1) {
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
                     switch (gameBoard.getPhase()) {
                         case PLANNING_PHASE -> new PlayAssistantCardAction(clientName, actionValues.pop());
@@ -127,16 +127,19 @@ public class GameBoardController implements Initializable {
         else if(playingAdvancedCard == 1){
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], actionValues.toArray())));
         }
+        else if(playingAdvancedCard == POSTMAN.ordinal() || playingAdvancedCard == PRINCESS.ordinal()){
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName, actionValues.toArray())));
+        }
         else if(playingAdvancedCard == BARD.ordinal()){
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()],
-                    actionValues.size() == 2 ? List.of(actionValues.pop()) : List.of(actionValues.pop(), actionValues.pop()),
-                    actionValues.size() == 1 ? List.of(ColorCharacter.values()[actionValues.pop()]) : List.of(ColorCharacter.values()[actionValues.pop()], ColorCharacter.values()[actionValues.pop()]))));
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName,
+                    actionValues.size() == 2 ? Arrays.asList(actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop()),
+                    actionValues.size() == 1 ? Arrays.asList(ColorCharacter.values()[actionValues.pop()]) : Arrays.asList(ColorCharacter.values()[actionValues.pop()], ColorCharacter.values()[actionValues.pop()]))));
         }
         else if(playingAdvancedCard == JESTER.ordinal()){
             System.out.println(actionValues);
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()],
-                    actionValues.size() == 2 ? List.of(actionValues.pop()) : actionValues.size() == 4 ? List.of(actionValues.pop(), actionValues.pop()) : List.of(actionValues.pop(), actionValues.pop(), actionValues.pop()),
-                    actionValues.size() == 1 ? List.of(actionValues.pop()) : actionValues.size() == 2 ? List.of(actionValues.pop(), actionValues.pop()) : List.of(actionValues.pop(), actionValues.pop(), actionValues.pop()))));
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName,
+                    actionValues.size() == 2 ? Arrays.asList(actionValues.pop()) : actionValues.size() == 4 ? Arrays.asList(actionValues.pop(), actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop(), actionValues.pop()),
+                    actionValues.size() == 1 ? Arrays.asList(actionValues.pop()) : actionValues.size() == 2 ? Arrays.asList(actionValues.pop(), actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop(), actionValues.pop()))));
         }
         actionValues.clear();
     }
@@ -144,7 +147,7 @@ public class GameBoardController implements Initializable {
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
             gameBoard = board;
-            playingAdvancedCard = 0;
+            playingAdvancedCard = -1;
             rotatingBoardController.update(board);
             gamePhaseLabel.setText(board.getPhase().toString());
             if (firstTime) {
@@ -224,7 +227,7 @@ public class GameBoardController implements Initializable {
                 gamePhaseLabel.setText("NOT YOUR TURN");
             }
 
-            if(/*clientName.equals(gameBoard.getCurrentlyPlaying()) &&*/ gameBoard.isExpertMode()){
+            if(clientName.equals(gameBoard.getCurrentlyPlaying()) && gameBoard.isExpertMode()){
                 advancedBoard.setVisible(true);
                 for(int i = 0; i < advancedCards.size(); i++){
                     advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));

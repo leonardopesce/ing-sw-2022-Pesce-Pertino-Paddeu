@@ -55,6 +55,7 @@ public class SchoolController implements Initializable {
 
     public void setEntranceStudents(List<ColorCharacter> students){
         for(int i = 0; i < entranceStudents.size(); i++){
+            entranceStudents.get(i).setEffect(null);
             if(i < students.size()){
                 entranceStudents.get(i).setImage(new Image("img/wooden_pieces/student_" + students.get(i).toString() + ".png"));
             }

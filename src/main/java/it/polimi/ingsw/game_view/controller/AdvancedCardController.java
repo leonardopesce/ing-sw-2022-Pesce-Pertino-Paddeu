@@ -105,6 +105,9 @@ public class AdvancedCardController implements Initializable {
     public void playEffect(GameBoardController gameBoard){
         if(type == BARTENDER || type == POSTMAN || type == CENTAURUS || type == KNIGHT){
             gameBoard.setPlayingAdvancedCard(1);
+            if(type == POSTMAN){
+                gameBoard.setPlayingAdvancedCard(POSTMAN.ordinal());
+            }
             gameBoard.calculateNextAction();
         }
         else if(type == MONK || type == MERCHANT || type == LANDLORD || type == PRINCESS){
@@ -114,6 +117,9 @@ public class AdvancedCardController implements Initializable {
                 objects.get(i).setOnMouseClicked(a -> {
                     gameBoard.addActionValue(finalI);
                     gameBoard.setPlayingAdvancedCard(1);
+                    if(type == PRINCESS){
+                        gameBoard.setPlayingAdvancedCard(PRINCESS.ordinal());
+                    }
                     if(type == MONK){
                         gameBoard.makeVisibleIslandsSelectable();
                     }
