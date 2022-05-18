@@ -44,13 +44,13 @@ public class DeckBoard implements Serializable {
         }
         for(int line = 0; line < cardsString[0].chars().filter(c -> c == '\n').count(); line++){
             for (int i = 0; i < cardsString.length / 2; i++) {
-                decks.append(cardsString[i].split("\n")[line].replaceAll("\n", "\t")).append("\t");
+                decks.append(cardsString[i].split("\n")[line].replaceAll("\n", "    ")).append("    ");
             }
             decks.append("\n");
         }
         for(int line = 0; line < cardsString[0].chars().filter(c -> c == '\n').count(); line++){
             for (int i = cardsString.length / 2; i < cardsString.length; i++) {
-                decks.append(cardsString[i].split("\n")[line].replaceAll("\n", "\t")).append("\t");
+                decks.append(cardsString[i].split("\n")[line].replaceAll("\n", "    ")).append("    ");
             }
             decks.append("\n");
         }
@@ -64,8 +64,8 @@ public class DeckBoard implements Serializable {
         return Printable.TL4_CORNER + Printable.H4_BAR.repeat(15) + Printable.TR4_CORNER + "\n" +
                 Printable.V4_BAR + " ".repeat((15 - name.length())/2 + (name.length() % 2 == 0 ? 1 : 0))
                 + name + " ".repeat((15 - name.length())/2) + Printable.V4_BAR + "\n" +
-                Printable.V4_BAR + "\tVALUE: " + card.getType().getCardTurnValue() + "\t" + Printable.V4_BAR + "\n" +
-                Printable.V4_BAR + "\tSTEPS: " + card.getMaximumSteps() + "\t" + Printable.V4_BAR + "\n" +
+                Printable.V4_BAR + "   VALUE: " + card.getType().getCardTurnValue() + ((card.getType().getCardTurnValue() < 10) ? "    " : "   ") + Printable.V4_BAR + "\n" +
+                Printable.V4_BAR + "   STEPS: " + card.getMaximumSteps() + "    " + Printable.V4_BAR + "\n" +
                 Printable.BL4_CORNER + Printable.H4_BAR.repeat(15) + Printable.BR4_CORNER + "\n";
     }
 }

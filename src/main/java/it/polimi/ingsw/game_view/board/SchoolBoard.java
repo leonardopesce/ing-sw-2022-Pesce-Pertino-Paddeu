@@ -90,13 +90,13 @@ public class SchoolBoard implements Serializable {
             school.append(Printable.V_BAR);
             school.append(addStudentEntrance(studentIndex++));
             school.append(addStudentEntrance(studentIndex++));
-            school.append("\t").append(Printable.V_BAR);
+            school.append("   ").append(Printable.V_BAR);
 
             school.append(addTable(i));
 
             school.append(addTower(towerIndex++));
             school.append(addTower(towerIndex++));
-            school.append("\t").append(Printable.V_BAR);
+            school.append("   ").append(Printable.V_BAR);
 
             school.append("\n");
         }

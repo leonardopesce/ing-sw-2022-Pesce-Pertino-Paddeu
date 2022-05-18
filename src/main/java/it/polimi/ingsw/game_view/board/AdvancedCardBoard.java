@@ -65,14 +65,14 @@ public class AdvancedCardBoard implements Serializable {
         card.append(TL4_CORNER).append(H4_BAR.repeat(11)).append(TR4_CORNER).append("\n")
                 .append(V4_BAR).append(" ".repeat((11 - name.length()) / 2)).append(name).append((name.length() < 7 || name.length() % 2 == 0) ? " ".repeat((11 - name.length()) / 2 + 1) : " ".repeat((11 - name.length()) / 2))
                 .append(V4_BAR).append("\n")
-                .append(V4_BAR).append("\tCOST:").append(cost).append("\t").append(V4_BAR).append("\n");
+                .append(V4_BAR).append(" COST:").append(cost).append("    ").append(V4_BAR).append("\n");
         if(name.equals(MONK.getCardName()) || name.equals(PRINCESS.getCardName()) || name.equals(JESTER.getCardName())){
             int i = 0;
             for(ColorCharacter color: students){
                 if(i % 2 == 0){
-                    card.append(V4_BAR).append("\t");
+                    card.append(V4_BAR).append(" ");
                 }
-                card.append(GameBoard.getColorString(color)).append(STUDENT).append(TEXT_RESET).append("\t");
+                card.append(GameBoard.getColorString(color)).append(STUDENT).append(TEXT_RESET).append("    ");
                 if(i % 2 == 1){
                     card.append(V4_BAR).append("\n");
                     line++;
@@ -81,11 +81,11 @@ public class AdvancedCardBoard implements Serializable {
             }
         }
         else if(name.equals(HEALER.getCardName())){
-            card.append(V4_BAR).append("\t").append(DENY).append(denyCard).append(TEXT_RESET).append("\t\t").append(V4_BAR).append("\n");
+            card.append(V4_BAR).append("     ").append(DENY).append(denyCard).append(TEXT_RESET).append("    ").append(V4_BAR).append("\n");
             line++;
         }
         while (line < 3){
-            card.append(V4_BAR).append("\t\t\t").append(V4_BAR).append("\n");
+            card.append(V4_BAR).append("           ").append(V4_BAR).append("\n");
             line++;
         }
         card.append(BL4_CORNER).append(H4_BAR.repeat(11)).append(BR4_CORNER).append("\n");

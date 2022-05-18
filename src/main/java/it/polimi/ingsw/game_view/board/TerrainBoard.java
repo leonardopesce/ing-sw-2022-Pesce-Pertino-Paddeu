@@ -60,14 +60,14 @@ public class TerrainBoard implements Serializable {
         }
         for(int line = 0; line < islandString[0].chars().filter(c -> c == '\n').count(); line++){
             for (int i = 0; i < islandString.length / 2; i++) {
-                terrain.append(islandString[i].split("\n")[line].replaceAll("\n", "\t")).append("\t");
+                terrain.append(islandString[i].split("\n")[line].replaceAll("\n", "    ")).append("    ");
             }
             terrain.append("\n");
         }
 
         for(int line = 0; line < islandString[0].chars().filter(c -> c == '\n').count(); line++){
             for (int i = islandString.length / 2; i < islandString.length; i++) {
-                terrain.append(islandString[i].split("\n")[line].replaceAll("\n", "\t")).append("\t");
+                terrain.append(islandString[i].split("\n")[line].replaceAll("\n", "    ")).append("    ");
             }
             terrain.append("\n");
         }
@@ -81,7 +81,7 @@ public class TerrainBoard implements Serializable {
 
         for(int line = 0; line < cloudsString[0].chars().filter(c -> c == '\n').count(); line++){
             for (String s : cloudsString) {
-                terrain.append(s.split("\n")[line].replaceAll("\n", "\t")).append("\t");
+                terrain.append(s.split("\n")[line].replaceAll("\n", "  ")).append("  ");
             }
             terrain.append("\n");
         }
@@ -92,12 +92,12 @@ public class TerrainBoard implements Serializable {
 
     private String getCloudCard(int id){
         return Printable.H3_BAR.repeat(18) + "\n" +
-                Printable.V3_BAR + "\t\t" + "CLOUD " + id + "\t\t\t  " + Printable.V3_BAR + "\n" +
-                Printable.V3_BAR + "\t" + Printable.TEXT_RED + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.RED)).toList().size() + "\t" +
-                Printable.TEXT_GREEN + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.GREEN)).toList().size() + "\t" +
-                Printable.TEXT_BLUE + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.BLUE)).toList().size() + "\t" +
-                Printable.TEXT_YELLOW + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.YELLOW)).toList().size() + "\t" +
-                Printable.TEXT_PURPLE + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.PINK)).toList().size() + "\t  " + Printable.V3_BAR + "\n" +
+                Printable.V3_BAR + "        " + "CLOUD " + id + "          " + Printable.V3_BAR + "\n" +
+                Printable.V3_BAR + "  " + Printable.TEXT_RED + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.RED)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.RED)).toList().size() < 10 ? "  " : " ") +
+                Printable.TEXT_GREEN + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.GREEN)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.GREEN)).toList().size() < 10 ? "  " : " ") +
+                Printable.TEXT_BLUE + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.BLUE)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.BLUE)).toList().size() < 10 ? "  " : " ") +
+                Printable.TEXT_YELLOW + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.YELLOW)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.YELLOW)).toList().size() < 10 ? "  " : " ") +
+                Printable.TEXT_PURPLE + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.PINK)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.PINK)).toList().size() < 10 ? "     " : "    ") + Printable.V3_BAR + "\n" +
                 Printable.H3_BAR.repeat(18) + "\n";
     }
 }
