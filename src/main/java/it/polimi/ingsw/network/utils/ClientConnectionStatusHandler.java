@@ -29,6 +29,8 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
             } catch (InterruptedException sleepError) {
                 Logger.ERROR("Connection handler failed to sleep...", sleepError.getMessage());
                 abortConnection();
+            } catch (IllegalStateException alreadyCanceled) {
+                // If the schedule was already canceled it's fine.
             }
         }
     }

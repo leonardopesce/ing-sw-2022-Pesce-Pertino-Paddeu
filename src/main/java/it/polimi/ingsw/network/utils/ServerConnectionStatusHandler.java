@@ -34,6 +34,8 @@ public class ServerConnectionStatusHandler extends ConnectionStatusHandler imple
             } catch(IOException sendError) {
                 Logger.ERROR("Failed to send the ping message.", sendError.getMessage());
                 abortConnection();
+            } catch (IllegalStateException alreadyCanceled) {
+                // If the schedule was already been canceled, everything it's ok.
             }
         }
     }
