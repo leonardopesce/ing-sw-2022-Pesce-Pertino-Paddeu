@@ -91,13 +91,13 @@ public class TerrainBoard implements Serializable {
 
 
     private String getCloudCard(int id){
-        return Printable.H3_BAR.repeat(18) + "\n" +
+        return Printable.H3_BAR.repeat(26) + " \n" +
                 Printable.V3_BAR + "        " + "CLOUD " + id + "          " + Printable.V3_BAR + "\n" +
                 Printable.V3_BAR + "  " + Printable.TEXT_RED + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.RED)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.RED)).toList().size() < 10 ? "  " : " ") +
                 Printable.TEXT_GREEN + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.GREEN)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.GREEN)).toList().size() < 10 ? "  " : " ") +
                 Printable.TEXT_BLUE + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.BLUE)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.BLUE)).toList().size() < 10 ? "  " : " ") +
                 Printable.TEXT_YELLOW + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.YELLOW)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.YELLOW)).toList().size() < 10 ? "  " : " ") +
                 Printable.TEXT_PURPLE + Printable.STUDENT + Printable.TEXT_RESET + cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.PINK)).toList().size() + (cloudCards.get(id).stream().filter(color -> color.equals(ColorCharacter.PINK)).toList().size() < 10 ? "     " : "    ") + Printable.V3_BAR + "\n" +
-                Printable.H3_BAR.repeat(18) + "\n";
+                Printable.H3_BAR.repeat(26) + " \n";
     }
 }

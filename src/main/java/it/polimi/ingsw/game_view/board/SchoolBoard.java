@@ -54,23 +54,23 @@ public class SchoolBoard implements Serializable {
     }
 
     private String addStudentEntrance(int index){
-        return "\t" + (entrance.size() > index ? GameBoard.getColorString(entrance.get(index)) + Printable.STUDENT : " ") +
+        return "   " + (entrance.size() > index ? GameBoard.getColorString(entrance.get(index)) + Printable.STUDENT : " ") +
                 Printable.TEXT_RESET;
     }
 
     private String addTower(int index){
-        return "\t" + (towers > index ? GameBoard.getColorTowerString(towerColor) + Printable.TOWER : " ") + Printable.TEXT_RESET;
+        return "  " + (towers > index ? GameBoard.getColorTowerString(towerColor) + Printable.TOWER : " ") + Printable.TEXT_RESET;
     }
 
     private String addTable(int index){
         StringBuilder temp = new StringBuilder();
-        temp.append("\t");
+        temp.append("   ");
         for(int i = 0; i < 10; i++){
             temp.append(tables[index] > i ? GameBoard.getColorString(ColorCharacter.values()[index]) + Printable.STUDENT : " ").append(Printable.TEXT_RESET);
-            temp.append("\t");
+            temp.append("   ");
         }
         temp.append(teachers.contains(ColorCharacter.values()[index]) ? GameBoard.getColorString(ColorCharacter.values()[index]) + Printable.TEACHER : " ").append(Printable.TEXT_RESET);
-        temp.append("\t").append(" ").append(Printable.V_BAR);
+        temp.append("   ").append(" ").append(Printable.V_BAR);
         return temp.toString();
     }
 
@@ -96,7 +96,7 @@ public class SchoolBoard implements Serializable {
 
             school.append(addTower(towerIndex++));
             school.append(addTower(towerIndex++));
-            school.append("   ").append(Printable.V_BAR);
+            school.append("    ").append(Printable.V_BAR);
 
             school.append("\n");
         }
