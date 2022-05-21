@@ -27,6 +27,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -68,7 +69,10 @@ public class GameViewGUI extends Application implements GameViewClient{
                 try {
                     Media sound = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.setOnEndOfMedia(mediaPlayer::play);
+                    mediaPlayer.setOnEndOfMedia(() -> {
+                        mediaPlayer.seek(Duration.ZERO);
+                        mediaPlayer.play();
+                    });
 
                     mediaPlayer.play();
 
