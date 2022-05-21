@@ -18,6 +18,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,10 +26,12 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -42,6 +45,8 @@ public class GameViewGUI extends Application implements GameViewClient{
     private LoginController controllerInitial;
     private Stage stage;
     private GameBoardController controllerGameBoard;
+    private FXMLLoader currentLoader;
+    private Parent gameBoardRoot;
     Parent root;
 
 
@@ -69,6 +74,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 try {
                     Media sound = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.setVolume(0.02);
                     mediaPlayer.setOnEndOfMedia(() -> {
                         mediaPlayer.seek(Duration.ZERO);
                         mediaPlayer.play();
@@ -222,40 +228,54 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void gameReady(GameBoard board) {
         Platform.runLater(() -> {
-            Parent root;
+            this.stage.close();
+            Group videoRoot = new Group();
+            Media introductionVideo = null;
+            try {
+                introductionVideo = new Media(Objects.requireNonNull(getClass().getResource("/video/startingAnimation.mp4")).toURI().toString());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
 
-            try{
-                this.stage.close();
-                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
-                root = loader.load();
-                this.controllerGameBoard = loader.getController();
-                if(!testing){
+            MediaPlayer mediaPlayer = new MediaPlayer(introductionVideo);
+            mediaPlayer.setAutoPlay(true);
+            Platform.runLater(() -> {
+                currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
+                try {
+                    gameBoardRoot = currentLoader.load();
+                } catch (IOException e) {
+                    Logger.ERROR("Error while opening the game window.", e.getMessage());
+                }
+            });
+            mediaPlayer.setOnEndOfMedia(() -> {
+                this.controllerGameBoard = currentLoader.getController();
+                if (!testing) {
                     controllerGameBoard.setClient(controllerInitial.getClient());
                 }
-                this.stage.setScene(new Scene(root, 1920, 1080));
-                //this.stage.setResizable(true);
+                this.stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
                 this.stage.setMaximized(true);
-                //this.stage.setFullScreen(true);
-                //this.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-                //this.stage.sizeToScene();
                 this.stage.setOnCloseRequest(windowEvent -> {
                     Platform.exit();
                     System.exit(0);
                 });
                 this.stage.show();
+                if (testing) {
+                    controllerGameBoard.setClientName("Paolo");
+                } else {
+                    controllerGameBoard.setClient(controllerInitial.getClient());
+                }
 
-            } catch (IOException e) {
-                Logger.ERROR("Error while opening the game window.", e.getMessage());
-            }
-            if(testing){
+                controllerGameBoard.updateBoard(board);
+            });
 
-                controllerGameBoard.setClientName("Paolo");
-            }
-            else {
-                controllerGameBoard.setClient(controllerInitial.getClient());
-            }
+            MediaView mediaView = new MediaView(mediaPlayer);
 
-            controllerGameBoard.updateBoard(board);
+            videoRoot.getChildren().add(mediaView);
+            this.stage = new Stage();
+            this.stage.initStyle(StageStyle.UNDECORATED);
+            this.stage.setResizable(false);
+            stage.setScene(new Scene(videoRoot, 960, 540));
+            stage.show();
         });
     }
 
