@@ -47,6 +47,11 @@ public class GameViewGUI extends Application implements GameViewClient{
     private GameBoardController controllerGameBoard;
     private FXMLLoader currentLoader;
     private Parent gameBoardRoot;
+    private MediaView videoMediaView;
+    private MediaPlayer soundMediaPlayer;
+    private MediaPlayer videoMediaPlayer;
+    private Media soundMedia;
+    private Media videoMedia;
     Parent root;
 
 
@@ -72,15 +77,15 @@ public class GameViewGUI extends Application implements GameViewClient{
             Platform.runLater(() -> {
                 System.out.println("init music");
                 try {
-                    Media sound = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.setVolume(0.02);
-                    mediaPlayer.setOnEndOfMedia(() -> {
-                        mediaPlayer.seek(Duration.ZERO);
-                        mediaPlayer.play();
+                    soundMedia = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
+                    soundMediaPlayer = new MediaPlayer(soundMedia);
+                    soundMediaPlayer.setVolume(0.02);
+                    soundMediaPlayer.setOnEndOfMedia(() -> {
+                        soundMediaPlayer.seek(Duration.ZERO);
+                        soundMediaPlayer.play();
                     });
 
-                    mediaPlayer.play();
+                    soundMediaPlayer.play();
 
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
@@ -230,15 +235,14 @@ public class GameViewGUI extends Application implements GameViewClient{
         Platform.runLater(() -> {
             this.stage.close();
             Group videoRoot = new Group();
-            Media introductionVideo = null;
             try {
-                introductionVideo = new Media(Objects.requireNonNull(getClass().getResource("/video/startingAnimation.mp4")).toURI().toString());
+                videoMedia = new Media(Objects.requireNonNull(getClass().getResource("/video/startingAnimation.mp4")).toURI().toString());
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
 
-            MediaPlayer mediaPlayer = new MediaPlayer(introductionVideo);
-            mediaPlayer.setAutoPlay(true);
+            videoMediaPlayer = new MediaPlayer(videoMedia);
+            videoMediaPlayer.setAutoPlay(true);
             Platform.runLater(() -> {
                 currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
                 try {
@@ -247,7 +251,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                     Logger.ERROR("Error while opening the game window.", e.getMessage());
                 }
             });
-            mediaPlayer.setOnEndOfMedia(() -> {
+            videoMediaPlayer.setOnEndOfMedia(() -> {
                 this.controllerGameBoard = currentLoader.getController();
                 if (!testing) {
                     controllerGameBoard.setClient(controllerInitial.getClient());
@@ -259,6 +263,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                     System.exit(0);
                 });
                 this.stage.show();
+                soundMediaPlayer.play();
                 if (testing) {
                     controllerGameBoard.setClientName("Paolo");
                 } else {
@@ -268,13 +273,14 @@ public class GameViewGUI extends Application implements GameViewClient{
                 controllerGameBoard.updateBoard(board);
             });
 
-            MediaView mediaView = new MediaView(mediaPlayer);
+            videoMediaView = new MediaView(videoMediaPlayer);
 
-            videoRoot.getChildren().add(mediaView);
+            videoRoot.getChildren().add(videoMediaView);
             this.stage = new Stage();
             this.stage.initStyle(StageStyle.UNDECORATED);
             this.stage.setResizable(false);
-            this.stage.setMaximized(true);
+            //this.stage.setMaximized(true); - SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+            soundMediaPlayer.pause();
             stage.setScene(new Scene(videoRoot, 1920, 1080));
             stage.show();
         });
