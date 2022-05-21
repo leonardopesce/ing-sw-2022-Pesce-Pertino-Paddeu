@@ -207,4 +207,14 @@
          </ImageView>
       </children>
    </HBox>
+   <ImageView fx:id="loseAnimation" fitHeight="700.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" visible="false" StackPane.alignment="CENTER">
+      <image>
+         <Image url="@../img/youLose.gif" />
+      </image>
+   </ImageView>
+   <ImageView fx:id="winAnimation" fitHeight="704.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" visible="false" StackPane.alignment="CENTER">
+      <image>
+         <Image url="@../img/youWin.gif" />
+      </image>
+   </ImageView>
 </StackPane>

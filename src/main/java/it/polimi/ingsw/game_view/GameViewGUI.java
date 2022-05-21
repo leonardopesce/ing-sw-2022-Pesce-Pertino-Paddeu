@@ -23,15 +23,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private final boolean testing = false;
+    private final boolean testing = true;
 
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
@@ -60,7 +63,19 @@ public class GameViewGUI extends Application implements GameViewClient{
                 System.exit(0);
             });
             this.stage.show();
+            Platform.runLater(() -> {
+                System.out.println("init music");
+                try {
+                    Media sound = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.setOnEndOfMedia(mediaPlayer::play);
 
+                    mediaPlayer.play();
+
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         catch (Exception e){
             e.printStackTrace();
@@ -229,6 +244,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 Logger.ERROR("Error while opening the game window.", e.getMessage());
             }
             if(testing){
+
                 controllerGameBoard.setClientName("Paolo");
             }
             else {

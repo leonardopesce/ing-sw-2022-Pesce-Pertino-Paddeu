@@ -2,7 +2,6 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
-import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.*;
@@ -26,6 +25,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import java.net.URL;
 import java.util.*;
@@ -49,7 +50,7 @@ public class GameBoardController implements Initializable {
     private final List<CloudController> clouds = new ArrayList<>();
     private final List<AdvancedCardController> advancedCards = new ArrayList<>();
     @FXML
-    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10;
+    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation;
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
@@ -76,6 +77,7 @@ public class GameBoardController implements Initializable {
         clouds.addAll(Arrays.asList(cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller));
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
         islands.addAll(Arrays.asList(island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller));
+
 
         for(int i = 0; i < islands.size(); i++){
             islands.get(i).setID(i);
@@ -251,6 +253,32 @@ public class GameBoardController implements Initializable {
         });
     }
 
+    public void makeWinAnimation(){
+        winAnimation.setVisible(true);
+        rotateTransition.setCycleCount(100);
+        rotateTransition.setByAngle(720);
+        rotateTransition.setAutoReverse(true);
+        rotateTransition.play();
+        cards.setTranslateY(-assistants.get(0).getFitHeight() * 2);
+        for(int i = 0; i < assistants.size(); i++){
+            RotateTransition cardRotate = new RotateTransition(Duration.millis(1000), assistants.get(i));
+            cardRotate.setAxis(Rotate.Z_AXIS);
+            cardRotate.setCycleCount(100);
+            cardRotate.setByAngle(720);
+            cardRotate.setAutoReverse(true);
+            cardRotate.play();
+        }
+    }
+
+    public void makeLoseAnimation(){
+        winAnimation.setVisible(true);
+        rotateTransition.setCycleCount(10);
+        rotateTransition.setByAngle(720);
+        rotateTransition.setDuration(new Duration(5));
+        rotateTransition.setAutoReverse(true);
+        rotateTransition.play();
+    }
+
     private void setUpDecks(int pos){
         if(rotatingBoardController.getBoardX(pos).getName().getText().equals(clientName)){
             setAssistantsCardsFront();
@@ -265,7 +293,7 @@ public class GameBoardController implements Initializable {
         for(int i = 0; i < assistants.size(); i++){
             assistants.get(i).setImage(image);
             assistants.get(i).setEffect(ca);
-            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.8);
+            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.75);
             setGoUpEffectOnAssistantCard(assistants.get(i), i);
             setGoDownEffectOnAssistantCard(assistants.get(i), i);
 
