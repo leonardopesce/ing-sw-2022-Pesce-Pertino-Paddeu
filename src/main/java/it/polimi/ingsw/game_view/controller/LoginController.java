@@ -682,6 +682,13 @@ public class LoginController implements Initializable {
         errorBox.setVisible(true);
     }
 
+    public void setOnDisconnection(String disconnectedPlayer) {
+        Logger.ERROR(disconnectedPlayer + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server.", "Player disconnection");
+        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/disconnection.gif"))));
+        loginErrorMessage.setText(disconnectedPlayer +  " si è disconnesso. Sei stato rimosso dalla lobby e disconnesso dal server.");
+        errorBox.setVisible(true);
+    }
+
     public Client getClient() {
         return client;
     }

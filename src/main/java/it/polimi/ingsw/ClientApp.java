@@ -8,7 +8,7 @@ import javafx.application.Application;
 import java.util.Scanner;
 
 public class ClientApp{
-    private static final boolean gui = false;
+    private static final boolean gui = true;
 
     public static void main(String[] args){
         if(gui){

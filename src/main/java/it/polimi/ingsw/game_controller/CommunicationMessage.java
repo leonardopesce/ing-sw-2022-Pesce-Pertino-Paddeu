@@ -35,6 +35,7 @@ public class CommunicationMessage implements Serializable{
         ALREADY_PLAYED_ADVANCED,
         NOT_EXPERT_GAME,
         NOT_ENOUGH_MONEY,
+        PLAYER_DISCONNECTED,
         INFO,
         HELP,
         ERROR,

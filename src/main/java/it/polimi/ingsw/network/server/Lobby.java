@@ -79,7 +79,7 @@ public class Lobby implements Runnable {
         for(ClientConnection lobbyPartecipant : connectedPlayersToLobby) {
             if(!((SocketClientConnection)lobbyPartecipant).getClientName().equals(((SocketClientConnection)connectionWhoMadeTheLobbyClose).getClientName())) {
                 try {
-                    ((SocketClientConnection) lobbyPartecipant).send(new CommunicationMessage(ERROR, ((SocketClientConnection) connectionWhoMadeTheLobbyClose).getClientName() + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server."));
+                    ((SocketClientConnection) lobbyPartecipant).send(new CommunicationMessage(PLAYER_DISCONNECTED, ((SocketClientConnection) connectionWhoMadeTheLobbyClose).getClientName()));
 
                 } catch (IOException e) {
                     Logger.ERROR("Error while sending the close lobby message to the lobby partecipants. Closing the lobby...", e.getMessage());

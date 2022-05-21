@@ -27,7 +27,7 @@ public class Client extends Observable<CommunicationMessage> {
         try{
             socketOut.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.ERROR("Error while trying to close the socket.", e.getMessage());
         }
     }
 
@@ -50,7 +50,6 @@ public class Client extends Observable<CommunicationMessage> {
             } catch (Exception e){
                 connectionStatusHandler.kill();
                 Logger.ERROR("Connection interrupted since the socket is now closed server side. Exiting...", e.getMessage());
-                //e.printStackTrace();
             }
         });
         t.start();

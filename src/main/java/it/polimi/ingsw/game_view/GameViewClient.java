@@ -59,6 +59,7 @@ public interface GameViewClient{
     void askPlayerNumber();
     void gameReady(GameBoard board);
     void reaskAssistant();
+    void onPlayerDisconnection(String playerWhoMadeTheLobbyClose);
     GameBoard getBoard();
     void setBoard(GameBoard board);
     Client getClient();

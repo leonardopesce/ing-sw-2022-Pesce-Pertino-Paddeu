@@ -76,6 +76,32 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     @Override
+    public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
+        Platform.runLater(() -> {
+            Parent root;
+
+            try{
+                this.stage.close();
+                this.stage = new Stage();
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/Login.fxml")));
+                root = loader.load();
+                this.controllerInitial = loader.getController();
+                this.stage.setTitle("Eriantys");
+                this.stage.initStyle(StageStyle.UNDECORATED);
+                this.stage.setScene(new Scene(root));
+                this.stage.setFullScreen(false);
+                this.stage.setWidth(900);
+                this.stage.setHeight(550);
+                this.stage.show();
+                controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
+                controllerInitial.setMessageHandler(msgHandler);
+            } catch (IOException e) {
+                Logger.ERROR("Error while opening the launcher window.", e.getMessage());
+            }
+        });
+    }
+
+    @Override
     public void displayNotYourTurn() {
         Platform.runLater(() -> {
             controllerGameBoard.setComment("NOT YOUR TURN");

@@ -277,6 +277,11 @@ public class GameViewCLI implements GameViewClient{
     }
 
     @Override
+    public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
+        Logger.ERROR(playerWhoMadeTheLobbyClose + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server.", "Player disconnection");
+    }
+
+    @Override
     public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
         Logger.ERROR(errorMsg, errorType);
         msgHandler.updateBoardMessage(board);

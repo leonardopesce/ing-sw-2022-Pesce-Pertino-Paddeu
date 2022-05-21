@@ -62,6 +62,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case ALREADY_PLAYED_ADVANCED -> new Thread(() -> view.displayErrorMessage(ADVANCED_CARD_ALREADY_PLAYED_IN_TURN, ADVANCED_CARD_ALREADY_PLAYED_IN_TURN_ERROR, (GameBoard) message.getMessage())).start();
             case NOT_EXPERT_GAME -> new Thread(() -> view.displayErrorMessage(NOT_EXPERT_MODE_GAME, NOT_EXPERT_MODE_GAME_ERROR, (GameBoard) message.getMessage())).start();
             case NOT_ENOUGH_MONEY -> new Thread(() -> view.displayErrorMessage(NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD, NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD_ERROR, (GameBoard) message.getMessage())).start();
+            case PLAYER_DISCONNECTED -> new Thread(() -> view.onPlayerDisconnection((String) message.getMessage())).start();
             case INFO -> Logger.INFO((String) message.getMessage());
             case ERROR -> Logger.ERROR((String) message.getMessage(), "General Error");
             case GAME_READY -> new Thread(() -> view.gameReady((GameBoard) message.getMessage())).start();
