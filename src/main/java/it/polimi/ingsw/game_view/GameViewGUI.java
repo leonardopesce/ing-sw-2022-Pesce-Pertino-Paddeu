@@ -274,7 +274,8 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage = new Stage();
             this.stage.initStyle(StageStyle.UNDECORATED);
             this.stage.setResizable(false);
-            stage.setScene(new Scene(videoRoot, 960, 540));
+            this.stage.setMaximized(true);
+            stage.setScene(new Scene(videoRoot, 1920, 1080));
             stage.show();
         });
     }
