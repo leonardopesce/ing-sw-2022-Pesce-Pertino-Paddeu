@@ -54,7 +54,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case ASK_DECK   -> new Thread(() -> view.askDeck(message.getMessage())).start();
             case ASSISTANT_NOT_PLAYABLE -> new Thread(view::reaskAssistant).start();
             case NOT_YOUR_TURN -> new Thread(view::displayNotYourTurn).start();
-            case MOVE_STUDENT_FAILED -> new Thread(() -> view.displayErrorMessage(FAILED_TO_MOVE_STUDENT_TO_TABLE, FAILED_TO_MOVE_STUDENT_TO_TABLE_ERROR, (GameBoard) message.getMessage())).start();
+            case MOVE_STUDENT_FAILED -> new Thread(() -> view.displayErrorMessage(FAILED_TO_MOVE_STUDENT, FAILED_TO_MOVE_STUDENT_ERROR, (GameBoard) message.getMessage())).start();
             case INVALID_MOTHER_NATURE_STEPS -> new Thread(() -> view.displayErrorMessage(FAILED_TO_MOVE_MOTHER_NATURE, FAILED_TO_MOVE_MOTHER_NATURE_ERROR, (GameBoard) message.getMessage())).start();
             case INVALID_CLOUD_CHOSEN -> new Thread(() -> view.displayErrorMessage(INVALID_CLOUD_CHOSEN, INVALID_CLOUD_CHOSEN_ERROR, (GameBoard) message.getMessage())).start();
             case NOT_ACTION_PHASE -> new Thread(() -> view.displayErrorMessage(INVALID_ACTION, INVALID_ACTION_ERROR, (GameBoard) message.getMessage())).start();

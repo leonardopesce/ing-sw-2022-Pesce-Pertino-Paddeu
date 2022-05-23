@@ -221,11 +221,15 @@ public class GameController implements Observer<GameAction> {
         Optional<Player> player = getPlayerFromName(playerName);
         if(player.isPresent() && pl.equals(player.get())) {
             if(game.getGamePhase().toString().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS.toString())) {
-                game.getTerrain().addStudentToIsland(player.get().getSchool().getEntrance().moveStudent(student), islandNumber);
-                player.get().incrementNumberOfMovedStudents();
+                if(student < player.get().getSchool().getEntrance().getStudents().size()) {
+                    game.getTerrain().addStudentToIsland(player.get().getSchool().getEntrance().moveStudent(student), islandNumber);
+                    player.get().incrementNumberOfMovedStudents();
 
-                moveStudentPhase(pl);
-                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                    moveStudentPhase(pl);
+                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                } else {
+                    game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
+                }
             } else {
                 game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
             }
@@ -256,15 +260,20 @@ public class GameController implements Observer<GameAction> {
         if(player.isPresent() && pl.equals(player.get())) {
             if(game.getGamePhase().toString().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS.toString())) {
                 try {
-                    ColorCharacter diningHallColor = player.get().getSchool().getEntrance().moveStudent(student).getColor();
-                    game.moveStudentToDiningHall(player.get(), diningHallColor);
-                    player.get().incrementNumberOfMovedStudents();
+                    if(student < player.get().getSchool().getEntrance().getStudents().size()) {
+                        ColorCharacter diningHallColor = player.get().getSchool().getEntrance().moveStudent(student).getColor();
+                        game.moveStudentToDiningHall(player.get(), diningHallColor);
+                        player.get().incrementNumberOfMovedStudents();
+                        moveStudentPhase(player.get());
+                        game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                    } else {
+                        Logger.GAME_LOG("Tried to move a students from an invalid entrance position, skipping...", "Invalid entrance index");
+                        game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
+                    }
                 } catch (TooManyStudentsException e) {
                     Logger.GAME_LOG("Tried to move a student on a full table, skipping...", playerName);
                     game.runNotify(CommunicationMessage.MessageType.MOVE_STUDENT_FAILED);
                 }
-                moveStudentPhase(player.get());
-                game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
             } else {
                 Logger.GAME_LOG("Tried to move student to dining hall in the wrong game phase.\nCurrent phase: " + game.getGamePhase().toString() + "\nRequired game phase: " + GamePhase.ACTION_PHASE_MOVING_STUDENTS, playerName);
                 game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);

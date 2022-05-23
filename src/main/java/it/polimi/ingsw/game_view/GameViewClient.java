@@ -11,8 +11,8 @@ public interface GameViewClient{
     String ASK_JOINING_ACTION_QUESTION = "Would you like to create a new match or joining an existing one?\n0. Create a new game\n1. Join a game";
     String ASK_LOBBY_TO_JOIN_QUESTION = "Select the lobby you want to join by entering the lobby owner name:";
     String ASK_PLAYER_NUMBER_QUESTION = "You are the first player! Choose the number of player in the game (2, 3 or 4)";
-    String FAILED_TO_MOVE_STUDENT_TO_TABLE = "Failed to move the student on that table since it's full.";
-    String FAILED_TO_MOVE_STUDENT_TO_TABLE_ERROR = "Table full";
+    String FAILED_TO_MOVE_STUDENT = "Failed to move the student you selected. The table is probably full or you selected an invalid entrance position.";
+    String FAILED_TO_MOVE_STUDENT_ERROR = "Invalid student move";
     String FAILED_TO_MOVE_MOTHER_NATURE = "Failed to move mother nature of the given steps since they are too many.";
     String FAILED_TO_MOVE_MOTHER_NATURE_ERROR = "Too many steps";
     String INVALID_CLOUD_CHOSEN = "You cannot pick up that cloud since it's empty.";
