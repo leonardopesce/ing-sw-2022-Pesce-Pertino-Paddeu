@@ -260,8 +260,8 @@ public class GameBoardController implements Initializable {
         rotateTransition.setAutoReverse(true);
         rotateTransition.play();
         cards.setTranslateY(-assistants.get(0).getFitHeight() * 2);
-        for(int i = 0; i < assistants.size(); i++){
-            RotateTransition cardRotate = new RotateTransition(Duration.millis(1000), assistants.get(i));
+        for (ImageView assistant : assistants) {
+            RotateTransition cardRotate = new RotateTransition(Duration.millis(1000), assistant);
             cardRotate.setAxis(Rotate.Z_AXIS);
             cardRotate.setCycleCount(100);
             cardRotate.setByAngle(720);

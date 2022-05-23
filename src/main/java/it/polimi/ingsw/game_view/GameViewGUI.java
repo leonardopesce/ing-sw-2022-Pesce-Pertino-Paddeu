@@ -1,6 +1,5 @@
 package it.polimi.ingsw.game_view;
 
-import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
@@ -11,19 +10,14 @@ import it.polimi.ingsw.game_view.controller.LoginController;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.ClientMessageObserverHandler;
 import it.polimi.ingsw.game_view.board.GameBoard;
-import it.polimi.ingsw.game_view.controller.InitialPageController;
 import it.polimi.ingsw.network.utils.LobbyInfo;
 import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -31,7 +25,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
