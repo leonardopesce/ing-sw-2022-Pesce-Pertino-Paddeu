@@ -11,8 +11,11 @@ import it.polimi.ingsw.game_model.character.basic.Tower;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
+import it.polimi.ingsw.game_model.utils.CalculatorInfluence;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
+import it.polimi.ingsw.game_model.utils.GamePhase;
+import it.polimi.ingsw.game_model.world.CloudCard;
 import it.polimi.ingsw.game_model.world.Island;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static it.polimi.ingsw.game_model.utils.ColorCharacter.*;
@@ -562,6 +566,41 @@ class GameTest {
         assertEquals(game.winner()[0], names[0]);
     }
 
+    @DisplayName("players win when they ends towers (4 players)")
+    @Test
+    void winner4PlayersByTowerTest() {
+        initialization(4, false);
+        game.terrain.getIslands().get(0).addAllTower(game.players.get(0).removeNTowers(game.players.get(0).getTowersAvailable()));
+        assertEquals(2, game.winner().length);
+        // The first player is grouped with the 3rd
+        assertEquals(game.winner()[0], names[0]);
+        assertEquals(game.winner()[1], names[2]);
+    }
+
+    @DisplayName("Assistant card finished win condition")
+    @Test
+    void assistantCardFinishedWinCondition() {
+        initialization(4, false);
+
+        // The black team will be the winner of the match since it has built more towers than the white team.
+        game.getPlayers().get(0).removeNTowers(1);
+        game.getTerrain().getIslands().get(0).addAllTower(List.of(new Tower(ColorTower.BLACK)));
+
+        // Removing all the cards from the players' decks --> it's the last turn
+        game.getPlayers().get(0).getDeckAssistants().getAssistants().clear();
+        game.getPlayers().get(1).getDeckAssistants().getAssistants().clear();
+        game.getPlayers().get(2).getDeckAssistants().getAssistants().clear();
+        game.getPlayers().get(3).getDeckAssistants().getAssistants().clear();
+
+        // The phase is not correct
+        Assertions.assertEquals(0, game.winner().length);
+
+        game.setUpGamePhase(GamePhase.NEW_ROUND);
+        Assertions.assertEquals(2, game.winner().length);
+        Assertions.assertEquals(game.winner()[0], names[0]);
+        Assertions.assertEquals(game.winner()[1], names[2]);
+    }
+
     @DisplayName("player win when he merges island (2 player mode)")
     @Test
     void winner2PlayerByMergingIslandTest() {
@@ -678,4 +717,57 @@ class GameTest {
         Assertions.assertEquals(pinkInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(PINK).getNumberOfStudents());
         Assertions.assertEquals(blueInEntranceChosen, game.getPlayers().get(0).getSchool().getDiningHall().getTableOfColor(ColorCharacter.BLUE).getNumberOfStudents());
     }
+
+    @DisplayName("4 players setup")
+    @Test
+    public void setup4PlayersTest() {
+        initialization(4, false);
+
+        for(Player player : game.getPlayers()) {
+            Assertions.assertEquals(game.INITIAL_NUMBER_OF_TOWER[game.getPlayers().indexOf(player)], player.getSchool().getTowersAvailable());
+            Assertions.assertEquals(game.INITIAL_NUMBER_OF_STUDENTS_TO_DRAW, player.getSchool().getEntrance().getStudents().size());
+        }
+
+        Assertions.assertEquals(game.NUMBER_OF_CLOUDS, game.getTerrain().getCloudCards().size());
+        for(CloudCard cloud : game.getTerrain().getCloudCards()) {
+            Assertions.assertEquals(game.NUMBER_OF_STUDENTS_ON_CLOUD, cloud.getStudent().size());
+        }
+    }
+
+    @DisplayName("4 players influence logic test")
+    @Test
+    public void influenceLogic4PlayersTest() {
+        initialization(4, false);
+
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(RED));
+        game.getPlayers().get(1).getSchool().addTeacher(new Teacher(PINK));
+        game.getPlayers().get(2).getSchool().addTeacher(new Teacher(YELLOW));
+        game.getPlayers().get(3).getSchool().addTeacher(new Teacher(GREEN));
+
+        game.getTerrain().getIslands().get(0).getStudents().clear();
+        game.getTerrain().getIslands().get(0).addStudent(new Student(RED));
+        game.getTerrain().getIslands().get(0).addStudent(new Student(YELLOW));
+        game.getTerrain().getIslands().get(0).addStudent(new Student(PINK));
+        game.getTerrain().getIslands().get(0).addStudent(new Student(GREEN));
+
+        CalculatorInfluence calc = new CalculatorInfluence();
+        Assertions.assertEquals(1, calc.evaluateForPlayer(game.getPlayers().get(0), game.getTerrain().getIslands().get(0)));
+        Assertions.assertEquals(1, calc.evaluateForPlayer(game.getPlayers().get(1), game.getTerrain().getIslands().get(0)));
+        Assertions.assertEquals(1, calc.evaluateForPlayer(game.getPlayers().get(2), game.getTerrain().getIslands().get(0)));
+        Assertions.assertEquals(1, calc.evaluateForPlayer(game.getPlayers().get(3), game.getTerrain().getIslands().get(0)));
+
+        game.evaluateInfluences(0);
+
+        // It's a draw
+        Assertions.assertEquals(0, game.getTerrain().getIslands().get(0).getTowers().size());
+
+        game.getTerrain().getIslands().get(0).addStudent(new Student(YELLOW));
+        // Now the BLACK team has the majority of the influence.
+        Assertions.assertEquals(names[0], calc.evaluate(game.getPlayers(), game.getTerrain().getIslands().get(0)).get().getNickname());
+        game.evaluateInfluences(0);
+        Assertions.assertEquals(1, game.getTerrain().getIslands().get(0).getTowers().size());
+        Assertions.assertEquals(ColorTower.BLACK, game.getTerrain().getIslands().get(0).getTowers().get(0).getColor());
+    }
+
+
 }

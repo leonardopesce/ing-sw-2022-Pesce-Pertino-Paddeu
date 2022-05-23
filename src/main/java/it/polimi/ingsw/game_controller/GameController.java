@@ -85,6 +85,9 @@ public class GameController implements Observer<GameAction> {
             refillClouds();
             // every "turn" is divided in planning phase and action phase
             nextPlanningPhase();
+        } else {
+            game.setUpGamePhase(GamePhase.GAME_ENDED);
+            endGame();
         }
     }
 
@@ -183,17 +186,21 @@ public class GameController implements Observer<GameAction> {
      * students. <p> If all player have already played, moves to a new turn with playTurn() </p>
      */
     private void nextActionPhase(){
-        if(turn < game.getNumberOfPlayers() && game.winner().length == 0){
-            game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_STUDENTS);
-            game.setCurrentlyPlaying(actionOrder[turn]);
-            moveStudentPhase(game.getCurrentlyPlayingPlayer());
-        }
-        else{
-            turn = 0;
-            createNextPlanningOrder(actionOrder[0]);
-            game.setCurrentlyPlaying(planningOrder[turn]);
-            game.setUpGamePhase(GamePhase.NEW_ROUND);
-            playTurn();
+        if(game.winner().length == 0) {
+            if (turn < game.getNumberOfPlayers()) {
+                game.setUpGamePhase(GamePhase.ACTION_PHASE_MOVING_STUDENTS);
+                game.setCurrentlyPlaying(actionOrder[turn]);
+                moveStudentPhase(game.getCurrentlyPlayingPlayer());
+            } else {
+                turn = 0;
+                createNextPlanningOrder(actionOrder[0]);
+                game.setCurrentlyPlaying(planningOrder[turn]);
+                game.setUpGamePhase(GamePhase.NEW_ROUND);
+                playTurn();
+            }
+        } else {
+            game.setUpGamePhase(GamePhase.GAME_ENDED);
+            endGame();
         }
     }
 

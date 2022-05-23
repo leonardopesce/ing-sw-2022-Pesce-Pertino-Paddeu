@@ -109,7 +109,7 @@ public class Game extends Observable<MoveMessage> {
     /**
      * For each player playing give the color and the number of towers, and the initial
      * students.
-     * @throws BagEmptyException
+     * @throws BagEmptyException when there aren't enough students in the bag to fill the player entrance.
      * @see BagOfStudents
      * @see it.polimi.ingsw.game_model.school.School
      */
@@ -154,7 +154,7 @@ public class Game extends Observable<MoveMessage> {
 
     /**
      * Set the teacher ownership calculator
-      * @param newOwnershipCalculator
+      * @param newOwnershipCalculator the new teacher ownership calculator to set.
      * @see CalculatorTeacherOwnership
      */
     public void setTeacherOwnershipCalculator(CalculatorTeacherOwnership newOwnershipCalculator) { this.teacherOwnershipCalculator = newOwnershipCalculator; }
@@ -250,7 +250,7 @@ public class Game extends Observable<MoveMessage> {
         int[] numberOfTower = {0, 0, 0};
         if(terrain.getIslands().size() <= 3 ||
                 (bag.isEmpty() && gamePhase == GamePhase.NEW_ROUND) ||
-                players.stream().allMatch(pl -> pl.getDeckAssistants().getSize() == 0)){
+                (players.stream().allMatch(pl -> pl.getDeckAssistants().getSize() == 0) && gamePhase == GamePhase.NEW_ROUND)){
 
             for(Island is: terrain.getIslands()){
                 if(!is.getTowers().isEmpty()) {
