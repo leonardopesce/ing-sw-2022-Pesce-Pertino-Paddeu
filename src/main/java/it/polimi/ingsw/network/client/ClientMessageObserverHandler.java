@@ -69,6 +69,7 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case VIEW_UPDATE -> new Thread(() -> updateBoardMessage((GameBoard) message.getMessage())).start();
             case YOU_WIN -> Logger.INFO("You have won the match!");
             case YOU_LOSE -> Logger.INFO("You lost the match!");
+            case DRAW -> Logger.INFO("The match finished in a draw.");
         }
     }
 

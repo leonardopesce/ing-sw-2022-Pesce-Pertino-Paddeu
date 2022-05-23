@@ -41,6 +41,7 @@ public class CommunicationMessage implements Serializable{
         ERROR,
         YOU_LOSE,
         YOU_WIN,
+        DRAW,
         VIEW_UPDATE,
         GAME_READY,
         PING,

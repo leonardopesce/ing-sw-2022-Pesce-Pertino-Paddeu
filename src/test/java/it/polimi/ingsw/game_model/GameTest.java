@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_model;
 
 import it.polimi.ingsw.custom_exceptions.BagEmptyException;
 import it.polimi.ingsw.custom_exceptions.TooManyStudentsException;
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.character.Assistant;
 import it.polimi.ingsw.game_model.character.advanced.*;
@@ -579,7 +580,7 @@ class GameTest {
 
     @DisplayName("Assistant card finished win condition")
     @Test
-    void assistantCardFinishedWinCondition() {
+    void assistantCardFinishedWinConditionTest() {
         initialization(4, false);
 
         // The black team will be the winner of the match since it has built more towers than the white team.
@@ -599,6 +600,49 @@ class GameTest {
         Assertions.assertEquals(2, game.winner().length);
         Assertions.assertEquals(game.winner()[0], names[0]);
         Assertions.assertEquals(game.winner()[1], names[2]);
+    }
+
+    @DisplayName("Bag empty win condition")
+    @Test
+    void bagEmptyWinConditionTest() throws BagEmptyException {
+        initialization(4, false);
+
+        // The black team will be the winner of the match since it has built more towers than the white team.
+        game.getPlayers().get(0).removeNTowers(1);
+        game.getTerrain().getIslands().get(0).addAllTower(List.of(new Tower(ColorTower.BLACK)));
+
+        while(!game.getBag().isEmpty()) game.getBag().drawStudentFromBag();
+
+        // The phase is not correct
+        Assertions.assertEquals(0, game.winner().length);
+
+        game.setUpGamePhase(GamePhase.NEW_ROUND);
+        Assertions.assertEquals(2, game.winner().length);
+        Assertions.assertEquals(game.winner()[0], names[0]);
+        Assertions.assertEquals(game.winner()[1], names[2]);
+    }
+
+    @DisplayName("Draw condition")
+    @Test
+    void drawConditionTest() throws BagEmptyException {
+        initialization(4, false);
+
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(RED));
+        game.getPlayers().get(1).getSchool().addTeacher(new Teacher(YELLOW));
+        game.getPlayers().get(2).getSchool().addTeacher(new Teacher(GREEN));
+        game.getPlayers().get(3).getSchool().addTeacher(new Teacher(PINK));
+
+        while(!game.getBag().isEmpty()) game.getBag().drawStudentFromBag();
+
+        // The phase is not correct
+        Assertions.assertEquals(0, game.winner().length);
+
+        game.setUpGamePhase(GamePhase.NEW_ROUND);
+        Assertions.assertEquals(4, game.winner().length);
+        Assertions.assertEquals(game.winner()[0], names[0]);
+        Assertions.assertEquals(game.winner()[2], names[1]);
+        Assertions.assertEquals(game.winner()[1], names[2]);
+        Assertions.assertEquals(game.winner()[3], names[3]);
     }
 
     @DisplayName("player win when he merges island (2 player mode)")
@@ -769,5 +813,21 @@ class GameTest {
         Assertions.assertEquals(ColorTower.BLACK, game.getTerrain().getIslands().get(0).getTowers().get(0).getColor());
     }
 
+    @DisplayName("Move message test")
+    @Test
+    void moveMessageTest() {
+        initialization(4, true);
 
+        MoveMessage moveMsg1 = new MoveMessage(game, CommunicationMessage.MessageType.VIEW_UPDATE);
+        MoveMessage moveMsg2 = new MoveMessage(game, CommunicationMessage.MessageType.VIEW_UPDATE, game.isExpert());
+
+        Assertions.assertFalse(moveMsg1.isExpertMode());
+        Assertions.assertTrue(moveMsg2.isExpertMode());
+        Assertions.assertEquals(game.getCurrentlyPlayingPlayer(), moveMsg1.getPlayer());
+        Assertions.assertEquals(game.getCurrentlyPlayingPlayer(), moveMsg2.getPlayer());
+        Assertions.assertEquals(game, moveMsg1.getGame());
+        Assertions.assertEquals(game, moveMsg2.getGame());
+        Assertions.assertEquals(CommunicationMessage.MessageType.VIEW_UPDATE, moveMsg1.getType());
+        Assertions.assertEquals(CommunicationMessage.MessageType.VIEW_UPDATE, moveMsg2.getType());
+    }
 }

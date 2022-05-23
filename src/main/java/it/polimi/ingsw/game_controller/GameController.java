@@ -347,35 +347,39 @@ public class GameController implements Observer<GameAction> {
      * </ul>
      *
      * @param playerName player who made the move
-     * @param cloudCardIndex cloud card selected by the player
+     * @param cloudCardIndex index of the cloud card selected by the player
      * @see CloudCard
      * @see Player
      */
     public void choseCloud(String playerName, int cloudCardIndex){
         Optional<Player> player = getPlayerFromName(playerName);
-        if(player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())){
-            if(game.getGamePhase().toString().equals("ACTION_PHASE_CHOOSING_CLOUD")) {
-                if (!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
-                    player.get().getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
-                    turn++;
-                    // Resetting the normal values
-                    player.get().resetPlayedSpecialCard();
-                    game.setInfluenceCalculator(new CalculatorInfluence());
-                    game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
+        if(!(game.getTerrain().getCloudCards().stream().map(cloud -> cloud.getStudent().size()).filter(size -> size != 0).toList().size() == 0 && game.getBag().isEmpty())) {
+            if (player.isPresent() && player.get().equals(game.getCurrentlyPlayingPlayer())) {
+                if (game.getGamePhase().toString().equals("ACTION_PHASE_CHOOSING_CLOUD")) {
+                    if (!game.getTerrain().getCloudCards().get(cloudCardIndex).getStudent().isEmpty()) {
+                        player.get().getSchool().getEntrance().addAllStudents(game.getTerrain().getCloudCards().get(cloudCardIndex).removeStudentsOnCloud());
+                        turn++;
+                        // Resetting the normal values
+                        player.get().resetPlayedSpecialCard();
+                        game.setInfluenceCalculator(new CalculatorInfluence());
+                        game.setTeacherOwnershipCalculator(new CalculatorTeacherOwnership());
 
-                    nextActionPhase();
-                    game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                        nextActionPhase();
+                        game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
+                    } else {
+                        Logger.GAME_LOG("Selected an empty cloud, skipping...", playerName);
+                        game.runNotify(CommunicationMessage.MessageType.INVALID_CLOUD_CHOSEN);
+                    }
                 } else {
-                    Logger.GAME_LOG("Selected an empty cloud, skipping...", playerName);
-                    game.runNotify(CommunicationMessage.MessageType.INVALID_CLOUD_CHOSEN);
+                    Logger.GAME_LOG("Tried to pick a cloud card in a wrong game phase.\nCurrent game phase: " + game.getGamePhase().toString() + "\nRequired game phase: " + GamePhase.ACTION_PHASE_CHOOSING_CLOUD, playerName);
+                    game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
                 }
             } else {
-                Logger.GAME_LOG("Tried to pick a cloud card in a wrong game phase.\nCurrent game phase: " + game.getGamePhase().toString() + "\nRequired game phase: " + GamePhase.ACTION_PHASE_CHOOSING_CLOUD, playerName);
-                game.runNotify(CommunicationMessage.MessageType.NOT_ACTION_PHASE);
+                Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
+                game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
             }
         } else {
-            Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
-            game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
+            nextActionPhase();
         }
     }
 

@@ -57,9 +57,9 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
         boolean gameOver = message.getGame().winner().length != 0;
         boolean draw = message.getGame().MAX_PLAYERS == 4 ? (message.getGame().winner().length == 4) :(message.getGame().winner().length == 2 || message.getGame().winner().length == 3);
         if (gameOver) {
-            sendMessage(new CommunicationMessage(
-                    Arrays.asList(message.getGame().winner()).contains(playerName) ?
-                            YOU_WIN : YOU_LOSE, null)
+            sendMessage(new CommunicationMessage(draw ? DRAW :
+                    (Arrays.asList(message.getGame().winner()).contains(playerName) ?
+                            YOU_WIN : YOU_LOSE), null)
             );
         }
         else {
