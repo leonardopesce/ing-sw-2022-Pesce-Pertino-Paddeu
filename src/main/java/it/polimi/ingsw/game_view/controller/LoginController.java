@@ -88,7 +88,7 @@ public class LoginController implements Initializable {
                     try {
                         client.run();
                     } catch (IOException e) {
-                        if(!client.isActive()) {
+                        if(client != null && !client.isActive()) {
                             Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
                             loginErrorMessage.setText("Impossibile connettersi al server con indirizzo IP e porta indicati.");
                             errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
