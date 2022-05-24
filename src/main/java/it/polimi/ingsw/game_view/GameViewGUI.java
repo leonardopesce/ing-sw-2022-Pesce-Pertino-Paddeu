@@ -311,7 +311,6 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void displayEndGame(CommunicationMessage.MessageType condition) {
-        System.out.println("end game " + condition.name() + " " + condition);
         controllerGameBoard.makeEndAnimation(condition);
     }
 

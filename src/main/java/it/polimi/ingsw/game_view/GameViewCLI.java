@@ -308,6 +308,7 @@ public class GameViewCLI implements GameViewClient{
         if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
     }
 
+    @Override
     public void displayEndGame(CommunicationMessage.MessageType condition){
         if(condition == YOU_WIN){
             Logger.INFO("You have won the match!");
