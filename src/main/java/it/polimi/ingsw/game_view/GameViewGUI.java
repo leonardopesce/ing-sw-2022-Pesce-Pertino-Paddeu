@@ -73,7 +73,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 try {
                     soundMedia = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
                     soundMediaPlayer = new MediaPlayer(soundMedia);
-                    soundMediaPlayer.setVolume(0.02);
+                    soundMediaPlayer.setVolume(0.5);
                     soundMediaPlayer.setOnEndOfMedia(() -> {
                         soundMediaPlayer.seek(Duration.ZERO);
                         soundMediaPlayer.play();
@@ -236,6 +236,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             }
 
             videoMediaPlayer = new MediaPlayer(videoMedia);
+
             videoMediaPlayer.setOnReady(() -> videoMediaPlayer.play());
             Platform.runLater(() -> {
                 currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
@@ -273,7 +274,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage = new Stage();
             this.stage.initStyle(StageStyle.UNDECORATED);
             this.stage.setResizable(false);
-            //this.stage.setMaximized(true); - SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+            //this.stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
             soundMediaPlayer.pause();
             stage.setScene(new Scene(videoRoot, 1920, 1080));
             stage.show();
