@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class to handle user input on the CLI for advanced cards.
+ * @see AdvancedCharacterType
+ */
 public class AdvancedCardInputHandler {
     private final GameViewCLI gameViewCli;
     private final AdvancedCharacterType characterToHandleType;
@@ -16,6 +20,10 @@ public class AdvancedCardInputHandler {
         this.characterToHandleType = characterToHandle;
     }
 
+    /**
+     * Based on player's input activate corresponding advanced card method
+     * @return corresponding advanced character object.
+     */
     public Object[] getCardInputs() {
         return switch (characterToHandleType) {
             case BARD -> bard();

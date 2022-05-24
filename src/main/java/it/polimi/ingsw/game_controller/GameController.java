@@ -253,7 +253,7 @@ public class GameController implements Observer<GameAction> {
      * if:
      *<li>It's the player's turn</li>
      *<li>The game is in ACTION phase</li>
-     * <li>Student's dining hall isn't full</li>
+     *<li>Student's dining hall isn't full</li>
      * moves selected student to dining hall
      * </ul>
      </p>
@@ -461,11 +461,20 @@ public class GameController implements Observer<GameAction> {
         }
     }
 
+    /**
+     * Get the current player playing whether the game is in action phase or in planning phase
+     */
     public Player getCurrentPlayer() {
         if(game.getGamePhase().toString().startsWith("ACTION")) return game.getPlayers().get(actionOrder[turn]);
         else return game.getPlayers().get(planningOrder[turn]);
     }
 
+
+    /**
+     * Manage to give each player a deck type from the 4 available, when a deck type is given, other players will ù
+     * have different deck types.
+     * @return list of deck types assigned.
+     */
     public List<DeckType> getAvailableDeckType(){
         return Arrays.stream(DeckType.values()).filter(type ->
                 !(game.getPlayers().stream().filter(pl -> pl.getDeckAssistants() != null)
