@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private final boolean testing = false;
+    private final boolean testing = true;
 
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
@@ -237,7 +237,24 @@ public class GameViewGUI extends Application implements GameViewClient{
 
             videoMediaPlayer = new MediaPlayer(videoMedia);
 
-            videoMediaPlayer.setOnReady(() -> videoMediaPlayer.play());
+            videoMediaPlayer.setOnError(() -> {
+                System.out.println("error " + videoMediaPlayer.getError());
+                gameReady(board);
+                System.out.println("reloading");
+            });
+            videoMediaPlayer.setOnReady(() -> {
+                videoMediaView = new MediaView(videoMediaPlayer);
+
+                videoRoot.getChildren().add(videoMediaView);
+                this.stage = new Stage();
+                this.stage.initStyle(StageStyle.UNDECORATED);
+                this.stage.setResizable(false);
+                this.stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+                soundMediaPlayer.pause();
+                stage.setScene(new Scene(videoRoot, 1920, 1080));
+                stage.show();
+                videoMediaPlayer.play();
+            });
             Platform.runLater(() -> {
                 currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
                 try {
@@ -268,16 +285,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 controllerGameBoard.updateBoard(board);
             });
 
-            videoMediaView = new MediaView(videoMediaPlayer);
 
-            videoRoot.getChildren().add(videoMediaView);
-            this.stage = new Stage();
-            this.stage.initStyle(StageStyle.UNDECORATED);
-            this.stage.setResizable(false);
-            //this.stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
-            soundMediaPlayer.pause();
-            stage.setScene(new Scene(videoRoot, 1920, 1080));
-            stage.show();
         });
     }
 
