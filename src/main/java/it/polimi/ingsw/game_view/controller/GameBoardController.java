@@ -341,7 +341,7 @@ public class GameBoardController implements Initializable {
     public void makeStudentEntranceSelectable(){
         List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
         for(int i = 0; i < entranceStudents.size(); i++){
-            if(entranceStudents.get(i).getEffect() == null) {
+            if(entranceStudents.get(i).getEffect() == null && entranceStudents.get(i).getImage() != null) {
                 setHoverEffect(entranceStudents.get(i), entranceStudents.get(i).getFitHeight() / 2 + 5);
                 int finalI = i;
                 entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
