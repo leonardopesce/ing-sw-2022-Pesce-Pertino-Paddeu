@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
+import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.*;
@@ -31,7 +32,7 @@ import javafx.scene.media.MediaPlayer;
 import java.net.URL;
 import java.util.*;
 
-import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.GAME_ACTION;
+import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
 public class GameBoardController implements Initializable {
@@ -50,7 +51,7 @@ public class GameBoardController implements Initializable {
     private final List<CloudController> clouds = new ArrayList<>();
     private final List<AdvancedCardController> advancedCards = new ArrayList<>();
     @FXML
-    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation;
+    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation, drawAnimation;
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
@@ -127,19 +128,19 @@ public class GameBoardController implements Initializable {
                     }));
         }
         else if(playingAdvancedCard == 1){
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], actionValues.toArray())));
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], actionValues.toArray())));
         }
         else if(playingAdvancedCard == POSTMAN.ordinal() || playingAdvancedCard == PRINCESS.ordinal()){
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName, actionValues.toArray())));
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName, actionValues.toArray())));
         }
         else if(playingAdvancedCard == BARD.ordinal()){
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName,
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName,
                     actionValues.size() == 2 ? Arrays.asList(actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop()),
                     actionValues.size() == 1 ? Arrays.asList(ColorCharacter.values()[actionValues.pop()]) : Arrays.asList(ColorCharacter.values()[actionValues.pop()], ColorCharacter.values()[actionValues.pop()]))));
         }
         else if(playingAdvancedCard == JESTER.ordinal()){
             System.out.println(actionValues);
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, values()[actionValues.pop()], clientName,
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName,
                     actionValues.size() == 2 ? Arrays.asList(actionValues.pop()) : actionValues.size() == 4 ? Arrays.asList(actionValues.pop(), actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop(), actionValues.pop()),
                     actionValues.size() == 1 ? Arrays.asList(actionValues.pop()) : actionValues.size() == 2 ? Arrays.asList(actionValues.pop(), actionValues.pop()) : Arrays.asList(actionValues.pop(), actionValues.pop(), actionValues.pop()))));
         }
@@ -253,8 +254,9 @@ public class GameBoardController implements Initializable {
         });
     }
 
-    public void makeWinAnimation(){
-        winAnimation.setVisible(true);
+    public void makeEndAnimation(CommunicationMessage.MessageType condition){
+        ImageView toShow = condition.equals(YOU_WIN) ? winAnimation : (condition.equals(YOU_LOSE) ? loseAnimation : drawAnimation);
+        toShow.setVisible(true);
         rotateTransition.setCycleCount(100);
         rotateTransition.setByAngle(720);
         rotateTransition.setAutoReverse(true);
@@ -268,15 +270,6 @@ public class GameBoardController implements Initializable {
             cardRotate.setAutoReverse(true);
             cardRotate.play();
         }
-    }
-
-    public void makeLoseAnimation(){
-        winAnimation.setVisible(true);
-        rotateTransition.setCycleCount(10);
-        rotateTransition.setByAngle(720);
-        rotateTransition.setDuration(new Duration(5));
-        rotateTransition.setAutoReverse(true);
-        rotateTransition.play();
     }
 
     private void setUpDecks(int pos){

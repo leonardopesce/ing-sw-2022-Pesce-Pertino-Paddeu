@@ -308,6 +308,18 @@ public class GameViewCLI implements GameViewClient{
         if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
     }
 
+    public void displayEndGame(CommunicationMessage.MessageType condition){
+        if(condition == YOU_WIN){
+            Logger.INFO("You have won the match!");
+        }
+        else if(condition == YOU_LOSE){
+            Logger.INFO("You lost the match!");
+        }
+        else {
+            Logger.INFO("The match finished in a draw.");
+        }
+    }
+
     protected synchronized int whileInputNotIntegerInRange(int a, int b){
         String read;
         boolean first = true;

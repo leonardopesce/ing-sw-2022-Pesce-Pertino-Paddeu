@@ -217,4 +217,9 @@
          <Image url="@../img/youWin.gif" />
       </image>
    </ImageView>
+   <ImageView fx:id="drawAnimation" fitHeight="704.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" visible="false" StackPane.alignment="CENTER">
+      <image>
+         <Image url="@../img/draw.gif" />
+      </image>
+   </ImageView>
 </StackPane>

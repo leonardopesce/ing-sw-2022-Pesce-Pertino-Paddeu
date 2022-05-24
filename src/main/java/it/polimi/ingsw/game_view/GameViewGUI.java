@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_view;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.GameController;
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.GameExpertMode;
@@ -297,6 +298,11 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public Client getClient() {
         return controllerInitial.getClient();
+    }
+
+    @Override
+    public void displayEndGame(CommunicationMessage.MessageType condition) {
+        controllerGameBoard.makeEndAnimation(condition);
     }
 
     public ClientMessageObserverHandler getMsgHandler() {

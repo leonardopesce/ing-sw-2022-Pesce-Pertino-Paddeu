@@ -1,5 +1,6 @@
 package it.polimi.ingsw.game_view;
 
+import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.game_view.board.GameBoard;
 
@@ -63,4 +64,5 @@ public interface GameViewClient{
     GameBoard getBoard();
     void setBoard(GameBoard board);
     Client getClient();
+    void displayEndGame(CommunicationMessage.MessageType condition);
 }
