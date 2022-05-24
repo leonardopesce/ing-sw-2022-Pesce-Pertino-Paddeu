@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private final boolean testing = true;
+    private final boolean testing = false;
 
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
@@ -311,6 +311,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void displayEndGame(CommunicationMessage.MessageType condition) {
+        System.out.println("end game " + condition.name() + " " + condition);
         controllerGameBoard.makeEndAnimation(condition);
     }
 

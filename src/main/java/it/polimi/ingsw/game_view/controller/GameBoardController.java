@@ -149,6 +149,7 @@ public class GameBoardController implements Initializable {
 
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
+            actionValues.clear();
             gameBoard = board;
             playingAdvancedCard = -1;
             rotatingBoardController.update(board);
@@ -256,6 +257,7 @@ public class GameBoardController implements Initializable {
 
     public void makeEndAnimation(CommunicationMessage.MessageType condition){
         ImageView toShow = condition.equals(YOU_WIN) ? winAnimation : (condition.equals(YOU_LOSE) ? loseAnimation : drawAnimation);
+        System.out.println("end game " + condition.name() + " " + condition);
         toShow.setVisible(true);
         rotateTransition.setCycleCount(100);
         rotateTransition.setByAngle(720);
