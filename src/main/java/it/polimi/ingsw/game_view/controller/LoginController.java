@@ -79,6 +79,7 @@ public class LoginController implements Initializable {
 
         loginButton.setOnAction(actionEvent -> {
             errorBox.setVisible(false);
+            loginButton.setDisable(true);
             Logger.INFO("Loggin In...");
             if(!serverPortTextField.getText().equals("") && !serverIpTextField.getText().equals("") && !nicknameTextField.getText().equals("")) {
                 client = new Client(serverIpTextField.getText(), Integer.parseInt(serverPortTextField.getText()));
@@ -88,16 +89,16 @@ public class LoginController implements Initializable {
                     try {
                         client.run();
                     } catch (IOException e) {
-                        if(client != null && !client.isActive()) {
-                            Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
-                            loginErrorMessage.setText("Impossibile connettersi al server con indirizzo IP e porta indicati.");
-                            errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
-                            errorBox.setVisible(true);
-                            client = null;
-                        }
+                        loginButton.setDisable(false);
+                        Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
+                        loginErrorMessage.setText("Impossibile connettersi al server con indirizzo IP e porta indicati.");
+                        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
+                        errorBox.setVisible(true);
+                        client = null;
                     }
                 }).start();
             } else {
+                loginButton.setDisable(false);
                 errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.gif"))));
                 loginErrorMessage.setText("Per favore, completa tutti i campi prima di continuare.");
                 errorBox.setVisible(true);
@@ -139,6 +140,7 @@ public class LoginController implements Initializable {
         loginErrorMessage.setText("Il nickname che hai scelto è già stato preso");
         errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/nicknameAlreadyTakenError.gif"))));
         errorBox.setVisible(true);
+        loginButton.setDisable(false);
         loginButton.setOnAction(actionEvent -> {
             client.setName(nicknameTextField.getText());
             client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, client.getName()));

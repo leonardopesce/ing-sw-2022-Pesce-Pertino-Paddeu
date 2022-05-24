@@ -33,7 +33,6 @@ import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
-    private boolean firstTimeLoadingBoard = true;
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
     private LoginController controllerInitial;
@@ -85,6 +84,16 @@ public class GameViewGUI extends Application implements GameViewClient{
                     throw new RuntimeException(e);
                 }
             }).start();
+
+            new Thread(() -> {
+                try {
+                    currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
+                    gameBoardRoot = currentLoader.load();
+                    controllerGameBoard = currentLoader.getController();
+                } catch (IOException e) {
+                    Logger.ERROR("Error while loading the game window.", e.getMessage());
+                }
+            }).start();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -105,6 +114,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             Parent root;
 
             try{
+                videoMediaPlayer.stop();
                 this.stage.close();
                 this.stage = new Stage();
                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/Login.fxml")));
@@ -195,7 +205,6 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck) {
-        firstTimeLoadingBoard = true;
         Platform.runLater(() -> controllerInitial.displayOtherPlayerIsChoosingHisDeckType((String) playerNameWhoIsChosingTheDeck));
     }
 
@@ -240,31 +249,15 @@ public class GameViewGUI extends Application implements GameViewClient{
 
             videoMediaPlayer.setOnError(() -> {
                 System.out.println("error " + videoMediaPlayer.getError());
-                //TODO may not be needed
                 gameReady(board);
                 System.out.println("reloading");
             });
 
-            if(firstTimeLoadingBoard){
-                firstTimeLoadingBoard = false;
-                    currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
-                    try {
-                        gameBoardRoot = currentLoader.load();
-                    } catch (IOException e) {
-                        Logger.ERROR("Error while opening the game window.", e.getMessage());
-                    }
-                    this.controllerGameBoard = currentLoader.getController();
-
-            }
-
             videoMediaPlayer.setOnEndOfMedia(() -> {
-                this.stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
-                this.stage.setMaximized(true);
-                this.stage.setOnCloseRequest(windowEvent -> {
-                    Platform.exit();
-                    System.exit(0);
-                });
-                this.stage.show();
+                stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
+                stage.setResizable(false);
+                stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+                stage.show();
                 soundMediaPlayer.play();
                 if (testing) {
                     controllerGameBoard.setClientName("Paolo");
@@ -275,23 +268,21 @@ public class GameViewGUI extends Application implements GameViewClient{
                 controllerGameBoard.updateBoard(board);
             });
 
-            videoMediaPlayer.setOnReady(() -> {
-                videoMediaView = new MediaView(videoMediaPlayer);
-
-                videoRoot.getChildren().add(videoMediaView);
-                this.stage = new Stage();
-                this.stage.initStyle(StageStyle.UNDECORATED);
-                this.stage.setResizable(false);
-                this.stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
-                soundMediaPlayer.pause();
-                stage.setScene(new Scene(videoRoot, 1920, 1080));
-                stage.show();
-                videoMediaPlayer.play();
+            videoMediaView = new MediaView(videoMediaPlayer);
+            videoRoot.getChildren().add(videoMediaView);
+            soundMediaPlayer.pause();
+            stage.close();
+            stage = new Stage();
+            stage.setScene(new Scene(videoRoot, 1920, 1080));
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setResizable(false);
+            stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+            stage.setOnCloseRequest(windowEvent -> {
+                Platform.exit();
+                System.exit(0);
             });
-
-
-
-
+            stage.show();
+            videoMediaPlayer.setAutoPlay(true);
         });
     }
 
