@@ -258,6 +258,7 @@ public class GameBoardController implements Initializable {
     public void makeEndAnimation(CommunicationMessage.MessageType condition){
         ImageView toShow = condition.equals(YOU_WIN) ? winAnimation : (condition.equals(YOU_LOSE) ? loseAnimation : drawAnimation);
         toShow.setVisible(true);
+        /*
         rotateTransition.setCycleCount(100);
         rotateTransition.setByAngle(720);
         rotateTransition.setAutoReverse(true);
@@ -271,6 +272,7 @@ public class GameBoardController implements Initializable {
             cardRotate.setAutoReverse(true);
             cardRotate.play();
         }
+        */
     }
 
     private void setUpDecks(int pos){
