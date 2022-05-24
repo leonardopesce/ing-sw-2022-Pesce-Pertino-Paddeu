@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
-
+    private boolean firstTime = true;
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
     private LoginController controllerInitial;
@@ -68,7 +68,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 System.exit(0);
             });
             this.stage.show();
-            Platform.runLater(() -> {
+            new Thread(() -> {
                 System.out.println("init music");
                 try {
                     soundMedia = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
@@ -84,7 +84,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
-            });
+            }).start();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -200,6 +200,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void askDeck(Object availableDecks) {
+        firstTime = true;
         Platform.runLater(() -> { controllerInitial.askDeckView((List<DeckType>) availableDecks); });
     }
 
@@ -226,6 +227,28 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void gameReady(GameBoard board) {
+        if(firstTime){
+            firstTime = false;
+            new Thread(() -> {
+                currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
+                try {
+                    gameBoardRoot = currentLoader.load();
+                } catch (IOException e) {
+                    Logger.ERROR("Error while opening the game window.", e.getMessage());
+                }
+                this.controllerGameBoard = currentLoader.getController();
+                if (!testing) {
+                    controllerGameBoard.setClient(controllerInitial.getClient());
+                }
+                if (testing) {
+                    controllerGameBoard.setClientName("Paolo");
+                } else {
+                    controllerGameBoard.setClient(controllerInitial.getClient());
+                }
+
+                controllerGameBoard.updateBoard(board);
+            }).start();
+        }
         Platform.runLater(() -> {
             this.stage.close();
             Group videoRoot = new Group();
@@ -255,19 +278,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 stage.show();
                 videoMediaPlayer.play();
             });
-            Platform.runLater(() -> {
-                currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
-                try {
-                    gameBoardRoot = currentLoader.load();
-                } catch (IOException e) {
-                    Logger.ERROR("Error while opening the game window.", e.getMessage());
-                }
-            });
             videoMediaPlayer.setOnEndOfMedia(() -> {
-                this.controllerGameBoard = currentLoader.getController();
-                if (!testing) {
-                    controllerGameBoard.setClient(controllerInitial.getClient());
-                }
                 this.stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
                 this.stage.setMaximized(true);
                 this.stage.setOnCloseRequest(windowEvent -> {
@@ -276,13 +287,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 });
                 this.stage.show();
                 soundMediaPlayer.play();
-                if (testing) {
-                    controllerGameBoard.setClientName("Paolo");
-                } else {
-                    controllerGameBoard.setClient(controllerInitial.getClient());
-                }
 
-                controllerGameBoard.updateBoard(board);
             });
 
 
