@@ -54,8 +54,10 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
 
     @Override
     public void update(MoveMessage message){
+        Logger.GAME_LOG(message.getType().toString(), message.getPlayer().getNickname());
         boolean gameOver = message.getGame().winner().length != 0;
         boolean draw = message.getGame().MAX_PLAYERS == 4 ? (message.getGame().winner().length == 4) :(message.getGame().winner().length == 2 || message.getGame().winner().length == 3);
+        Logger.GAME_LOG("Is game over: " + (gameOver ? " TRUE" : "FALSE") + "\nIs draw: " + (draw ? "TRUE" : "FALSE"), message.getPlayer().getNickname());
         if (gameOver) {
             sendMessage(new CommunicationMessage(draw ? DRAW :
                     (Arrays.asList(message.getGame().winner()).contains(playerName) ?
