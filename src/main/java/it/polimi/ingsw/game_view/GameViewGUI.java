@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private final boolean testing = false;
-    private boolean firstTime = true;
+    private final boolean testing = true;
+    private boolean firstTimeLoadingBoard = true;
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
     private LoginController controllerInitial;
@@ -195,12 +195,12 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck) {
+        firstTimeLoadingBoard = true;
         Platform.runLater(() -> controllerInitial.displayOtherPlayerIsChoosingHisDeckType((String) playerNameWhoIsChosingTheDeck));
     }
 
     @Override
     public void askDeck(Object availableDecks) {
-        firstTime = true;
         Platform.runLater(() -> { controllerInitial.askDeckView((List<DeckType>) availableDecks); });
     }
 
@@ -227,28 +227,6 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void gameReady(GameBoard board) {
-        if(firstTime){
-            firstTime = false;
-            new Thread(() -> {
-                currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
-                try {
-                    gameBoardRoot = currentLoader.load();
-                } catch (IOException e) {
-                    Logger.ERROR("Error while opening the game window.", e.getMessage());
-                }
-                this.controllerGameBoard = currentLoader.getController();
-                if (!testing) {
-                    controllerGameBoard.setClient(controllerInitial.getClient());
-                }
-                if (testing) {
-                    controllerGameBoard.setClientName("Paolo");
-                } else {
-                    controllerGameBoard.setClient(controllerInitial.getClient());
-                }
-
-                controllerGameBoard.updateBoard(board);
-            }).start();
-        }
         Platform.runLater(() -> {
             this.stage.close();
             Group videoRoot = new Group();
@@ -262,9 +240,41 @@ public class GameViewGUI extends Application implements GameViewClient{
 
             videoMediaPlayer.setOnError(() -> {
                 System.out.println("error " + videoMediaPlayer.getError());
+                //TODO may not be needed
                 gameReady(board);
                 System.out.println("reloading");
             });
+
+            if(firstTimeLoadingBoard){
+                firstTimeLoadingBoard = false;
+                    currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
+                    try {
+                        gameBoardRoot = currentLoader.load();
+                    } catch (IOException e) {
+                        Logger.ERROR("Error while opening the game window.", e.getMessage());
+                    }
+                    this.controllerGameBoard = currentLoader.getController();
+
+            }
+
+            videoMediaPlayer.setOnEndOfMedia(() -> {
+                this.stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
+                this.stage.setMaximized(true);
+                this.stage.setOnCloseRequest(windowEvent -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
+                this.stage.show();
+                soundMediaPlayer.play();
+                if (testing) {
+                    controllerGameBoard.setClientName("Paolo");
+                } else {
+                    controllerGameBoard.setClient(controllerInitial.getClient());
+                }
+
+                controllerGameBoard.updateBoard(board);
+            });
+
             videoMediaPlayer.setOnReady(() -> {
                 videoMediaView = new MediaView(videoMediaPlayer);
 
@@ -278,17 +288,8 @@ public class GameViewGUI extends Application implements GameViewClient{
                 stage.show();
                 videoMediaPlayer.play();
             });
-            videoMediaPlayer.setOnEndOfMedia(() -> {
-                this.stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
-                this.stage.setMaximized(true);
-                this.stage.setOnCloseRequest(windowEvent -> {
-                    Platform.exit();
-                    System.exit(0);
-                });
-                this.stage.show();
-                soundMediaPlayer.play();
 
-            });
+
 
 
         });
