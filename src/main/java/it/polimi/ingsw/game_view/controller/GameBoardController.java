@@ -119,7 +119,7 @@ public class GameBoardController implements Initializable {
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
                     switch (gameBoard.getPhase()) {
                         case PLANNING_PHASE -> new PlayAssistantCardAction(clientName, actionValues.pop());
-                        case ACTION_PHASE_MOVING_STUDENTS -> actionValues.get(0) == gameBoard.getTerrain().getIslands().size() ?
+                        case ACTION_PHASE_MOVING_STUDENTS -> actionValues.get(0) == islands.size() ?
                                 new MoveStudentToDiningHallAction(clientName, actionValues.pop()) :
                                 new MoveStudentToIslandAction(clientName, actionValues.pop(), actionValues.pop());
                         case ACTION_PHASE_MOVING_MOTHER_NATURE -> new MoveMotherNatureAction(clientName, countStepFromMotherNatureToIslandWithID(actionValues.pop()));
@@ -393,7 +393,7 @@ public class GameBoardController implements Initializable {
         diningHall.setOnMouseExited(a -> diningHall.setStyle(null));
         diningHall.setOnMouseClicked(a -> {
             rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
-            actionValues.add(0, gameBoard.getTerrain().getIslands().size());
+            actionValues.add(0, islands.size());
             for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
                 island.setEffect(null);
                 island.setOnMouseClicked(null);

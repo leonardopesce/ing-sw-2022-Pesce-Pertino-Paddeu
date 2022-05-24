@@ -481,10 +481,6 @@ public class GameController implements Observer<GameAction> {
                         .map(pl -> pl.getDeckAssistants().getType()).toList().contains(type))).toList();
     }
 
-    public int getIslandIndexFromID(int islandId) {
-        return game.getTerrain().getIslands().indexOf(game.getTerrain().getIslandWithId(islandId));
-    }
-
     @Override
     public void update(GameAction action) {
         action.perform(this);

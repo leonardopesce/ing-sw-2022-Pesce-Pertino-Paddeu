@@ -22,7 +22,7 @@ public class MoveStudentToIslandAction extends GameAction{
 
     @Override
     public void perform(GameController controller) {
-        controller.playerMoveStudentToIsland(playerName, studentIndex, controller.getIslandIndexFromID(islandIndex));
+        controller.playerMoveStudentToIsland(playerName, studentIndex, islandIndex);
     }
 
     @Override
