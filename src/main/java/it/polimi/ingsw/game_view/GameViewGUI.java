@@ -79,7 +79,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                         soundMediaPlayer.play();
                     });
 
-                    soundMediaPlayer.play();
+                    soundMediaPlayer.setOnReady(() -> soundMediaPlayer.play());
 
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
@@ -236,7 +236,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             }
 
             videoMediaPlayer = new MediaPlayer(videoMedia);
-            videoMediaPlayer.setAutoPlay(true);
+            videoMediaPlayer.setOnReady(() -> videoMediaPlayer.play());
             Platform.runLater(() -> {
                 currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
                 try {
