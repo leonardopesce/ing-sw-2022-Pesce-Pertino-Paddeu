@@ -6,6 +6,14 @@ import it.polimi.ingsw.game_model.world.Island;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+/**
+ *    <dt><b>Healer</b> - Cost: <b>2</b></dt>
+ *       <p>
+ *       <dd>
+ *           At the beginning of the match put the 4 No Entry tiles on this card.<br>
+ *          <b>EFFECT</b>: Place a No Entry tile on an island of your choice. The first time Mother Nature ends her movement there put the no entry tile back onto this card without calculating influence or placing any tower.
+ *      </dd>
+ */
 public class Healer extends AdvancedCharacter{
     private int numberOfDeniableIslands = 4;
 

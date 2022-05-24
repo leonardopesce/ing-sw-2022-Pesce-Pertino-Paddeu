@@ -6,6 +6,13 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
+/**
+ * <dt><b>Knight</b> - Cost: <b>2</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: During the influence calculation this turn, you count as having 2 more influence.
+ *       </dd>
+ */
 public class Knight extends AdvancedCharacter{
     public Knight(Game game){
         super(AdvancedCharacterType.KNIGHT, game);

@@ -11,6 +11,13 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 import java.util.List;
 
+/**
+ *      <dt><b>Bard</b> - Cost: <b>1</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: You may exchange up to 2 students between your entrance and your dining room.
+ *       </dd>
+ */
 public class Bard extends AdvancedCharacter{
     public Bard(Game game){
         super(AdvancedCharacterType.BARD, game);

@@ -6,6 +6,13 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.world.Island;
 
+/**
+ * <dt><b>Centaurus</b> - Cost: <b>3</b></dt>
+ *      <p>
+ *      <dd>
+ *           <b>EFFECT</b>: When resolving a Conquering on an island, Towers do not count towards influence.
+ *      </dd>
+ */
 public class Centaurus extends AdvancedCharacter{
     public Centaurus(Game game) {
         super(AdvancedCharacterType.CENTAURUS, game);
