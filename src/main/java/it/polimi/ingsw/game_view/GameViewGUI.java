@@ -63,7 +63,11 @@ public class GameViewGUI extends Application implements GameViewClient{
             this.stage.setHeight(550);
             this.stage.setOnCloseRequest(windowEvent -> {
                 Platform.exit();
-                controllerInitial.getClient().close();
+                try {
+                    controllerInitial.getClient().close();
+                } catch (Exception e) {
+                    // If the client is not active it's fine anyways.
+                }
                 System.exit(0);
             });
             this.stage.show();

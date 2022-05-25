@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="mainPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="450.0" minWidth="800.0" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.GameBoardController">
+<StackPane fx:id="mainPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="450.0" minWidth="800.0" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.GameBoardController">
     <fx:include fx:id="rotatingBoard" source="RotatingBoard.fxml" />
    <GridPane alignment="TOP_CENTER" pickOnBounds="false">
      <columnConstraints>
@@ -108,7 +108,16 @@
                      <Font name="System Bold Italic" size="18.0" />
                   </font>
                </Label>
-               <Label fx:id="comment" prefHeight="115.0" prefWidth="322.0" text="asjkfvnoaibv arfnaoisndafo insf winfr aosinf oaisnoias biw rnoiasbhroafi bsn" textOverrun="CLIP" wrapText="true" />
+               <HBox fx:id="commentBox" alignment="CENTER">
+                  <children>
+                     <ImageView fx:id="commentLogo" fitHeight="80.0" fitWidth="83.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                           <Insets right="20.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Label fx:id="comment" prefHeight="94.0" prefWidth="195.0" text="asjkfvnoaibv arfnaoisndafo insf winfr aosinf oaisnoias biw rnoiasbhroafi bsn" textOverrun="CLIP" wrapText="true" />
+                  </children>
+               </HBox>
             </children>
             <GridPane.margin>
                <Insets bottom="-15.0" left="-15.0" />

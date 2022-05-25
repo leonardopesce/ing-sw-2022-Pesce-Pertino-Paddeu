@@ -27,7 +27,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 import java.net.URL;
 import java.util.*;
@@ -50,8 +49,12 @@ public class GameBoardController implements Initializable {
     private final Stack<Integer> actionValues = new Stack<>();
     private final List<CloudController> clouds = new ArrayList<>();
     private final List<AdvancedCardController> advancedCards = new ArrayList<>();
+    private final Image infoLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/infoLogo.gif")));
+    private final Image errorLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/errorLogo.gif")));
+    private final Image notYourTurnLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/loading.gif")));
+    private final Image yourTurnLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/yourTurn.gif")));
     @FXML
-    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation, drawAnimation;
+    private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation, drawAnimation, commentLogo;
     @FXML
     private Button player1Board, player2Board, player3Board, player4Board;
     @FXML
@@ -59,7 +62,7 @@ public class GameBoardController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
-    private HBox cards, cloudHBox;
+    private HBox cards, cloudHBox, commentBox;
     @FXML
     private VBox advancedBoard, infoBox;
     @FXML
@@ -74,6 +77,7 @@ public class GameBoardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        commentBox.setVisible(false);
         advancedCards.addAll(Arrays.asList(advancedCard0Controller, advancedCard1Controller, advancedCard2Controller));
         clouds.addAll(Arrays.asList(cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller));
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
@@ -149,11 +153,12 @@ public class GameBoardController implements Initializable {
 
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
+            commentBox.setVisible(false);
             actionValues.clear();
             gameBoard = board;
             playingAdvancedCard = -1;
             rotatingBoardController.update(board);
-            gamePhaseLabel.setText(board.getPhase().toString());
+            gamePhaseLabel.setText(board.getPhase().getName());
             if (firstTime) {
                 firstTime = false;
                 for (int i = 0; i < 4; i++) {
@@ -215,20 +220,29 @@ public class GameBoardController implements Initializable {
             }
 
             if (board.getCurrentlyPlaying().equals(clientName)) {
+                commentLogo.setImage(yourTurnLogo);
                 if (board.getPhase().equals(GamePhase.PLANNING_PHASE)) {
+                    setComment("E' il tuo turno! Gioca una carta assistente.");
                     makeAssistantCardPlayable();
                 }
                 else if (board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)) {
+                    setComment("E' il tuo turno! Muovi gli studenti.");
                     makeStudentEntranceSelectable();
                 }
                 else if(board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)){
+                    setComment("Ora scegli dove muovere madre natura. Puoi spostarla di un massimo di " + board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps() + " passi dalla sua posizione attuale.");
                     makeNextXIslandVisibleFromMotherNatureSelectable(board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps());
                 }
                 else if(board.getPhase().equals(GamePhase.ACTION_PHASE_CHOOSING_CLOUD)){
+                    setComment("Scegli infine una carta nuvola per raccogliere gli studenti che vi sono sopra.");
                     makeCloudSelectable();
                 }
+                commentBox.setVisible(true);
             } else {
-                gamePhaseLabel.setText("NOT YOUR TURN");
+                gamePhaseLabel.setText("Non è il tuo turno");
+                setComment("E' il turno di " + board.getCurrentlyPlaying() + ". Tra poco toccherà a te...");
+                commentLogo.setImage(notYourTurnLogo);
+                commentBox.setVisible(true);
             }
 
             if(clientName.equals(gameBoard.getCurrentlyPlaying()) && gameBoard.isExpertMode()){
@@ -493,10 +507,13 @@ public class GameBoardController implements Initializable {
             cardImage.setOnMouseEntered(a -> {
                 cardImage.setEffect(new Glow(0.5));
                 comment.setText("Mouse on Advanced Card " + card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
+                commentLogo.setImage(infoLogo);
+                commentBox.setVisible(true);
             });
             cardImage.setOnMouseExited(a -> {
                 cardImage.setEffect(new Glow(0));
                 comment.setText("");
+                commentBox.setVisible(false);
             });
             cardImage.setOnMouseClicked(a -> {
                 addActionValue(card.getType().ordinal());
