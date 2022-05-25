@@ -254,10 +254,18 @@ public class GameViewGUI extends Application implements GameViewClient{
             });
 
             videoMediaPlayer.setOnEndOfMedia(() -> {
+                Stage previousStage = stage;
+                stage = new Stage();
                 stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
+                stage.initStyle(StageStyle.UNDECORATED);
                 stage.setResizable(false);
-                stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+                stage.setMaximized(true);
+                stage.setOnCloseRequest(windowEvent -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
                 stage.show();
+                previousStage.close();
                 soundMediaPlayer.play();
                 if (testing) {
                     controllerGameBoard.setClientName("Paolo");
@@ -269,6 +277,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             });
 
             videoMediaView = new MediaView(videoMediaPlayer);
+            videoMediaView.setMouseTransparent(true);
             videoRoot.getChildren().add(videoMediaView);
             soundMediaPlayer.pause();
             stage.close();
@@ -276,7 +285,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             stage.setScene(new Scene(videoRoot, 1920, 1080));
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setResizable(false);
-            stage.setMaximized(true); //- SE ATTIVO NON SI POSSONO AVVIARE 2 CLIENT CON GUI SULLO STESSO DISPOSITIVO
+            stage.setMaximized(true);
             stage.setOnCloseRequest(windowEvent -> {
                 Platform.exit();
                 System.exit(0);
