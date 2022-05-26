@@ -52,8 +52,20 @@ By clicking the icons below you'll be redirected to the delivered material.
 
 | Installation | Run Eriantys | Javadocs | Weekly report | UML |
 |:-------------|:-------------|:---------|:--------------|:----|
-| <a href="TODO"><img src="markdown-assets/installation.gif" width=90></a> | <a href="TODO"><img src="markdown-assets/running.gif" width=90></a> | <a href="TODO"><img src="markdown-assets/javadoc.gif" width=90></a> | <a href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/blob/main/Deliverables/eriantys_report.pdf"><img src="markdown-assets/report.gif" width=90></a> | <a href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/tree/main/Deliverables/UML"><img src="markdown-assets/uml.gif" width=90></a> |
+| [![][installation-logo]][installation-link] | [![][running-logo]][running-link] | [![][javadocs-logo]][javadocs-link] | [![][report-logo]][report-link] | [![][uml-logo]][uml-link] |
 | Installation steps | Running the jars | Project javadocs | Our weekly report | UML week by week
 
 ## Tests
 TODO
+
+
+[installation-logo]: markdown-assets/installation.gif
+[installation-link]: https://www.google.it/
+[running-logo]: markdown-assets/running.gif
+[running-link]: https://www.google.it/
+[javadocs-logo]: markdown-assets/javadoc.gif
+[javadocs-link]: https://www.google.it/
+[report-logo]: markdown-assets/report.gif
+[report-link]: Deliverables/eriantys_report.pdf
+[uml-logo]: markdown-assets/uml.gif
+[uml-link]: Deliverables/UML/
