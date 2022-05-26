@@ -134,7 +134,10 @@ public class GameBoardController implements Initializable {
         else if(playingAdvancedCard == 1){
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], actionValues.toArray())));
         }
-        else if(playingAdvancedCard == POSTMAN.ordinal() || playingAdvancedCard == PRINCESS.ordinal()){
+        else if(playingAdvancedCard == POSTMAN.ordinal()) {
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName)));
+        }
+        else if(playingAdvancedCard == PRINCESS.ordinal()){
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName, actionValues.toArray())));
         }
         else if(playingAdvancedCard == BARD.ordinal()){
