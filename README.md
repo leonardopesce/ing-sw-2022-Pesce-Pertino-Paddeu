@@ -21,7 +21,7 @@ Eriantys is a game full of strategy, tactics and twists. Plan your moves careful
 
 | Professor & Tutors | Role |
 |:-------------------|:----:|
-| Giampaolo Cugola   | Software Engineering Professor |
+| Gianpaolo Cugola   | Software Engineering Professor |
 | Davide Mazza       | Teaching Assistant             |
 | Francesco Sammarco | Teaching Assistant             |
 | Franco Chierici    | Teaching Assistant             |
@@ -52,7 +52,7 @@ By clicking the icons below you'll be redirected to the delivered material.
 
 | Installation | Run Eriantys | Javadocs | Weekly report | UML |
 |:-------------|:-------------|:---------|:--------------|:----|
-| <a href="TODO"><img src="markdown-assets/installation.gif" width=90></a> | <a href="TODO"><img src="markdown-assets/running.gif" width=90></a> | <a href="TODO"><img src="markdown-assets/javadoc.gif" width=90></a> | <a href="Deliverables/eriantys_report.pdf"><img src="markdown-assets/report.gif" width=90></a> | <a href="Deliverables/UML"><img src="markdown-assets/uml.gif" width=90></a> |
+| <a href="TODO"><img src="markdown-assets/installation.gif" width=90></a> | <a href="TODO"><img src="markdown-assets/running.gif" width=90></a> | <a href="TODO"><img src="markdown-assets/javadoc.gif" width=90></a> | <a href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/blob/main/Deliverables/eriantys_report.pdf"><img src="markdown-assets/report.gif" width=90></a> | <a href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/tree/main/Deliverables/UML"><img src="markdown-assets/uml.gif" width=90></a> |
 | Installation steps | Running the jars | Project javadocs | Our weekly report | UML week by week
 
 ## Tests
