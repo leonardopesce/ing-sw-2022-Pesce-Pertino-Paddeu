@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -163,6 +164,8 @@ public class GameViewGUI extends Application implements GameViewClient{
             if(controllerInitial.getClient().getName().equals(boardToUpdate.getCurrentlyPlaying())) {
                 controllerGameBoard.updateBoard(boardToUpdate);
                 controllerGameBoard.setComment(errorMsg);
+                controllerGameBoard.setCommentLogo(controllerGameBoard.getErrorLogo());
+                controllerGameBoard.setCommentBoxVisible();
             }
         });
     }
@@ -174,17 +177,17 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void displayYourTurn() {
-
+        // Already handled in GameBoardController
     }
 
     @Override
     public void displayOtherPlayerTurn(String otherPlayerName) {
-        // TODO: display the currently playing nickname to all the players except the one which is playing.
+        // Already handled in GameBoardController
     }
 
     @Override
     public void displayExpertMode() {
-
+        // Already handled in GameBoardController
     }
 
     @Override
@@ -301,7 +304,12 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void reaskAssistant() {
-        controllerGameBoard.makeAssistantCardPlayable();
+        Platform.runLater(() -> {
+            controllerGameBoard.makeAssistantCardPlayable();
+            controllerGameBoard.setComment("L'assistente da te scelto è stato già selezionato da un altro giocatore in questo turno. Scegline un altro.");
+            controllerGameBoard.setCommentLogo(controllerGameBoard.getErrorLogo());
+            controllerGameBoard.setCommentBoxVisible();
+        });
     }
 
     @Override
@@ -311,7 +319,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
     @Override
     public void setBoard(GameBoard board) {
-
+        // Useless lol
     }
 
     @Override
@@ -322,9 +330,5 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void displayEndGame(CommunicationMessage.MessageType condition) {
         controllerGameBoard.makeEndAnimation(condition);
-    }
-
-    public ClientMessageObserverHandler getMsgHandler() {
-        return msgHandler;
     }
 }

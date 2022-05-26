@@ -77,7 +77,7 @@ public class GameBoardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        commentBox.setVisible(false);
+        setCommentBoxNotVisible();
         advancedCards.addAll(Arrays.asList(advancedCard0Controller, advancedCard1Controller, advancedCard2Controller));
         clouds.addAll(Arrays.asList(cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller));
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
@@ -153,7 +153,7 @@ public class GameBoardController implements Initializable {
 
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
-            commentBox.setVisible(false);
+            setCommentBoxNotVisible();
             actionValues.clear();
             gameBoard = board;
             playingAdvancedCard = -1;
@@ -220,7 +220,7 @@ public class GameBoardController implements Initializable {
             }
 
             if (board.getCurrentlyPlaying().equals(clientName)) {
-                commentLogo.setImage(yourTurnLogo);
+                setCommentLogo(yourTurnLogo);
                 if (board.getPhase().equals(GamePhase.PLANNING_PHASE)) {
                     setComment("E' il tuo turno! Gioca una carta assistente.");
                     makeAssistantCardPlayable();
@@ -237,12 +237,12 @@ public class GameBoardController implements Initializable {
                     setComment("Scegli infine una carta nuvola per raccogliere gli studenti che vi sono sopra.");
                     makeCloudSelectable();
                 }
-                commentBox.setVisible(true);
+                setCommentBoxVisible();
             } else {
                 gamePhaseLabel.setText("Non è il tuo turno");
                 setComment("E' il turno di " + board.getCurrentlyPlaying() + ". Tra poco toccherà a te...");
-                commentLogo.setImage(notYourTurnLogo);
-                commentBox.setVisible(true);
+                setCommentLogo(notYourTurnLogo);
+                setCommentBoxVisible();
             }
 
             if(clientName.equals(gameBoard.getCurrentlyPlaying()) && gameBoard.isExpertMode()){
@@ -506,14 +506,14 @@ public class GameBoardController implements Initializable {
 
             cardImage.setOnMouseEntered(a -> {
                 cardImage.setEffect(new Glow(0.5));
-                comment.setText("Mouse on Advanced Card " + card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
-                commentLogo.setImage(infoLogo);
-                commentBox.setVisible(true);
+                setComment("Mouse on Advanced Card " + card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
+                setCommentLogo(infoLogo);
+                setCommentBoxVisible();
             });
             cardImage.setOnMouseExited(a -> {
                 cardImage.setEffect(new Glow(0));
-                comment.setText("");
-                commentBox.setVisible(false);
+                setComment("");
+                setCommentBoxNotVisible();
             });
             cardImage.setOnMouseClicked(a -> {
                 addActionValue(card.getType().ordinal());
@@ -666,5 +666,15 @@ public class GameBoardController implements Initializable {
     }
     public void setComment(String message){
         comment.setText(message);
+    }
+
+    public void setCommentLogo(Image logoToSet) { commentLogo.setImage(logoToSet); }
+
+    public void setCommentBoxVisible() { commentBox.setVisible(true); }
+
+    public void setCommentBoxNotVisible() { commentBox.setVisible(false); }
+
+    public Image getErrorLogo() {
+        return errorLogo;
     }
 }
