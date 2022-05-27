@@ -25,8 +25,10 @@ public class Bartender extends AdvancedCharacter{
                 new CalculatorTeacherOwnership(){
                     @Override
                     protected void addTeacherToPlayerWithHighestNumberOfStudentOfColor(Player currentPlayer, Player oldOwner, Teacher teacher){
+                        Player newOwner = getNewPlayerOwnerOfTeacherOfColor(teacher);
+
                         if(currentPlayer.getNumberOfStudentAtTableOfColor(teacher.getColor()) >=
-                                oldOwner.getNumberOfStudentAtTableOfColor(teacher.getColor())){
+                                newOwner.getNumberOfStudentAtTableOfColor(teacher.getColor())){
                             currentPlayer.getSchool().addTeacher(teacher);
                         }
                         else {

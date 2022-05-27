@@ -17,7 +17,8 @@ public class Server {
     private final List<Lobby> activeGames = new ArrayList<>();
     private final String[] bannedNicks = {"GO_BACK_TO_JOIN_ACTION"};
 
-    public Server() throws IOException {
+    public Server(/*int serverPort*/) throws IOException {
+        //this.serverSocket = new ServerSocket(serverPort); FOR FUTURE USE (ALREADY TESTED) - When using this line, comment the one below.
         this.serverSocket = new ServerSocket(PORT);
     }
 
