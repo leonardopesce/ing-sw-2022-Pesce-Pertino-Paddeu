@@ -255,9 +255,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             videoMediaPlayer = new MediaPlayer(videoMedia);
 
             videoMediaPlayer.setOnError(() -> {
-                System.out.println("error " + videoMediaPlayer.getError());
                 gameReady(board);
-                System.out.println("reloading");
             });
 
             videoMediaPlayer.setOnEndOfMedia(() -> {

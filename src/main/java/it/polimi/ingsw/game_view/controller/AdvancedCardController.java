@@ -120,6 +120,12 @@ public class AdvancedCardController implements Initializable {
                     if(type == PRINCESS){
                         gameBoard.setPlayingAdvancedCard(PRINCESS.ordinal());
                     }
+                    if(type == MERCHANT) {
+                        gameBoard.setPlayingAdvancedCard(MERCHANT.ordinal());
+                    }
+                    if(type == LANDLORD) {
+                        gameBoard.setPlayingAdvancedCard(LANDLORD.ordinal());
+                    }
                     if(type == MONK){
                         gameBoard.makeVisibleIslandsSelectable();
                     }

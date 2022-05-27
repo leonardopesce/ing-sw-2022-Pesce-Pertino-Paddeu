@@ -20,7 +20,6 @@ import java.util.Objects;
  * Class to model the player in the game
  */
 public class Player {
-    //TODO sistemare questione torri in 4 giocatori
     private final String nickname;
     private ColorTower color;
     private School school;
@@ -124,7 +123,7 @@ public class Player {
                 return t;
             }
         }
-        // condition is never verified if you
+
         return null;
     }
 

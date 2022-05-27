@@ -94,7 +94,7 @@ public class Bard extends AdvancedCharacter{
                     tablesDimension[player.getSchool().getEntrance().getStudent(integer).getColor().ordinal()] += 1;
                 }
                 for(int i=0;i<5;i++) {
-                    if(tablesDimension[i] > DiningTable.MAX_POSITIONS) return false;
+                    if(tablesDimension[i] > DiningTable.MAX_POSITIONS || tablesDimension[i] < 0) return false;
                 }
             }
         } catch(Exception ex) {

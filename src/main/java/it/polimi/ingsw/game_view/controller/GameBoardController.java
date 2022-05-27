@@ -53,6 +53,7 @@ public class GameBoardController implements Initializable {
     private final Image errorLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/errorLogo.gif")));
     private final Image notYourTurnLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/loading.gif")));
     private final Image yourTurnLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/yourTurn.gif")));
+    private final Image notEnoughMoneyLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/money.gif")));
     @FXML
     private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation, drawAnimation, commentLogo;
     @FXML
@@ -134,11 +135,14 @@ public class GameBoardController implements Initializable {
         else if(playingAdvancedCard == 1){
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], actionValues.toArray())));
         }
+        else if (playingAdvancedCard == MERCHANT.ordinal() || playingAdvancedCard == LANDLORD.ordinal()) {
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], ColorCharacter.values()[actionValues.pop()])));
+        }
         else if(playingAdvancedCard == POSTMAN.ordinal()) {
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName)));
         }
         else if(playingAdvancedCard == PRINCESS.ordinal()){
-            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName, actionValues.toArray())));
+            client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName, actionValues.pop())));
         }
         else if(playingAdvancedCard == BARD.ordinal()){
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(clientName, AdvancedCharacterType.values()[actionValues.pop()], clientName,
@@ -504,35 +508,45 @@ public class GameBoardController implements Initializable {
     private void makeAdvancedCardSelectable(){
         //TODO readd filter for money
         /*.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()*/
-        for(AdvancedCardController card : advancedCards.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()) {
+        for(AdvancedCardController card : advancedCards) {
             ImageView cardImage = card.getCardImage();
+            String previousComment = comment.getText();
+            Image previousCommentLogo = commentLogo.getImage();
 
             cardImage.setOnMouseEntered(a -> {
                 cardImage.setEffect(new Glow(0.5));
-                setComment("Mouse on Advanced Card " + card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
+                setComment(card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
                 setCommentLogo(infoLogo);
                 setCommentBoxVisible();
             });
             cardImage.setOnMouseExited(a -> {
                 cardImage.setEffect(new Glow(0));
-                setComment("");
-                setCommentBoxNotVisible();
+                setComment(previousComment);
+                setCommentLogo(previousCommentLogo);
             });
-            cardImage.setOnMouseClicked(a -> {
-                addActionValue(card.getType().ordinal());
-                card.playEffect(this);
+            if(card.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))) {
+                cardImage.setOnMouseClicked(a -> {
+                    addActionValue(card.getType().ordinal());
+                    card.playEffect(this);
 
-                for (AdvancedCardController c : advancedCards) {
-                    if (!c.getType().equals(card.getType())) {
-                        c.getCardImage().setOnMouseClicked(null);
-                        c.getCardImage().setOnMouseExited(null);
-                        c.getCardImage().setOnMouseEntered(null);
+                    for (AdvancedCardController c : advancedCards) {
+                        if (!c.getType().equals(card.getType())) {
+                            c.getCardImage().setOnMouseClicked(null);
+                            c.getCardImage().setOnMouseExited(null);
+                            c.getCardImage().setOnMouseEntered(null);
+                        }
                     }
-                }
-                card.getCardImage().setOnMouseExited(null);
-                card.getCardImage().setOnMouseEntered(null);
-                card.getCardImage().setOnMouseClicked(null);
-            });
+                    card.getCardImage().setOnMouseExited(null);
+                    card.getCardImage().setOnMouseEntered(null);
+                    card.getCardImage().setOnMouseClicked(null);
+                });
+            } else {
+                cardImage.setOnMouseClicked(a -> {
+                    setComment("Non hai abbastanza monete per giocare questa carta. Essa richiede " + card.getCost() + " monete per essere giocata e tu ne hai " + gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName)) + ".");
+                    setCommentLogo(notEnoughMoneyLogo);
+                    setCommentBoxVisible();
+                });
+            }
         }
     }
 
