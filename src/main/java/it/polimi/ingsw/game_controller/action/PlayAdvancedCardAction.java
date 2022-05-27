@@ -5,9 +5,9 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import it.polimi.ingsw.network.utils.Logger;
 
 /**
- * Model the controller action of playing advanced cards
- *Every "action" card has an override of the <code>perform</code> method, that do a specific controller action
- *based on the name of the class using the corresponding controller method.
+ * Model the controller action of playing an advanced card.
+ * Every "action" card has an override of the <code>perform</code> method, that do a specific controller action
+ * based on the name of the class using the corresponding controller method.
  * @see it.polimi.ingsw.game_model.character.advanced.AdvancedCharacter
  * @see GameController
  */

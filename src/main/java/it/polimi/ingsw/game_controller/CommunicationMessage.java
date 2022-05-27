@@ -3,10 +3,16 @@ package it.polimi.ingsw.game_controller;
 import java.io.Serializable;
 
 /**
- * Enumeration to manage messages that are changed between controller and view
+ * Class representing the message object exchanged between clients and server.
+ *
+ * <p>It is characterized by an ID and can contain the object which must be transmitted (e.g. GameBoard).
  */
 public class CommunicationMessage implements Serializable{
     private static final long serialVersionUID = 1234567L;
+
+    /**
+     * Enumeration representing all the available message types.
+     */
     public enum MessageType {
         CONNECTION_CONFIRMED,
         NAME_MESSAGE,
@@ -55,10 +61,20 @@ public class CommunicationMessage implements Serializable{
         this.message = message;
     }
 
+    /**
+     * Returns the message ID of the current message.
+     *
+     * @return the message ID.
+     */
     public MessageType getID() {
         return ID;
     }
 
+    /**
+     * Returns the message content of the current message.
+     *
+     * @return the message content.
+     */
     public Object getMessage() {
         return message;
     }

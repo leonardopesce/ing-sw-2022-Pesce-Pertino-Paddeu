@@ -22,7 +22,7 @@ import java.security.SecureRandom;
 import java.util.*;
 
 /**
- * Class to model the controller
+ * Class to model the game controller.
  */
 public class GameController implements Observer<GameAction> {
     private final SecureRandom random = new SecureRandom();
@@ -37,6 +37,16 @@ public class GameController implements Observer<GameAction> {
         actionOrder = new int[game.MAX_PLAYERS];
     }
 
+    /**
+     * Create a new player object with the given name and assigning him the given deck.
+     *
+     * @param name the player nickname.
+     * @param type the deck type chosen by the player.
+     * @return the player object created with the given params.
+     *
+     * @see Player
+     * @see DeckType
+     */
     public Player createPlayer(String name, DeckType type){
         Player player = new Player(name, type);
         addPlayer(player);
@@ -44,7 +54,8 @@ public class GameController implements Observer<GameAction> {
     }
 
     /**
-     * Adds a player to the list of players.
+     * Adds a player to the list of players, then it checks whether the game is full or not.
+     * If the maximum player capacity has been reached, it starts the game.
      *
      * @param player  the player to be added to the game's player list
      *
@@ -80,6 +91,7 @@ public class GameController implements Observer<GameAction> {
      *  This function states the beginning of a new turn consisted in up to 4 planning phase and action phase
      */
     private void playTurn(){
+        // If there isn't (aren't) a winner(s) than a new turn is set up, otherwise the game ends.
         if (game.winner().length == 0) {
             game.setUpGamePhase(GamePhase.PLANNING_PHASE);
             refillClouds();
@@ -118,24 +130,36 @@ public class GameController implements Observer<GameAction> {
         Optional<Player> player = getPlayerFromName(playerName);
         if(player.isPresent()) {
             Assistant assistant = player.get().getDeckAssistants().getAssistants().get(assistantIndex);
+            // If the player who called this function is effectively the currently playing player, than...
             if (game.getCurrentlyPlayingPlayer().equals(player.get())) {
+                // If the assistant card chosen is playable...
                 if (isAssistantCardPlayable(player.get(), assistant)) {
+                    // Plays the assistant card and changes the turn phase, by also notifying all the clients of the chosen card.
                     game.getCurrentlyPlayingPlayer().playAssistant(assistant);
 
                     turn++;
                     nextPlanningPhase();
                     game.runNotify(CommunicationMessage.MessageType.VIEW_UPDATE);
                 } else {
+                    // If the assistant is not playable, we notify the client with an ASSISTANT_NOT_PLAYABLE error message.
                     game.runNotify(CommunicationMessage.MessageType.ASSISTANT_NOT_PLAYABLE);
                 }
             } else {
+                // If a player is trying to play an assistant card not in his turn, he'll be notified with a NOT_YOUR_TURN error message.
                 Logger.WARNING("It's not " + playerName + " turn. Is he using cheats?");
                 game.runNotify(CommunicationMessage.MessageType.NOT_YOUR_TURN);
             }
         }
     }
 
-
+    /**
+     * Given the player name, it returns an optional containing the Player object with that nickname.
+     *
+     * @param playerName the player nickname of which we are requesting the Player object.
+     * @return an optional containing the Player object with the specified nickname, otherwise an empty one.
+     *
+     * @see Player
+     */
     private Optional<Player> getPlayerFromName(String playerName) {
         return game.getPlayers().stream().reduce((pl1, pl2) -> pl1.getNickname().equals(playerName) ? pl1 : pl2);
     }
