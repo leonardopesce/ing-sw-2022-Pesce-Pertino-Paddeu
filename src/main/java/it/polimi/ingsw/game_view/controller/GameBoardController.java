@@ -271,7 +271,6 @@ public class GameBoardController implements Initializable {
                         advancedCard.getCardImage().setOnMouseClicked(null);
                     }
                 }
-                makeAdvancedCardSelectable();
             }
             else{
                 advancedBoard.setVisible(false);
@@ -298,21 +297,6 @@ public class GameBoardController implements Initializable {
 
         setCommentBoxVisible();
         toShow.setVisible(true);
-        /*
-        rotateTransition.setCycleCount(100);
-        rotateTransition.setByAngle(720);
-        rotateTransition.setAutoReverse(true);
-        rotateTransition.play();
-        cards.setTranslateY(-assistants.get(0).getFitHeight() * 2);
-        for (ImageView assistant : assistants) {
-            RotateTransition cardRotate = new RotateTransition(Duration.millis(1000), assistant);
-            cardRotate.setAxis(Rotate.Z_AXIS);
-            cardRotate.setCycleCount(100);
-            cardRotate.setByAngle(720);
-            cardRotate.setAutoReverse(true);
-            cardRotate.play();
-        }
-        */
     }
 
     private void setUpDecks(int pos){
@@ -368,7 +352,7 @@ public class GameBoardController implements Initializable {
             if(rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(a -> a.getType().getCardTurnValue()).toList().contains(i + 1)){
                 int finalI = i;
                 assistant.setOnMouseClicked(ActionEvent -> {
-                    actionValues.add(0, getAssistantTypeIndex(finalI + 1));
+                    addActionValue(getAssistantTypeIndex(finalI + 1));
                     calculateNextAction();
                     for(ImageView a: assistants){
                         if(!a.equals(assistant)){
@@ -392,7 +376,7 @@ public class GameBoardController implements Initializable {
                         resetHoverEffect(student);
                     }
                     entranceStudents.get(finalI).setEffect(new DropShadow(entranceStudents.get(finalI).getFitHeight() / 2 + 5, Color.YELLOW));
-                    actionValues.add(0, finalI);
+                    addActionValue(finalI);
 
                     for (ImageView entranceStudent : entranceStudents) {
                         if (!entranceStudent.equals(entranceStudents.get(finalI))) {
@@ -435,7 +419,7 @@ public class GameBoardController implements Initializable {
         diningHall.setOnMouseExited(a -> diningHall.setStyle(null));
         diningHall.setOnMouseClicked(a -> {
             rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents().get(actionValues.get(0)).setEffect(null);
-            actionValues.add(0, gameBoard.getTerrain().getIslands().size());
+            addActionValue(gameBoard.getTerrain().getIslands().size());
             for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
                 island.setEffect(null);
                 island.setOnMouseClicked(null);
@@ -460,7 +444,7 @@ public class GameBoardController implements Initializable {
                         rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall().setOnMouseClicked(null);
                         resetHoverEffect(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall());
                     }
-                    actionValues.add(0, gameBoard.getTerrain().getIslands().indexOf(gameBoard.getTerrain().getIslandWithID(islands.get(finalI).getID())));
+                    addActionValue(gameBoard.getTerrain().getIslands().indexOf(gameBoard.getTerrain().getIslandWithID(islands.get(finalI).getID())));
                     for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
                         resetHoverEffect(island);
                         island.setEffect(null);
@@ -487,7 +471,7 @@ public class GameBoardController implements Initializable {
                 int finalI = i;
                 setHoverEffect(islands.get(i).getIsland(), islands.get(i).getIsland().getFitWidth() / 2 + 5);
                 islands.get(i).getIsland().setOnMouseClicked(a -> {
-                    actionValues.add(0, islands.get(finalI).getID());
+                    addActionValue(islands.get(finalI).getID());
                     for(ImageView island: islands.stream().map(IslandController::getIsland).toList()){
                         island.setEffect(null);
                         resetHoverEffect(island);
@@ -511,7 +495,7 @@ public class GameBoardController implements Initializable {
                         resetHoverEffect(cloud.getCloudImage());
                     }
                     clouds.get(finalI).getCloudImage().setEffect(null);
-                    actionValues.add(0, finalI);
+                    addActionValue(finalI);
                     calculateNextAction();
                     for (CloudController cloud : clouds) {
                         if(!cloud.getCloudImage().equals(clouds.get(finalI).getCloudImage())){
@@ -575,7 +559,9 @@ public class GameBoardController implements Initializable {
         for (int i = 0; i < tables.size(); i++) {
             HBox table = tables.get(i);
             int finalI = i;
-            table.setOnMouseEntered(a -> table.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
+            table.setOnMouseEntered(a -> {
+                table.setStyle("-fx-background-color: rgba(255, 255, 0, " + String.valueOf(0.15 * (actionValues.size() - 1)) + ");");
+            });
             table.setOnMouseExited(a -> table.setStyle(null));
             table.setOnMouseClicked(a -> {
                 addActionValue(finalI);
@@ -595,9 +581,11 @@ public class GameBoardController implements Initializable {
                             tb.setOnMouseEntered(null);
                             tb.setOnMouseExited(null);
                             tb.setEffect(null);
+                            tb.setStyle(null);
                         }
                     }
                     table.setOnMouseEntered(null);
+                    table.setStyle(null);
                     table.setOnMouseExited(null);
                     table.setEffect(null);
                     calculateNextAction();

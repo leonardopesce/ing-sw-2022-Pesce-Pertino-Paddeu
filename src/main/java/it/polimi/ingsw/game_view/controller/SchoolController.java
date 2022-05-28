@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -22,17 +23,19 @@ public class SchoolController implements Initializable {
     private final List<Circle> towersAvailable = new ArrayList<>();
     private final List<HBox> tables = new ArrayList<>();
     @FXML
-    HBox greenTable, redTable, yellowTable, pinkTable, blueTable;
+    private HBox greenTable, redTable, yellowTable, pinkTable, blueTable;
     @FXML
-    ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8, greenProfessor, redProfessor, yellowProfessor, pinkProfessor, blueProfessor;
+    private ImageView st0, st1, st2, st3, st4, st5, st6, st7, st8, greenProfessor, redProfessor, yellowProfessor, pinkProfessor, blueProfessor, moneyImage;
     @FXML
-    Circle t0, t1, t2, t3, t4, t5, t6, t7;
+    private Circle t0, t1, t2, t3, t4, t5, t6, t7;
     @FXML
-    ImageView schoolImage;
+    private ImageView schoolImage;
     @FXML
-    StackPane mainPane;
+    private StackPane mainPane;
     @FXML
-    GridPane entrance, diningHall;
+    private GridPane entrance, diningHall;
+    @FXML
+    private Label moneyLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -91,5 +94,11 @@ public class SchoolController implements Initializable {
                 towersAvailable.get(i).setStroke(Color.TRANSPARENT);
             }
         }
+    }
+
+    public void setMoneyAvailable(int total){
+        moneyImage.setVisible(true);
+        moneyLabel.setVisible(true);
+        moneyLabel.setText(String.valueOf(total));
     }
 }

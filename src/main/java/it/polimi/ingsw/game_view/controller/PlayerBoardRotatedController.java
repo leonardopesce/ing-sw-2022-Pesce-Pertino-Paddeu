@@ -52,10 +52,13 @@ public class PlayerBoardRotatedController extends PlayerBoardController{
         return playerBoardRotatedController.getDeckBoard();
     }
 
-
-
     @Override
     public void setSchool(SchoolBoard school) {
         playerBoardRotatedController.setSchool(school);
+    }
+
+    @Override
+    public void setMoney(int total){
+        playerBoardRotatedController.setMoney(total);
     }
 }

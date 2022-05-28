@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -9,6 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <StackPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="178.0" minWidth="400.0" prefHeight="346.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.game_view.controller.SchoolController">
    <children>
@@ -97,19 +99,31 @@
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints percentHeight="16.5" vgrow="SOMETIMES" />
+                  <RowConstraints percentHeight="16.5" vgrow="SOMETIMES" />
                   <RowConstraints percentHeight="16.0" vgrow="SOMETIMES" />
                   <RowConstraints percentHeight="16.0" vgrow="SOMETIMES" />
                   <RowConstraints percentHeight="16.0" vgrow="SOMETIMES" />
+                  <RowConstraints percentHeight="16.5" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Circle fx:id="t0" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Circle fx:id="t1" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" />
-                  <Circle fx:id="t2" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="1" />
-                  <Circle fx:id="t3" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Circle fx:id="t4" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="2" />
-                  <Circle fx:id="t5" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Circle fx:id="t6" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="3" />
-                  <Circle fx:id="t7" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label fx:id="moneyLabel" textFill="WHITE" visible="false">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="moneyImage" fitHeight="53.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="1">
+                     <image>
+                        <Image url="@../img/wooden_pieces/coin.png" />
+                     </image>
+                  </ImageView>
+                  <Circle fx:id="t0" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="1" />
+                  <Circle fx:id="t1" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Circle fx:id="t2" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="2" />
+                  <Circle fx:id="t3" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Circle fx:id="t4" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="3" />
+                  <Circle fx:id="t5" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Circle fx:id="t6" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="4" />
+                  <Circle fx:id="t7" fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
          </children>

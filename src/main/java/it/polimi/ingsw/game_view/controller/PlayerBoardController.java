@@ -30,11 +30,6 @@ public class PlayerBoardController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
-    public void bindDimension(ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height){
-        playerBoard.scaleXProperty().bind(width.divide(1920));
-        playerBoard.scaleYProperty().bind(height.divide(1080));
-    }
-
     public void hide(){
         playerBoard.setVisible(false);
     }
@@ -75,6 +70,9 @@ public class PlayerBoardController implements Initializable {
 
     }
 
+    public void setMoney(int total){
+        schoolController.setMoneyAvailable(total);
+    }
     public SchoolController getSchool() {
         return schoolController;
     }

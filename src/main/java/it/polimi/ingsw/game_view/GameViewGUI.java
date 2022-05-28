@@ -55,17 +55,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             setInitialLoginStage();
             loadMusic();
 
-            //starts loading the page (1) it's heavy (2) avoids a problem where the client can't receive message from the server before it loaded everything
-            new Thread(() -> {
-                try {
-                    currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
-                    gameBoardRoot = currentLoader.load();
-                    controllerGameBoard = currentLoader.getController();
-                } catch (IOException e) {
-                    Logger.ERROR("Error while loading the game window.", e.getMessage());
-                }
 
-            }).start();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -86,14 +76,10 @@ public class GameViewGUI extends Application implements GameViewClient{
             if(videoMediaPlayer != null) {
                 videoMediaPlayer.stop();
             }
-            try{
-                this.stage.close();
-                setInitialLoginStage();
-                controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
-                controllerInitial.setMessageHandler(msgHandler);
-            } catch (IOException e) {
-                Logger.ERROR("Error while opening the launcher window.", e.getMessage());
-            }
+            this.stage.close();
+            start(stage);
+            controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
+            controllerInitial.setMessageHandler(msgHandler);
         });
     }
 
@@ -117,6 +103,7 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     private void setInitialLoginStage() throws IOException {
+        preloadGameBoardController();
         Parent root;
         this.stage = new Stage();
         FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
@@ -139,6 +126,21 @@ public class GameViewGUI extends Application implements GameViewClient{
             System.exit(0);
         });
         this.stage.show();
+    }
+
+    private void preloadGameBoardController(){
+        //starts loading the page (1) it's heavy (2) avoids a problem where the client can't receive message from the server before it loaded everything
+        new Thread(() -> {
+            try {
+                currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
+                gameBoardRoot = currentLoader.load();
+                controllerGameBoard = currentLoader.getController();
+            } catch (IOException e) {
+                Logger.ERROR("Error while loading the game window.", e.getMessage());
+            }
+
+        }).start();
+
     }
 
     @Override
