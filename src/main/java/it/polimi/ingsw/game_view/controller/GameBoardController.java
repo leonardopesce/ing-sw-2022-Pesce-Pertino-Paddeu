@@ -26,7 +26,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import javafx.scene.media.Media;
 
 import java.net.URL;
 import java.util.*;
@@ -372,6 +371,11 @@ public class GameBoardController implements Initializable {
                 setHoverEffect(entranceStudents.get(i), entranceStudents.get(i).getFitHeight() / 2 + 5);
                 int finalI = i;
                 entranceStudents.get(i).setOnMouseClicked(actionEvent -> {
+                    for(ImageView cardAdvanced: advancedCards.stream().map(AdvancedCardController::getCardImage).toList()){
+                        resetHoverEffect(cardAdvanced);
+                        cardAdvanced.setOnMouseClicked(null);
+                    }
+
                     for (ImageView student : entranceStudents) {
                         resetHoverEffect(student);
                     }
@@ -531,7 +535,7 @@ public class GameBoardController implements Initializable {
                 cardImage.setOnMouseClicked(a -> {
                     addActionValue(card.getType().ordinal());
                     card.playEffect(this);
-
+                    resetAllClickableObjects();
                     for (AdvancedCardController c : advancedCards) {
                         if (!c.getType().equals(card.getType())) {
                             c.getCardImage().setOnMouseClicked(null);
@@ -700,5 +704,20 @@ public class GameBoardController implements Initializable {
 
     public Image getErrorLogo() {
         return errorLogo;
+    }
+
+    public void resetAllClickableObjects(){
+        List<ImageView> objects = new ArrayList<>();
+        objects.addAll(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents());
+        objects.addAll(islands.stream().map(IslandController::getIsland).toList());
+        objects.addAll(clouds.stream().map(CloudController::getCloudImage).toList());
+
+        for(ImageView o: objects){
+            o.setStyle(null);
+            o.setOnMouseClicked(null);
+            o.setOnMouseEntered(null);
+            o.setOnMouseExited(null);
+            o.setEffect(null);
+        }
     }
 }

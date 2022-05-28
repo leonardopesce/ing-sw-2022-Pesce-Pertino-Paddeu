@@ -54,8 +54,6 @@ public class GameViewGUI extends Application implements GameViewClient{
         try{
             setInitialLoginStage();
             loadMusic();
-
-
         }
         catch (Exception e){
             e.printStackTrace();
