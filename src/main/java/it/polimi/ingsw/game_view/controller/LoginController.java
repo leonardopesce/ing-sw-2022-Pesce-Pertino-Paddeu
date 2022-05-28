@@ -81,27 +81,40 @@ public class LoginController implements Initializable {
             errorBox.setVisible(false);
             loginButton.setDisable(true);
             Logger.INFO("Loggin In...");
-            if(!serverPortTextField.getText().equals("") && !serverIpTextField.getText().equals("") && !nicknameTextField.getText().equals("")) {
-                client = new Client(serverIpTextField.getText(), Integer.parseInt(serverPortTextField.getText()));
-                client.addObserver(messageHandler);
-                client.setName(nicknameTextField.getText());
-                new Thread(() -> {
-                    try {
-                        client.run();
-                    } catch (IOException e) {
-                        loginButton.setDisable(false);
-                        Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
-                        loginErrorMessage.setText("Impossibile connettersi al server con indirizzo IP e porta indicati.");
-                        errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
-                        errorBox.setVisible(true);
-                        client = null;
+            try {
+                if (!serverPortTextField.getText().equals("") && !serverIpTextField.getText().equals("") && !nicknameTextField.getText().equals("")) {
+                    if(Integer.parseInt(serverPortTextField.getText()) < 1024 || Integer.parseInt(serverPortTextField.getText()) > 65535) {
+                        throw new Exception("Invalid port range");
+                    } else {
+                        client = new Client(serverIpTextField.getText(), Integer.parseInt(serverPortTextField.getText()));
+                        client.addObserver(messageHandler);
+                        client.setName(nicknameTextField.getText());
+                        new Thread(() -> {
+                            try {
+                                client.run();
+                            } catch (IOException e) {
+                                loginButton.setDisable(false);
+                                Logger.ERROR("Failed to connect to the server with the given ip and port.", e.getMessage());
+                                loginErrorMessage.setText("Impossibile connettersi al server con indirizzo IP e porta indicati.");
+                                errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
+                                errorBox.setVisible(true);
+                                client = null;
+                            }
+                        }).start();
                     }
-                }).start();
-            } else {
+                } else {
+                    loginButton.setDisable(false);
+                    errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.gif"))));
+                    loginErrorMessage.setText("Per favore, completa tutti i campi prima di continuare.");
+                    errorBox.setVisible(true);
+                }
+            } catch (Exception ex) {
                 loginButton.setDisable(false);
-                errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.gif"))));
-                loginErrorMessage.setText("Per favore, completa tutti i campi prima di continuare.");
+                Logger.ERROR("Invalid port", ex.getMessage());
+                loginErrorMessage.setText("Numero di porta invalido. Scegli un numero compreso tra 1024 e 65535..");
+                errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/connectionError.gif"))));
                 errorBox.setVisible(true);
+                client = null;
             }
         });
 
