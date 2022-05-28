@@ -65,7 +65,7 @@ public class Game extends Observable<MoveMessage> {
         switch (playerNums) {
             case 2 -> {
                 NUMBER_OF_STUDENTS_ON_CLOUD = 3;
-                INITIAL_NUMBER_OF_TOWER = new int[]{8,8};
+                INITIAL_NUMBER_OF_TOWER = new int[]{1,1};
                 INITIAL_NUMBER_OF_STUDENTS_TO_DRAW = 7;
             }
             case 3 -> {

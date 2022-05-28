@@ -25,6 +25,7 @@ public class Client extends Observable<CommunicationMessage> {
 
     public synchronized void close(){
         try{
+            connectionStatusHandler.kill();
             socketOut.close();
         } catch (IOException e) {
             Logger.ERROR("Error while trying to close the socket.", e.getMessage());

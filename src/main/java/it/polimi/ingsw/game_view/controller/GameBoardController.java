@@ -701,7 +701,7 @@ public class GameBoardController implements Initializable {
         return count;
     }
     public void setComment(String message){
-        comment.setText(message);
+        Platform.runLater(() -> comment.setText(message));
     }
 
     public void setCommentLogo(Image logoToSet) { commentLogo.setImage(logoToSet); }

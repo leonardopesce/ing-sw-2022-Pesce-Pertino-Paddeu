@@ -64,6 +64,7 @@ public class GameViewGUI extends Application implements GameViewClient{
                 } catch (IOException e) {
                     Logger.ERROR("Error while loading the game window.", e.getMessage());
                 }
+
             }).start();
         }
         catch (Exception e){
@@ -282,17 +283,17 @@ public class GameViewGUI extends Application implements GameViewClient{
         });
     }
 
-    private void loadFullScreen(Parent gameBoardRoot) {
-        stage = new Stage();
-        stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setResizable(false);
-        stage.setMaximized(true);
-        stage.setOnCloseRequest(windowEvent -> {
+    private void loadFullScreen(Parent root) {
+        this.stage = new Stage();
+        this.stage.setScene(new Scene(root, 1920, 1080));
+        this.stage.initStyle(StageStyle.UNDECORATED);
+        this.stage.setResizable(false);
+        this.stage.setMaximized(true);
+        this.stage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
             System.exit(0);
         });
-        stage.show();
+        this.stage.show();
     }
 
     @Override
@@ -330,13 +331,12 @@ public class GameViewGUI extends Application implements GameViewClient{
         }
         finally {
             Platform.runLater(() -> {
-                try{
-                    this.stage.close();
-                    setInitialLoginStage();
-                    controllerInitial.setMessageHandler(msgHandler);
-                } catch (IOException e) {
-                    Logger.ERROR("Error while opening the launcher window.", e.getMessage());
+                this.stage.close();
+                soundMediaPlayer.stop();
+                if(getClient() != null && getClient().isActive()){
+                    getClient().close();
                 }
+                start(this.stage);
             });
         }
     }
