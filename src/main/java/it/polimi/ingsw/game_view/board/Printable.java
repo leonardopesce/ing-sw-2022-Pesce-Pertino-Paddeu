@@ -57,7 +57,7 @@ public abstract class Printable {
     public static final String NEW_LINE_LOW = BL_CORNER + H_BAR.repeat(LENGTH - 1) + BR_CORNER + "\n";
 
     public static void clearScreen() {
-        System.out.println("\033[H\033[2J");
+        System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 }
