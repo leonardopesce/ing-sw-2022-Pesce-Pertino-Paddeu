@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
@@ -46,50 +48,14 @@ public class GameViewGUI extends Application implements GameViewClient{
     private MediaPlayer videoMediaPlayer;
     private Media soundMedia;
     private Media videoMedia;
-    Parent root;
-
 
     @Override
     public void start(Stage stage){
         try{
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
-            root = loader.load();
-            this.controllerInitial = loader.getController();
-            this.stage = new Stage();
-            this.stage.initStyle(StageStyle.UNDECORATED);
-            this.stage.setTitle("Eriantys");
-            this.stage.setScene(new Scene(root));
-            this.stage.setResizable(false);
-            this.stage.setWidth(900);
-            this.stage.setHeight(550);
-            this.stage.setOnCloseRequest(windowEvent -> {
-                Platform.exit();
-                try {
-                    controllerInitial.getClient().close();
-                } catch (Exception e) {
-                    // If the client is not active it's fine anyways.
-                }
-                System.exit(0);
-            });
-            this.stage.show();
-            new Thread(() -> {
-                System.out.println("init music");
-                try {
-                    soundMedia = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
-                    soundMediaPlayer = new MediaPlayer(soundMedia);
-                    soundMediaPlayer.setVolume(0.5);
-                    soundMediaPlayer.setOnEndOfMedia(() -> {
-                        soundMediaPlayer.seek(Duration.ZERO);
-                        soundMediaPlayer.play();
-                    });
+            setInitialLoginStage();
+            loadMusic();
 
-                    soundMediaPlayer.setOnReady(() -> soundMediaPlayer.play());
-
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-            }).start();
-
+            //starts loading the page (1) it's heavy (2) avoids a problem where the client can't receive message from the server before it loaded everything
             new Thread(() -> {
                 try {
                     currentLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/gameBoard.fxml")));
@@ -116,28 +82,62 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
         Platform.runLater(() -> {
-            Parent root;
-
-            try{
+            if(videoMediaPlayer != null) {
                 videoMediaPlayer.stop();
+            }
+            try{
                 this.stage.close();
-                this.stage = new Stage();
-                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/Login.fxml")));
-                root = loader.load();
-                this.controllerInitial = loader.getController();
-                this.stage.setTitle("Eriantys");
-                this.stage.initStyle(StageStyle.UNDECORATED);
-                this.stage.setScene(new Scene(root));
-                this.stage.setFullScreen(false);
-                this.stage.setWidth(900);
-                this.stage.setHeight(550);
-                this.stage.show();
+                setInitialLoginStage();
                 controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
                 controllerInitial.setMessageHandler(msgHandler);
             } catch (IOException e) {
                 Logger.ERROR("Error while opening the launcher window.", e.getMessage());
             }
         });
+    }
+
+    private void loadMusic(){
+        new Thread(() -> {
+            try {
+                soundMedia = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
+                soundMediaPlayer = new MediaPlayer(soundMedia);
+                soundMediaPlayer.setVolume(0.005);
+                soundMediaPlayer.setOnEndOfMedia(() -> {
+                    soundMediaPlayer.seek(Duration.ZERO);
+                    soundMediaPlayer.play();
+                });
+
+                soundMediaPlayer.setOnReady(() -> soundMediaPlayer.play());
+
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    private void setInitialLoginStage() throws IOException {
+        Parent root;
+        this.stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathInitialPage)));
+        root = loader.load();
+        this.controllerInitial = loader.getController();
+        this.stage.setTitle("Eriantys");
+        this.stage.initStyle(StageStyle.UNDECORATED);
+        this.stage.setScene(new Scene(root));
+        this.stage.setResizable(false);
+        this.stage.setFullScreen(false);
+        this.stage.setWidth(900);
+        this.stage.setHeight(550);
+        this.stage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+            try {
+                controllerInitial.getClient().close();
+            } catch (Exception e) {
+                // If the client is not active it's fine anyways.
+            }
+            System.exit(0);
+        });
+        this.stage.show();
     }
 
     @Override
@@ -260,16 +260,7 @@ public class GameViewGUI extends Application implements GameViewClient{
 
             videoMediaPlayer.setOnEndOfMedia(() -> {
                 Stage previousStage = stage;
-                stage = new Stage();
-                stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
-                stage.initStyle(StageStyle.UNDECORATED);
-                stage.setResizable(false);
-                stage.setMaximized(true);
-                stage.setOnCloseRequest(windowEvent -> {
-                    Platform.exit();
-                    System.exit(0);
-                });
-                stage.show();
+                loadFullScreen(gameBoardRoot);
                 previousStage.close();
                 soundMediaPlayer.play();
                 if (testing) {
@@ -286,18 +277,22 @@ public class GameViewGUI extends Application implements GameViewClient{
             videoRoot.getChildren().add(videoMediaView);
             soundMediaPlayer.pause();
             stage.close();
-            stage = new Stage();
-            stage.setScene(new Scene(videoRoot, 1920, 1080));
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.setResizable(false);
-            stage.setMaximized(true);
-            stage.setOnCloseRequest(windowEvent -> {
-                Platform.exit();
-                System.exit(0);
-            });
-            stage.show();
+            loadFullScreen(videoRoot);
             videoMediaPlayer.setAutoPlay(true);
         });
+    }
+
+    private void loadFullScreen(Parent gameBoardRoot) {
+        stage = new Stage();
+        stage.setScene(new Scene(gameBoardRoot, 1920, 1080));
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(false);
+        stage.setMaximized(true);
+        stage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        stage.show();
     }
 
     @Override
@@ -328,5 +323,21 @@ public class GameViewGUI extends Application implements GameViewClient{
     @Override
     public void displayEndGame(CommunicationMessage.MessageType condition) {
         controllerGameBoard.makeEndAnimation(condition);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            Platform.runLater(() -> {
+                try{
+                    this.stage.close();
+                    setInitialLoginStage();
+                    controllerInitial.setMessageHandler(msgHandler);
+                } catch (IOException e) {
+                    Logger.ERROR("Error while opening the launcher window.", e.getMessage());
+                }
+            });
+        }
     }
 }
