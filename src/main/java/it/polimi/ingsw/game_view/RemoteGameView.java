@@ -59,7 +59,7 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
         if (gameOver) {
             sendMessage(new CommunicationMessage(draw ? DRAW :
                     (Arrays.asList(message.getGame().winner()).contains(playerName) ?
-                            YOU_WIN : YOU_LOSE), null)
+                            YOU_WIN : YOU_LOSE), message.isExpertMode() ? new GameBoardAdvanced(message.getGame()) : new GameBoard(message.getGame()))
             );
         }
         else {

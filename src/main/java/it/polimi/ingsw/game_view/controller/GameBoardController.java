@@ -54,6 +54,9 @@ public class GameBoardController implements Initializable {
     private final Image notYourTurnLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/loading.gif")));
     private final Image yourTurnLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/yourTurn.gif")));
     private final Image notEnoughMoneyLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/money.gif")));
+    private final Image winLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/winLogo.gif")));
+    private final Image loseLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/loseLogo.gif")));
+    private final Image drawLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/drawLogo.gif")));
     @FXML
     private ImageView assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10, winAnimation, loseAnimation, drawAnimation, commentLogo;
     @FXML
@@ -277,7 +280,23 @@ public class GameBoardController implements Initializable {
     }
 
     public void makeEndAnimation(CommunicationMessage.MessageType condition){
-        ImageView toShow = condition.equals(YOU_WIN) ? winAnimation : (condition.equals(YOU_LOSE) ? loseAnimation : drawAnimation);
+        ImageView toShow;
+
+        if(condition.equals(YOU_WIN)) {
+            toShow = winAnimation;
+            setComment("Hai vinto la partita!");
+            setCommentLogo(winLogo);
+        } else if(condition.equals(YOU_LOSE)) {
+            toShow = loseAnimation;
+            setComment("Hai perso la partita.");
+            setCommentLogo(loseLogo);
+        } else {
+            toShow = drawAnimation;
+            setComment("La partita è terminata in parità.");
+            setCommentLogo(drawLogo);
+        }
+
+        setCommentBoxVisible();
         toShow.setVisible(true);
         /*
         rotateTransition.setCycleCount(100);

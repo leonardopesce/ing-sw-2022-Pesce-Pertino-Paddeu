@@ -67,9 +67,9 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
             case ERROR -> Logger.ERROR((String) message.getMessage(), "General Error");
             case GAME_READY -> new Thread(() -> view.gameReady((GameBoard) message.getMessage())).start();
             case VIEW_UPDATE -> new Thread(() -> updateBoardMessage((GameBoard) message.getMessage())).start();
-            case YOU_WIN -> new Thread(() -> view.displayEndGame(CommunicationMessage.MessageType.YOU_WIN)).start();
-            case YOU_LOSE -> new Thread(() -> view.displayEndGame(CommunicationMessage.MessageType.YOU_LOSE)).start();
-            case DRAW -> new Thread(() -> view.displayEndGame(CommunicationMessage.MessageType.DRAW)).start();
+            case YOU_WIN -> new Thread(() -> { updateBoardMessage((GameBoard) message.getMessage()); view.displayEndGame(CommunicationMessage.MessageType.YOU_WIN); }).start();
+            case YOU_LOSE -> new Thread(() -> { updateBoardMessage((GameBoard) message.getMessage()); view.displayEndGame(CommunicationMessage.MessageType.YOU_LOSE); }).start();
+            case DRAW -> new Thread(() -> { updateBoardMessage((GameBoard) message.getMessage()); view.displayEndGame(CommunicationMessage.MessageType.DRAW); }).start();
         }
     }
 
