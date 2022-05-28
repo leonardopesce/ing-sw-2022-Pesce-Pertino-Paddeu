@@ -534,8 +534,8 @@ public class GameBoardController implements Initializable {
             if(card.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))) {
                 cardImage.setOnMouseClicked(a -> {
                     addActionValue(card.getType().ordinal());
-                    card.playEffect(this);
                     resetAllClickableObjects();
+                    card.playEffect(this);
                     for (AdvancedCardController c : advancedCards) {
                         if (!c.getType().equals(card.getType())) {
                             c.getCardImage().setOnMouseClicked(null);
