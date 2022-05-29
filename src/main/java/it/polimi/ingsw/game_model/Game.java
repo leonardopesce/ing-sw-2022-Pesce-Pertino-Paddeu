@@ -84,6 +84,8 @@ public class Game extends Observable<MoveMessage> {
 
     /**
      * Set up the game board by randomly adding the students to the islands and instantiating the cloud cards.
+     *
+     * @throws BagEmptyException if the bag is empty while drawing a student from it. (impossible to verify in this scenario since this method is called at the beginning of the match, when the bag is full)
      */
     public void setupBoard() throws BagEmptyException {
         /* Filling the bag with 10 students to set up the board. (2 students foreach color). */
@@ -311,18 +313,50 @@ public class Game extends Observable<MoveMessage> {
         return new String[0];
     }
 
+    /**
+     * Given a ColorTower, it returns the player (or the players in case of a 4 players match) who owns the towers of that color.
+     *
+     * @param color the color of the tower owned by the player(s) we want to fetch.
+     * @return a list of players containing the player (or the players in case of a 4 players match) who owns the towers of the specified color.
+     *
+     * @see ColorTower
+     * @see Player
+     */
     private List<Player> getPlayerOfColor(ColorTower color){
         return players.stream().filter(pl -> pl.getColor() == color).toList();
     }
 
+    /**
+     * Returns the game's terrain.
+     * @return the game's terrain.
+     *
+     * @see Terrain
+     */
     public Terrain getTerrain(){
         return terrain;
     }
 
+    /**
+     * Returns the game's bag.
+     * @return the game's bag.
+     *
+     * @see BagOfStudents
+     */
     public BagOfStudents getBag() { return bag; }
 
+    /**
+     * Returns the list of players which are currently playing the game.
+     *
+     * @return a list of players containing all the players which are currently playing the game.
+     *
+     * @see Player
+     */
     public List<Player> getPlayers() { return players; }
 
+    /**
+     * Returns the number of players which are currently playing the game.
+     * @return the number of players which are currently playing the game.
+     */
     public int getNumberOfPlayers() { return players.size(); }
 
 
@@ -336,6 +370,12 @@ public class Game extends Observable<MoveMessage> {
         return NUMBER_OF_STUDENTS_ON_CLOUD - player.getNumberOfMovedStudents();
     }
 
+    /**
+     * Given a new game phase, it sets the game to that phase.
+     * @param gamePhase the game phase which has to be set.
+     *
+     * @see GamePhase
+     */
     public void setUpGamePhase(GamePhase gamePhase){
         this.gamePhase = gamePhase;
     }
@@ -357,30 +397,54 @@ public class Game extends Observable<MoveMessage> {
         updateTeacherOwnership(player, color);
     }
 
+    /**
+     * Returns the current game phase.
+     * @return the current game phase.
+     *
+     * @see GamePhase
+     */
     public GamePhase getGamePhase() {
         return gamePhase;
     }
 
     /**
      * Check if the game is in expert mode
-     * @return true if expert mode
+     * @return true if expert mode, otherwise false.
      */
     public boolean isExpert() {
         return isExpert;
     }
 
+    /**
+     * Returns the currently playing player.
+     * @return the currently playing player.
+     *
+     * @see Player
+     */
     public Player getCurrentlyPlayingPlayer() {
         return currentlyPlaying;
     }
 
+    /**
+     * Get the number of students which every player has to pick up at the beginning of the match in order to put them in his entrance.
+     * @return the inisital number of students picked up by a player.
+     */
     public int getINITIAL_NUMBER_OF_STUDENTS_TO_DRAW() {
         return INITIAL_NUMBER_OF_STUDENTS_TO_DRAW;
     }
 
+    /**
+     * Sets the new currently playing player with the one with the given index in the players array.
+     * @param indexCurrentlyPlayingPlayer the index of the new currently playing player which has to be set.
+     */
     public void setCurrentlyPlaying(int indexCurrentlyPlayingPlayer) {
         this.currentlyPlaying = players.get(indexCurrentlyPlayingPlayer);
     }
 
+    /**
+     * Notify the RemoteGameView with the current state of the game.
+     * @param type the message ID of the notified message.
+     */
     public void runNotify(CommunicationMessage.MessageType type){
         notify(new MoveMessage(this, type));
     }

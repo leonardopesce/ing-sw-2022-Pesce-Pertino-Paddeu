@@ -7,9 +7,7 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
 /**
  * Class to add expert mode rules to the game model
- *
  */
-
 public class GameExpertMode extends Game {
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
     private int treasury = 20;
@@ -19,6 +17,9 @@ public class GameExpertMode extends Game {
         isExpert = true;
     }
 
+    /**
+     * Gives at each player a coin.
+     */
     private void setUpMoneyToPlayer(){
         for(Player player: players){
             treasury = player.addMoney(treasury);
@@ -34,7 +35,7 @@ public class GameExpertMode extends Game {
 
     /**
      * In addition to move students to the dining hall, if the number of students on the dining hall becomes
-     * multiple of 3, give a player a coin.
+     * multiple of 3, give the player a coin.
      * @param player current player moving student
      * @param color color of student
      * @throws TooManyStudentsException dining table of given color is full
@@ -49,10 +50,18 @@ public class GameExpertMode extends Game {
         }
     }
 
+    /**
+     * Returns the current coins in the game treasury.
+     * @return the current coins in the game treasury.
+     */
     public int getTreasury() {
         return treasury;
     }
 
+    /**
+     * Adds the specified amount of coins to the treasury.
+     * @param moneyToAdd the number of coins to add to the game treasury.
+     */
     public void addMoneyToTreasury(int moneyToAdd) { treasury += moneyToAdd; }
 
     @Override
