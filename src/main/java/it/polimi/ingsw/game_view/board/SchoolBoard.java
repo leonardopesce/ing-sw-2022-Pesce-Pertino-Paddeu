@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to
+ */
 public class SchoolBoard implements Serializable {
     List<ColorCharacter> entrance = new ArrayList<>();
     List<ColorCharacter> teachers = new ArrayList<>();
