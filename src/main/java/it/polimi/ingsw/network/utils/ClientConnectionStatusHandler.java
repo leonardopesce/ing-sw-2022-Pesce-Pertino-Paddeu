@@ -45,6 +45,7 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
 
     public void abortConnection() {
         Logger.ERROR( "Connection timed out with the server. You have been disconnected from the server and the application will now close.", "Ping time limit exceeded");
+        Logger.INFO("\nThis error may be caused by:\n\t(1) The server internet connection is not available anymore, so it stopped pinging;\n\t(2) Your internet connection is no longer available, so you haven't received a ping during the last 20 seconds.\n Check your internet connection and the availability of the server.");
         kill();
         Thread.currentThread().interrupt();
         System.exit(-1);
