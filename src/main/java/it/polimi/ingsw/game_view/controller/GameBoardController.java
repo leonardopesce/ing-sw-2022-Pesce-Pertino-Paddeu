@@ -2,6 +2,7 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
+import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
@@ -66,7 +67,7 @@ public class GameBoardController implements Initializable {
     @FXML
     private HBox cards, cloudHBox, commentBox;
     @FXML
-    private VBox advancedBoard, infoBox;
+    private VBox advancedBoard;
     @FXML
     private IslandController island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller;
     @FXML
@@ -76,24 +77,30 @@ public class GameBoardController implements Initializable {
     @FXML
     private AdvancedCardController advancedCard0Controller, advancedCard1Controller, advancedCard2Controller;
 
-
+    /**
+     * Initialize function, initializes all the variable used by the class
+     * @param url handle by javafx during loading of fxml
+     * @param resourceBundle handle by javafx during loading of fxml
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setCommentBoxNotVisible();
+        // init used arrays
         advancedCards.addAll(Arrays.asList(advancedCard0Controller, advancedCard1Controller, advancedCard2Controller));
         clouds.addAll(Arrays.asList(cloud0Controller, cloud1Controller, cloud2Controller, cloud3Controller));
         playerBoardButtons.addAll(Arrays.asList(player1Board, player2Board, player3Board, player4Board));
         islands.addAll(Arrays.asList(island0Controller, island1Controller, island2Controller, island3Controller, island4Controller, island5Controller, island6Controller, island7Controller, island8Controller, island9Controller, island10Controller, island11Controller));
+        assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
 
+        //setup object in main board
+        setCommentBoxNotVisible();
+        mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
 
+        //set up the id of each island
         for(int i = 0; i < islands.size(); i++){
             islands.get(i).setID(i);
         }
 
-        mainPane.setBackground(new Background(new BackgroundImage(new Image("img/table.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1, 1, false, false, true, true))));
-
-        assistants.addAll(Arrays.asList(assistant1, assistant2, assistant3, assistant4, assistant5, assistant6, assistant7, assistant8, assistant9, assistant10));
-
+        // setup rotate animation
         rotateTransition.setAxis(Rotate.Z_AXIS);
         rotateTransition.setCycleCount(1);
         rotateTransition.setDuration(Duration.millis(1500));
@@ -102,21 +109,34 @@ public class GameBoardController implements Initializable {
 
     }
 
+    /**
+     * Setter for the client instance, used to send a message when the player makes a move
+     * @param client to be set
+     * @see Client
+     */
     public void setClient(Client client) {
         this.client = client;
         clientName = client.getName();
         showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
     }
 
+    /**
+     * Setter for the client name used to make the client work when in testing mode
+     * @param name the name of the player
+     */
     public void setClientName(String name){
         //TODO delete, just for testing purpose
         this.clientName = name;
         showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
-
     }
 
+    /**
+     * Function that based on the value saved in the actionValues stack (and on the value of playingAdvancedCard)
+     * determines which command to send to the server
+     */
     protected void calculateNextAction(){
         if(playingAdvancedCard == -1) {
+            //If the action is a normal action send to the server the action requested based on the gamePhase board
             client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION,
                     switch (gameBoard.getPhase()) {
                         case PLANNING_PHASE -> new PlayAssistantCardAction(clientName, actionValues.pop());
@@ -154,6 +174,10 @@ public class GameBoardController implements Initializable {
         actionValues.clear();
     }
 
+    /**
+     * Calls the update of the entire board in the game every time a new message is received from the server
+     * @param board a GameBoard containing the new state of the game send by the server
+     */
     public void updateBoard(GameBoard board){
         Platform.runLater(() -> {
             setCommentBoxNotVisible();
@@ -162,115 +186,162 @@ public class GameBoardController implements Initializable {
             playingAdvancedCard = -1;
             rotatingBoardController.update(board);
             gamePhaseLabel.setText(board.getPhase().getName());
-            if (firstTime) {
-                firstTime = false;
-                for (int i = 0; i < 4; i++) {
-                    if (i < board.getNames().size()) {
-                        playerBoardButtons.get(i).setText(board.getNames().get(i));
-                        int finalI = i;
-                        playerBoardButtons.get(i).setOnAction(ActionEvent -> {
-                            synchronized (rotateTransition) {
-                                setRotatingButtonDisabled(true);
-                                rotateTransition.setByAngle(getDegreeTurn(finalI));
-                                showedBoard.set(finalI);
-                                rotateTransition.setOnFinished(a -> {
-                                    setRotatingButtonDisabled(false);
-                                    playerBoardButtons.get(finalI).setDisable(true);
-                                    playerBoardButtons.get(finalI).setDisable(true);
-                                });
-                                Platform.runLater(rotateTransition::play);
-                            }
-                        });
-                    } else {
-                        rotatingBoardController.getBoardX(i).hide();
-                        playerBoardButtons.get(i).setDisable(true);
-                        playerBoardButtons.get(i).setVisible(false);
-                    }
-                }
-                setUpDecks(showedBoard.get());
 
-                for(int i = 4; i > board.getTerrain().getCloudCards().size(); i--){
-                    clouds.remove(i - 1);
-                    cloudHBox.getChildren().remove(i - 1);
-                }
+            firstTimeSetupBoard(board);
 
-            }
-            for (int i = 0; i < board.getNames().size(); i++) {
-                if (playerBoardButtons.get(i).getText().equals(clientName)) {
-                    ColorAdjust ca = new ColorAdjust();
-                    for(int k = 0; k < assistants.size(); k++){
-                        if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(a -> a.getType().getCardTurnValue()).toList().contains(k + 1)) {
-                            ca.setBrightness(-0.5);
-                            assistants.get(k).setEffect(ca);
-                        }
-                    }
-                    playerBoardButtons.get(i).fire();
-                }
-            }
+            setUpPlayersCards(board);
 
-            for (IslandController island: islands) {
-                if(board.getTerrain().getIslands().stream().map(IslandBoard::getID).toList().contains(island.getID())){
-                    island.unHide();
-                    island.update(board.getTerrain().getIslandWithID(island.getID()));
-                }
-                else{
-                    island.hide();
-                }
-            }
+            setUpIslands(board);
 
             for(int i = 0; i < board.getTerrain().getCloudCards().size(); i++){
                 clouds.get(i).update(board.getTerrain().getCloudCards().get(i));
             }
 
-            if (board.getCurrentlyPlaying().equals(clientName)) {
-                setCommentLogo(yourTurnLogo);
-                if (board.getPhase().equals(GamePhase.PLANNING_PHASE)) {
-                    setComment("E' il tuo turno! Gioca una carta assistente.");
-                    makeAssistantCardPlayable();
-                }
-                else if (board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)) {
-                    setComment("E' il tuo turno! Muovi gli studenti.");
-                    makeStudentEntranceSelectable();
-                }
-                else if(board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)){
-                    setComment("Ora scegli dove muovere madre natura. Puoi spostarla di un massimo di " + board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps() + " passi dalla sua posizione attuale.");
-                    makeNextXIslandVisibleFromMotherNatureSelectable(board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps());
-                }
-                else if(board.getPhase().equals(GamePhase.ACTION_PHASE_CHOOSING_CLOUD)){
-                    setComment("Scegli infine una carta nuvola per raccogliere gli studenti che vi sono sopra.");
-                    makeCloudSelectable();
-                }
-                setCommentBoxVisible();
-            } else {
-                gamePhaseLabel.setText("Non è il tuo turno");
-                setComment("E' il turno di " + board.getCurrentlyPlaying() + ". Tra poco toccherà a te...");
-                setCommentLogo(notYourTurnLogo);
-                setCommentBoxVisible();
-            }
+            setUpCommentBox(board);
 
-            if(gameBoard.isExpertMode()){
-                advancedBoard.setVisible(true);
-                for(int i = 0; i < advancedCards.size(); i++){
-                    advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
-                }
-                if (board.getPhase() != GamePhase.PLANNING_PHASE && !gameBoard.isHasPlayedSpecialCard()) {
-                    makeAdvancedCardSelectable();
-                }
-                else{
-                    for (AdvancedCardController advancedCard : advancedCards) {
-                        advancedCard.getCardImage().setEffect(null);
-                        advancedCard.getCardImage().setOnMouseEntered(null);
-                        advancedCard.getCardImage().setOnMouseExited(null);
-                        advancedCard.getCardImage().setOnMouseClicked(null);
-                    }
-                }
-            }
-            else{
-                advancedBoard.setVisible(false);
-            }
+            setUpExpertMode(board);
         });
     }
 
+    /**
+     * A setup of the board needed only for the first update received from the server
+     * @param board update from the server
+     */
+    private void firstTimeSetupBoard(GameBoard board){
+        if (firstTime) {
+            firstTime = false;
+            for (int i = 0; i < 4; i++) {
+                if (i < board.getNames().size()) {
+                    //sets players buttons
+                    playerBoardButtons.get(i).setText(board.getNames().get(i));
+                    int finalI = i;
+                    playerBoardButtons.get(i).setOnAction(ActionEvent -> {
+                        synchronized (rotateTransition) {
+                            setRotatingButtonDisabled(true);
+                            rotateTransition.setByAngle(getDegreeTurn(finalI));
+                            showedBoard.set(finalI);
+                            rotateTransition.setOnFinished(a -> {
+                                setRotatingButtonDisabled(false);
+                                playerBoardButtons.get(finalI).setDisable(true);
+                                playerBoardButtons.get(finalI).setDisable(true);
+                            });
+                            Platform.runLater(rotateTransition::play);
+                        }
+                    });
+                } else { //hides the player's boards and buttons not needed
+                    rotatingBoardController.getBoardX(i).hide();
+                    playerBoardButtons.get(i).setDisable(true);
+                    playerBoardButtons.get(i).setVisible(false);
+                }
+            }
+            setUpDecks(showedBoard.get());
+            // removes the cloud not needed
+            for(int i = 4; i > board.getTerrain().getCloudCards().size(); i--){
+                clouds.remove(i - 1);
+                cloudHBox.getChildren().remove(i - 1);
+            }
+
+        }
+    }
+
+    /**
+     * Sets up the card based on the update received by the server, obscures the already used ones
+     * @param board update from the server
+     */
+    private void setUpPlayersCards(GameBoard board){
+        for (int i = 0; i < board.getNames().size(); i++) {
+            if (playerBoardButtons.get(i).getText().equals(clientName)) {
+                ColorAdjust ca = new ColorAdjust();
+                for(int k = 0; k < assistants.size(); k++){
+                    if(!rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards().stream().map(a -> a.getType().getCardTurnValue()).toList().contains(k + 1)) {
+                        ca.setBrightness(-0.5);
+                        assistants.get(k).setEffect(ca);
+                    }
+                }
+                playerBoardButtons.get(i).fire();
+            }
+        }
+    }
+
+    /**
+     * Sets up the islands based on the update received from the server hides discarded islands and calls updates on the other ones
+     * @param board update from the server
+     */
+    private void setUpIslands(GameBoard board){
+        for (IslandController island: islands) {
+            if(board.getTerrain().getIslands().stream().map(IslandBoard::getID).toList().contains(island.getID())){
+                island.unHide();
+                island.update(board.getTerrain().getIslandWithID(island.getID()));
+            }
+            else{
+                island.hide();
+            }
+        }
+    }
+
+    /**
+     * Sets up the comment section of the screen based on the current game phase
+     * @param board update from the server
+     */
+    private void setUpCommentBox(GameBoard board){
+        if (board.getCurrentlyPlaying().equals(clientName)) {
+            setCommentLogo(yourTurnLogo);
+            if (board.getPhase().equals(GamePhase.PLANNING_PHASE)) {
+                setComment("E' il tuo turno! Gioca una carta assistente.");
+                makeAssistantCardPlayable();
+            }
+            else if (board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_STUDENTS)) {
+                setComment("E' il tuo turno! Muovi gli studenti.");
+                makeStudentEntranceSelectable();
+            }
+            else if(board.getPhase().equals(GamePhase.ACTION_PHASE_MOVING_MOTHER_NATURE)){
+                setComment("Ora scegli dove muovere madre natura. Puoi spostarla di un massimo di " + board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps() + " passi dalla sua posizione attuale.");
+                makeNextXIslandVisibleFromMotherNatureSelectable(board.getDecks().get(board.getNames().indexOf(clientName)).getDiscardedCard().getMaximumSteps());
+            }
+            else if(board.getPhase().equals(GamePhase.ACTION_PHASE_CHOOSING_CLOUD)){
+                setComment("Scegli infine una carta nuvola per raccogliere gli studenti che vi sono sopra.");
+                makeCloudSelectable();
+            }
+            setCommentBoxVisible();
+        } else {
+            gamePhaseLabel.setText("Non è il tuo turno");
+            setComment("E' il turno di " + board.getCurrentlyPlaying() + ". Tra poco toccherà a te...");
+            setCommentLogo(notYourTurnLogo);
+            setCommentBoxVisible();
+        }
+    }
+
+    /**
+     * sets up the board in the case the game played is in expert mode: shows, updates and makes selectable the advanced cards
+     * @param board update from the server
+     */
+    private void setUpExpertMode(GameBoard board){
+        if(gameBoard.isExpertMode()){
+            advancedBoard.setVisible(true);
+            for(int i = 0; i < advancedCards.size(); i++){
+                advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
+            }
+            if (board.getPhase() != GamePhase.PLANNING_PHASE && !gameBoard.isHasPlayedSpecialCard()) {
+                makeAdvancedCardSelectable();
+            }
+            else{
+                for (AdvancedCardController advancedCard : advancedCards) {
+                    advancedCard.getCardImage().setEffect(null);
+                    advancedCard.getCardImage().setOnMouseEntered(null);
+                    advancedCard.getCardImage().setOnMouseExited(null);
+                    advancedCard.getCardImage().setOnMouseClicked(null);
+                }
+            }
+        }
+        else{
+            advancedBoard.setVisible(false);
+        }
+    }
+
+    /**
+     * Shows the animation for the end of the game
+     * @param condition end game condition (win, lose or draw)
+     */
     public void makeEndAnimation(CommunicationMessage.MessageType condition){
         ImageView toShow;
 
@@ -292,6 +363,10 @@ public class GameBoardController implements Initializable {
         toShow.setVisible(true);
     }
 
+    /**
+     * sets up the assistant card showing the back of the card if the board is not the one of the player
+     * @param pos index of the board related to the deck
+     */
     private void setUpDecks(int pos){
         if(rotatingBoardController.getBoardX(pos).getName().getText().equals(clientName)){
             setAssistantsCardsFront();
@@ -301,18 +376,25 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * Set up the back of the card when the player is not on his own school
+     * @param image the image to set in the retro of the card
+     */
     private void setAssistantsCardsRetro(Image image){
         ColorAdjust ca = new ColorAdjust();
         for(int i = 0; i < assistants.size(); i++){
             assistants.get(i).setImage(image);
             assistants.get(i).setEffect(ca);
-            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.75);
+            cards.setTranslateY(assistants.get(i).getFitHeight() * 0.7);
             setGoUpEffectOnAssistantCard(assistants.get(i), i);
             setGoDownEffectOnAssistantCard(assistants.get(i), i);
 
         }
     }
 
+    /**
+     * Set up the front of the card when the player is on his own school
+     */
     private void setAssistantsCardsFront(){
         cards.setTranslateY(assistants.get(0).getFitHeight() * 0.8);
         for(int i = 0; i < assistants.size(); i++){
@@ -339,6 +421,9 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * makes the assistant cards playable by the player (adds effect on click of the player)
+     */
     public void makeAssistantCardPlayable(){
         for(int i = 0; i < assistants.size(); i++){
             ImageView assistant = assistants.get(i);
@@ -358,6 +443,10 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * make the students in the entrance of the player own school selectable
+     * and adds effect in case of hovering and click
+     */
     public void makeStudentEntranceSelectable(){
         List<ImageView> entranceStudents = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents();
         for(int i = 0; i < entranceStudents.size(); i++){
@@ -507,7 +596,7 @@ public class GameBoardController implements Initializable {
     }
 
     private void makeAdvancedCardSelectable(){
-        //TODO readd filter for money
+        //TODO re-add filter for money
         /*.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()*/
         for(AdvancedCardController card : advancedCards) {
             ImageView cardImage = card.getCardImage();

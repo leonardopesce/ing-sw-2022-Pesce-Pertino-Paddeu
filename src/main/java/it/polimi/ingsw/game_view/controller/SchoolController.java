@@ -17,9 +17,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the School fxml
+ */
 public class SchoolController implements Initializable {
     private final List<ImageView> entranceStudents = new ArrayList<>();
-    private final List<ImageView> professorsImage = new ArrayList<>();
+    private final List<ImageView> teachersImage = new ArrayList<>();
     private final List<Circle> towersAvailable = new ArrayList<>();
     private final List<HBox> tables = new ArrayList<>();
     @FXML
@@ -33,13 +36,18 @@ public class SchoolController implements Initializable {
     @FXML
     private StackPane mainPane;
     @FXML
-    private GridPane entrance, diningHall;
+    private GridPane diningHall;
     @FXML
     private Label moneyLabel;
 
+    /**
+     * Initialize function, initializes all the variable used by the class
+     * @param url handled by javafx during loading of fxml
+     * @param resourceBundle handled by javafx during loading of fxml
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        professorsImage.addAll(Arrays.asList(greenProfessor, redProfessor, yellowProfessor, pinkProfessor, blueProfessor));
+        teachersImage.addAll(Arrays.asList(greenProfessor, redProfessor, yellowProfessor, pinkProfessor, blueProfessor));
         tables.addAll(Arrays.asList(greenTable, redTable, yellowTable, pinkTable, blueTable));
         schoolImage.fitWidthProperty().bind(mainPane.widthProperty());
         schoolImage.fitHeightProperty().bind(mainPane.heightProperty());
@@ -52,10 +60,18 @@ public class SchoolController implements Initializable {
         }
     }
 
+    /**
+     * Getter of the diningHall students and teachers
+     * @return a GridPane containing all the students and teachers in the dining hall
+     */
     public GridPane getDiningHall() {
         return diningHall;
     }
 
+    /**
+     * Setter for the students in the entrance
+     * @param students a list of colors representing the colors of the students in the entrance
+     */
     public void setEntranceStudents(List<ColorCharacter> students){
         for(int i = 0; i < entranceStudents.size(); i++){
             entranceStudents.get(i).setEffect(null);
@@ -68,21 +84,38 @@ public class SchoolController implements Initializable {
         }
     }
 
+    /**
+     * Getter for the student's tables in the dining hall
+     * @return A list of HBox each contains a number of ImageView based on the number of player in the tables
+     */
     public List<HBox> getTables() {
         return tables;
     }
 
+    /**
+     * Getter for the students in the entrance
+     * @return a list of ImageView representing the image of the student in the entrance
+     */
     public List<ImageView> getEntranceStudents() {
         return entranceStudents;
     }
 
-    public void setProfessorsImage(List<ColorCharacter> professors){
-        for(int i = 0; i < professorsImage.size(); i++){
-            int index = professors.stream().map(ColorCharacter::getTableOrder).toList().indexOf(i);
-            professorsImage.get(i).setImage(index == - 1 ? null : new Image("img/wooden_pieces/teacher_" + professors.get(index) + ".png"));
+    /**
+     * Setter for the teacher's table in the dining hall
+     * @param teachers a list of color representing the color of the teachers in the dining hall
+     */
+    public void setTeachersImage(List<ColorCharacter> teachers){
+        for(int i = 0; i < teachersImage.size(); i++){
+            int index = teachers.stream().map(ColorCharacter::getTableOrder).toList().indexOf(i);
+            teachersImage.get(i).setImage(index == - 1 ? null : new Image("img/wooden_pieces/teacher_" + teachers.get(index) + ".png"));
         }
     }
 
+    /**
+     * A setter for the available tower in the School
+     * @param numOfTowers an int representing the number of tower present in the school
+     * @param color the color of the tower in the school
+     */
     public void setTowersAvailable(int numOfTowers, ColorTower color){
         for(int i = 0; i < towersAvailable.size(); i++){
             if(i < numOfTowers){
@@ -96,9 +129,13 @@ public class SchoolController implements Initializable {
         }
     }
 
-    public void setMoneyAvailable(int total){
+    /**
+     * Setter for the money available to the player controlling this school
+     * @param coins an int representing the number of coin available in the school
+     */
+    public void setMoneyAvailable(int coins){
         moneyImage.setVisible(true);
         moneyLabel.setVisible(true);
-        moneyLabel.setText(String.valueOf(total));
+        moneyLabel.setText(String.valueOf(coins));
     }
 }

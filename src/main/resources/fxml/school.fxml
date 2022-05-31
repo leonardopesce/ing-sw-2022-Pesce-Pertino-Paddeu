@@ -34,7 +34,7 @@
          <children>
             <StackPane prefHeight="346.0" prefWidth="115.0">
                <children>
-                  <GridPane fx:id="entrance" alignment="CENTER">
+                  <GridPane alignment="CENTER">
                     <columnConstraints>
                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />

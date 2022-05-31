@@ -570,7 +570,7 @@ public class LoginController implements Initializable {
         }
 
         errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/loading.gif"))));
-        loginErrorMessage.setText("La partita è iniziata e " + otherPlayerName + " sta scelgiendo il suo personaggio. Tra pochi istanti sarà il tuo turno.");
+        loginErrorMessage.setText("La partita è iniziata e " + otherPlayerName + " sta scegliendo il suo personaggio. Tra pochi istanti sarà il tuo turno.");
         errorBox.setVisible(true);
     }
 

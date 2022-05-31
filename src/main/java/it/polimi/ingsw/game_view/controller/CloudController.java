@@ -21,8 +21,8 @@ public class CloudController implements Initializable {
 
     /**
      * Initialize function, initializes all the variable used by the class
-     * @param url handle by javafx during loading of fxml
-     * @param resourceBundle handle by javafx during loading of fxml
+     * @param url handled by javafx during loading of fxml
+     * @param resourceBundle handled by javafx during loading of fxml
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

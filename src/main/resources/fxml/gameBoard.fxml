@@ -90,7 +90,7 @@
                      <Image url="@../img/square_background.gif" />
                   </image>
                </ImageView>
-               <VBox fx:id="infoBox" alignment="TOP_CENTER">
+               <VBox alignment="TOP_CENTER">
                   <children>
                      <HBox spacing="10.0">
                         <children>
