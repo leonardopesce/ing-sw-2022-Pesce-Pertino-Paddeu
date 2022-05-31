@@ -3,6 +3,7 @@ package it.polimi.ingsw.game_view.controller;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.ColorTower;
 import it.polimi.ingsw.game_view.board.IslandBoard;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -20,6 +21,7 @@ public class IslandController implements Initializable {
     private final List<ImageView> studentImage = new ArrayList<>();
     private final List<Label> studentNumber = new ArrayList<>();
     private int ID;
+    private List<ImageView> islandsImage = new ArrayList<>();
     @FXML
     private StackPane mainPane;
     @FXML
@@ -30,9 +32,13 @@ public class IslandController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        for(int i = 1; i < 4; i++){
+            islandsImage.add(new ImageView(new Image("/img/wooden_pieces/island" + i + ".png")));
+        }
         studentImage.addAll(Arrays.asList(greenStudent, redStudent, yellowStudent, pinkStudent, blueStudent));
         studentNumber.addAll(Arrays.asList(studentsNumberGreen, studentsNumberRed, studentsNumberYellow,  studentsNumberPink, studentsNumberBlue));
         motherNature.setVisible(false);
+
         for(ImageView student: studentImage){
             student.setVisible(false);
         }
@@ -49,6 +55,7 @@ public class IslandController implements Initializable {
 
     public void setID(int ID) {
         this.ID = ID;
+        Platform.runLater(() -> island.setImage(islandsImage.get(ID % 3).getImage()));
     }
 
     public ImageView getIsland() {

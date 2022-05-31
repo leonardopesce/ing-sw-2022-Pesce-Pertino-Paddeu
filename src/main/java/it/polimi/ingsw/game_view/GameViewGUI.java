@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameViewGUI extends Application implements GameViewClient{
-    private final boolean testing = false;
+    private final boolean testing = true;
     private static final String pathInitialPage = "fxml/Login.fxml";
     private ClientMessageObserverHandler msgHandler;
     private LoginController controllerInitial;
