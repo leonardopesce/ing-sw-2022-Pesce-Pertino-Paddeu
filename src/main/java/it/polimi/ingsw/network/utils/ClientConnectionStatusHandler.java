@@ -44,9 +44,10 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     }
 
     public void abortConnection() {
-        Logger.ERROR( "Connection timed out with the server.", "Ping time limit exceeded");
-        Thread.currentThread().interrupt();
+        Logger.ERROR( "Connection timed out with the server. You have been disconnected from the server and the application will now close.", "Ping time limit exceeded");
         kill();
+        Thread.currentThread().interrupt();
+        System.exit(-1);
     }
 
     @Override

@@ -90,7 +90,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
     }
 
     @Override
-    public void asyncSend(final CommunicationMessage message) {
+    public synchronized void asyncSend(final CommunicationMessage message) {
         new Thread(() -> {
             try {
                 send(message);
