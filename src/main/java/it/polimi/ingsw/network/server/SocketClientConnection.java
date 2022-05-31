@@ -120,7 +120,7 @@ public class SocketClientConnection extends Observable<CommunicationMessage> imp
             }
         } catch (IOException | ClassNotFoundException e) {
             Logger.ERROR(clientName + " connection with the remote host has been interrupted.", e.getMessage());
-            // e.printStackTrace();
+            e.printStackTrace();
         } finally {
             close();
         }

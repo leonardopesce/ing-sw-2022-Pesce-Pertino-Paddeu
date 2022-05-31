@@ -19,7 +19,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -31,8 +30,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 public class GameViewGUI extends Application implements GameViewClient{
     private final boolean testing = false;
@@ -86,7 +83,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             try {
                 soundMedia = new Media(getClass().getResource("/music/Wii_Sports.mp3").toURI().toString());
                 soundMediaPlayer = new MediaPlayer(soundMedia);
-                soundMediaPlayer.setVolume(0.005);
+                soundMediaPlayer.setVolume(0.05);
                 soundMediaPlayer.setOnEndOfMedia(() -> {
                     soundMediaPlayer.seek(Duration.ZERO);
                     soundMediaPlayer.play();

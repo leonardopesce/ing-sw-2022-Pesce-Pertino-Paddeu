@@ -135,6 +135,51 @@ public class GameViewCLI implements GameViewClient{
         System.out.println(board);
     }
 
+    @Override
+    public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
+        Logger.ERROR(playerWhoMadeTheLobbyClose + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server.", "Player disconnection");
+    }
+
+    @Override
+    public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
+        Logger.ERROR(errorMsg, errorType);
+        msgHandler.updateBoardMessage(board);
+    }
+
+    @Override
+    public void displayNotYourTurn(){
+        Logger.ERROR("("+ board.getCurrentlyPlaying() + " is playing). Wait your turn to play.", "Other player turn");
+    }
+
+    @Override
+    public void displayYourTurn() {
+        Logger.INFO("It's your turn now!");
+    }
+
+    @Override
+    public void displayOtherPlayerTurn(String otherPlayerName) {
+        Logger.INFO("It's " + otherPlayerName + "'s turn. Soon you will be able to play!");
+    }
+
+    @Override
+    public void displayExpertMode() {
+        for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
+        if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
+    }
+
+    @Override
+    public void displayEndGame(CommunicationMessage.MessageType condition){
+        if(condition == YOU_WIN){
+            Logger.INFO("You have won the match!");
+        }
+        else if(condition == YOU_LOSE){
+            Logger.INFO("You lost the match!");
+        }
+        else {
+            Logger.INFO("The match finished in a draw.");
+        }
+    }
+
     public void asyncReadInput(){
         new Thread(() -> {
             while(client.isActive()){
@@ -276,50 +321,6 @@ public class GameViewCLI implements GameViewClient{
         }
     }
 
-    @Override
-    public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
-        Logger.ERROR(playerWhoMadeTheLobbyClose + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server.", "Player disconnection");
-    }
-
-    @Override
-    public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
-        Logger.ERROR(errorMsg, errorType);
-        msgHandler.updateBoardMessage(board);
-    }
-
-    @Override
-    public void displayNotYourTurn(){
-        Logger.ERROR("("+ board.getCurrentlyPlaying() + " is playing). Wait your turn to play.", "Other player turn");
-    }
-
-    @Override
-    public void displayYourTurn() {
-        Logger.INFO("It's your turn now!");
-    }
-
-    @Override
-    public void displayOtherPlayerTurn(String otherPlayerName) {
-        Logger.INFO("It's " + otherPlayerName + "'s turn. Soon you will be able to play!");
-    }
-
-    @Override
-    public void displayExpertMode() {
-        for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
-        if(client.getName().equals(board.getCurrentlyPlaying())) System.out.println("The game is played in expert mode to play a special card, write \"play\" in any moment");
-    }
-
-    @Override
-    public void displayEndGame(CommunicationMessage.MessageType condition){
-        if(condition == YOU_WIN){
-            Logger.INFO("You have won the match!");
-        }
-        else if(condition == YOU_LOSE){
-            Logger.INFO("You lost the match!");
-        }
-        else {
-            Logger.INFO("The match finished in a draw.");
-        }
-    }
 
     protected synchronized int whileInputNotIntegerInRange(int a, int b){
         String read;
