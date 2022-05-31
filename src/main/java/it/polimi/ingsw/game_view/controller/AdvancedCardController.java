@@ -31,7 +31,6 @@ public class AdvancedCardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         objects.addAll(Arrays.asList(obj0, obj1, obj2, obj3, obj4, obj5));
-
     }
 
     public void update(AdvancedCardBoard card){
@@ -68,7 +67,7 @@ public class AdvancedCardController implements Initializable {
 
         cost = card.getCost();
         coinLabel.setVisible(card.getCost() > card.getType().getCardCost());
-
+        coinImage.setVisible(card.getCost() > card.getType().getCardCost());
 
     }
 
@@ -78,12 +77,6 @@ public class AdvancedCardController implements Initializable {
 
     public int getCost() {
         return cost;
-    }
-
-    public void hideObjects(){
-        for(ImageView obj: objects){
-            obj.setVisible(false);
-        }
     }
 
     public List<ImageView> getObjects() {
@@ -112,7 +105,7 @@ public class AdvancedCardController implements Initializable {
         }
         else if(type == MONK || type == MERCHANT || type == LANDLORD || type == PRINCESS){
             for(int i = 0; i < obj; i++){
-                gameBoard.setHoverEffect(objects.get(i), objects.get(i).getFitWidth());
+                gameBoard.setHoverEffect(objects.get(i), objects.get(i).getFitWidth()/3);
                 int finalI = i;
                 objects.get(i).setOnMouseClicked(a -> {
                     gameBoard.addActionValue(finalI);
@@ -158,7 +151,7 @@ public class AdvancedCardController implements Initializable {
             gameBoard.setComment("Select up to 1, 2 or 3 student from this card and replace them with the same number of student from your entrance (first select the student from the card then the student in your entrance)");
             for(int i = 0; i < obj; i++) {
                 if(objects.get(i).getEffect() == null && gameBoard.getActionValues().size() < 4) {
-                    gameBoard.setHoverEffect(objects.get(i), objects.get(i).getFitWidth());
+                    gameBoard.setHoverEffect(objects.get(i), objects.get(i).getFitWidth()/3);
                     int finalI = i;
                     objects.get(i).setOnMouseClicked(a -> {
                         gameBoard.addActionValue(finalI);

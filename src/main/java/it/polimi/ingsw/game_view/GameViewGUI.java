@@ -152,7 +152,11 @@ public class GameViewGUI extends Application implements GameViewClient{
         gameController.createPlayer("leo", DeckType.KING);
         gameController.createPlayer("fra", DeckType.PIXIE);
         gameController.createPlayer("bro", DeckType.SORCERER);
-
+        try{
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         gameReady(new GameBoardAdvanced(game));
     }
 

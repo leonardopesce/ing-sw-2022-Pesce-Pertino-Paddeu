@@ -101,11 +101,6 @@ public class GameBoardController implements Initializable {
         rotateTransition.setAutoReverse(false);
         rotateTransition.setNode(rotatingBoardController.getPane());
 
-        infoBox.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(0, 15, 0, 0, false), BorderStroke.THICK)));
-        infoBox.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(0, 15, 0, 0, false), Insets.EMPTY)));
-
-        advancedBoard.setBorder(new Border(new BorderStroke(Color.rgb(255, 200, 0), BorderStrokeStyle.SOLID, new CornerRadii(15, 0, 0, 0, false), BorderStroke.THICK)));
-        advancedBoard.setBackground(new Background(new BackgroundFill(Color.rgb(255, 230, 130, 0.7), new CornerRadii(15, 0, 0, 0, false), Insets.EMPTY)));
     }
 
     public void setClient(Client client) {
@@ -254,7 +249,7 @@ public class GameBoardController implements Initializable {
                 setCommentBoxVisible();
             }
 
-            if(clientName.equals(gameBoard.getCurrentlyPlaying()) && gameBoard.isExpertMode()){
+            if(gameBoard.isExpertMode()){
                 advancedBoard.setVisible(true);
                 for(int i = 0; i < advancedCards.size(); i++){
                     advancedCards.get(i).update(gameBoard.getTerrain().getAdvancedCard().get(i));
@@ -274,6 +269,7 @@ public class GameBoardController implements Initializable {
             else{
                 advancedBoard.setVisible(false);
             }
+            makeAdvancedCardSelectable();
         });
     }
 
@@ -520,6 +516,12 @@ public class GameBoardController implements Initializable {
             String previousComment = comment.getText();
             Image previousCommentLogo = commentLogo.getImage();
 
+            for(List<ImageView> objs: advancedCards.stream().map(AdvancedCardController::getObjects).toList()){
+                for(ImageView obj: objs){
+                    obj.setMouseTransparent(true);
+                }
+            }
+
             cardImage.setOnMouseEntered(a -> {
                 cardImage.setEffect(new Glow(0.5));
                 setComment(card.getType() + "\n" + card.getType().getEffect().replaceAll("\n", " "));
@@ -534,6 +536,12 @@ public class GameBoardController implements Initializable {
             if(card.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))) {
                 cardImage.setOnMouseClicked(a -> {
                     addActionValue(card.getType().ordinal());
+                    for(List<ImageView> objs: advancedCards.stream().map(AdvancedCardController::getObjects).toList()){
+                        for(ImageView obj: objs){
+                            obj.setMouseTransparent(false);
+                        }
+                    }
+                    card.playEffect(this);
                     resetAllClickableObjects();
                     card.playEffect(this);
                     for (AdvancedCardController c : advancedCards) {
