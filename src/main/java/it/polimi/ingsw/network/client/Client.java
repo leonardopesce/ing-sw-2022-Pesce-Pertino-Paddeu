@@ -17,7 +17,7 @@ public class Client extends Observable<CommunicationMessage> {
     private ObjectOutputStream socketOut;
     private String name;
     private ClientConnectionStatusHandler connectionStatusHandler;
-
+    
     public Client(String ip, int port){
         this.ip = ip;
         this.port = port;
@@ -68,7 +68,11 @@ public class Client extends Observable<CommunicationMessage> {
         return t;
     }
 
-
+    /**
+     * Create a thread that write given message on the <>SocketOutputStream</> variable. when the message is written,
+     * flush and reset the thread.
+     * @param message message to write
+     */
     public synchronized void asyncWriteToSocket(CommunicationMessage message){
         new Thread(() -> {
             try {
@@ -83,6 +87,11 @@ public class Client extends Observable<CommunicationMessage> {
         }).start();
     }
 
+    /**
+     * Create a socket, socket variables for I/O, and socket observers. Run threads that read from input, after reading
+     * they do the join. When the connection is interrupted close the socket
+     * @throws IOException when failed I/O errors occur.
+     */
     public void run() throws IOException {
         Socket socket = new Socket(ip, port);
         Logger.INFO("Connection established");
@@ -106,6 +115,11 @@ public class Client extends Observable<CommunicationMessage> {
         }
     }
 
+    /**
+     * Sets the name of the client, who in this case is a player in an active game.
+     * @param name name of the player
+     * @return player name
+     */
     public String setName(String name){
         this.name = name;
         return this.name;
@@ -115,10 +129,15 @@ public class Client extends Observable<CommunicationMessage> {
         return name;
     }
 
+    /**
+     * @param ip server ip where to the client connects
+     */
     public void setIp(String ip) {
         this.ip = ip;
     }
-
+    /**
+     * @param port server port where to the client connects
+     */
     public void setPort(int port) {
         this.port = port;
     }
