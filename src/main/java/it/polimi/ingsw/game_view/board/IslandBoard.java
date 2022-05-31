@@ -24,10 +24,10 @@ public class IslandBoard implements Serializable {
     /**
      * Constructor method, create the island ring, current students on each island, current tower number,
      * island index, current color of towers built on the island(there can be only towers with the same color),
-     * deniedCounter(a property of an island given by an advanced card), the presence of mother nature,
-     * @param island
-     * @param hasMotherNature
-     * @param islandIndex
+     * deniedCounter(a property of an island given by an advanced card), the presence of mother nature and island ID.
+     * @param island current island
+     * @param hasMotherNature flag to report if mother nature is on the island or not
+     * @param islandIndex index of island
      *
      * @see Island
      * @see it.polimi.ingsw.game_model.character.MotherNature
@@ -42,6 +42,7 @@ public class IslandBoard implements Serializable {
         this.hasMotherNature = hasMotherNature;
         this.ID = island.getId();
     }
+
     @Override
     public String toString(){
         return Printable.TL2_CORNER + Printable.H2_BAR.repeat(11) + Printable.TR2_CORNER + "\n" +

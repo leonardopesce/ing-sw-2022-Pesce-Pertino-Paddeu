@@ -12,11 +12,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class representing the terrain board in a light way to transmit fewer data as possible.
+ */
 public class TerrainBoard implements Serializable {
     private final List<List<ColorCharacter>> cloudCards = new ArrayList<>();
     private final List<IslandBoard> islands = new ArrayList<>();
     private final List<AdvancedCardBoard> advancedCard = new ArrayList<>();
 
+    /**
+     * Set the terrain board: add cloud cards, islands, advanced character cards.
+     * @param terrain terrain board
+     * @param motherNaturePosition integer to represent mother nature position, based on the islands
+     */
     public TerrainBoard(Terrain terrain, int motherNaturePosition) {
         for(CloudCard cloud: terrain.getCloudCards()){
             cloudCards.add(new ArrayList<>(cloud.getStudent().stream().map(BasicCharacter::getColor).toList()));
@@ -29,6 +37,16 @@ public class TerrainBoard implements Serializable {
         }
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    /**
+     * Given an ID, get the island on the island board with the same id
+     * @param ID id in input to find the island in the island board
+     * @return island  in the island board with the same ID, <code> null </code> if there's an island that match the ID
+     */
     public IslandBoard getIslandWithID(int ID){
         for (IslandBoard island : islands) {
             if (island.getID() == ID) {
@@ -38,14 +56,26 @@ public class TerrainBoard implements Serializable {
         return null;
     }
 
+    /**
+     * @return cloud cards set on the terrain board
+     * @see CloudCard
+     */
     public List<List<ColorCharacter>> getCloudCards() {
         return cloudCards;
     }
 
+    /**
+     * @return  Advanced cards set on the terrain board
+     * @see AdvancedCharacter
+     */
     public List<AdvancedCardBoard> getAdvancedCard() {
         return advancedCard;
     }
 
+    /**
+     * @return list of all the island on the terrain board
+     * @see Island
+     */
     public List<IslandBoard> getIslands() {
         return islands;
     }
@@ -90,6 +120,10 @@ public class TerrainBoard implements Serializable {
     }
 
 
+    /**
+     * Given an ID print on console the cloud card with the matching ID
+     * @param id id of cloud card we want to print
+     */
     private String getCloudCard(int id){
         return Printable.H3_BAR.repeat(26) + " \n" +
                 Printable.V3_BAR + "        " + "CLOUD " + id + "          " + Printable.V3_BAR + "\n" +

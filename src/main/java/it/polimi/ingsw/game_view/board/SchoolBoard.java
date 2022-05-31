@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class to
+ /**
+ * Class representing the school board in in a light way to transmit fewer data as possible
  */
 public class SchoolBoard implements Serializable {
     List<ColorCharacter> entrance = new ArrayList<>();
@@ -21,6 +22,13 @@ public class SchoolBoard implements Serializable {
     ColorTower towerColor;
     boolean advancedAlreadyPlayedThisTurn = false;
 
+    /**
+     * Constructor class to set the school board
+     * @param school is the board that contains entrance, dining hall, students and professors
+     * @param colorTower tower color of player's board, one for each player
+     * @param hasPlayerAlreadyPlayedAdvancedCards flag to report if the player has already played an advanced card,
+     * since a player can play only one advanced card per turn.
+     */
     public SchoolBoard(School school, ColorTower colorTower, boolean hasPlayerAlreadyPlayedAdvancedCards) {
         for(Student student: school.getEntrance().getStudents()){
             entrance.add(student.getColor());
@@ -36,35 +44,74 @@ public class SchoolBoard implements Serializable {
         advancedAlreadyPlayedThisTurn = hasPlayerAlreadyPlayedAdvancedCards;
     }
 
+    /**
+     * get the students on the entrance of the school board
+     * @return students on the entrance of the school board, which are represented by a list
+     */
     public List<ColorCharacter> getEntrance() {
         return entrance;
     }
 
+    /**
+     * get teachers on the school board
+     * @return list of teachers on the school board
+     */
     public List<ColorCharacter> getTeachers() {
         return teachers;
     }
 
+    /**
+     * get the tables on which are sat the students.
+     *
+     * @return The array of integers containing the students sitting in each dining hall: the index of the array
+     * represents which color is the table(students can sit on a table only if they have the same color of the table),
+     * the integer is the number of students sit in the dining hall.
+     * For example if <code> array[0] == 6 </code> in the first table there are 6 students.
+     */
     public int[] getTables() {
         return tables;
     }
 
+    /**
+     * Get towers on the school board
+     * @return an integer representing the number of towers on the school board
+     */
     public int getTowers() {
         return towers;
     }
 
+    /**
+     * get color tower assigned to the school board, (one for each player).
+     * @return Color of the tower
+     * @see ColorTower
+     */
     public ColorTower getTowerColor() {
         return towerColor;
     }
 
+    /**
+     * given the index of student entrance, print the selected student entrance
+     * @param index index of student entrance to print
+     */
     private String addStudentEntrance(int index){
         return "   " + (entrance.size() > index ? GameBoard.getColorString(entrance.get(index)) + Printable.STUDENT : " ") +
                 Printable.TEXT_RESET;
     }
 
+    /**
+     * given the index of student entrance, print the selected student entrance
+     * @param index of tower to print
+     * @return printed string
+     */
     private String addTower(int index){
         return "  " + (towers > index ? GameBoard.getColorTowerString(towerColor) + Printable.TOWER : " ") + Printable.TEXT_RESET;
     }
 
+    /**
+     * given the index, print the corresponding table in the school board
+     * @param index index of the school table to print
+     * @return printed string of the school table
+     */
     private String addTable(int index){
         StringBuilder temp = new StringBuilder();
         temp.append("   ");
@@ -77,6 +124,10 @@ public class SchoolBoard implements Serializable {
         return temp.toString();
     }
 
+    /**
+     * get the value of flag that report is an advanced card has been played on this turn.
+     * @return true if an advanced card has been played this turn, false otherwise.
+     */
     public boolean isAdvancedAlreadyPlayedThisTurn() {
         return advancedAlreadyPlayedThisTurn;
     }

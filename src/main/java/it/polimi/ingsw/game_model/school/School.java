@@ -36,7 +36,7 @@ public class School {
     }
 
     /**
-     * Add teacher on player's gameboard
+     * Add teacher on player's game board
      * @param t teacher to add
      */
     public void addTeacher(Teacher t){
