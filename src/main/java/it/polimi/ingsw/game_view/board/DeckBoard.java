@@ -2,18 +2,25 @@ package it.polimi.ingsw.game_view.board;
 
 import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.Assistant;
-import it.polimi.ingsw.game_model.character.character_utils.AssistantType;
 import it.polimi.ingsw.game_model.character.character_utils.DeckType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class representing the cards in the hand of a player in a light way to transmit fewer data as possible
+ */
 public class DeckBoard implements Serializable {
     private final List<AssistantCardBoard> cards = new ArrayList<>();
     private final AssistantCardBoard discardedCard;
     private final DeckType deckType;
 
+    /**
+     * Constructor for the deck board initializes all the card the chosen deck and the last played card
+     * @param player of which you need to create the DeckBoard
+     * @see Player
+     */
     public DeckBoard(Player player) {
         for(Assistant assistant: player.getDeckAssistants().getAssistants()){
             cards.add(new AssistantCardBoard(assistant));
@@ -22,18 +29,37 @@ public class DeckBoard implements Serializable {
         deckType = player.getDeckAssistants().getType();
     }
 
+    /**
+     * Getter for the card available to play by the corresponding player
+     * @return a List containing AssistantCardBoard (all the card not yet played)
+     * @see AssistantCardBoard
+     */
     public List<AssistantCardBoard> getCards() {
         return cards;
     }
 
+    /**
+     * Getter for the last played car
+     * @return a AssistantCardBoard representing the last played card from the corresponding player
+     * @see AssistantCardBoard
+     */
     public AssistantCardBoard getDiscardedCard() {
         return discardedCard;
     }
 
+    /**
+     * Getter for the type of deck of the corresponding player
+     * @return the DeckType chosen by the player at the beginning of the match
+     * @see DeckType
+     */
     public DeckType getDeckType() {
         return deckType;
     }
 
+    /**
+     * Override of toString to create a method that represent the available card
+     * @return a String representing graphically all the available assistant card to play
+     */
     @Override
     public String toString() {
         StringBuilder decks = new StringBuilder();
@@ -58,6 +84,11 @@ public class DeckBoard implements Serializable {
         return decks.toString();
     }
 
+    /**
+     * support function for the method toString
+     * @param index int representing the index of the card in the hand of the player
+     * @return a String of the single assistant card
+     */
     private String getCard(int index){
         AssistantCardBoard card = cards.get(index);
         String name = card.getType().getName() + " (" + index + ")";
