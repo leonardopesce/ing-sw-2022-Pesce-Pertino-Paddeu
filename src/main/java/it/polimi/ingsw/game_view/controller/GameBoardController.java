@@ -269,7 +269,6 @@ public class GameBoardController implements Initializable {
             else{
                 advancedBoard.setVisible(false);
             }
-            makeAdvancedCardSelectable();
         });
     }
 
