@@ -19,7 +19,7 @@ public class CloudCard {
 
     /**
      * Remove students from the cloud card
-     * @return
+     * @return list of students without the removed ones
      */
     public List<Student> removeStudentsOnCloud() {
         List<Student> tmp = studentsOnCloud.stream().toList();

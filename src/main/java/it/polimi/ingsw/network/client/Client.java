@@ -23,6 +23,9 @@ public class Client extends Observable<CommunicationMessage> {
         this.port = port;
     }
 
+    /**
+     * Close the client socket
+     */
     public synchronized void close(){
         try{
             connectionStatusHandler.kill();
@@ -32,10 +35,18 @@ public class Client extends Observable<CommunicationMessage> {
         }
     }
 
+
     public synchronized boolean isActive(){
         return connectionStatusHandler.isConnectionActive();
     }
 
+    /**
+     * Given the input stream, create a thread that reads it while the connection is active; if the input is a
+     * <code>CommunicationMessage</code>, call the <code>notify</code> method with the input stream as input.
+     * If there isn't a server side response, kill the process.
+     * @param socketIn input from socket
+     * @return the thread used to read when it finishes
+     */
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){
         Thread t = new Thread(() -> {
             try {
@@ -56,6 +67,7 @@ public class Client extends Observable<CommunicationMessage> {
         t.start();
         return t;
     }
+
 
     public synchronized void asyncWriteToSocket(CommunicationMessage message){
         new Thread(() -> {
