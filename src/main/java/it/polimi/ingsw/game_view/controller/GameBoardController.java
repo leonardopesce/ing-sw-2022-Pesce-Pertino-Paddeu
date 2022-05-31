@@ -14,7 +14,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -390,7 +389,7 @@ public class GameBoardController implements Initializable {
                     }
                     else if(playingAdvancedCard == JESTER.ordinal()){
                         AdvancedCardController jester = advancedCards.stream().filter(a -> a.getType().equals(JESTER)).toList().get(0);
-                        for(int k = 0; k < jester.getObj(); k++){
+                        for(int k = 0; k < jester.getObjectsSize(); k++){
                             resetHoverEffect(jester.getObjects().get(k));
                             jester.getObjects().get(k).setOnMouseClicked(null);
                         }

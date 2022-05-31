@@ -17,6 +17,9 @@ import java.util.ResourceBundle;
 
 import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
+/**
+ * Controller for the advanced card GUI
+ */
 public class AdvancedCardController implements Initializable {
     private final List<ImageView> objects = new ArrayList<>();
     private AdvancedCharacterType type;
@@ -28,11 +31,21 @@ public class AdvancedCardController implements Initializable {
     @FXML
     ImageView cardImage, coinImage, obj0, obj1, obj2, obj3, obj4, obj5;
 
+    /**
+     * Initialize function: initialize all the object used by the class
+     * @param url handled by javafx during loading of fxml
+     * @param resourceBundle handled by javafx during loading of fxml
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         objects.addAll(Arrays.asList(obj0, obj1, obj2, obj3, obj4, obj5));
     }
 
+    /**
+     * Update function for the advanced card, reloads the object contained uf needed, updates the cost of the card
+     * @param card containing the value to update
+     * @see AdvancedCardBoard
+     */
     public void update(AdvancedCardBoard card){
         type = card.getType();
         cardImage.setImage(new Image("/img/advanced/" + type.getCardName() + ".jpg"));
@@ -71,30 +84,60 @@ public class AdvancedCardController implements Initializable {
 
     }
 
+    /**
+     * Getter for the type of the advanced card
+     * @return the type of the advanced card
+     */
     public AdvancedCharacterType getType() {
         return type;
     }
 
+    /**
+     * Getter for the cost of the advanced card
+     * @return an int representing the cost of the advanced card
+     */
     public int getCost() {
         return cost;
     }
 
+    /**
+     * Getter for the objects on the card (in case the card is MONK, PRINCESS, JESTER or HEALER
+     * @return a List of Image with the object on the card
+     */
     public List<ImageView> getObjects() {
         return objects;
     }
 
-    public int getObj() {
+    /**
+     * Getter for the number of object in the card
+     * @return an int representing the number of element in the array
+     */
+    public int getObjectsSize() {
         return obj;
     }
 
+    /**
+     * Getter for the size of element that are currently selected in the GUI (these have an effect on them)
+     * @return an int representing the value of selected item on the card
+     */
     public int getSelectedItem(){
         return (int) objects.stream().filter(image -> image.getEffect() != null).count();
     }
 
+    /**
+     * Getter for the Image of the advanced card
+     * @return an ImageView representing the advanced card
+     */
     public ImageView getCardImage() {
         return cardImage;
     }
 
+    /**
+     * Once selected the advanced card plays the selected card, if the selected card is a card with multiple action,
+     * prepares for the next action and save the selected card in an array
+     * @param gameBoard the current state of the GUI game board controller
+     * @see GameBoardController
+     */
     public void playEffect(GameBoardController gameBoard){
         if(type == BARTENDER || type == POSTMAN || type == CENTAURUS || type == KNIGHT){
             gameBoard.setPlayingAdvancedCard(1);

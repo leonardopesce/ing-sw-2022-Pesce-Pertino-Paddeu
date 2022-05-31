@@ -1,7 +1,5 @@
 package it.polimi.ingsw.game_view.controller.custom_gui;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -9,6 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * A custom Switch button for graphic porpoise
+ */
 public class CustomSwitch extends StackPane {
     private final Rectangle back = new Rectangle(30, 10, Color.RED);
     private final Button button = new Button();
@@ -16,6 +17,9 @@ public class CustomSwitch extends StackPane {
     private final String buttonStyleOn = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #9a365b;";
     private boolean state;
 
+    /**
+     * Init for the custom switch button
+     */
     private void init() {
         state = false;
         getChildren().addAll(back, button);
@@ -35,12 +39,18 @@ public class CustomSwitch extends StackPane {
         button.setStyle(buttonStyleOff);
     }
 
+    /**
+     * Constructor for the switch button
+     */
     public CustomSwitch() {
         init();
         button.setFocusTraversable(true);
         button.setMouseTransparent(true);
     }
 
+    /**
+     * Function to change the state of the switch
+     */
     public void changeState() {
         if (state) {
             button.setStyle(buttonStyleOff);
@@ -55,6 +65,10 @@ public class CustomSwitch extends StackPane {
         }
     }
 
+    /**
+     * Function to get the current state of the switch
+     * @return a boolean base on the switch state
+     */
     public boolean getState() {
         return state;
     }
