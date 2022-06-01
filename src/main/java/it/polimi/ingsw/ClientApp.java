@@ -5,6 +5,7 @@ import it.polimi.ingsw.game_view.GameViewGUI;
 import it.polimi.ingsw.network.utils.Logger;
 import javafx.application.Application;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 /**

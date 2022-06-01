@@ -38,7 +38,7 @@ import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*
 
 public class LoginController implements Initializable {
     private static final String LOGIN_FONT = "System";
-    private static final double LOGIN_FONT_SIZE = 13.0;
+    private static final double LOGIN_FONT_SIZE = System.getProperty("os.name","generic").toLowerCase(Locale.ITALIAN).indexOf("linux") > 0 ? 11.0 : 13.0;
     private static final String NORMAL_GAME_TXT = "Regole base";
     private static final String EXPERT_GAME_TXT = "Regole per esperti";
     private Client client;
