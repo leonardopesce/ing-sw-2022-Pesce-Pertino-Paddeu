@@ -15,16 +15,28 @@ import java.util.Arrays;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
+/**
+ * Used by the server as a way to interface the communication coming and going to the client
+ */
 public class RemoteGameView extends Observable<GameAction> implements Observer<MoveMessage>{
     private final ClientConnection clientConnection;
     private final String playerName;
 
+    /**
+     * Constructor class initialize the variable used in the class
+     * @param playerName String containing the name of the player
+     * @param c Connection of the client with function to send message to it
+     * @see ClientConnection
+     */
     public RemoteGameView(String playerName, ClientConnection c) {
         this.playerName = playerName;
         this.clientConnection = c;
         c.addObserver(new MessageReceiver());
     }
 
+    /**
+     * A sub-Class used in combination with the Observer for receiving a message from the Client
+     */
     private class MessageReceiver implements Observer<CommunicationMessage> {
 
         @Override
@@ -43,15 +55,29 @@ public class RemoteGameView extends Observable<GameAction> implements Observer<M
 
     }
 
+    /**
+     * Handles the move requested by the player
+     * @param action the action requested by the player
+     * @see GameAction
+     */
     void handleMove(GameAction action) {
         Logger.GAME_LOG("from player: " + playerName + ", received game action: " + action.toString(), ((SocketClientConnection)clientConnection).getClientName());
         notify(action);
     }
 
+    /**
+     * Sends message to the client saved in this clientConnection
+     * @param message the message to send
+     */
     protected void sendMessage(CommunicationMessage message){
         clientConnection.asyncSend(message);
     }
 
+    /**
+     * Update function necessary for the observer to work when receiving a message from the Model analyze and send
+     * it to the client
+     * @param message the message received from the model
+     */
     @Override
     public void update(MoveMessage message){
         boolean gameOver = message.getGame().winner().length != 0;

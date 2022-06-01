@@ -7,7 +7,6 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.*;
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.utils.Logger;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -33,6 +32,10 @@ import java.util.*;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 import static it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType.*;
 
+/**
+ * Handles all the fxml controller coordinates the action
+ * and takes care of displaying the update every time they are received
+ */
 public class GameBoardController implements Initializable {
     private Client client;
     private String clientName;
