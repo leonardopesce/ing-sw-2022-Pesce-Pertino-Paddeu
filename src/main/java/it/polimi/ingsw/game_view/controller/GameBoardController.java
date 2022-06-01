@@ -7,6 +7,7 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
 import it.polimi.ingsw.game_view.board.*;
 import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.utils.Logger;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -114,6 +115,11 @@ public class GameBoardController implements Initializable {
     @FXML
     public void exitFromApp(){
         Platform.exit();
+        try {
+            client.close();
+        } catch (Exception ex) {
+            // Impossible to reach during the game.
+        }
         System.exit(0);
     }
 
