@@ -37,7 +37,8 @@ import java.util.*;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
 public class LoginController implements Initializable {
-    private static final String LOGIN_FONT = "Berlin Sans FB";
+    private static final String LOGIN_FONT = "System";
+    private static final double LOGIN_FONT_SIZE = 13.0;
     private static final String NORMAL_GAME_TXT = "Regole base";
     private static final String EXPERT_GAME_TXT = "Regole per esperti";
     private Client client;
@@ -180,7 +181,7 @@ public class LoginController implements Initializable {
         createLobbyButton.setMnemonicParsing(false);
         createLobbyButton.setPrefWidth(281.0);
         createLobbyButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
-        createLobbyButton.setFont(new Font(LOGIN_FONT, 14.0));
+        createLobbyButton.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         createLobbyButton.setText("Crea una partita");
         createLobbyButton.setTextAlignment(TextAlignment.CENTER);
         joinLobbyButton.setLayoutX(20.0);
@@ -188,7 +189,7 @@ public class LoginController implements Initializable {
         joinLobbyButton.setMnemonicParsing(false);
         joinLobbyButton.setPrefWidth(281.0);
         joinLobbyButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
-        joinLobbyButton.setFont(new Font(LOGIN_FONT, 14.0));
+        joinLobbyButton.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         joinLobbyButton.setText("Entra in una partita");
         joinLobbyButton.setTextAlignment(TextAlignment.CENTER);
 
@@ -235,7 +236,7 @@ public class LoginController implements Initializable {
         twoPlayersButton.setPrefWidth(88.0);
         twoPlayersButton.setPrefHeight(37.0);
         twoPlayersButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
-        twoPlayersButton.setFont(new Font(LOGIN_FONT, 14.0));
+        twoPlayersButton.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         twoPlayersButton.setText("2");
         twoPlayersButton.setTextAlignment(TextAlignment.CENTER);
 
@@ -245,7 +246,7 @@ public class LoginController implements Initializable {
         threePlayersButton.setPrefWidth(88.0);
         threePlayersButton.setPrefHeight(37.0);
         threePlayersButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
-        threePlayersButton.setFont(new Font(LOGIN_FONT, 14.0));
+        threePlayersButton.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         threePlayersButton.setText("3");
         threePlayersButton.setTextAlignment(TextAlignment.CENTER);
 
@@ -255,7 +256,7 @@ public class LoginController implements Initializable {
         fourPlayersButton.setPrefWidth(88.0);
         fourPlayersButton.setPrefHeight(37.0);
         fourPlayersButton.setStyle("-fx-background-color: #9a365b; -fx-background-radius: 50px; -fx-text-fill: #e1e1e1;");
-        fourPlayersButton.setFont(new Font(LOGIN_FONT, 14.0));
+        fourPlayersButton.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         fourPlayersButton.setText("4");
         fourPlayersButton.setTextAlignment(TextAlignment.CENTER);
 
@@ -277,7 +278,7 @@ public class LoginController implements Initializable {
         gameModeTxt.setWrappingWidth(113.13671875);
         gameModeTxt.setText(NORMAL_GAME_TXT);
         gameModeTxt.setFill(Color.rgb(225,225,225));
-        gameModeTxt.setFont(new Font(LOGIN_FONT, 14));
+        gameModeTxt.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         switchGameModeBox.getChildren().add(switchImg);
         switchGameModeBox.getChildren().add(gameModeTxt);
         switchGameModeBox.getChildren().add(customGameModeSwitch);
@@ -333,7 +334,7 @@ public class LoginController implements Initializable {
         lobbyText.setStrokeWidth(0.0);
         lobbyText.setWrappingWidth(321.0);
         lobbyText.setTextAlignment(TextAlignment.CENTER);
-        lobbyText.setFont(new Font(LOGIN_FONT, 24.0));
+        lobbyText.setFont(new Font(LOGIN_FONT, 1.84*LOGIN_FONT_SIZE));
 
         lobbyMembers.setStyle("-fx-background-color: transparent");
         lobbyMembers.setLayoutX(9.0);
@@ -367,7 +368,7 @@ public class LoginController implements Initializable {
             }
             memberText.setStrokeType(StrokeType.OUTSIDE);
             memberText.setStrokeWidth(0.0);
-            memberText.setFont(new Font(LOGIN_FONT, 18.0));
+            memberText.setFont(new Font(LOGIN_FONT, 1.38*LOGIN_FONT_SIZE));
             memberText.setFill(Color.rgb(225,225,225));
 
             memberBox.getChildren().add(ownerIcon);
@@ -412,7 +413,7 @@ public class LoginController implements Initializable {
         listViewHeaderTitle.setStrokeWidth(0.0);
         listViewHeaderTitle.setTextAlignment(TextAlignment.CENTER);
         listViewHeaderTitle.setWrappingWidth(155.0);
-        listViewHeaderTitle.setFont(new Font(LOGIN_FONT, 24.0));
+        listViewHeaderTitle.setFont(new Font(LOGIN_FONT, 1.84*LOGIN_FONT_SIZE));
         listViewHeaderVerticalSeparator.setOrientation(Orientation.VERTICAL);
         listViewHeaderVerticalSeparator.setPrefHeight(32.0);
         listViewHeaderVerticalSeparator.setPrefWidth(127.0);
@@ -480,11 +481,11 @@ public class LoginController implements Initializable {
             lobbyObjectContent.setPrefWidth(179.0);
             lobbyName.setStrokeType(StrokeType.OUTSIDE);
             lobbyName.setStrokeWidth(0.0);
-            lobbyName.setFont(new Font(LOGIN_FONT, 18.0));
+            lobbyName.setFont(new Font(LOGIN_FONT, 1.38*LOGIN_FONT_SIZE));
             lobbyName.setFill(Color.rgb(225,225,225));
             lobbySize.setStrokeType(StrokeType.OUTSIDE);
             lobbySize.setStrokeWidth(0.0);
-            lobbySize.setFont(new Font(LOGIN_FONT, 22.0));
+            lobbySize.setFont(new Font(LOGIN_FONT, 1.69*LOGIN_FONT_SIZE));
             lobbySize.setText(lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize());
             if(lobby.isFull()) {
                 lobbySize.setFill(Color.rgb(154,54,91));
@@ -555,14 +556,14 @@ public class LoginController implements Initializable {
             deckTypeName.setStrokeWidth(0.0);
             deckTypeName.setWrappingWidth(321.0);
             deckTypeName.setTextAlignment(TextAlignment.CENTER);
-            deckTypeName.setFont(new Font(LOGIN_FONT, 36.0));
+            deckTypeName.setFont(new Font(LOGIN_FONT, 2.77*LOGIN_FONT_SIZE));
             deckTypeSignatureText.setFill(Color.rgb(225,225,225));
             deckTypeSignatureText.setTextAlignment(TextAlignment.CENTER);
             deckTypeSignatureText.setWrappingWidth(321.0);
             deckTypeSignatureText.setLayoutY(394.0);
             deckTypeSignatureText.setStrokeType(StrokeType.OUTSIDE);
             deckTypeSignatureText.setStrokeWidth(0.0);
-            deckTypeSignatureText.setFont(new Font(LOGIN_FONT, 21.0));
+            deckTypeSignatureText.setFont(new Font(LOGIN_FONT, 1.61*LOGIN_FONT_SIZE));
 
             contentPane.getChildren().add(deckTypeChosenImage);
             contentPane.getChildren().add(deckTypeName);
