@@ -12,10 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -62,9 +59,13 @@ public class LoginController implements Initializable {
     private ImageView errorLogo;
     @FXML
     private HBox errorBox;
+    @FXML
+    private Label creditLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        creditLabel.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
+        loginErrorMessage.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
         loginErrorMessage.setText("");
         errorLogo.setImage(null);
         errorBox.setVisible(false);
