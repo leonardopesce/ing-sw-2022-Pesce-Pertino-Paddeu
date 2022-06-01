@@ -5,15 +5,26 @@ import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterTyp
 import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 
+/**
+ * <dt><b>Merchant</b> - Cost: <b>3</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: Choose a type of student: every player (including yourself) must return 3 students of that type from their
+ *           dining room to the bag. If any player has fewer than 3 students of that type, return as many students as they have.
+ *       </dd>
+ */
 public class Merchant extends AdvancedCharacter{
 
+    /**
+     * @param game the game instance decorated by this character.
+     */
     public Merchant(Game game) {
         super(AdvancedCharacterType.MERCHANT, game);
     }
+
     /**
-     * Choose a type of student: every player (including yourself) must return 3 students of that type from their
-     * dining room to the bag. If any player has fewer than 3 students of that type, return as many students as they have.
-     * @param attributes
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that array
+     *                   must contain a {@link ColorCharacter}.
      */
     @Override
     public boolean playEffect(Object... attributes) {

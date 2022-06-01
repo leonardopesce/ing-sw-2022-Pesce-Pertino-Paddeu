@@ -3,17 +3,21 @@ package it.polimi.ingsw.game_model.character.advanced;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 
+/**
+ * <dt><b>Flagman</b> - Cost: <b>3</b></dt>
+ *      <p>
+ *      <dd>
+ *           <b>EFFECT</b>: Chose an island and calculate the majority as if Mother Nature has stopped her movement there.
+ *           In this turn Mother Nature will move as usual and on the island she lands, the majority will normally be calculated.
+ *      </dd>
+ */
 public class Flagman extends AdvancedCharacter{
     public Flagman(Game game){
         super(AdvancedCharacterType.FLAGMAN, game);
     }
 
     /**
-     * Chose an island and calculate the majority as if Mother Nature has stopped her movement there.<br>
-     *  In this turn Mother Nature will move as usual and on the island she lands, the majority will normally be calculated.
-     *
      * @param attributes a list of parameters to make the card work. In this case it contains the island index selected by the user.
-     * @return true if the card got played successfully, false if not.
      */
     @Override
     public boolean playEffect(Object... attributes){

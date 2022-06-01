@@ -14,10 +14,17 @@ public enum GamePhase {
 
     private final String name;
 
+    /**
+     * @param name the name of the game phase.
+     */
     GamePhase(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the name of the game phase.
+     * @return the name of the game phase.
+     */
     public String getName() {
         return name;
     }

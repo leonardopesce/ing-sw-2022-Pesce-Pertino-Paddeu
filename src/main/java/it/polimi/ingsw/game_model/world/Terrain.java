@@ -30,14 +30,28 @@ public class Terrain {
         }
     }
 
+    /**
+     * Returns all the islands of the ring.
+     * @return all the islands of the ring.
+     */
     public List<Island> getIslands(){
         return islandsRing;
     }
 
+    /**
+     * Returns the next island to the specified one.
+     * @param is the island of which the next one is required.
+     * @return the next island to the specified one.
+     */
     public Island getNextIsland(Island is) {
         return islandsRing.get((islandsRing.indexOf(is) + 1) % islandsRing.size());
     }
 
+    /**
+     * Returns the previous island to the specified one.
+     * @param is the island of which the previous one is required.
+     * @return the previous island to the specified one.
+     */
     public Island getPreviousIsland(Island is){
         return islandsRing.get(Math.floorMod((islandsRing.indexOf(is) - 1), islandsRing.size()));
     }
@@ -57,7 +71,11 @@ public class Terrain {
         }
         islandsRing.remove(islandToMerge);
     }
-    
+
+    /**
+     * Returns a list with the cloud cards.
+     * @return a list with the cloud cards.
+     */
     public List<CloudCard> getCloudCards() {
         return this.cloudCards;
     }
@@ -99,10 +117,19 @@ public class Terrain {
         }
     }
 
+    /**
+     * In expert mode, returns a list of the 3 advanced card which are playable.
+     * @return a list of the 3 advanced card which are playable.
+     */
     public List<AdvancedCharacter> getAdvancedCharacters() {
         return advancedCharacters;
     }
 
+    /**
+     * Add the specified student to the specified island.
+     * @param student the student to add to the specified island.
+     * @param island the index of the island on which to place the provided student.
+     */
     public void addStudentToIsland(Student student, int island) {
         islandsRing.get(island).addStudent(student);
     }

@@ -11,9 +11,21 @@ import it.polimi.ingsw.network.utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *    <dt><b>Jester</b> - Cost: <b>1</b></dt>
+ *       <p>
+ *       <dd>
+ *           At the beginning of the match put the 4 No Entry tiles on this card.<br>
+ *          <b>EFFECT</b>: You may take up to 3 students from this card and replace them with the same number of students
+ *          from your Entrance.
+ *      </dd>
+ */
 public class Jester extends AdvancedCharacter{
     private final List<Student> studentsOnCard;
 
+    /**
+     * @param game the game instance decorated by this card.
+     */
     public Jester(Game game){
         super(AdvancedCharacterType.JESTER, game);
         this.studentsOnCard = new ArrayList<>();
@@ -27,13 +39,18 @@ public class Jester extends AdvancedCharacter{
         }
     }
 
+    /**
+     * Returns the list of students which are on the card.
+     * @return the list of students which are on the card.
+     */
     public List<Student> getStudentsOnCard() {
         return studentsOnCard;
     }
 
     /**
-     * You may take up to 3 students from this card and replace them with the same number of students from your Entrance.
-     * @param attributes
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that array
+     *                   must contain the player nickname, a list of indexes referred to the students picked from the card
+     *                   and a list of indexes referred to the entrance position on which to swap the students.
      */
     @Override
     public boolean playEffect(Object... attributes){

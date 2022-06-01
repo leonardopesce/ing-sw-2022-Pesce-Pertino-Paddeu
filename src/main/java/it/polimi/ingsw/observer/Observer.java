@@ -1,7 +1,7 @@
 package it.polimi.ingsw.observer;
 
 /**
- * Object that notifies the observers when it gets an update.
+ * A class can implement the Observer interface when it wants to be informed of changes in observable objects.
  */
 public interface Observer<T> {
     void update(T message);

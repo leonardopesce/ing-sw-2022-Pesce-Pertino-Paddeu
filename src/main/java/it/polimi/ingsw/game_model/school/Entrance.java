@@ -9,8 +9,6 @@ import java.util.List;
  * <p>
  * A class to model the entrance of the player's game board: a entrance contains a list of students, that can be
  * received from a cloud card, and can be moved on islands or dining table
- *
- *
  */
 public class Entrance {
     private final List<Student> students = new ArrayList<>();
@@ -19,10 +17,19 @@ public class Entrance {
         // No need to build anything.
     }
 
+    /**
+     * Returns the list of students which are in the entrance.
+     * @return the list of students which are in the entrance.
+     */
     public List<Student> getStudents() {
         return students;
     }
 
+    /**
+     * Returns the student of the given index in the entrance.
+     * @param indexOfStudent the index of the student to get from the entrance.
+     * @return the student of the given index in the entrance.
+     */
     public Student getStudent(int indexOfStudent) {
         return students.get(indexOfStudent);
     }

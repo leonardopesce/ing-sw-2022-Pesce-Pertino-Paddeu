@@ -12,6 +12,9 @@ public class GameExpertMode extends Game {
     public static final int NUMBER_OF_ADVANCED_CARD = 3;
     private int treasury = 20;
 
+    /**
+     * @param playerNums the game number of players.
+     */
     public GameExpertMode(int playerNums) {
         super(playerNums);
         isExpert = true;
@@ -26,6 +29,11 @@ public class GameExpertMode extends Game {
         }
     }
 
+    /**
+     * Set up the game board by randomly adding the students to the islands and instantiating the cloud cards. In this case 3 advanced cards are also picked
+     * and made playable.
+     * @throws BagEmptyException if the bag is empty while drawing a student from it. (impossible to verify in this scenario since this method is called at the beginning of the match, when the bag is full)
+     */
     @Override
     public void setupBoard() throws BagEmptyException {
         super.setupBoard();

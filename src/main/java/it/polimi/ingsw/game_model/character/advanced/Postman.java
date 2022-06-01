@@ -4,14 +4,24 @@ import it.polimi.ingsw.game_model.Player;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 
+/**
+ * <dt><b>Postman</b> - Cost: <b>1</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: You can move Mother Nature up to 2 additional islands compared to the value of the assistant card you played.
+ *       </dd>
+ */
 public class Postman extends AdvancedCharacter{
+    /**
+     * @param game the game instance decorated by this character.
+     */
     public Postman(Game game){
         super(AdvancedCharacterType.POSTMAN, game);
     }
 
     /**
-     * You can move Mother Nature up to 2 additional islands compared to the value of the assistant card you played.
-     * @param attributes
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that array
+     *                   must contain the player nickname.
      */
     @Override
     public boolean playEffect(Object... attributes){

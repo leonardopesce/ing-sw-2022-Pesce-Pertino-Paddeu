@@ -7,7 +7,11 @@ import it.polimi.ingsw.game_model.utils.ColorCharacter;
  * students one
  */
 public class Teacher extends BasicCharacter<ColorCharacter> {
-
+    /**
+     * @param color the color of the teacher.
+     *
+     * @see ColorCharacter
+     */
     public Teacher(ColorCharacter color) {
         super(color);
     }

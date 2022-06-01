@@ -85,7 +85,7 @@ public class Game extends Observable<MoveMessage> {
     /**
      * Set up the game board by randomly adding the students to the islands and instantiating the cloud cards.
      *
-     * @throws BagEmptyException if the bag is empty while drawing a student from it. (impossible to verify in this scenario since this method is called at the beginning of the match, when the bag is full)
+     * @throws BagEmptyException if the bag is empty while drawing a student from it. (impossible to verify in this scenario since this method is called at the beginning of the match, when the bag is full).
      */
     public void setupBoard() throws BagEmptyException {
         /* Filling the bag with 10 students to set up the board. (2 students foreach color). */

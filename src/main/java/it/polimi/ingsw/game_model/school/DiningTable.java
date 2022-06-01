@@ -16,6 +16,11 @@ public class DiningTable {
     private int numberOfStudents = 0;
     public static final int MAX_POSITIONS = 10;
 
+    /**
+     * @param color the color of the table.
+     *
+     * @see ColorCharacter
+     */
     public DiningTable(ColorCharacter color) {
         this.color = color;
     }
@@ -49,10 +54,18 @@ public class DiningTable {
         return students;
     }
 
+    /**
+     * Returns the table color.
+     * @return the table color.
+     */
     public ColorCharacter getColor() {
         return color;
     }
 
+    /**
+     * Returns the number of students which are present at the table (range from 0 to 10).
+     * @return the number of students which are present at the table.
+     */
     public int getNumberOfStudents() {
         return numberOfStudents;
     }

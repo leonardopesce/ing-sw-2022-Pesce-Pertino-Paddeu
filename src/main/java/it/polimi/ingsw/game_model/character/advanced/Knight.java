@@ -14,12 +14,16 @@ import it.polimi.ingsw.game_model.world.Island;
  *       </dd>
  */
 public class Knight extends AdvancedCharacter{
+    /**
+     * @param game the game instance decorated by this character.
+     */
     public Knight(Game game){
         super(AdvancedCharacterType.KNIGHT, game);
     }
 
     /**
-     * During the influence calculation this turn, you count as having 2 more influence.
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that
+     *                   array must be empty.
      */
     public boolean playEffect(Object... attributes) {
         if(!validateArgs(attributes)){

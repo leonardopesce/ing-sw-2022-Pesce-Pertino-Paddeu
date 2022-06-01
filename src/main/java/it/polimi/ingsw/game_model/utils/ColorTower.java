@@ -9,8 +9,11 @@ import javafx.scene.paint.Paint;
 public enum ColorTower {
     BLACK, WHITE, GREY;
 
-
-
+    /**
+     * Returns the javafx color corresponding to the <code>ColorTower</code> color.
+     * @param color the color of which the javafx version is requested.
+     * @return the javafx color corresponding to the <code>ColorTower</code> color.
+     */
     public static Paint getPaint(ColorTower color){
         return switch (color){
             case BLACK -> Color.BLACK;

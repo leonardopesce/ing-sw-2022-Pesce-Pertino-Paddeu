@@ -6,14 +6,24 @@ import it.polimi.ingsw.game_model.character.basic.Teacher;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.Game;
 
+/**
+ *      <dt><b>Bartender</b> - Cost: <b>2</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: During this turn, you take the control of the other players' teachers even if you have the same amount of students in your room as the player currently controlling them.
+ *       </dd>
+ */
 public class Bartender extends AdvancedCharacter{
+
+    /**
+     * @param game the game decorated by this card.
+     */
     public Bartender(Game game){
         super(AdvancedCharacterType.BARTENDER, game);
     }
 
     /**
-     * During this turn, you take the control of the other players' teachers even if you have the same
-     * amount of students in your room as the player currently controlling them.
+     * @param attributes  the arguments requested by the character in order to be successfully played. In this case that array must be empty.
      */
     @Override
     public boolean playEffect(Object... attributes){

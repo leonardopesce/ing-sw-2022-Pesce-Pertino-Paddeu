@@ -10,9 +10,20 @@ import it.polimi.ingsw.network.utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <dt><b>Monk</b> - Cost: <b>1</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: Take 1 student from this card and place it on an island of your choice. Then draw a student from
+ *           the game bag and place it on this card.
+ *       </dd>
+ */
 public class Monk extends AdvancedCharacter{
     private final List<Student> studentsOnCard;
 
+    /**
+     * @param game the game instance decorated by this character.
+     */
     public Monk(Game game) {
         super(AdvancedCharacterType.MONK, game);
         this.studentsOnCard = new ArrayList<>();
@@ -31,9 +42,9 @@ public class Monk extends AdvancedCharacter{
     }
 
     /**
-     * Take 1 student from this card and place it on an island of your choice. Then
-     * draw a student from the game bag and place it on this card.
-     * @param attributes
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that array
+     *                   must contain the index of the island on which to place the student on, and the index of the student
+     *                   picked from the card.
      */
     @Override
     public boolean playEffect(Object... attributes) {

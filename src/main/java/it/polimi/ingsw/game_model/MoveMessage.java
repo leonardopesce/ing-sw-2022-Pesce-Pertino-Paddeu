@@ -11,6 +11,10 @@ public class MoveMessage {
     private final CommunicationMessage.MessageType type;
     private final boolean expertMode;
 
+    /**
+     * @param game the game on which the move has been performed.
+     * @param type the type of move done.
+     */
     public MoveMessage(Game game, CommunicationMessage.MessageType type) {
         this.player = game.getCurrentlyPlayingPlayer();
         this.game = game;
@@ -18,6 +22,11 @@ public class MoveMessage {
         expertMode = false;
     }
 
+    /**
+     * @param game the game on which the move has been performed.
+     * @param type the type of move done.
+     * @param expertMode the type of the game.
+     */
     MoveMessage(Game game, CommunicationMessage.MessageType type, boolean expertMode) {
         this.player = game.getCurrentlyPlayingPlayer();
         this.game = game;

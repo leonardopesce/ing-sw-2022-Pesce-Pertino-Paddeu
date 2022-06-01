@@ -21,6 +21,9 @@ public class Island {
     private final List<Tower> towers = new ArrayList<>();
     private IntegerProperty isBlocked = new SimpleIntegerProperty();
 
+    /**
+     * @param id the id of the island (at the beginning of the match id == index in the ring).
+     */
     public Island(int id) {
         this.id = id;
     }
@@ -54,38 +57,66 @@ public class Island {
         this.towers.addAll(towers);
     }
 
+    /**
+     * Returns a list of towers which have been built by the players on the island.
+     * @return a list of towers which have been built by the players on the island.
+     */
     public List<Tower> getTowers() {
         return towers;
     }
 
+    /**
+     * Returns the number of islands connected in this archipelago
+     * @return the number of islands connected in this archipelago
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * Returns the id of the island (might be different from the index of the island in the ring).
+     * @return the id of the island.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Returns true whether the island has a 'deny' tile on it, false otherwise.
+     * @return true whether the island has a 'deny' tile on it, false otherwise.
+     *
+     * @see it.polimi.ingsw.game_model.character.advanced.Healer
+     */
     public boolean isBlocked() { return isBlocked.intValue() > 0; }
 
     /**
-     * Deny player access to place towers or students if the island's blocked
+     * Deny player access to build towers on the island if it is blocked by a 'deny' tile.
      */
     public void denyIsland() {
         isBlocked.setValue(isBlocked.intValue() + 1);
     }
 
     /**
-     * Free a blocked island
+     * Removes a 'deny' tile from the island.
      */
     public void freeIsland() {
         isBlocked.setValue(isBlocked.intValue() - 1);
     }
 
+    /**
+     * Returns true whether the island has a 'deny' tile on it, false otherwise.
+     * @return true whether the island has a 'deny' tile on it, false otherwise.
+     *
+     * @see it.polimi.ingsw.game_model.character.advanced.Healer
+     */
     public IntegerProperty getIsBlocked(){
         return isBlocked;
     }
 
+    /**
+     * Returns a list of students placed on the island.
+     * @return a list of students placed on the island.
+     */
     public List<Student> getStudents() {
         return students;
     }

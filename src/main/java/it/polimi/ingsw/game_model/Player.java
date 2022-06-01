@@ -29,6 +29,12 @@ public class Player {
     private boolean playedSpecialCard = false;
     private int movedStudents = 0;
 
+    /**
+     * @param nickname the player nickname.
+     * @param deckType the player decktype.
+     *
+     * @see DeckType
+     */
     public Player(String nickname, DeckType deckType) {
         this.nickname = nickname;
         this.deckAssistants = new DeckAssistants(deckType);

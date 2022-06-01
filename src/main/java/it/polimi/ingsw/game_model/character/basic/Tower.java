@@ -7,7 +7,11 @@ import it.polimi.ingsw.game_model.utils.ColorTower;
  * in the game
  */
 public class Tower extends BasicCharacter<ColorTower>{
-
+    /**
+     * @param color the color of the tower.
+     *
+     * @see ColorTower
+     */
     public Tower(ColorTower color) {
         super(color);
     }

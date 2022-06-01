@@ -27,9 +27,8 @@ public class Server {
      * //@param serverPort the port to assign to the server, passed via terminal argument.
      * @throws IOException if an I/O  error occurs when the server is getting created.
      */
-    public Server(/*int serverPort*/) throws IOException {
-        //this.serverSocket = new ServerSocket(serverPort); FOR FUTURE USE (ALREADY TESTED) - When using this line, comment the one below.
-        this.serverSocket = new ServerSocket(PORT);
+    public Server(int serverPort) throws IOException {
+        this.serverSocket = new ServerSocket(serverPort);
     }
 
     /**

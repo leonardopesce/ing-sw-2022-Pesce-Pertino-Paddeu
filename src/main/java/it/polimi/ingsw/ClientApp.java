@@ -20,7 +20,6 @@ public class ClientApp{
     private static final boolean gui = true;
 
     public static void main(String[] args){
-        /* FOR FUTURE USE (ALREADY TESTED)
         // Checking that the argument is only one and it is either cli or gui,
         if(args.length != 1 || (!args[0].equals("cli") && !args[0].equals("gui"))) {
             Logger.ERROR("You must pass the correct arguments when launching the client app ('java -jar softeng-GC3-ClientApp.jar cli' or 'java -jar softeng-GC3-ClientApp.jar gui')", "Invalid Args");
@@ -42,21 +41,6 @@ public class ClientApp{
                 System.setProperty("prism.allowhidpi", "false");
                 Application.launch(GameViewGUI.class);
             }
-        }
-        */
-        if(gui){
-            System.setProperty("prism.allowhidpi", "false");
-            Application.launch(GameViewGUI.class);
-        }
-        else {
-            Scanner input = new Scanner(System.in);
-            String serverIp;
-            int serverPort;
-            Logger.INFO("Server ip: ");
-            serverIp = input.nextLine();
-            Logger.INFO("Server port (default 12347): ");
-            serverPort = Integer.parseInt(input.nextLine());
-            new GameViewCLI(serverIp, serverPort);
         }
     }
 }

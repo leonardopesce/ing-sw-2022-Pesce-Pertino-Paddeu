@@ -23,9 +23,8 @@ public class Healer extends AdvancedCharacter{
     }
 
     /**
-     * Place a No Entry tile on an island of your choice. The first time Mother Nature ends her movement
-     * there put the no entry tile back onto this card without calculating influence of placing any tower.
-     * @param attributes
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that
+     *                   array must contain the island index of the ring on which the player wants to put a 'deny' tile on.
      */
     @Override
     public boolean playEffect(Object... attributes) {
@@ -72,6 +71,10 @@ public class Healer extends AdvancedCharacter{
         return true;
     }
 
+    /**
+     * Returns how many deny tile are still available on the card (max 4, min 0).
+     * @return how many deny tile are still available on the card.
+     */
     public int getNumberOfDeniableIslands() {
         return numberOfDeniableIslands;
     }

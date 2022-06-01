@@ -9,14 +9,24 @@ import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.world.Island;
 
+/**
+ * <dt><b>Landlord</b> - Cost: <b>3</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: Chose a color of student: during the calculation of influence this turn, that color adds no influence.
+ *       </dd>
+ */
 public class Landlord extends AdvancedCharacter{
+    /**
+     * @param game the game instance decorated by this character.
+     */
     public Landlord(Game game){
         super(AdvancedCharacterType.LANDLORD, game);
     }
 
     /**
-     * Chose a color of student: during the calculation of influence this turn, that color adds no influence.
-     * @param attributes
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that
+     *                   array must contain a {@link ColorCharacter}.
      */
     @Override
     public boolean playEffect(Object... attributes){

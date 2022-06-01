@@ -14,12 +14,15 @@ import it.polimi.ingsw.game_model.world.Island;
  *      </dd>
  */
 public class Centaurus extends AdvancedCharacter{
+    /**
+     * @param game the game decorated by this card.
+     */
     public Centaurus(Game game) {
         super(AdvancedCharacterType.CENTAURUS, game);
     }
 
     /**
-     * When resolving a Conquering on an island, Towers do not count towards influence.
+     * @param attributes  the arguments requested by the character in order to be successfully played. In this case that array must be empty.
      */
     @Override
     public boolean playEffect(Object... attributes) {

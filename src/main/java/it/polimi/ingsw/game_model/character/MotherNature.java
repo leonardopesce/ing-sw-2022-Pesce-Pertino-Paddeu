@@ -16,10 +16,17 @@ import it.polimi.ingsw.game_model.world.Terrain;
 public class MotherNature extends Character {
     private int position;
 
+    /**
+     * @param position the starting position of mother nature.
+     */
     public MotherNature(int position) {
         this.position = position;
     }
 
+    /**
+     * Returns the current position of mother nature.
+     * @return the current position of mother nature.
+     */
     public int getPosition() {
         return position;
     }

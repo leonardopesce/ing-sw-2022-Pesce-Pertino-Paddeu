@@ -73,6 +73,12 @@ public class BagOfStudents extends Character{
         else throw new BagEmptyException("The bag is empty");
     }
 
+    /**
+     * Returns a list of the specified amount of students randomly picked (and removed) from the bag.
+     * @param n the amount of students to draw from the bag.
+     * @return a list of students randomly picked from the bag.
+     * @throws BagEmptyException if the bag is empty and drawing a student is not possible.
+     */
     public List<Student> drawNStudentFromBag(int n) throws BagEmptyException{
         List<Student> temp = new ArrayList<>();
         for(int i = 0; i < n; i++){
@@ -81,6 +87,10 @@ public class BagOfStudents extends Character{
         return temp;
     }
 
+    /**
+     * Insert the given students into the back and shuffle it.
+     * @param students the list of students which has to be added to the bag.
+     */
     public void insertBack(List<Student> students) {
         unpickedStudents.addAll(students);
         Collections.shuffle(unpickedStudents);

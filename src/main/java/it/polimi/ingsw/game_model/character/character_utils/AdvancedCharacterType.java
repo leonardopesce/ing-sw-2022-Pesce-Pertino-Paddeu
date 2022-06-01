@@ -96,6 +96,12 @@ public enum AdvancedCharacterType {
     private final int argsLength;
     private final String effect;
 
+    /**
+     * @param name the name of the character.
+     * @param cardCost the character activation cost in coin.
+     * @param argsLen the number of arguments requested for the character card activation.
+     * @param effect the effect of the character card.
+     */
     AdvancedCharacterType(String name, int cardCost, int argsLen, String effect) {
         this.name = name;
         this.cardCost = cardCost;
@@ -103,18 +109,34 @@ public enum AdvancedCharacterType {
         this.effect = effect;
     }
 
+    /**
+     * Returns the number of arguments requested by the character in order to be played.
+     * @return the number of arguments requested by the character in order to be played.
+     */
     public int getArgsLength() {
         return argsLength;
     }
 
+    /**
+     * Returns the advanced character card name.
+     * @return the advanced character card name.
+     */
     public String getCardName() {
         return this.name;
     }
 
+    /**
+     * Returns the advanced character card cost in coins.
+     * @return the advanced character card cost in coins.
+     */
     public int getCardCost() {
         return cardCost;
     }
 
+    /**
+     * Returns a string representing the effect of the character card.
+     * @return a string representing the effect of the character card.
+     */
     public String getEffect() {
         return effect;
     }

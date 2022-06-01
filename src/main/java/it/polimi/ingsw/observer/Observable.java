@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Object that trigger itself when the object <code>Observer</code> gets an update
+ * This class represents an observable object, or "data" in the model-view paradigm. It can be subclassed to represent
+ * an object that the application wants to have observed.
  */
 public class Observable<T> {
 
     private final List<Observer<T>> observers = new ArrayList<>();
 
     /**
-     * given a list of observers, add an observer to the list
+     * Given a list of observers, add an observer to the list
      * @param observer list of observers
      */
     public void addObserver(Observer<T> observer){
@@ -21,7 +22,7 @@ public class Observable<T> {
     }
 
     /**
-     * given a list of observers, remove an observer from the list
+     * Given a list of observers, remove an observer from the list
      * @param observer list of observers
      */
     public void removeObserver(Observer<T> observer){
@@ -31,8 +32,8 @@ public class Observable<T> {
     }
 
     /**
-     * Trigger the update on every server present in the list.
-     * @param message the object that triggers the update
+     * Trigger the update on every observer present in the list.
+     * @param message the object that has to get notified.
      */
     protected void notify(T message){
         synchronized (observers) {

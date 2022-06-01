@@ -40,6 +40,10 @@ public class CloudCard {
         studentsOnCloud.addAll(students);
     }
 
+    /**
+     * Returns the list of students which are on the cloud card.
+     * @return the list of students which are on the cloud card.
+     */
     public List<Student> getStudent() {
         return studentsOnCloud;
     }

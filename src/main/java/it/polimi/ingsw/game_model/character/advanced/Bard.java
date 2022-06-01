@@ -19,13 +19,18 @@ import java.util.List;
  *       </dd>
  */
 public class Bard extends AdvancedCharacter{
+    /**
+     * @param game the game instance decorated by this card.
+     */
     public Bard(Game game){
         super(AdvancedCharacterType.BARD, game);
     }
 
     /**
-     * You may exchange up to 2 students between your entrance and your dining room.
-     * @param attributes
+     * @param attributes  the arguments requested by the character in order to be successfully played.
+     *                    In this case that array must contain the player nickname, a list of indexes referred to the
+     *                    students picked from the entrance and a list of color character representing the tables on which
+     *                    to swap the students.
      */
     @Override
     public boolean playEffect(Object... attributes) {

@@ -11,9 +11,20 @@ import it.polimi.ingsw.network.utils.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <dt><b>Princess</b> - Cost: <b>2</b></dt>
+ *       <p>
+ *       <dd>
+ *           <b>EFFECT</b>: Take 1 student from this card and place it in your dining room. Then, draw a new student
+ *           from the bag and place it on this card.
+ *       </dd>
+ */
 public class Princess extends AdvancedCharacter{
     private final List<Student> studentsOnCard;
 
+    /**
+     * @param game the game instance decorated by this character.
+     */
     public Princess(Game game){
         super(AdvancedCharacterType.PRINCESS, game);
 
@@ -31,9 +42,8 @@ public class Princess extends AdvancedCharacter{
     }
 
     /**
-     * Take 1 student from this card and place it in your dining room. Then, draw a new student
-     * from the bag and place it on this card.
-     * @param attributes values of the card
+     * @param attributes the arguments requested by the character in order to be successfully played. In this case that array
+     *                   must contain the player nickname and the index of the student picked from the card.
      */
     @Override
     public boolean playEffect(Object... attributes){
