@@ -9,15 +9,35 @@ import it.polimi.ingsw.observer.Observer;
 
 import static it.polimi.ingsw.game_view.GameViewClient.*;
 
+/**
+ * Observer of all the incoming messages, client side.
+ *
+ * <p>
+ *     This object is an observer of all the incoming messages which arrive to the client.
+ *     When a new message arrives at the client, than the client itself notifies the new message to this object which
+ *     handles it by checking its id and then making the proper action onto the UI.
+ * </p>
+ *
+ * @see Client
+ * @see CommunicationMessage
+ */
 public class ClientMessageObserverHandler implements Observer<CommunicationMessage> {
     private final GameViewClient view;
     private GameViewClient.InputStateMachine state;
     boolean actionSent = true;
 
+    /**
+     * @param view the game view on which the actions must be performed.
+     */
     public ClientMessageObserverHandler(GameViewClient view){
         this.view = view;
     }
 
+    /**
+     * Updates the board client side by updating the user interface with the new changes.
+     * Moreover, it handles the state of the FSM which is keeping track of the game status client side.
+     * @param board the new board which has arrived from the server. It will substitute the previous one.
+     */
     public void updateBoardMessage(GameBoard board){
         Printable.clearScreen();
         view.setBoard(board);
@@ -39,6 +59,11 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
         }
     }
 
+    /**
+     * Based on the message received by the client and its id, it lets a new thread performing the proper action on the
+     * user interface.
+     * @param message the message received from the server which has been notified.
+     */
     @Override
     public void update(CommunicationMessage message) {
         switch (message.getID()){
@@ -73,18 +98,39 @@ public class ClientMessageObserverHandler implements Observer<CommunicationMessa
         }
     }
 
+    /**
+     * Returns the current state of the FSM which is handling the user input and the game status client side.
+     * @return the current state of the FSM which is handling the user input and the game status client side.
+     */
     public GameViewClient.InputStateMachine getState() {
         return state;
     }
 
+    /**
+     * Sets the new state of the FSM which is handling the user input and the game status client side.
+     * @param state the new state of the FSM which is handling the user input and the game status client side.
+     */
     public void setState(GameViewClient.InputStateMachine state) {
         this.state = state;
     }
 
+    /**
+     * Checks whether an action has just been sent to the server by the client or not.
+     *
+     * <p>
+     *     Whenever the clients receives a new update from the server the <code>actionSent</code> attribute gets set to
+     *     false.
+     * </p>
+     * @return true if an action has been just sent to the server, otherwise false.
+     */
     public boolean isActionSent() {
         return actionSent;
     }
 
+    /**
+     * Sets the given value to the <code>actionSent</code> attribute.
+     * @param actionSent the new value to set to <code>actionSent</code> attribute.
+     */
     public void setActionSent(boolean actionSent) {
         this.actionSent = actionSent;
     }
