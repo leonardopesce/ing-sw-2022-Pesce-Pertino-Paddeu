@@ -142,7 +142,6 @@ public class GameBoardController implements Initializable {
      * @param name the name of the player
      */
     public void setClientName(String name){
-        //TODO delete, just for testing purpose
         this.clientName = name;
         showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
     }
@@ -663,7 +662,6 @@ public class GameBoardController implements Initializable {
                             obj.setMouseTransparent(false);
                         }
                     }
-                    card.playEffect(this);
                     resetAllClickableObjects();
                     card.playEffect(this);
                     for (AdvancedCardController c : advancedCards) {
