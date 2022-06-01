@@ -255,4 +255,13 @@
          <Image url="@../img/draw.gif" />
       </image>
    </ImageView>
+   <Button minWidth="53.0" mnemonicParsing="false" onAction="#exitFromApp" prefHeight="24.0" prefWidth="53.0" style="-fx-background-color: transparent; -fx-background-radius: 100;" StackPane.alignment="TOP_RIGHT">
+      <graphic>
+         <ImageView fitHeight="30.0" fitWidth="23.0" onMouseClicked="#exitFromApp" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../img/login/logoutIcon.png" />
+            </image>
+         </ImageView>
+      </graphic>
+   </Button>
 </StackPane>

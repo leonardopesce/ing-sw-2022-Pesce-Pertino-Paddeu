@@ -109,6 +109,15 @@ public class GameBoardController implements Initializable {
     }
 
     /**
+     * on click of the button close the application
+     */
+    @FXML
+    public void exitFromApp(){
+        Platform.exit();
+        System.exit(0);
+    }
+
+    /**
      * Setter for the client instance, used to send a message when the player makes a move
      * @param client to be set
      * @see Client
@@ -128,6 +137,8 @@ public class GameBoardController implements Initializable {
         this.clientName = name;
         showedBoard.addListener((observable, oldValue, newValue) -> new Thread(() -> setUpDecks((Integer) newValue)).start());
     }
+
+
 
     /**
      * Function that based on the value saved in the actionValues stack (and on the value of playingAdvancedCard)
@@ -755,16 +766,30 @@ public class GameBoardController implements Initializable {
         return actionValues;
     }
 
+    /**
+     * Getter for this player board controller
+     * @return the PlayerBoardController of this player
+     * @see PlayerBoardController
+     */
     protected PlayerBoardController getThisPlayerBoardController(){
         return rotatingBoardController.getBoardOfPlayerWithName(clientName);
     }
 
+    /**
+     * Setter for disabling/enabling player button
+     * @param value the boolean value to set the button disable property
+     */
     private void setRotatingButtonDisabled(boolean value){
         for(Button playerButton: playerBoardButtons){
             playerButton.setDisable(value);
         }
     }
 
+    /**
+     * Setter for the hover effect
+     * @param node on which to set the hover effect
+     * @param radius an int representing the radius of the hover effect
+     */
     protected void setHoverEffect(Node node, double radius){
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.YELLOW);
@@ -773,11 +798,20 @@ public class GameBoardController implements Initializable {
         node.setOnMouseExited(ActionEvent -> node.setEffect(null));
     }
 
+    /**
+     * Setter for removing the hover effect
+     * @param node on which to reset the hover effect
+     */
     protected void resetHoverEffect(Node node){
         node.setOnMouseEntered(null);
         node.setOnMouseExited(null);
     }
 
+    /**
+     * Setter for the assistant card effect to go up on hover
+     * @param assistant card to which apply the effect
+     * @param i index for the array of the current state of the card
+     */
     private void setGoUpEffectOnAssistantCard(ImageView assistant, int i){
         TranslateTransition moveUpEffect = new TranslateTransition(Duration.millis(500), assistant);
         assistant.setOnMouseEntered(ActionEvent -> new Thread(() -> {
@@ -789,6 +823,11 @@ public class GameBoardController implements Initializable {
         }).start());
     }
 
+    /**
+     * Setter for the assistant card effect to go down on hover exit
+     * @param assistant card to which apply the effect
+     * @param i index for the array of the current state of the card
+     */
     private void setGoDownEffectOnAssistantCard(ImageView assistant, int i){
         TranslateTransition moveDownEffect = new TranslateTransition(Duration.millis(500), assistant);
         assistant.setOnMouseExited(ActionEvent -> new Thread(() -> {
@@ -806,6 +845,11 @@ public class GameBoardController implements Initializable {
         }).start());
     }
 
+    /**
+     * Getter of the assistant type index given the index (or turn) value of the card
+     * @param value the value of the index (or turn) of the card
+     * @return the int representing the index of the card in the remaining card playable array
+     */
     private int getAssistantTypeIndex(int value){
         List<AssistantCardBoard> assistantsCard = rotatingBoardController.getBoardOfPlayerWithName(clientName).getDeckBoard().getCards();
         for(int i = 0; i < assistantsCard.size(); i++){
@@ -830,6 +874,11 @@ public class GameBoardController implements Initializable {
         }
         return count;
     }
+
+    /**
+     * Setter for the Comment
+     * @param message string to set in the comment
+     */
     public void setComment(String message){
         Platform.runLater(() -> comment.setText(message));
     }
