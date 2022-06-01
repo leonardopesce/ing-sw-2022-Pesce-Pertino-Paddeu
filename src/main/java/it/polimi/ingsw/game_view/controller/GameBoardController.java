@@ -2,7 +2,6 @@ package it.polimi.ingsw.game_view.controller;
 
 import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.game_controller.action.*;
-import it.polimi.ingsw.game_model.Game;
 import it.polimi.ingsw.game_model.character.character_utils.AdvancedCharacterType;
 import it.polimi.ingsw.game_model.utils.ColorCharacter;
 import it.polimi.ingsw.game_model.utils.GamePhase;
@@ -500,6 +499,9 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * Makes the all dining hall selectable handles over and clickable effect
+     */
     public void makeDiningHallSelectable(){
         GridPane diningHall = rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getDiningHall();
         diningHall.setOnMouseEntered(a -> diningHall.setStyle("-fx-background-color: rgba(255, 255, 0, 0.3);"));
@@ -519,6 +521,9 @@ public class GameBoardController implements Initializable {
         });
     }
 
+    /**
+     * Makes the Islands selectable handles over and clickable effect
+     */
     public void makeVisibleIslandsSelectable(){
         for (int i = 0; i < islands.size(); i++) {
             if (islands.get(i).isVisible()) {
@@ -549,6 +554,11 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * makes the next X islands clickable starting from mother nature position,
+     * used to move mother nature based on the value of the assistant card selected
+     * @param x the number of islands near mother nature to make visible
+     */
     public void makeNextXIslandVisibleFromMotherNatureSelectable(int x){
         int startID = gameBoard.getTerrain().getIslands().stream().reduce((a, b) -> a.hasMotherNature() ? a : b).get().getID();
         int countedIsland = 0;
@@ -572,6 +582,9 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * makes the cloud selectable only if they have students on them
+     */
     public void makeCloudSelectable(){
         for(int i = 0; i < clouds.size(); i++){
             if(!gameBoard.getTerrain().getCloudCards().get(i).isEmpty()) {
@@ -595,9 +608,11 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * makes advanced card selectable hover effect available for all to show the comment in the infoBox but
+     * makes the card clickable only if the player has enough money
+     */
     private void makeAdvancedCardSelectable(){
-        //TODO re-add filter for money
-        /*.stream().filter(c -> c.getCost() <= gameBoard.getMoneys().get(gameBoard.getNames().indexOf(clientName))).toList()*/
         for(AdvancedCardController card : advancedCards) {
             ImageView cardImage = card.getCardImage();
             String previousComment = comment.getText();
@@ -652,15 +667,16 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * makes dining tables selectable handles hover and clickable effect
+     */
     protected void makeDiningTablesSelectable(){
         List<HBox> tables = getThisPlayerBoardController().getSchool().getTables();
 
         for (int i = 0; i < tables.size(); i++) {
             HBox table = tables.get(i);
             int finalI = i;
-            table.setOnMouseEntered(a -> {
-                table.setStyle("-fx-background-color: rgba(255, 255, 0, " + String.valueOf(0.15 * (actionValues.size() - 1)) + ");");
-            });
+            table.setOnMouseEntered(a -> table.setStyle("-fx-background-color: rgba(255, 255, 0, " + 0.15 * (actionValues.size() - 1) + ");"));
             table.setOnMouseExited(a -> table.setStyle(null));
             table.setOnMouseClicked(a -> {
                 addActionValue(finalI);
@@ -697,22 +713,44 @@ public class GameBoardController implements Initializable {
         }
     }
 
+    /**
+     * Setter for playingAdvancedCard to the value given
+     * @param value int to which the variable is set
+     */
     protected void setPlayingAdvancedCard(int value){
         playingAdvancedCard = value;
     }
 
+    /**
+     * adds a value in the first position to the action value stack
+     * @param value the int value to be added
+     */
     protected void addActionValue(int value){
         actionValues.add(0, value);
     }
 
+    /**
+     * Calculates the degree needed to turn the board from the starting position to the final position
+     * @param finalPos the int final position at which the board should be (0, 1, 2 or 3 based on the 4 side of the table)
+     * @return an in representing the smallest number of degree needed to turn the table
+     */
     private int getDegreeTurn(int finalPos){
         return Math.floorMod(finalPos - showedBoard.get(), 4) == 3 ? 90 : Math.floorMod(finalPos - showedBoard.get(), 4) == 2 ? 180 : Math.floorMod(finalPos - showedBoard.get(), 4) == 1 ? -90 : 0;
     }
 
+    /**
+     * Getter for client attribute
+     * @return the client attribute
+     * @see Client
+     */
     public Client getClient() {
         return client;
     }
 
+    /**
+     * Getter for the action values stack
+     * @return a stack of integer the actionValues
+     */
     public Stack<Integer> getActionValues() {
         return actionValues;
     }
@@ -779,6 +817,11 @@ public class GameBoardController implements Initializable {
         return 0;
     }
 
+    /**
+     * Counts the steps needed for mother nature to move from where it is to the island selected with ID endID
+     * @param endID the int representing the end island ID
+     * @return an int representing the number of island to traverse
+     */
     private int countStepFromMotherNatureToIslandWithID(int endID){
         int startID = gameBoard.getTerrain().getIslands().stream().reduce((a, b) -> a.hasMotherNature() ? a : b).get().getID();
         int count = 1;
@@ -791,16 +834,33 @@ public class GameBoardController implements Initializable {
         Platform.runLater(() -> comment.setText(message));
     }
 
+    /**
+     * Setter for the comment logo
+     * @param logoToSet Image to set in the comment logo
+     */
     public void setCommentLogo(Image logoToSet) { commentLogo.setImage(logoToSet); }
 
+    /**
+     * Set the visibility of the comment box to true
+     */
     public void setCommentBoxVisible() { commentBox.setVisible(true); }
 
+    /**
+     * Set the visibility if the comment box to false
+     */
     public void setCommentBoxNotVisible() { commentBox.setVisible(false); }
 
+    /**
+     * Getter for the Image of the error Logo
+     * @return the Image of the error Logo
+     */
     public Image getErrorLogo() {
         return errorLogo;
     }
 
+    /**
+     * Reset all the objects in the pane with no hover and click effect
+     */
     public void resetAllClickableObjects(){
         List<ImageView> objects = new ArrayList<>();
         objects.addAll(rotatingBoardController.getBoardOfPlayerWithName(clientName).getSchool().getEntranceStudents());
