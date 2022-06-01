@@ -8,7 +8,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 /**
- * A custom Switch button for graphic porpoise
+ * A custom Switch button for graphic purposes.
  */
 public class CustomSwitch extends StackPane {
     private final Rectangle back = new Rectangle(30, 10, Color.RED);

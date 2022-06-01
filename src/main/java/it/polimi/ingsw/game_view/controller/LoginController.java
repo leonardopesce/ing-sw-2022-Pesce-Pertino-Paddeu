@@ -33,6 +33,9 @@ import java.util.*;
 
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 
+/**
+ * The controller for the corresponding Login.fxml file.
+ */
 public class LoginController implements Initializable {
     private static final String LOGIN_FONT = "System";
     private static final double LOGIN_FONT_SIZE = System.getProperty("os.name","generic").toLowerCase(Locale.US).indexOf("linux") >= 0 ? 11.0 : 13.0;
@@ -62,6 +65,11 @@ public class LoginController implements Initializable {
     @FXML
     private Label creditLabel;
 
+    /**
+     * Initialize the Login Launcher.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         creditLabel.setFont(new Font(LOGIN_FONT, LOGIN_FONT_SIZE));
@@ -74,17 +82,21 @@ public class LoginController implements Initializable {
             yOffset = event.getSceneY();
         });
 
+        // Making the window draggable all over the screen
         parent.setOnMouseDragged(event -> {
             launcherFullPagePaneContent.getScene().getWindow().setX(event.getScreenX() - xOffset);
             launcherFullPagePaneContent.getScene().getWindow().setY(event.getScreenY() - yOffset);
         });
 
+        // Setting up the onclick event of the login button
         loginButton.setOnAction(actionEvent -> {
             errorBox.setVisible(false);
             loginButton.setDisable(true);
             Logger.INFO("Loggin In...");
             try {
+                // If the ip/port/nickname fields are empty, an error message is shown, otherwise...
                 if (!serverPortTextField.getText().equals("") && !serverIpTextField.getText().equals("") && !nicknameTextField.getText().equals("")) {
+                    // If the server port is not an integer or it is not in the correct range an error message is shown.
                     if(Integer.parseInt(serverPortTextField.getText()) < 1024 || Integer.parseInt(serverPortTextField.getText()) > 65535) {
                         throw new Exception("Invalid port range");
                     } else {
@@ -105,6 +117,7 @@ public class LoginController implements Initializable {
                         }).start();
                     }
                 } else {
+                    // Cannot press the login button multiple times when the app is already trying to connect to the server.
                     loginButton.setDisable(false);
                     errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/invalidAccessInfo.gif"))));
                     loginErrorMessage.setText("Per favore, completa tutti i campi prima di continuare.");
@@ -123,6 +136,10 @@ public class LoginController implements Initializable {
         Logger.INFO("Launcher inizializzato");
     }
 
+    /**
+     * Closes the application when the close button is clicked.
+     * @param mouseClick the event associated to the mouse click on the exit icon button.
+     */
     @FXML
     public void exitFromApp(ActionEvent mouseClick) {
         Platform.exit();
@@ -134,27 +151,48 @@ public class LoginController implements Initializable {
         System.exit(0);
     }
 
+    /**
+     * Minimizes the window when the minimize icon button is clicked.
+     * @param mouseClick the event associated to the mouse click on the minimize icon button.
+     */
     @FXML
     public void minimizeWindow(ActionEvent mouseClick) {
         ((Stage)launcherFullPagePaneContent.getScene().getWindow()).setIconified(true);
     }
 
+    /**
+     * Sets the client whose UI is handled by the launcher.
+     * @param client the client whose UI is handled by the launcher.
+     */
     public void setClient(Client client) {
         this.client = client;
     }
 
+    /**
+     * Sends the server the nickname selected by the user during the login phase.
+     */
     public void askNameView(){
         Logger.INFO("Asking name");
         client.asyncWriteToSocket(new CommunicationMessage(NAME_MESSAGE, client.getName()));
     }
 
+    /**
+     * Sets up the launcher in order to let the user insert again a new nickname, since the previous one was invalid or
+     * already taken.
+     */
     public void reaskNameView(){
         Logger.INFO("Reasking name");
+
+        // No need to insert again the ip and psw
         serverIpTextField.getParent().setVisible(false);
         serverPortTextField.getParent().setVisible(false);
+
+        // Displaying an error message
         loginErrorMessage.setText("Il nickname che hai scelto è già stato preso");
         errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/login/nicknameAlreadyTakenError.gif"))));
         errorBox.setVisible(true);
+
+        // Making the login button available again
         loginButton.setDisable(false);
         loginButton.setOnAction(actionEvent -> {
             client.setName(nicknameTextField.getText());
@@ -163,12 +201,19 @@ public class LoginController implements Initializable {
         });
     }
 
+    /**
+     * Sets up the GUI in order to let the user choose whether to create a new game or joining an existing one.
+     */
     public void askJoiningActionView(){
         Logger.INFO("Asking joining action");
+
+        // Removing all the previous objects from the content pane
         contentPane.getChildren().clear();
         ImageView backgroundImg = new ImageView();
         Button createLobbyButton = new Button();
         Button joinLobbyButton = new Button();
+
+        // Setting up manually all the objects which will be part of the askJoiningAction scene.
         backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoPixie.png"))));
         backgroundImg.setFitHeight(755.0);
         backgroundImg.setFitWidth(539.0);
@@ -194,14 +239,20 @@ public class LoginController implements Initializable {
         joinLobbyButton.setText("Entra in una partita");
         joinLobbyButton.setTextAlignment(TextAlignment.CENTER);
 
+        // The 2 buttons will respectively send their corresponding joining action to the server.
         createLobbyButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.JOINING_ACTION_INFO, 0)));
         joinLobbyButton.setOnAction(actionEvent -> client.asyncWriteToSocket(new CommunicationMessage(CommunicationMessage.MessageType.JOINING_ACTION_INFO, 1)));
 
+        // Adding all the objects just created to the content pane.
         contentPane.getChildren().add(backgroundImg);
         contentPane.getChildren().add(createLobbyButton);
         contentPane.getChildren().add(joinLobbyButton);
     }
 
+    /**
+     * Shows an error message on the bottom of the launcher when a user clicks on the 'Join an existing game' button when
+     * no lobbies have been created yet.
+     */
     public void displayNoLobbiesAvailable() {
         Logger.INFO("No lobbies are available. Please chose another option.");
         loginErrorMessage.setText("Non ci sono lobby aperte al momento. Per favore, scegli un'altra opzione.");
@@ -209,10 +260,15 @@ public class LoginController implements Initializable {
         errorBox.setVisible(true);
     }
 
+    /**
+     * Setting up the Launcher in order to let the user choose the size of the lobby (2, 3 or 4 players).
+     */
     public void askNumberOfPlayerView(){
         Logger.INFO("Asking number of players");
         errorBox.setVisible(false);
+        // Clearing all the objects of the previous scene
         contentPane.getChildren().clear();
+
         ImageView backgroundImg = new ImageView();
         Button twoPlayersButton = new Button();
         Button threePlayersButton = new Button();
@@ -222,6 +278,7 @@ public class LoginController implements Initializable {
         ImageView switchImg = new ImageView();
         Text gameModeTxt = new Text();
 
+        // Setting up manually all the objects of the askNumberOfPlayer scene.
         backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoSorcerer.png"))));
         backgroundImg.setFitHeight(749.0);
         backgroundImg.setFitWidth(521.0);
@@ -288,6 +345,7 @@ public class LoginController implements Initializable {
             changeStateCallback(switchImg, gameModeTxt, customGameModeSwitch.getState());
         });
 
+        // Adding the new objects to the empty content pane.
         contentPane.getChildren().add(backgroundImg);
         contentPane.getChildren().add(twoPlayersButton);
         contentPane.getChildren().add(threePlayersButton);
@@ -295,6 +353,12 @@ public class LoginController implements Initializable {
         contentPane.getChildren().add(switchGameModeBox);
     }
 
+    /**
+     * Handle the change of state of the {@link CustomSwitch}.
+     * @param img the new image to set (normal game or expert game).
+     * @param txt the new text to set beside the image.
+     * @param switchState the new switch state.
+     */
     private void changeStateCallback(ImageView img, Text txt, boolean switchState) {
         if(switchState) {
             img.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/expertGame.png"))));
@@ -307,15 +371,25 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Sends a message to the server containing the game type chosen (normal or expert).
+     */
     public void askGameTypeView(){
         Logger.INFO("Asking game type");
         client.asyncWriteToSocket(new CommunicationMessage(GAME_TYPE_INFO, isExpertGame));
     }
 
+    /**
+     * Sets up the UI to show the current state of the lobby just joined (number of players, nickname of the partecipants).
+     * @param lobbyInfos the information about the lobby the player has just joined.
+     */
     public void displayLobbyJoined(LobbyInfo lobbyInfos) {
         Logger.INFO("Succesfully joined a lobby.");
         errorBox.setVisible(false);
+        // Clearing the content pane from the objects of the previous scene.
         contentPane.getChildren().clear();
+
+        // Setting up manually the objects of the new scene.
         ListView<HBox> lobbyMembers = new ListView<>();
         ImageView backgroundImg = new ImageView();
         Text lobbyText = new Text("Giocatori" + " ~ " + lobbyInfos.getCurrentLobbySize() + "/" + lobbyInfos.getLobbyMaxSize());
@@ -345,11 +419,18 @@ public class LoginController implements Initializable {
         List<HBox> lobbyMembersObjects = populateLobbyMembersObjectsArray(lobbyInfos);
         lobbyMembers.getItems().addAll(lobbyMembersObjects);
 
+        // Adding the objects of the new scene to the content pane.
         contentPane.getChildren().add(backgroundImg);
         contentPane.getChildren().add(lobbyText);
         contentPane.getChildren().add(lobbyMembers);
     }
 
+    /**
+     * Given the information of a lobby, builds and returns a list of <code>HBox</code> containing a graphical
+     * representation of the player nickname for all the lobby participants.
+     * @param lobbyInfo the information about the lobby.
+     * @return a list of HBox of which contains the nickname of a lobby partecipant.
+     */
     private List<HBox> populateLobbyMembersObjectsArray(LobbyInfo lobbyInfo) {
         List<HBox> compiledLobbyMembersList = new ArrayList<>();
 
@@ -381,10 +462,16 @@ public class LoginController implements Initializable {
         return compiledLobbyMembersList;
     }
 
+    /**
+     * Setting up the GUI to let the user choose the lobby he wants to join.
+     * @param listOfLobbyInfos a list of information about different lobbies.
+     */
     public void askLobbyToJoinView(Object listOfLobbyInfos){
         Logger.INFO("Asking lobby to join");
         errorBox.setVisible(false);
+        // Removing all the previous scene's objects.
         contentPane.getChildren().clear();
+
         ListView<HBox> listOfLobbies = new ListView<>();
         ImageView backgroundImg = new ImageView();
         HBox listViewHeader = new HBox();
@@ -392,6 +479,8 @@ public class LoginController implements Initializable {
         Separator listViewHeaderVerticalSeparator = new Separator();
         Button listViewHeaderGoBackButton = new Button();
         ImageView listViewHeaderGoBackButtonIcon = new ImageView();
+
+        // Setting up manually all the new objects of the new scene.
         List<HBox> availableLobbies = populateListOfLobbiesArrayObject((List<LobbyInfo>) listOfLobbyInfos);
 
         backgroundImg.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/launcherSplashLogoSorcerer.png"))));
@@ -445,11 +534,25 @@ public class LoginController implements Initializable {
         contentPane.getChildren().add(listOfLobbies);
     }
 
+    /**
+     * Called when the user clicks on the go-back button while choosing a lobby.
+     * The player will be asked again to choose a joining action (creating a new game or joining an existing lobby).
+     */
     private void goBackCallback() {
         Logger.INFO("Going back to joining action.");
         client.asyncWriteToSocket(new CommunicationMessage(LOBBY_TO_JOIN_INFO, "GO_BACK_TO_JOIN_ACTION"));
     }
 
+    /**
+     * Populate into HBoxes informations regarding the available lobbies on the server.
+     *
+     * <p>
+     *     Each HBox contains useful information about a lobby, such as the lobby name, the current size over the max size,
+     *     whether the game is played in expert mode or not and a button to join the lobby if it is not full.
+     * </p>
+     * @param lobbiesInfos the information about the available lobbies.
+     * @return a list of HBox containing a graphical representation of the information about the available lobbies.
+     */
     private List<HBox> populateListOfLobbiesArrayObject(List<LobbyInfo> lobbiesInfos) {
         List<HBox> compiledLobbiesInfos = new ArrayList<>();
 
@@ -488,6 +591,7 @@ public class LoginController implements Initializable {
             lobbySize.setStrokeWidth(0.0);
             lobbySize.setFont(new Font(LOGIN_FONT, 1.69*LOGIN_FONT_SIZE));
             lobbySize.setText(lobby.getCurrentLobbySize() + "/" + lobby.getLobbyMaxSize());
+            // If the lobby is full, the access button is disabled and not shown.
             if(lobby.isFull()) {
                 lobbySize.setFill(Color.rgb(154,54,91));
                 accessLobbyButton.setDisable(true);
@@ -514,6 +618,10 @@ public class LoginController implements Initializable {
         return compiledLobbiesInfos;
     }
 
+    /**
+     * Displays in the launcher an informative message, saying that another player is choosing his deck type.
+     * @param otherPlayerName the nickname of the player which is choosing the deck type.
+     */
     public void displayOtherPlayerIsChoosingHisDeckType(String otherPlayerName) {
         contentPane.getChildren().clear();
         ImageView backgroundImg = new ImageView();
@@ -530,6 +638,8 @@ public class LoginController implements Initializable {
 
         contentPane.getChildren().add(backgroundImg);
 
+        // If you have already picked the deck and you are waiting for the game to start, a banner with a signature phrase of
+        // the Mage chosen is displayed.
         if(deckTypeChosen.isPresent()) {
             ImageView deckTypeChosenImage = new ImageView();
             Text deckTypeName = new Text(this.deckTypeChosen.get().getName());
@@ -576,6 +686,10 @@ public class LoginController implements Initializable {
         errorBox.setVisible(true);
     }
 
+    /**
+     * Displays all the available decks to the user, to let him choose.
+     * @param listAvailableDeck a list containing all the available decks the player can choose.
+     */
     public void askDeckView(List<DeckType> listAvailableDeck){
         Logger.INFO("Asking deck");
         errorBox.setVisible(false);
@@ -611,6 +725,7 @@ public class LoginController implements Initializable {
         cardGridPane.getColumnConstraints().add(column2);
         cardGridPane.getRowConstraints().add(row1);
         cardGridPane.getRowConstraints().add(row2);
+        // For each mage, if it has been chosen by another player, its image gets blurred, and it cannot be clicked.
         kingRetro.setFitHeight(150.0);
         kingRetro.setFitWidth(200.0);
         kingRetro.setPickOnBounds(true);
@@ -701,6 +816,10 @@ public class LoginController implements Initializable {
         errorBox.setVisible(true);
     }
 
+    /**
+     * Displays an error message at the bottom of the launcher when a player disconnects from your lobby.
+     * @param disconnectedPlayer the player who disconnected and made your lobby to close.
+     */
     public void setOnDisconnection(String disconnectedPlayer) {
         Logger.ERROR(disconnectedPlayer + "'s connection has been interrupted. The lobby will now close and you will be disconnected from the server.", "Player disconnection");
         errorLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/menu/disconnection.gif"))));
@@ -708,10 +827,18 @@ public class LoginController implements Initializable {
         errorBox.setVisible(true);
     }
 
+    /**
+     * Returns the client which is using the launcher.
+     * @return the client which is using the launcher.
+     */
     public Client getClient() {
         return client;
     }
 
+    /**
+     * Sets the client message handler to the launcher.
+     * @param messageHandler the client message handler to set.
+     */
     public void setMessageHandler(ClientMessageObserverHandler messageHandler) {
         this.messageHandler = messageHandler;
     }

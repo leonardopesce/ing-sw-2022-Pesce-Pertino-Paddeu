@@ -73,23 +73,6 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     /**
-     * Function called when a player disconnects
-     * @param playerWhoMadeTheLobbyClose the name of the player that killed the lobby
-     */
-    @Override
-    public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
-        Platform.runLater(() -> {
-            if(videoMediaPlayer != null) {
-                videoMediaPlayer.stop();
-            }
-            this.stage.close();
-            start(stage);
-            controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
-            controllerInitial.setMessageHandler(msgHandler);
-        });
-    }
-
-    /**
      * Loads the background music
      */
     private void loadMusic(){
@@ -160,14 +143,6 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     /**
-     * displays on the game not your turn
-     */
-    @Override
-    public void displayNotYourTurn() {
-        Platform.runLater(() -> controllerGameBoard.setComment("NOT YOUR TURN"));
-    }
-
-    /**
      * Function used just for testing porpoise (creates a game without establishing a connection
      */
     private void testing(){
@@ -186,11 +161,22 @@ public class GameViewGUI extends Application implements GameViewClient{
     }
 
     /**
-     * Display error message in game board
-     * @param errorMsg string containing the error message
-     * @param errorType String containing the type of error
-     * @param boardToUpdate the Game board to get the player at which the error message is showed
+     * Loads parent given in full screen
+     * @param root the parent to load the full screen
      */
+    private void loadFullScreen(Parent root) {
+        this.stage = new Stage();
+        this.stage.setScene(new Scene(root, 1920, 1080));
+        this.stage.initStyle(StageStyle.UNDECORATED);
+        this.stage.setResizable(false);
+        this.stage.setMaximized(true);
+        this.stage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        this.stage.show();
+    }
+
     @Override
     public void displayErrorMessage(String errorMsg, String errorType, GameBoard boardToUpdate) {
         Platform.runLater(() -> {
@@ -203,128 +189,81 @@ public class GameViewGUI extends Application implements GameViewClient{
         });
     }
 
-    /**
-     * calls an update in the GUI game board
-     * @param board the board containing the update
-     */
     @Override
     public void updateBoard(GameBoard board) {
         controllerGameBoard.updateBoard(board);
     }
 
-    /**
-     * Not used in the GUI, better handled by GameBoardController
-     */
     @Override
     public void displayYourTurn() {
         // Already handled in GameBoardController
     }
 
-    /**
-     * Not used in the GUI, better handled by GameBoardController
-     * @param otherPlayerName not useful
-     */
+    @Override
+    public void displayNotYourTurn() {
+        Platform.runLater(() -> controllerGameBoard.setComment("NOT YOUR TURN"));
+    }
+
     @Override
     public void displayOtherPlayerTurn(String otherPlayerName) {
         // Already handled in GameBoardController
     }
 
-    /**
-     * Not used in the GUI, better handled by GameBoardController
-     */
     @Override
     public void displayExpertMode() {
         // Already handled in GameBoardController
     }
 
-    /**
-     * shows the info for setting the player name
-     */
     @Override
     public void askName() {
         Platform.runLater(() -> controllerInitial.askNameView());
     }
 
-    /**
-     * re-shows the info for setting the player name
-     */
     @Override
     public void reaskName() {
         Platform.runLater(() -> controllerInitial.reaskNameView());
     }
 
-    /**
-     * shows the info for setting the action available to take for the player in the init config
-     */
-    @Override
-    public void askJoiningAction() {
-        Platform.runLater(() -> controllerInitial.askJoiningActionView());
-    }
-
-    /**
-     * shows the info for setting
-     */
-    @Override
-    public void displayNoLobbiesAvailable() {
-        Platform.runLater(() -> controllerInitial.displayNoLobbiesAvailable());
-    }
-
-    /**
-     * Displays the player who is currently choosing the deck
-     * @param playerNameWhoIsChosingTheDeck the name of the player which is choosing the deck
-     */
     @Override
     public void displayIsChoosingDeckType(Object playerNameWhoIsChosingTheDeck) {
         Platform.runLater(() -> controllerInitial.displayOtherPlayerIsChoosingHisDeckType((String) playerNameWhoIsChosingTheDeck));
     }
 
-    /**
-     * sets the info for the player to send which deck he wants to choose
-     * @param availableDecks the available decks
-     */
+    @Override
+    public void askJoiningAction() {
+        Platform.runLater(() -> controllerInitial.askJoiningActionView());
+    }
+
+    @Override
+    public void displayNoLobbiesAvailable() {
+        Platform.runLater(() -> controllerInitial.displayNoLobbiesAvailable());
+    }
+
     @Override
     public void askDeck(Object availableDecks) {
         Platform.runLater(() -> controllerInitial.askDeckView((List<DeckType>) availableDecks));
     }
 
-    /**
-     * sets the info to get the game type
-     */
     @Override
     public void askGameType() {
         Platform.runLater(() -> controllerInitial.askGameTypeView());
     }
 
-    /**
-     * set up the info to select which lobby to join
-     * @param listOfLobbyInfos list of lobbies with the number of player in each lobby and the maximum capacity
-     */
     @Override
     public void askLobbyToJoin(Object listOfLobbyInfos) {
         Platform.runLater(() -> controllerInitial.askLobbyToJoinView(listOfLobbyInfos));
     }
 
-    /**
-     * set up the screen to ask the number of player
-     */
     @Override
     public void askPlayerNumber() {
         Platform.runLater(() -> controllerInitial.askNumberOfPlayerView());
     }
 
-    /**
-     * displays the joined lobby and the players in it
-     * @param lobbyInfos info about the lobby
-     */
     @Override
     public void displayLobbyJoined(Object lobbyInfos) {
         Platform.runLater(() -> controllerInitial.displayLobbyJoined((LobbyInfo) lobbyInfos));
     }
 
-    /**
-     * function called when the game is ready to start sets up the game board controller, new view and loading video
-     * @param board first board update received
-     */
     @Override
     public void gameReady(GameBoard board) {
         Platform.runLater(() -> {
@@ -364,26 +303,6 @@ public class GameViewGUI extends Application implements GameViewClient{
         });
     }
 
-    /**
-     * loads parent given in full screen
-     * @param root the parent to load the full screen
-     */
-    private void loadFullScreen(Parent root) {
-        this.stage = new Stage();
-        this.stage.setScene(new Scene(root, 1920, 1080));
-        this.stage.initStyle(StageStyle.UNDECORATED);
-        this.stage.setResizable(false);
-        this.stage.setMaximized(true);
-        this.stage.setOnCloseRequest(windowEvent -> {
-            Platform.exit();
-            System.exit(0);
-        });
-        this.stage.show();
-    }
-
-    /**
-     * shows that the assistant played was already played by someone else and ask to play an assistant
-     */
     @Override
     public void reaskAssistant() {
         Platform.runLater(() -> {
@@ -394,38 +313,35 @@ public class GameViewGUI extends Application implements GameViewClient{
         });
     }
 
-    /**
-     * Function used only in CLI mode
-     * @return null
-     */
+    @Override
+    public void onPlayerDisconnection(String playerWhoMadeTheLobbyClose) {
+        Platform.runLater(() -> {
+            if(videoMediaPlayer != null) {
+                videoMediaPlayer.stop();
+            }
+            this.stage.close();
+            start(stage);
+            controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
+            controllerInitial.setMessageHandler(msgHandler);
+        });
+    }
+
     @Override
     public GameBoard getBoard() {
+        // used only in CLI
         return null;
     }
 
-    /**
-     * Function used only in CLI mode
-     * @param board not useful
-     */
     @Override
     public void setBoard(GameBoard board) {
-
+        // used only in CLI
     }
 
-    /**
-     * Getter for the client
-     * @return the Client of this GUI
-     * @see Client
-     */
     @Override
     public Client getClient() {
         return controllerInitial.getClient();
     }
 
-    /**
-     * Displays the end of the game
-     * @param condition end game condition could be (WIN, LOSE, DRAW)
-     */
     @Override
     public void displayEndGame(CommunicationMessage.MessageType condition) {
         controllerGameBoard.makeEndAnimation(condition);

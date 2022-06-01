@@ -17,6 +17,9 @@ import java.util.Scanner;
 import static it.polimi.ingsw.game_controller.CommunicationMessage.MessageType.*;
 import static it.polimi.ingsw.game_view.GameViewClient.InputStateMachine.*;
 
+/**
+ * Represents the CLI. Handles all the commands and updates when using the command line interface.
+ */
 public class GameViewCLI implements GameViewClient{
     private final Scanner input;
     private int rangeA, rangeB;
@@ -26,7 +29,12 @@ public class GameViewCLI implements GameViewClient{
     private final Client client;
     private boolean gameStarted = false;
 
+    /**
+     * @param ip the ip of the server on which the player wants to connect.
+     * @param port the port of the server on which the player wants to connect.
+     */
     public GameViewCLI(String ip, int port) {
+        // Running a new client object with the specified ip and port.
         client = new Client(ip, port);
         new Thread(() -> {
             try {
@@ -95,11 +103,11 @@ public class GameViewCLI implements GameViewClient{
     }
 
     @Override
-    public void askDeck(Object decksAvailable) {
-        System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)decksAvailable));
+    public void askDeck(Object availableDecks) {
+        System.out.println(GameViewClient.ASK_DECK_TYPE_QUESTION + decksToString((List<?>)availableDecks));
         client.asyncWriteToSocket(new CommunicationMessage(
                 DECK_TYPE_MESSAGE,
-                ((List<?>) decksAvailable).get(whileInputNotIntegerInRange(0, ((List<?>) decksAvailable).size() - 1))
+                ((List<?>) availableDecks).get(whileInputNotIntegerInRange(0, ((List<?>) availableDecks).size() - 1))
         ));
     }
 
@@ -180,9 +188,32 @@ public class GameViewCLI implements GameViewClient{
         }
     }
 
+    @Override
+    public GameBoard getBoard() {
+        return board;
+    }
+
+    @Override
+    public void setBoard(GameBoard board) {
+        this.board = board;
+    }
+
+    @Override
+    public Client getClient() {
+        return client;
+    }
+
+    /**
+     * Asynchronously reads from the command line.
+     *
+     * <p>
+     *     If it's not the player turn, an error message is displayed, otherwise the state machine is printed.
+     * </p>
+     */
     public void asyncReadInput(){
         new Thread(() -> {
             while(client.isActive()){
+                // If it's not the player turn, an error message is printed when the user types something in the command line.
                 if(!board.getCurrentlyPlaying().equals(client.getName())){
                     try {
                         if(System.in.available() > 0) {
@@ -193,6 +224,8 @@ public class GameViewCLI implements GameViewClient{
                         Logger.ERROR("Client input stream is not available anymore.", e.getMessage());
                     }
                 }
+                // If the action has not been sent yet, then we print the instructions to build the next required command
+                // in order to play the current game phase.
                 else if(!msgHandler.isActionSent()) {
                     printStateMachine();
                     actionStateMachine(whileInputNotIntegerInRange(rangeA, rangeB));
@@ -201,6 +234,10 @@ public class GameViewCLI implements GameViewClient{
         }).start();
     }
 
+    /**
+     * Based on the FSM status, it prints the instructions for the required command the user has to use in
+     * that phase.
+     */
     private void printStateMachine(){
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
         SchoolBoard school = board.getSchools().get(board.getNames().indexOf(client.getName()));
@@ -239,6 +276,11 @@ public class GameViewCLI implements GameViewClient{
         }
     }
 
+    /**
+     * Based on the FSM status, it asks the user to insert the required parameters to run the chosen command and then
+     * sends the action chosen to the server.
+     * @param selection
+     */
     protected void actionStateMachine(int selection){
         boolean playable = true;
         DeckBoard playerDeck = board.getDecks().get(board.getNames().indexOf(client.getName()));
@@ -246,18 +288,23 @@ public class GameViewCLI implements GameViewClient{
         List<IslandBoard> islands = board.getTerrain().getIslands();
         switch(msgHandler.getState()) {
             case PLAY_ADVANCED_CARD:
+                // We use indexes to let the player select the card he wants to play.
                 System.out.println("Select an advanced card (use a number from 0 to 2):");
                 for(AdvancedCardBoard card : board.getTerrain().getAdvancedCard()) System.out.println(card);
                 int selectedCard;
 
                 do {
                     selectedCard = whileInputNotIntegerInRange(0, 2);
+                    // If the player has not enough money he can't play the card, so we send him back to the previous state.
                     if (board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName()))) {
                         msgHandler.setState(previousStateBeforeAdvancedCardPlayed);
                         displayErrorMessage(NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD, NOT_ENOUGH_MONEY_FOR_ADVANCED_CARD_ERROR, board);
                         playable = false;
                         break;
                     }
+
+                    // If the player has already played a character card this turn he cannot play another one, so we
+                    // send him back to the previous state.
                     if(school.isAdvancedAlreadyPlayedThisTurn()) {
                         playable = false;
                         msgHandler.setState(previousStateBeforeAdvancedCardPlayed);
@@ -266,6 +313,8 @@ public class GameViewCLI implements GameViewClient{
                     }
                 } while (board.getTerrain().getAdvancedCard().get(selectedCard).getCost() > board.getMoneys().get(board.getNames().indexOf(client.getName())));
 
+                // If the card is playable than we send the proper action to the server.
+                // Otherwise, we don't do anything.
                 if(playable) {
                     client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAdvancedCardAction(client.getName(), board.getTerrain().getAdvancedCard().get(selectedCard).getType(), new AdvancedCardInputHandler(board.getTerrain().getAdvancedCard().get(selectedCard).getType(), this).getCardInputs())));
                     Logger.INFO("You played: " + Printable.TEXT_YELLOW + board.getTerrain().getAdvancedCard().get(selectedCard).getType().toString() + Printable.TEXT_RESET);
@@ -274,6 +323,7 @@ public class GameViewCLI implements GameViewClient{
                 break;
 
             case SELECT_ASSISTANT_CARD_SEND_MESSAGE:
+                // The assistants cards are picked by using an index of the array of the still available cards.
                 System.out.println("You selected: " + playerDeck.getCards().get(selection).getType().getName());
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new PlayAssistantCardAction(client.getName(), selection)));
                 msgHandler.setActionSent(true);
@@ -282,6 +332,8 @@ public class GameViewCLI implements GameViewClient{
             case MOVE_STUDENT_SEND_MESSAGE:
                 rangeA = 0;
                 rangeB = islands.size();
+                // If the player is moving a student then we make him choose the index of the island on which to move
+                // the student on, or by selecting 'max_index+1' the student will be moved into the dining hall.
                 System.out.println("You selected student " + selection + GameBoard.getColorString(school.getEntrance().get(selection))
                         + Printable.STUDENT + Printable.TEXT_RESET);
                 System.out.println("Please select where to move the student (use number from 0 to " +
@@ -306,11 +358,14 @@ public class GameViewCLI implements GameViewClient{
                 break;
 
             case MOVE_MOTHER_NATURE_SEND_MESSAGE:
+                // Sending the mother nature amount of steps to the server with the proper action.
                 client.asyncWriteToSocket(new CommunicationMessage(GAME_ACTION, new MoveMotherNatureAction(client.getName(), selection)));
                 msgHandler.setActionSent(true);
                 break;
 
             case CHOOSE_CLOUD_CARD_SEND_MESSAGE:
+                // If the picked cloud is empty we show an error message, otherwise the selection is sent to the server
+                // using the proper action.
                 if(board.getTerrain().getCloudCards().get(selection).isEmpty()){
                     displayErrorMessage(INVALID_CLOUD_CHOSEN, INVALID_CLOUD_CHOSEN_ERROR, board);
                 }
@@ -322,6 +377,12 @@ public class GameViewCLI implements GameViewClient{
     }
 
 
+    /**
+     * Asks the user to insert an integer value in between the given range.
+     * @param a lower bound of the range.
+     * @param b upper bound of the range.
+     * @return the value in the range picked by the user.
+     */
     protected synchronized int whileInputNotIntegerInRange(int a, int b){
         String read;
         boolean first = true;
@@ -333,15 +394,22 @@ public class GameViewCLI implements GameViewClient{
                 first = false;
             }
             read = input.nextLine();
+            // In expert mode games if the user types play then we offer the possibility to play an advanced card.
             if(gameStarted && board.isExpertMode() && read.equals("play") && board.getPhase().toString().startsWith("ACTION_PHASE")){
                 msgHandler.setState(PLAY_ADVANCED_CARD);
                 return 0;
             }
+            // we continue reading until the user insert a valid digit in the specified range.
         }while (read.isEmpty() || !read.chars().allMatch(Character::isDigit) ||
                 Integer.parseInt(read) < a || Integer.parseInt(read) > b);
         return Integer.parseInt(read);
     }
 
+    /**
+     * Asks the user to insert a string which has to be contained in the given <code>container</code>.
+     * @param container the list of accepted words.
+     * @return the word which is part of the container list, chosen by the user.
+     */
     private synchronized String whileInputNotContainedIn(List<String> container){
         String read = input.nextLine();
         while(!container.contains(read)){
@@ -351,6 +419,13 @@ public class GameViewCLI implements GameViewClient{
         return read;
     }
 
+    /**
+     * Returns a printable string representing the provided list of decks.
+     * @param decks the list of available decks.
+     * @return a printable string representing the provided list of decks.
+     *
+     * @see DeckType
+     */
     private String decksToString(List<?> decks){
         String msg = "";
         for(int i = 0; i < decks.size(); i++){
@@ -359,19 +434,14 @@ public class GameViewCLI implements GameViewClient{
         return msg;
     }
 
-    public GameBoard getBoard() {
-        return board;
-    }
-
+    /**
+     * Returns the input scanner.
+     * @return the input scanner.
+     *
+     * @see Scanner
+     */
     public Scanner getInput() {
         return input;
     }
 
-    public void setBoard(GameBoard board) {
-        this.board = board;
-    }
-
-    public Client getClient() {
-        return client;
-    }
 }
