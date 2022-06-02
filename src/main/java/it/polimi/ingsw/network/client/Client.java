@@ -84,7 +84,6 @@ public class Client extends Observable<CommunicationMessage> {
             } catch (Exception e){
                 Logger.ERROR("Connection interrupted since the socket is now closed server side. Exiting...", e.getMessage());
                 close();
-                System.exit(1);
             }
         });
         t.start();

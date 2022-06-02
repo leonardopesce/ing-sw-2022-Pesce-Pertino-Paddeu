@@ -15,7 +15,7 @@ public class ServerApp
     {
         Server server;
         try {
-            if(args.length != 1 || (Integer.parseInt(args[0]) < 1024 && Integer.parseInt(args[0]) > 65535)) {
+            if(args.length != 1 || (Integer.parseInt(args[0]) < 1024 || Integer.parseInt(args[0]) > 65535)) {
                 throw new NumberFormatException();
             } else {
                 try {

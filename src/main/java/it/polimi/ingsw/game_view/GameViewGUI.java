@@ -285,7 +285,7 @@ public class GameViewGUI extends Application implements GameViewClient{
             try {
                 videoMedia = new Media(Objects.requireNonNull(getClass().getResource("/video/startingAnimation.mp4")).toURI().toString());
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                Logger.ERROR("Invalid video URL.", e.getMessage());
             }
 
             videoMediaPlayer = new MediaPlayer(videoMedia);
