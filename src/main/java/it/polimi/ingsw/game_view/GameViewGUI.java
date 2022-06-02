@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -112,6 +113,12 @@ public class GameViewGUI extends Application implements GameViewClient{
         this.stage.setFullScreen(false);
         this.stage.setWidth(900);
         this.stage.setHeight(550);
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo16.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo32.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo64.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo128.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo256.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo512.png"))));
         this.stage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
             try {
@@ -170,6 +177,12 @@ public class GameViewGUI extends Application implements GameViewClient{
         this.stage.initStyle(StageStyle.UNDECORATED);
         this.stage.setResizable(false);
         this.stage.setMaximized(true);
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo16.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo32.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo64.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo128.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo256.png"))));
+        this.stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/app_icon/logo512.png"))));
         this.stage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
             System.exit(0);
