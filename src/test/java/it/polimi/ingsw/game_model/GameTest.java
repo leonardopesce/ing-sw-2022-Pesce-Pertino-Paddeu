@@ -96,6 +96,42 @@ class GameTest {
         }
     }
 
+    @DisplayName("Testing merging island")
+    @Test
+    void mergeIslandsTest(){
+        int nPlayers = 2;
+        boolean expertMode = false;
+        initialization(nPlayers, expertMode);
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(RED));
+
+        Island is = game.getTerrain().getIslands().get((game.getMotherNature().getPosition() + 1) % 12);
+        is.addStudent(new Student(RED));
+        game.evaluateInfluences(is.getId());
+        assertEquals(1, is.getSize());
+        System.out.println(is.getStudents());
+        assertEquals(1, is.getTowers().size());
+
+        is = game.terrain.getNextIsland(is);
+        is.addStudent(new Student(RED));
+        game.evaluateInfluences(is.getId());
+        assertEquals(2, is.getSize());
+        assertEquals(2, is.getTowers().size());
+
+        is = game.terrain.getNextIsland(is);
+        is.addStudent(new Student(RED));
+        game.evaluateInfluences(is.getId());
+        assertEquals(3, is.getSize());
+        assertEquals(3, is.getTowers().size());
+
+        is.addStudent(new Student(PINK));
+        game.getPlayers().get(0).getSchool().addTeacher(new Teacher(PINK));
+        controller.moveMotherNatureOfSteps(game.getPlayers().get(0).getNickname(), 10);
+
+        assertEquals(3, is.getSize());
+        assertEquals(3, is.getTowers().size());
+    }
+
+
     private int removeStudentForSpecialCard(int n){
         for(AdvancedCharacter character: game.terrain.getAdvancedCharacters()){
             if(character.getType() == AdvancedCharacterType.PRINCESS || character.getType() == AdvancedCharacterType.MONK){

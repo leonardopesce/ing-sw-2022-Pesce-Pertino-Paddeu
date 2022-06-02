@@ -209,7 +209,7 @@ public class Game extends Observable<MoveMessage> {
      * @see Terrain
      * @see Island
      */
-    private void checkMergeIsland(Island island1, Island island2){
+    protected void checkMergeIsland(Island island1, Island island2){
         if(!island2.getTowers().isEmpty() && island2.getTowers().get(0).getColor() == island1.getTowers().get(0).getColor()) {
             terrain.mergeIsland(island1, island2);
         }

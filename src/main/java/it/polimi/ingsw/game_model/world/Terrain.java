@@ -62,7 +62,7 @@ public class Terrain {
      * @param islandToMerge island to merge
      */
     public void mergeIsland(Island baseIsland, Island islandToMerge){
-        baseIsland.incrementSize();
+        baseIsland.incrementSize(islandToMerge.getSize());
         baseIsland.addAllStudent(islandToMerge.getStudents());
         baseIsland.addAllTower(islandToMerge.getTowers());
         while(islandToMerge.isBlocked()){

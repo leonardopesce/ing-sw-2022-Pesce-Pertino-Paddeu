@@ -30,8 +30,11 @@ public class Island {
 
     /**
      * Increment size of an island in determined conditions
+     * @param sizeIslandToMerge the size of the island to merge
      */
-    public void incrementSize() { this.size++; }
+    public void incrementSize(int sizeIslandToMerge) {
+        this.size += sizeIslandToMerge;
+    }
 
     /**
      * Adds students on an island
