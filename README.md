@@ -56,16 +56,19 @@ By clicking the icons below you'll be redirected to the delivered material.
 | Installation steps | Running the jars | Project javadocs | Our weekly report | UML week by week
 
 ## Tests
-TODO
+Here are reported the coverage of our tests both for the model and controller.
+
+![][tests-img]
 
 
 [installation-logo]: markdown-assets/installation.gif
-[installation-link]: https://www.google.it/
+[installation-link]: https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/wiki/Installation
 [running-logo]: markdown-assets/running.gif
-[running-link]: https://www.google.it/
+[running-link]: https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/wiki/Running
 [javadocs-logo]: markdown-assets/javadoc.gif
 [javadocs-link]: https://www.google.it/
 [report-logo]: markdown-assets/report.gif
 [report-link]: Deliverables/eriantys_report.pdf
 [uml-logo]: markdown-assets/uml.gif
 [uml-link]: Deliverables/UML/
+[tests-img]: markdown-assets/tests.png
