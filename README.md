@@ -52,7 +52,7 @@ By clicking the icons below you'll be redirected to the delivered material.
 
 | Installation | Run Eriantys | Javadocs | Weekly report | UML |
 |:-------------|:-------------|:---------|:--------------|:----|
-| [![][installation-logo]][installation-link] | [![][running-logo]][running-link] | [![][javadocs-logo]][javadocs-link] | [![][report-logo]][report-link] | [![][uml-logo]][uml-link] |
+| <a target="_self" href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/wiki/Installation">![][installation-logo]</a> | <a target="_self" href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/wiki/Running">![][running-logo]</a> | <a target="_self" href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/tree/main/Deliverables/Javadocs">![][javadocs-logo]</a> | <a target="_self" href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/blob/main/Deliverables/eriantys_report.pdf">![][report-logo]</a> | <a target="_self" href="https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/blob/main/Deliverables/UML">![][uml-logo]</a> |
 | Installation steps | Running the jars | Project javadocs | Our weekly report | UML week by week
 
 ## Tests
@@ -62,13 +62,8 @@ Here are reported the coverage of our tests both for the model and controller.
 
 
 [installation-logo]: markdown-assets/installation.gif
-[installation-link]: https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/wiki/Installation
 [running-logo]: markdown-assets/running.gif
-[running-link]: https://github.com/leonardopesce/ing-sw-2022-Pesce-Pertino-Paddeu/wiki/Running
 [javadocs-logo]: markdown-assets/javadoc.gif
-[javadocs-link]: https://www.google.it/
 [report-logo]: markdown-assets/report.gif
-[report-link]: Deliverables/eriantys_report.pdf
 [uml-logo]: markdown-assets/uml.gif
-[uml-link]: Deliverables/UML/
 [tests-img]: markdown-assets/tests.png
