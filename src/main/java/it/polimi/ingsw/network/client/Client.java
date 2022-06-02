@@ -4,6 +4,7 @@ import it.polimi.ingsw.game_controller.CommunicationMessage;
 import it.polimi.ingsw.network.utils.ClientConnectionStatusHandler;
 import it.polimi.ingsw.network.utils.Logger;
 import it.polimi.ingsw.observer.Observable;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -81,8 +82,9 @@ public class Client extends Observable<CommunicationMessage> {
                     }
                 }
             } catch (Exception e){
-                close();
                 Logger.ERROR("Connection interrupted since the socket is now closed server side. Exiting...", e.getMessage());
+                close();
+                System.exit(1);
             }
         });
         t.start();

@@ -198,6 +198,8 @@ public class Game extends Observable<MoveMessage> {
         //If needed, merges surrounding islands
         checkMergeIsland(island, terrain.getNextIsland(island));
         checkMergeIsland(island, terrain.getPreviousIsland(island));
+
+        System.out.println(island.getSize());
     }
 
     /**
@@ -251,8 +253,8 @@ public class Game extends Observable<MoveMessage> {
         boolean draw = false;
         int[] numberOfTower = {0, 0, 0};
         if(terrain.getIslands().size() <= 3 ||
-                (bag.isEmpty() && gamePhase == GamePhase.NEW_ROUND) ||
-                (players.stream().allMatch(pl -> pl.getDeckAssistants().getSize() == 0) && gamePhase == GamePhase.NEW_ROUND)){
+                (bag.isEmpty() && (gamePhase == GamePhase.NEW_ROUND || gamePhase == GamePhase.GAME_ENDED)) ||
+                (players.stream().allMatch(pl -> pl.getDeckAssistants().getSize() == 0) && (gamePhase == GamePhase.NEW_ROUND || gamePhase == GamePhase.GAME_ENDED))){
 
             for(Island is: terrain.getIslands()){
                 if(!is.getTowers().isEmpty()) {
