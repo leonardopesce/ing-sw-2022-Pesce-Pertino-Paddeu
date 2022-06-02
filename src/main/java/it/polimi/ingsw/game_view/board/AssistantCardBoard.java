@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @see Assistant
  */
 public class AssistantCardBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
     private final AssistantType type;
     private final int maximumSteps;
 

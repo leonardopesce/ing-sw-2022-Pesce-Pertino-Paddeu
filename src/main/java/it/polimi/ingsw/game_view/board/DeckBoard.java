@@ -12,6 +12,7 @@ import java.util.List;
  * Class representing the cards in the hand of a player in a light way to transmit fewer data as possible
  */
 public class DeckBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
     private final List<AssistantCardBoard> cards = new ArrayList<>();
     private final AssistantCardBoard discardedCard;
     private final DeckType deckType;

@@ -7,6 +7,7 @@ package it.polimi.ingsw.game_view.board;
  * @see <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI Colors</a>
  */
 public abstract class Printable {
+    public static final long serialVersionUID = 1L;
     // ANSI Colors
     public static final String TEXT_RESET = "\u001B[0m";
     public static final String TEXT_BLACK = "\u001B[30m";

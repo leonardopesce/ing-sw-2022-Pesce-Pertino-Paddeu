@@ -13,6 +13,7 @@ import java.util.List;
  * Class to represent islands in a light way, to transmit as fewer data as possible
  */
 public class IslandBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
     private final List<ColorCharacter> students;
     private final int islandIndex;
     private final int towerNumber;

@@ -15,6 +15,7 @@ import java.util.List;
  * Class representing the school board in in a light way to transmit fewer data as possible
  */
 public class SchoolBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
     List<ColorCharacter> entrance = new ArrayList<>();
     List<ColorCharacter> teachers = new ArrayList<>();
     int[] tables = new int[5];

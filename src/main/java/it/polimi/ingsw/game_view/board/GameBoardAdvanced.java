@@ -10,6 +10,7 @@ import java.io.Serializable;
  * Class representing the game board in advanced mode in a light way to transmit fewer data as possible
  */
 public class GameBoardAdvanced extends GameBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
 
     /**
      * Constructor that initializes the game board (school, decks, moneys, players, terrain...) and sets the game in

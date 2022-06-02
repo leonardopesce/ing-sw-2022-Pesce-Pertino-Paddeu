@@ -16,6 +16,7 @@ import java.util.List;
  * Class representing the terrain board in a light way to transmit fewer data as possible.
  */
 public class TerrainBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
     private final List<List<ColorCharacter>> cloudCards = new ArrayList<>();
     private final List<IslandBoard> islands = new ArrayList<>();
     private final List<AdvancedCardBoard> advancedCard = new ArrayList<>();

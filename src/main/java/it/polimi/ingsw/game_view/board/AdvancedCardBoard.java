@@ -16,6 +16,7 @@ import static it.polimi.ingsw.game_view.board.Printable.*;
  *  Class representing an advanced card in a light way to transmit fewer data as possible
  */
 public class AdvancedCardBoard implements Serializable {
+    public static final long serialVersionUID = 1L;
     private final String name;
     private final AdvancedCharacterType type;
     private final int cost;

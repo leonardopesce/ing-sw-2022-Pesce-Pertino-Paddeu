@@ -17,6 +17,7 @@ import static it.polimi.ingsw.game_view.board.Printable.*;
  * Class representing the game board in a light way to transmit fewer data as possible
  */
 public class GameBoard implements Serializable{
+    public static final long serialVersionUID = 1L;
     private boolean expertMode = false;
     private final List<SchoolBoard> schools = new ArrayList<>();
     private final TerrainBoard terrain;
