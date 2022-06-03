@@ -332,6 +332,9 @@ public class GameViewGUI extends Application implements GameViewClient{
             if(videoMediaPlayer != null) {
                 videoMediaPlayer.stop();
             }
+            if(soundMediaPlayer != null) {
+                soundMediaPlayer.stop();
+            }
             this.stage.close();
             start(stage);
             controllerInitial.setOnDisconnection(playerWhoMadeTheLobbyClose);
