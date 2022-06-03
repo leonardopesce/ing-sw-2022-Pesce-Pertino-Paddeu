@@ -8,12 +8,13 @@
 % Italian spelling
 \usepackage[italian]{babel}
 % Accenti e caratteri speciali
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 % Margini e grafica della pagina
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \usepackage{fancyhdr}
 % Tabelle
 \usepackage{tabularx}
+\usepackage[table]{xcolor}
 % Graphs and Images handling
 \usepackage{graphicx}
 \usepackage{svg}
@@ -25,7 +26,7 @@
 \usepackage{epigraph}
 
 % Title Page
-\title{Eriantys - Prova Finale di Ingegneria del Software}
+\title{Prova Finale di Ingegneria del Software}
 \author{
 	Paolo Pertino [10729600]
 	\href{mailto:paolo.pertino@mail.polimi.it}{paolo.pertino@mail.polimi.it} \\
@@ -61,10 +62,20 @@
 	pdfpagemode=FullScreen,
 }
 
+% Tables settings
+\setlength{\arrayrulewidth}{1mm}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{2.5}
+\arrayrulecolor[HTML]{211d1b}
+
 \begin{document}
 	\pagenumbering{gobble}
 	\date{\today}
 	\maketitle
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.40]{launcherSplashBanner.png}
+	\end{figure}
 	\newpage
 	\pagenumbering{arabic}
 	
@@ -85,7 +96,7 @@
 	Il \emph{Model-View-Controller} è un design pattern per la progettazione di un'architettura software. Esso permette di separare la logica di presentazione dell'applicativo da quella applicativa(o detta di business).\\
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.35]{mvc.png}
+		\includegraphics[scale=0.25]{mvc.png}
 		\caption{Model-View-Controller Pattern}
 	\end{figure}
 	
@@ -96,6 +107,127 @@
 		\item \emph{Controller} - riceve i comandi dell'utente attraverso la view e li attua modificando gli stati degli altri due layers.
 	\end{enumerate}
 	Sono possibili viste multiple di uno stesso modello. Nel nostro caso, infatti, saranno implementate due viste: il gioco sarà pertanto accessibile sia attraverso linea di comando sia mediante interfaccia grafica.
+	
+	\subsection{Installazione}
+	\subsubsection{Requisiti di sistema}
+	\paragraph{}
+	Per poter installare l'applicazione è necessario aver già predisposti sul proprio computer:
+	\begin{itemize}
+		\item \textbf{Sistema Operativo}: Windows 10/11 oppure Linux (testato su Ubuntu 18.04);
+		\item \textbf{Java}: Java SE JDK 17;
+		\item \textbf{Maven}: Maven 3.x;
+		\item \textbf{Risoluzione schermo}: 1920x1080 (fortemente raccomandata).
+	\end{itemize}
+	\subsubsection{Installazione su Windows}
+	\paragraph{}
+	L'installazione dell'applicativo su Windows prevede due passaggi:
+	\begin{enumerate}
+		\item \textbf{Abilitare i codici ANSI sulla console}:
+			  \begin{itemize}
+			  	  \item Premere i tasti Windows ⊞ + R e digitare \textit{intl.cpl};
+			  	  \item Nella finestra che si apre, cliccare \textit{Opzioni di Amministrazione} nella barra in alto;
+			  	  \item Successivamente su \textit{Cambia le impostazioni locali di sistema...};
+			  	  \item Spunta dunque la casella \textit{Beta: utilizzare Unicode UTF-8 per il supporto della lingua a livello mondiale};
+			  	  \item Infine cliccare su \textit{Ok} e su \textit{Applica} per salvare i cambiamenti.
+			  \end{itemize}
+		
+		\item \textbf{Installare il gioco generando i \textit{File Jar} relativi al Server e al Client}:
+			  \begin{itemize}
+			  	  \item Clonare la repo o scaricare il file zip;
+			  	  \item Estrarre i file dall'archivio (solo se è stato scaricato il pacchetto zip dal punto precedente, altrimenti procedere con il prossimo step);
+			  	  \item Aprire il terminale e navigare nella cartella estratta/della repo clonata utilizzando il comando:
+				  \begin{minted}{bash}
+	$ cd PATH/TO/ing-sw-2022-Pesce-Pertino-Paddeu
+				  \end{minted}
+			  	  \item Compila i file di gioco:
+			  	  \begin{minted}{bash}
+	$ mvn clean package
+			  	  \end{minted}
+			  \end{itemize}
+	\end{enumerate}
+
+	\subsubsection{Installazione su Linux}
+	L'installazione del gioco in ambiente linux prevede i seguenti passaggi:
+	\begin{itemize}
+		\item Clonare la repo o scaricare il file compresso;
+		\item Estrarre i file dall'archivio (solo se è stato scaricato il pacchetto compresso dal punto precedente, altrimenti procedere con il prossimo step);
+		\item Aprire il terminale e navigare nella cartella estratta/della repo clonata utilizzando il comando:
+		\begin{minted}{bash}
+	$ cd PATH/TO/ing-sw-2022-Pesce-Pertino-Paddeu
+		\end{minted}
+		\item Compila i file di gioco:
+		\begin{minted}{bash}
+	$ mvn clean package
+		\end{minted}
+	\end{itemize}
+	
+	\newpage
+	\subsection{Avvio dell'applicazione}
+	\subsubsection{Requisiti per l'avvio dell'applicazione}
+	\begin{itemize}
+		\item \textbf{Java}: Java SE JDK 17;
+		\item \textbf{Installazione}: aver seguito la procedura di installazione oppure aver scaricato i \textit{File Jar} precompilati presenti nella cartella \textit{Deliverables} presente sulla repository Github.
+	\end{itemize}
+	\subsubsection{Avvio del Server}
+	\paragraph{}
+	Una volta ottenuto il file \textit{softeng-GC3-ServerApp.jar}, aprire il terminale e spostarsi nella cartella in cui tale file è locato.
+	Successivamente digitare:
+	\begin{minted}{bash}
+		$ java -jar softeng-GC3-ServerApp.jar <PORT_NUMBER>
+	\end{minted}
+	dove $<$\textit{PORT\_NUMBER}$>$ va sostituito con il numero di porta su cui si vuole aprire effettivamente il server (scegliere un numero intero compreso nell'intervallo [1024, 65535]).
+	\paragraph{IMPORTANTE}: per far si che altre persone possano connettersi al server, potrebbe essere necessario fare \textit{port forwarding} della porta utilizzata al momento dell'avvio del server.
+	
+	\subsubsection{Avvio del Client}
+	\paragraph{}
+	Una volta ottenuto il file \textit{softeng-GC3-ClientApp.jar}, aprire il terminale e spostarsi nella cartella in cui tale file è locato.
+	\paragraph{CLI}: per utilizzare la \textit{CLI} digitare:
+	\begin{minted}{bash}
+		$ java -jar softeng-GC3-ClientApp.jar cli
+	\end{minted}
+	\paragraph{GUI}: per usare la \textit{GUI} digitare:
+	\begin{minted}{bash}
+		$ java -jar softeng-GC3-ClientApp.jar gui
+	\end{minted}
+	
+	\newpage
+	\section{Consegna}
+	\subsection{Funzionalità implementate}
+	\paragraph{}
+	Nella seguente sezione riportiamo una tabella contenente le funzionalità che abbiamo implementato corredate da una breve descrizione facendo riferimento a quella fornita nel documento dei requisiti.
+	
+	\begin{center}
+		\begin{tabular}{ |p{4cm}|p{10cm}|p{2cm}| }
+			\hline
+			\rowcolor[HTML]{edeef0} \multicolumn{3}{|c|}{\textbf{Funzionalità Implementate}} \\
+			\hline
+			\rowcolor[HTML]{edeef0}
+			\textit{Nome}& \textit{Descrizione} & \textit{Status} \\
+			\hline
+			\rowcolor[HTML]{edeef0}
+			Regole complete & Il gioco deve essere giocabile da 2 o 3 giocatori, volendo con regole per esperti (devono venire implementate almeno 8 carte personaggio). & \cellcolor[HTML]{ACEDAA} \\
+			\rowcolor[HTML]{edeef0}
+			CLI & Il gioco deve essere giocabile da CLI. & \cellcolor[HTML]{ACEDAA} \\
+			\rowcolor[HTML]{edeef0}
+			GUI   & Il gioco deve essere giocabile da GUI. & \cellcolor[HTML]{ACEDAA} \\
+			\rowcolor[HTML]{edeef0}
+			Socket  & La connessione tra client e server deve avvenire attraverso socket TCP-IP. & \cellcolor[HTML]{ACEDAA} \\
+			\rowcolor[HTML]{edeef0}
+			\textbf{Carte Personaggio} & Implementare tutte e 12 le carte personaggio. & \cellcolor[HTML]{ACEDAA} \\
+			\rowcolor[HTML]{edeef0}
+			\textbf{4 Giocatori} & Realizzare il progetto in modo che sia possibile giocare partite da 2, 3 oppure 4 giocatori. & \cellcolor[HTML]{ACEDAA}    \\
+			\rowcolor[HTML]{edeef0}
+			\textbf{Partite multiple} & Realizzare il server in modo che possa gestire più partite \textbf{contemporaneamente}. & \cellcolor[HTML]{ACEDAA} \\
+			\rowcolor[HTML]{edeef0}
+			\textbf{Persistenza} & Lo stato di una partita deve essere salvato su disco, in modo che la partita possa riprendere anche a seguito dell'interruzione dell'esecuzione del server. & \cellcolor[HTML]{edaaaa} \\
+			\rowcolor[HTML]{edeef0}
+			\textbf{Resilienza alle disconnessioni} & I giocatori disconnessi possono ricollegarsi in seguito e continuare la partita. & \cellcolor[HTML]{edaaaa} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\paragraph{Legenda}: \fcolorbox{black}{green}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\quad \textit{Implementato},  \fcolorbox{black}{red}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\quad \textit{Non Implementato}
+	\paragraph{}
+	Sono state implementate tutte le richieste di base e \textit{3 funzionalità} aggiuntive come richiesto da specifica.
 	
 	\newpage
 	\section{Devlog}
@@ -482,6 +614,13 @@
 	Infine il gioco è stato testato su 2 sistemi operativi differenti, ovvero \textit{Windows 11} e \textit{Ubuntu 22.04}.
 	\paragraph{}
 	Nel corso delle prossime settimane verrà ultimata la presentazione dei messaggi di errore nella GUI in appositi infobox e verrà gestita la terminazione della partita.
+	
+	\subsection{Settimana 12: Documentazione}
+	\paragraph{}
+	Nella dodicesima ed ultima settimana di sviluppo, il gruppo si è focalizzato sulla documentazione del codice e sull'aggiornamento dei diagrammi UML rimasti inalterati dalla settimana 8. Inoltre sono stati risolti alcuni bug grafici ed è stata gestita la terminazione della partita (vittoria, sconfitta, parità disconnessioni di altri client, disconnessione del server). Sono stati compilati i documenti README e le pagine relative alla Wiki sulla repository github per fornire istruzioni dettagliate su installazione e lancio del gioco.
+	\paragraph{}
+	Riteniamo dunque che il nostro materiale sia pronto per la consegna.
+	
 	% Strumenti usati
 	\newpage
 	\section{Strumenti utilizzati}
