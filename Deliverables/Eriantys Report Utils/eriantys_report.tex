@@ -25,17 +25,6 @@
 % Citations
 \usepackage{epigraph}
 
-% Title Page
-\title{Prova Finale di Ingegneria del Software}
-\author{
-	Paolo Pertino [10729600]
-	\href{mailto:paolo.pertino@mail.polimi.it}{paolo.pertino@mail.polimi.it} \\
-	Leonardo Pesce [10659489]
-	\href{mailto:leonardo.pesce@mail.polimi.it}{leonardo.pesce@mail.polimi.it} \\
-	Alberto Paddeu [10729194]
-	\href{mailto:alberto.paddeu@mail.polimi.it}{alberto.paddeu@mail.polimi.it} \\
-} 
-
 % Contents page settings
 \renewcommand*\contentsname{Indice}
 \setcounter{tocdepth}{3}
@@ -54,10 +43,10 @@
 % Hyperrefs setup
 \hypersetup{
 	colorlinks=true,
-	linkcolor=[rgb]{0.996,0.396,0.090196}, %254 101 23
+	linkcolor=[HTML]{7390A6}, %254 101 23 | #7390A6
 	filecolor=magenta,      
-	urlcolor=[rgb]{0.72156862745,0.0078431372549,0.00392156862745},
-	citecolor=[rgb]{0.517647,0.0156862745,0.0117647},
+	urlcolor=[HTML]{4e42f5},
+	citecolor=[HTML]{384f9c},
 	pdftitle={Eriantys - Prova Finale di Ingegneria del Software},
 	pdfpagemode=FullScreen,
 }
@@ -70,12 +59,54 @@
 
 \begin{document}
 	\pagenumbering{gobble}
-	\date{\today}
-	\maketitle
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[scale=0.40]{launcherSplashBanner.png}
-	\end{figure}
+	\thispagestyle{empty} % serve per rimuovere tutte le impostazioni delle pagine dalla prima pagina
+	
+	% FRONTESPIZIO
+	\begin{center}
+		% Intestazione
+		\Large{\textbf{Politecnico di Milano}} \\
+		\vspace{-4mm}
+		\rule{\textwidth}{0.4pt}
+		\normalsize{SCUOLA DI INGEGNERIA INDUSTRIALE E DELL’INFORMAZIONE} \\
+		\normalsize{Laurea Triennale -- Ingegneria Informatica} \\
+		\vspace{20mm}
+		% Logo Politecnico
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[height=0.30\textheight]{logo_poli_bianco}
+		\end{figure}
+		\vspace{12mm}
+		% Titolo Tesi
+		\huge{\textbf{Eriantys}} \\
+		\vspace{22mm}
+	\end{center}
+	
+	% Docente
+	\begin{flushleft}
+		\normalsize{Supervisore} \\
+		\small{\textbf{Professor Gianpaolo Cugola}} \\
+	\end{flushleft}
+	\vspace{10mm}
+	
+	% Autore
+	\begin{flushright}
+		\normalsize{Candidati} \\
+		\small{\textbf{Alberto PADDEU -- 10729194}} \\
+		\small{\textbf{Paolo PERTINO -- 10729600}} \\
+		\small{\textbf{Leonardo PESCE -- 10659489}} \\
+	\end{flushright}
+	\vspace{15mm}
+	
+	% Piè Di Pagina
+	\begin{center}
+		\rule{\textwidth}{0.4pt}
+		\small{\textbf{Anno Accademico 2021 -- 2022}}
+	\end{center}
+
+	\newpage
+	\thispagestyle{plain}
+	{\transparent{0.4}\vspace*{11.0cm}\hspace*{-6cm}\includegraphics[width=0.85\paperwidth]{./raggiera_polimi.pdf}}
+	
 	\newpage
 	\pagenumbering{arabic}
 	
@@ -289,7 +320,7 @@
 		
 		\item \textbf{Modifica struttura del game:} Visto che dalle precedenti implementazioni le modifiche effettive nelle istanze di gioco a 2, 3 e 4 giocatori erano poche, è stato ripensato un modo per unirle trasformando la classe game in una generica che varia gli effetti dei suoi metodi in base al numero di giocatori assegnati inizialmente. Ciò non ha implicato alcun uso di \emph{if} o \emph{switch} aggiuntivi in quanto con opportuni accorgimenti e con l'uso della funzione modulo $\%$ si sono potute trasformare le funzioni da specifiche a generiche in modo trasparente rispetto il numero di giocatori. 
 		Questa unione ha comportato anche il collasso delle tre precedenti classi avanzate, che a livello pratico implementavano lo stesso codice, in una unica.
-		Tutto ciò a portato ad avere un codice più snello e pulito senza eccessive ripetizioni.
+		Tutto ciò ha portato ad avere un codice più snello e pulito senza eccessive ripetizioni.
 		\item \textbf{Nuove carte avanzate:} Per implementare più carte personaggio possibili cercando di rendere trasparente l'aggiunta delle stesse alle meccaniche di base del gioco, è stato ripensato come esse vengono implementate. Adesso l'attivazione del loro effetto è circoscritta nel metodo \emph{playEffect} della classe rappresentante la carta stessa. A seguito dell'attivazione con successo di una delle suddette carte, la funzione playEffect provvederà a manipolare l'istanza della classe \emph{game} settando temporaneamente dei calcolatori particolari (vedi calcolatore di influenza e update dell'ownership del professore) oppure modificando di fatto lo stato di alcuni componenti del game stesso. Tali modifiche saranno opportunamente gestite, se necessario, alla fine del turno del giocatore che ha attivato la carta. 
 		\item \textbf{Ribilanciamento tra Model e Controller:} abbiamo notato che molti metodi appartenenti alla classe controller erano stati implementati inizialmente nel model, questi sono stati spostati e verificati in modo da ribilanciare il peso tra i due componenti.
 	\end{itemize}
