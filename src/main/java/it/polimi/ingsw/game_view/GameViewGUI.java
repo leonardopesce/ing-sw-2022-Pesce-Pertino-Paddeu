@@ -297,14 +297,13 @@ public class GameViewGUI extends Application implements GameViewClient{
                 loadFullScreen(gameBoardRoot);
                 previousStage.close();
                 soundMediaPlayer.play();
-                if (testing) {
-                    controllerGameBoard.setClientName("Paolo");
-                } else {
-                    controllerGameBoard.setClient(controllerInitial.getClient());
-                }
-
             });
 
+            if (testing) {
+                controllerGameBoard.setClientName("Paolo");
+            } else {
+                controllerGameBoard.setClient(controllerInitial.getClient());
+            }
             controllerGameBoard.updateBoard(board);
 
             videoMediaView = new MediaView(videoMediaPlayer);
