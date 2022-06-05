@@ -303,8 +303,9 @@ public class GameViewGUI extends Application implements GameViewClient{
                     controllerGameBoard.setClient(controllerInitial.getClient());
                 }
 
-                controllerGameBoard.updateBoard(board);
             });
+
+            controllerGameBoard.updateBoard(board);
 
             videoMediaView = new MediaView(videoMediaPlayer);
             videoMediaView.setMouseTransparent(true);

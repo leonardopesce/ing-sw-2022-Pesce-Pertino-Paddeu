@@ -188,6 +188,7 @@ public class GameBoard implements Serializable{
                     .append((expertMode ? moneys.get(i) + DOLLAR + (moneys.get(i) > 9 ? " " : "  ") : "  "))
                     .append(V_BAR).append("\n");
             board.append(schools.get(i));
+            if(decks.get(i).getDiscardedCard() != null) board.append("LAST DISCARDED ASSISTANT: ").append(decks.get(i).getDiscardedCard().getType().toString()).append(", VALUE : ").append(decks.get(i).getDiscardedCard().getType().ordinal()).append("\n");
         }
         if(expertMode){
             board.append("TREASURY\n")
