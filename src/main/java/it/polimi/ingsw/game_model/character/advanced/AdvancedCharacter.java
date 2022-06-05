@@ -73,7 +73,7 @@ public abstract class AdvancedCharacter extends Character {
      * @return the randomly picked advanced character.
      */
     public static AdvancedCharacter getRandomCard(Game game, List<AdvancedCharacter> alreadyPresent){
-        int value = 3;//random.nextInt(AdvancedCharacterType.values().length - 1);
+        int value = random.nextInt(AdvancedCharacterType.values().length - 1);
 
         while(alreadyPresent.stream().map(character -> character.getType().ordinal()).toList().contains(value)){
             value = random.nextInt(AdvancedCharacterType.values().length - 1);
