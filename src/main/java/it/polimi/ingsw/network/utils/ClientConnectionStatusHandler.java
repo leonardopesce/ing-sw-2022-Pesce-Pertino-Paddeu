@@ -71,6 +71,7 @@ public class ClientConnectionStatusHandler extends ConnectionStatusHandler imple
     @Override
     public void kill() {
         connectionActive = false;
+        pingTimer.cancel();
     }
 
     @Override
