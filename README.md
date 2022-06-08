@@ -29,7 +29,7 @@ Eriantys is a game full of strategy, tactics and twists. Plan your moves careful
 
 </td></tr> </table>
 
-> **_FINAL SCORE_** ? / 30
+> **_FINAL SCORE_** 30L / 30
 
 ## Implemented Feature Status
 In the following table all the requested features with their current status are displayed.
